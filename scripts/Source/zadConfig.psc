@@ -1,0 +1,821 @@
+Scriptname zadConfig extends SKI_ConfigBase Conditional
+
+; The power of Emacs compels you.
+
+; Libraries
+zadLibs Property libs Auto
+zadBeltedAnims Property beltedAnims  Auto  
+
+; Perks
+Perk Property zad_keyCraftingEasy Auto ; Obsolete, will remove later
+Perk Property zad_keyCraftingHard Auto ; Obsolete, will remove later.
+
+; Config Variables
+int Property UnlockThreshold Auto
+int thresholdDefault = 185
+int Property ThresholdModifier Auto
+int ThresholdModifierDefault = 0
+float Property BeltRateMult Auto
+float beltRateDefault = 1.5
+float Property PlugRateMult Auto
+float plugRateDefault = 3.0
+int Property KeyCrafting Auto Conditional
+int keyCraftingDefault = 1
+bool Property NpcMessages Auto
+bool npcMessagesDefault = true
+bool Property PlayerMessages Auto
+bool playerMessagesDefault = true
+bool Property DestroyKey Auto
+bool destroyKeyDefault = false
+bool Property SkyRe Auto
+bool skyreDefault = true
+bool Property LogMessages Auto
+bool logMessagesDefault = true
+bool Property ifp Auto
+bool ifpDefault = true
+bool Property preserveAggro Auto
+bool preserveAggroDefault = true
+bool Property useBoundAnims Auto
+bool useBoundAnimsDefault = true
+
+; Blindfold
+int Property blindfoldMode Auto ; 0 == DD's mode, 1 == DD's mode w/ leeches, 2 == leeches
+int blindfoldModeDefault = 0
+float Property blindfoldStrength Auto
+float blindfoldStrengthDefault = 1.0
+
+; Tooltips
+bool Property BlindfoldTooltip Auto
+bool Property GagTooltip Auto
+
+; Events and Effects
+float Property EventInterval Auto
+float eventIntervalDefault = 1.5
+int Property EffectVibrateChance Auto
+int effectVibrateChanceDefault = 25
+int Property EffectHealthDrainChance Auto
+int effectHealthDrainChanceDefault = 50
+int Property EffectManaDrainChance Auto
+int EffectManaDrainChanceDefault = 50
+int Property EffectStaminaDrainChance Auto
+int EffectStaminaDrainChanceDefault = 50
+int Property BaseMessageChance Auto
+int baseMessageChanceDefault = 10
+int Property BaseHornyChance Auto
+int baseHornyChanceDefault = 5
+int Property BaseBumpPumpChance Auto
+int baseBumpPumpChanceDefault = 17
+bool Property HardcoreEffects Auto
+bool hardcoreEffectsDefault = true
+bool Property MasturbateOnBeltRemoval Auto
+bool masturbateOnBeltRemovalDefault = False 
+int Property numNpcs Auto Conditional
+int numNpcsDefault = 0
+
+; Sounds
+float Property VolumeOrgasm Auto
+float volumeOrgasmDefault = 1.0
+float Property VolumeEdged Auto
+float volumeEdgedDefault = 1.0
+float Property VolumeVibrator Auto
+float volumeVibratorDefault = 1.0
+
+; Quest Monitor Configuration
+bool Property ForbiddenTome Auto
+bool ForbiddenTomeDefault = true
+bool Property SergiusExperiment Auto
+bool SergiusExperimentDefault = true
+bool Property SurreptitiousStreets Auto
+bool SurreptitiousStreetsDefault = true
+bool Property RadiantMaster Auto
+bool RadiantMasterDefault = false
+
+; Surreptitious Streets Config
+int Property ssSleepChance Auto
+int ssSleepChanceDefault = 100
+int Property ssTrapChance Auto
+int ssTrapChanceDefault = 100
+bool Property ssWarningMessages Auto
+bool ssWarningMessagesDefault = false
+
+; Radiant Master Configuration
+float Property rmHeartbeatInterval Auto
+float rmHeartbeatIntervalDefault = 2.0
+float Property rmSummonHeartbeatInterval Auto
+float rmSummonHeartbeatIntervalDefault = 0.25
+
+; OID's
+int thresholdOID
+int beltRateOID
+int plugRateOID
+int keyCraftingOID
+int thresholdModifierOID
+int animsRegisterOID
+int playerMessagesOID
+int npcMessagesOID
+int destroyKeyOID
+int skyreOID
+int logMessagesOID
+int masturbateOnRemovalOID
+int eventIntervalOID
+int effectVibrateChanceOID
+int effectHealthDrainChanceOID
+int effectManaDrainChanceOID
+int effectStaminaDrainChanceOID
+int baseMessageChanceOID
+int baseHornyChanceOID
+int baseBumpPumpChanceOID
+int VolumeOrgasmOID
+int VolumeEdgedOID
+int VolumeVibratorOID
+int ForbiddenTomeOID
+int SergiusExperimentOID
+int SurreptitiousStreetsOID
+int RadiantMasterOID
+int HardcoreEffectsOID
+int ssSleepChanceOID
+int ssTrapChanceOID
+int rmHeartbeatIntervalOID
+int rmSummonHeartbeatIntervalOID
+int ssWarningMessagesOID
+int MasturbateOnBeltRemovalOID
+int numNpcsOID
+int ifpOID
+int preserveAggroOID
+int blindfoldModeOID
+int blindfoldStrengthOID
+int[] eventOIDs
+int boundAnimsOID
+int useBoundAnimsOID
+
+string[] difficultyList
+string[] blindfoldList
+
+Function SetupBlindfolds()
+	blindfoldList = new String[3]
+	blindfoldList[0] = "DD blindfold"
+	blindfoldList[1] = "DD blindfold w/ Leeches Effect"
+	blindfoldList[2] = "Leeches Mode"
+EndFunction
+
+Function SetupDifficulties()
+	difficultyList = new String[4]
+	difficultyList[0] = "Easy"
+	difficultyList[1] = "Hard"
+	difficultyList[2] = "Medium"
+	difficultyList[3] = "Disabled"
+EndFunction
+
+Function SetupPages()
+	Pages = new string[6]
+	Pages[0] = "General"
+	Pages[1] = "Devices"
+	pages[2] = "Sex Animation Filter"
+	Pages[3] = "Events and Effects"
+	Pages[4] = "Sounds"
+	Pages[5] = "Quests"
+EndFunction
+
+
+Event OnConfigInit()
+	libs.Log("Building mcm menu.")
+	SetupPages()
+	SetupDifficulties()
+	SetupBlindfolds()
+EndEvent
+
+int Function GetVersion()
+	return 10 ; mcm menu version
+EndFunction
+
+Event OnVersionUpdate(int newVersion)
+	libs.Log("OnVersionUpdate("+newVersion+"/"+CurrentVersion+")")
+	if newVersion != CurrentVersion
+		SetupPages()
+		SetupDifficulties()
+		SetupBlindfolds()
+		eventOIDs = new int[125]
+		if KeyCrafting == keyCraftingDefault && !libs.PlayerRef.HasPerk(zad_keyCraftingEasy) && !libs.PlayerRef.HasPerk(zad_keyCraftingHard)
+			libs.PlayerRef.AddPerk(zad_keyCraftingHard)
+		EndIf
+	EndIf
+EndEvent
+
+Event OnPageReset(string page)
+	Libs.Log("OnPageReset("+page+")")
+	if (page == "")
+		LoadCustomContent("DeviousIntegrationTitle.dds", 186, 33)
+		return
+	else
+		UnloadCustomContent()
+	EndIf
+	If page == "General"
+		SetCursorFillMode(TOP_TO_BOTTOM)
+		SetCursorPosition(0) ; Can be removed because it starts at 0 anyway
+		if libs.PlayerRef.WornHasKeyword(libs.zad_DeviousBelt)
+			AddHeaderOption("Device Escape Options are unavailable")
+			AddHeaderOption(" while wearing a belt.")
+			thresholdOID = -1
+			thresholdModifierOID = -1
+			keyCraftingOID = -1
+			destroyKeyOID = -1
+			skyreOID = -1
+		else
+			AddHeaderOption("Device Escape Options")
+			thresholdOID = AddSliderOption("Unlock Threshold", UnlockThreshold)
+			thresholdModifierOID = AddSliderOption("Unlock Threshold Modifier", ThresholdModifier)
+			keyCraftingOID = AddMenuOption("Key Creation Difficulty", difficultyList[KeyCrafting])
+			destroyKeyOID = AddToggleOption("Destroy Key", DestroyKey)
+			skyreOID = AddToggleOption("Using SkyRe", SkyRe)
+		EndIf
+		AddHeaderOption("Camera Configuration")
+		ifpOID = AddToggleOption("Immersive First Person", ifp)
+		AddHeaderOption("Message Visibility Settings")
+		npcMessagesOID = AddToggleOption("Show NPC Messages", NpcMessages)
+		playerMessagesOID = AddToggleOption("Show Player Messages", PlayerMessages)
+		AddHeaderOption("Device Animation Options")
+		animsRegisterOID = AddTextOption("Reregister Animations", "Not Done")
+		AddHeaderOption("Debug")
+		logMessagesOID = AddToggleOption("Enable Debug Logging", LogMessages)
+	ElseIf page == "Devices"
+		SetCursorFillMode(TOP_TO_BOTTOM)
+		SetCursorPosition(0) ; Can be removed because it starts at 0 anyway
+		AddHeaderOption("Belt Arousal Options")
+		beltRateOID = AddSliderOption("Arousal rate belt multiplier", beltRateMult, "{1}")
+		plugRateOID = AddSliderOption("Arousal rate plugged multiplier", plugRateMult, "{1}")
+		AddHeaderOption("Blindfold Options")
+		blindfoldModeOID = AddMenuOption("BlindfoldMode", blindfoldList[blindfoldMode])
+		blindfoldStrengthOID = AddSliderOption("Blindfold Strength", blindfoldStrength, "{2}")
+	ElseIf page == "Sex Animation Filter"
+		libs.CheckForBoundAnims()
+		SetCursorFillMode(TOP_TO_BOTTOM)
+		SetCursorPosition(0) ; Can be removed because it starts at 0 anyway
+		AddHeaderOption("Animation Options")
+		preserveAggroOID = AddToggleOption("Preserve Scene Aggressiveness", preserveAggro)
+		boundAnimsOID = AddTextOption("Bound Animations Available", libs.BoundAnimsAvailable, OPTION_FLAG_NONE)
+		useBoundAnimsOID = AddToggleOption("Use Bound Animations if available", useBoundAnims)
+	ElseIf page == "Events and Effects"
+		SetCursorFillMode(TOP_TO_BOTTOM)
+		AddHeaderOption("Global Events/Effects Configuration")
+		eventIntervalOID = AddSliderOption("Polling Interval", EventInterval, "{2}")
+		HardcoreEffectsOID = AddToggleOption("Enable Hardcore Effects", HardcoreEffects)
+		numNpcsOID = AddSliderOption("Number of NPC's slotted", numNpcs, "{1}")
+		AddHeaderOption("Polled Events Configuration ("+libs.EventSlots.Slotted+"):")
+		int i = 0
+		while i < libs.EventSlots.Slotted
+			eventOIDs[i] = AddSliderOption(libs.EventSlots.Slots[i].Name+" Chance", libs.EventSlots.Slots[i].Probability, "{1}")
+			i += 1
+		EndWhile
+		AddHeaderOption("Special Events Configuration")
+		MasturbateOnBeltRemovalOID = AddToggleOption("Masturbate on belt removal", MasturbateOnBeltRemoval)
+
+	ElseIf page == "Sounds"
+		SetCursorFillMode(TOP_TO_BOTTOM)
+		AddHeaderOption("Audio Configuration")
+		VolumeOrgasmOID = AddSliderOption("Orgasm Volume", VolumeOrgasm, "{3}")
+		VolumeEdgedOID = AddSliderOption("Edged Volume", VolumeEdged, "{3}")
+		VolumeVibratorOID = AddSliderOption("Vibrator Volume ", VolumeVibrator, "{3}")
+
+	ElseIf page == "Quests"
+		SetCursorFillMode(TOP_TO_BOTTOM)
+		AddHeaderOption("Quest Toggles for QuestMonitor")
+		ForbiddenTomeOID = AddToggleOption("Forbidden Tome", ForbiddenTome)
+		SergiusExperimentOID = AddToggleOption("Sergius's Experiment", SergiusExperiment)
+		; SurreptitiousStreetsOID = AddToggleOption("Surreptitious Streets", SurreptitiousStreets)
+		; RadiantMasterOID = AddToggleOption("Radiant Master", RadiantMaster)
+		; AddHeaderOption("Surreptitious Streets Configuration")
+		; ssWarningMessagesOID = AddToggleOption("Warning Messages", ssWarningMessages)
+		; ssSleepChanceOID = AddSliderOption("Sleep Capture Chance", ssSleepChance, "{1}")
+		; ssTrapChanceOID = AddSliderOption("Trap Spawn Chance", ssTrapChance, "{1}")
+		; AddHeaderOption("Radiant Master Configuration")
+		; rmHeartbeatIntervalOID = AddSliderOption("Heartbeat Interval", rmHeartbeatInterval, "{3}")
+		; rmSummonHeartbeatIntervalOID = AddSliderOption("Summon Heartbeat Interval", rmSummonHeartbeatInterval, "{3}")
+	Endif
+EndEvent
+
+
+Event OnOptionMenuOpen(int option)
+	if option == keyCraftingOID
+		SetMenuDialogOptions(difficultyList)
+		SetMenuDialogStartIndex(KeyCrafting)
+		SetMenuDialogDefaultIndex(keyCraftingDefault)
+	ElseIf option == blindfoldModeOID
+		SetMenuDialogOptions(blindfoldList)
+		SetMenuDialogStartIndex(BlindfoldMode)
+		SetMenuDialogDefaultIndex(blindfoldModeDefault)
+	EndIf
+EndEvent
+
+Function CheckRemovePerk(Perk perkName)
+	if libs.PlayerRef.HasPerk(perkName)
+		libs.PlayerRef.RemovePerk(perkName)
+	EndIf	
+EndFunction
+
+Function UpdateCraftingPerks(int index)
+	if index == 0
+		CheckRemovePerk(zad_keyCraftingHard)
+		libs.PlayerRef.AddPerk(zad_keyCraftingEasy)
+	elseif index == 1
+		CheckRemovePerk(zad_keyCraftingEasy)
+		libs.PlayerRef.AddPerk(zad_keyCraftingHard)
+	Else
+		CheckRemovePerk(zad_keyCraftingEasy)
+		CheckRemovePerk(zad_keyCraftingHard)
+	EndIf
+EndFunction
+
+Event OnOptionMenuAccept(int option, int index)
+	if option == keyCraftingOID
+		UpdateCraftingPerks(index)
+		KeyCrafting = index
+		SetMenuOptionValue(keyCraftingOID, difficultyList[KeyCrafting])
+	ElseIf option == blindfoldModeOID
+		BlindfoldMode = index
+		SetMenuOptionValue(BlindfoldModeOID, blindfoldList[blindfoldMode])
+		game.ForceFirstPerson()
+		game.ForceThirdPerson()
+		libs.UpdateControls()
+	EndIf
+EndEvent
+
+Event OnOptionSliderOpen(int option)
+	;Libs.Log("OnOptionSliderOpen("+option+")")
+	int i = 0;
+	while i < libs.EventSlots.Slotted
+		if option == eventOIDs[i]
+			SetSliderDialogStartValue(libs.EventSlots.Slots[i].Probability)
+			SetSliderDialogDefaultValue(libs.EventSlots.Slots[i].DefaultProbability)
+			SetSliderDialogRange(1,100)
+			SetSliderDialogInterval(1)			
+			return
+		EndIf
+		i+= 1
+	EndWhile
+	if option == thresholdOID
+		SetSliderDialogStartValue(UnlockThreshold)
+		SetSliderDialogDefaultValue(thresholdDefault)
+		SetSliderDialogRange(1,350)
+		SetSliderDialogInterval(1)
+	elseif option == thresholdModifierOID
+		SetSliderDialogStartValue(ThresholdModifier)
+		SetSliderDialogDefaultValue(thresholdModifierDefault)
+		SetSliderDialogRange(0,100)
+		SetSliderDialogInterval(1)
+	elseif option == blindfoldStrengthOID
+		SetSliderDialogStartValue(blindfoldStrength)
+		SetSliderDialogDefaultValue(blindfoldStrengthDefault)
+		SetSliderDialogRange(0.2,1.0)
+		SetSliderDialogInterval(0.01)
+	elseif option == beltRateOID
+		SetSliderDialogStartValue(BeltRateMult)
+		SetSliderDialogDefaultValue(beltRateDefault)
+		SetSliderDialogRange(1,5)
+		SetSliderDialogInterval(0.1)	
+	elseif option == plugRateOID
+		SetSliderDialogStartValue(PlugRateMult)
+		SetSliderDialogDefaultValue(plugRateDefault)
+		SetSliderDialogRange(1,5)
+		SetSliderDialogInterval(0.1)
+	elseif option == eventIntervalOID
+		SetSliderDialogStartValue(EventInterval)
+		SetSliderDialogDefaultValue(eventIntervalDefault)
+		SetSliderDialogRange(0.5, 12)
+		SetSliderDialogInterval(0.05)
+	elseIf option == effectVibrateChanceOID
+		SetSliderDialogStartValue(EffectVibrateChance)
+		SetSliderDialogDefaultValue(effectVibrateChanceDefault)
+		SetSliderDialogRange(1, 100)
+		SetSliderDialogInterval(1)
+	elseIf option == effectHealthDrainChanceOID
+		SetSliderDialogStartValue(EffectHealthDrainChance)
+		SetSliderDialogDefaultValue(effectHealthDrainChanceDefault)
+		SetSliderDialogRange(1, 100)
+		SetSliderDialogInterval(1)
+	elseIf option == effectManaDrainChanceOID
+		SetSliderDialogStartValue(EffectManaDrainChance)
+		SetSliderDialogDefaultValue(effectManaDrainChanceDefault)
+		SetSliderDialogRange(1, 100)
+		SetSliderDialogInterval(1)
+	elseIf option == effectStaminaDrainChanceOID
+		SetSliderDialogStartValue(EffectStaminaDrainChance)
+		SetSliderDialogDefaultValue(effectStaminaDrainChanceDefault)
+		SetSliderDialogRange(1, 100)
+		SetSliderDialogInterval(1)
+	elseIf option == baseMessageChanceOID
+		SetSliderDialogStartValue(BaseMessageChance)
+		SetSliderDialogDefaultValue(baseMessageChanceDefault)
+		SetSliderDialogRange(1, 100)
+		SetSliderDialogInterval(1)
+	elseIf option == baseHornyChanceOID
+		SetSliderDialogStartValue(BaseHornyChance)
+		SetSliderDialogDefaultValue(baseHornyChanceDefault)
+		SetSliderDialogRange(1, 100)
+		SetSliderDialogInterval(1)
+	elseIf option == baseBumpPumpChanceOID
+		SetSliderDialogStartValue(BaseBumpPumpChance)
+		SetSliderDialogDefaultValue(baseBumpPumpChanceDefault)
+		SetSliderDialogRange(1, 100)
+		SetSliderDialogInterval(1)
+	elseIf option == VolumeOrgasmOID
+		SetSliderDialogStartValue(VolumeOrgasm)
+		SetSliderDialogDefaultValue(VolumeOrgasmDefault)
+		SetSliderDialogRange(0, 1)
+		SetSliderDialogInterval(0.01)
+	elseIf option == VolumeEdgedOID
+		SetSliderDialogStartValue(VolumeEdged)
+		SetSliderDialogDefaultValue(VolumeEdgedDefault)
+		SetSliderDialogRange(0, 1)
+		SetSliderDialogInterval(0.01)
+	elseIf option == VolumeVibratorOID
+		SetSliderDialogStartValue(VolumeVibrator)
+		SetSliderDialogDefaultValue(VolumeVibratorDefault)
+		SetSliderDialogRange(0, 1)
+		SetSliderDialogInterval(0.01)
+	elseIf option == ssSleepChanceOID
+		SetSliderDialogStartValue(ssSleepChance)
+		SetSliderDialogDefaultValue(ssSleepChanceDefault)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(1)
+	elseIf option == ssTrapChanceOID
+		SetSliderDialogStartValue(ssTrapChance)
+		SetSliderDialogDefaultValue(ssTrapChanceDefault)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(1)
+	elseIf option == rmHeartbeatIntervalOID
+		SetSliderDialogStartValue(rmHeartbeatInterval)
+		SetSliderDialogDefaultValue(rmHeartbeatIntervalDefault)
+		SetSliderDialogRange(0.5, 24)
+		SetSliderDialogInterval(0.01)
+	elseIf option == rmSummonHeartbeatIntervalOID
+		SetSliderDialogStartValue(rmSummonHeartbeatInterval)
+		SetSliderDialogDefaultValue(rmSummonHeartbeatIntervalDefault)
+		SetSliderDialogRange(0.125, 12)
+		SetSliderDialogInterval(0.01)
+	elseIf option == numNpcsOID
+		SetSliderDialogStartValue(numNpcs)
+		SetSliderDialogDefaultValue(numNpcsDefault)
+		SetSliderDialogRange(0, 20)
+		SetSliderDialogInterval(1)
+	Endif
+EndEvent
+
+Event OnOptionSelect(int option)
+	Libs.Log("OnOptionSelect("+option+")")	
+	if option == animsRegisterOID
+		beltedAnims.LoadAnimations()
+		SetTextOptionValue(animsRegisterOID, "Done.")
+	elseif option == npcMessagesOID
+		NpcMessages = !NpcMessages
+		SetToggleOptionValue(npcMessagesOID, NpcMessages)
+	elseif option == playerMessagesOID
+		PlayerMessages = !PlayerMessages
+		SetToggleOptionValue(playerMessagesOID, PlayerMessages)
+	elseif option == destroyKeyOID
+		DestroyKey = !DestroyKey
+		SetToggleOptionValue(destroyKeyOID, DestroyKey)
+	elseif option == preserveAggroOID
+		PreserveAggro = !PreserveAggro
+		SetToggleOptionValue(PreserveAggroOID, PreserveAggro)
+	elseif option == useBoundAnimsOID
+		useBoundAnims = !useBoundAnims
+		SetToggleOptionValue(useBoundAnimsOID, useBoundAnims)
+	elseif option == skyreOID
+		SkyRe = !SkyRe
+		SetToggleOptionValue(skyreOID, SkyRe)
+	elseif option == logMessagesOID
+		 LogMessages = !LogMessages
+		SetToggleOptionValue(logMessagesOID, LogMessages)
+	elseif option == HardcoreEffectsOID
+		 HardcoreEffects = !HardcoreEffects
+		SetToggleOptionValue(HardcoreEffectsOID, HardcoreEffects)
+	elseif option == ForbiddenTomeOID
+		 ForbiddenTome = !ForbiddenTome
+		SetToggleOptionValue(ForbiddenTomeOID, ForbiddenTome)
+	elseif option == SergiusExperimentOID
+		 SergiusExperiment = !SergiusExperiment
+		SetToggleOptionValue(SergiusExperimentOID, SergiusExperiment)
+	elseif option == SurreptitiousStreetsOID
+		 SurreptitiousStreets = !SurreptitiousStreets
+		SetToggleOptionValue(SurreptitiousStreetsOID, SurreptitiousStreets)
+	elseif option == RadiantMasterOID
+		 RadiantMaster = !RadiantMaster
+		SetToggleOptionValue(RadiantMasterOID, RadiantMaster)
+	elseif option == MasturbateOnBeltRemovalOID
+		 MasturbateOnBeltRemoval = !MasturbateOnBeltRemoval
+		SetToggleOptionValue(MasturbateOnBeltRemovalOID, MasturbateOnBeltRemoval)
+	elseif option == ssWarningMessagesOID
+		 ssWarningMessages = !ssWarningMessages
+		SetToggleOptionValue(ssWarningMessagesOID, ssWarningMessages)
+	elseif option == ifpOID
+		ifp = !ifp
+		SetToggleOptionValue(ifpOID, ifp)
+	EndIf
+EndEvent
+
+Event OnOptionDefault(int option)
+	;Libs.Log("OnOptionDefault("+option+")")	
+	int i = 0
+	while i < libs.EventSlots.Slotted
+		if option == eventOIDs[i]
+			libs.EventSlots.Slots[i].Probability = libs.EventSlots.Slots[i].DefaultProbability
+			SetSliderOptionValue(eventOIDs[i], libs.EventSlots.Slots[i].DefaultProbability, "{1}")
+			return
+		EndIf
+		i+= 1
+	EndWhile
+	if (option == thresholdOID)
+		UnlockThreshold = thresholdDefault
+		SetSliderOptionValue(thresholdOID, thresholdDefault, "{0}")
+	elseif (option == thresholdModifierOID)
+		ThresholdModifier = ThresholdModifierDefault
+		SetSliderOptionValue(thresholdModifierOID, thresholdModifierDefault, "{0}")
+	elseif (option == blindfoldStrengthOID)
+		blindfoldStrength = blindfoldStrengthDefault
+		SetSliderOptionValue(blindfoldStrengthOID, blindfoldStrengthDefault, "{2}")
+	elseIf (option == beltRateOID)
+		BeltRateMult = beltRateDefault
+		SetSliderOptionValue(beltRateOID, beltRateDefault, "{1}")
+	elseIf (option == plugRateOID)
+		PlugRateMult = plugRateDefault
+		SetSliderOptionValue(plugRateOID, plugRateDefault, "{1}")
+	elseIf (option == keyCraftingOID)
+		UpdateCraftingPerks(keyCraftingDefault)
+		KeyCrafting = keyCraftingDefault
+		SetMenuOptionValue(keyCraftingOID, difficultyList[KeyCrafting])
+	elseIf (option == blindfoldModeOID)
+		BlindfoldMode = BlindfoldModeDefault
+		SetMenuOptionValue(BlindfoldModeOID, blindfoldList[BlindfoldMode])
+	elseIf (option == npcMessagesOID)
+		NpcMessages = npcMessagesDefault
+		SetToggleOptionValue(npcMessagesOID, npcMessagesDefault)
+	elseIf (option == playerMessagesOID)
+		PlayerMessages = playerMessagesDefault
+		SetToggleOptionValue(playerMessagesOID, playerMessagesDefault)
+	elseIf (option == destroyKeyOID)
+		DestroyKey = destroyKeyDefault
+		SetToggleOptionValue(destroyKeyOID, destroyKeyDefault)
+	elseIf (option == PreserveAggroOID)
+		PreserveAggro = PreserveAggroDefault
+		SetToggleOptionValue(PreserveAggroOID, PreserveAggroDefault)
+	elseIf (option == useBoundAnimsOID)
+		useBoundAnims = useBoundAnimsDefault
+		SetToggleOptionValue(useBoundAnimsOID, useBoundAnimsDefault)
+	elseIf (option == skyreOID)
+		SkyRe = skyreDefault
+		SetToggleOptionValue(skyreOID, skyreDefault)
+	elseIf (option == logMessagesOID)
+		LogMessages = logMessagesDefault
+		SetToggleOptionValue(logMessagesOID, LogMessages)
+	elseIf (option == eventIntervalOID)
+		EventInterval = eventIntervalDefault
+		SetToggleOptionValue(eventIntervalOID, eventIntervalDefault)
+	elseIf (option == effectVibrateChanceOID)
+		EffectVibrateChance = effectVibrateChanceDefault
+		SetSliderOptionValue(effectVibrateChanceOID, effectVibrateChanceDefault, "{1}")
+	elseIf (option == effectHealthDrainChanceOID)
+		EffectHealthDrainChance = effectHealthDrainChanceDefault
+		SetSliderOptionValue(effectHealthDrainChanceOID, effectHealthDrainChanceDefault, "{1}")
+	elseIf (option == effectManaDrainChanceOID)
+		EffectManaDrainChance = effectManaDrainChanceDefault
+		SetSliderOptionValue(effectManaDrainChanceOID, effectManaDrainChanceDefault, "{1}")
+	elseIf (option == effectStaminaDrainChanceOID)
+		EffectStaminaDrainChance = effectStaminaDrainChanceDefault
+		SetSliderOptionValue(effectStaminaDrainChanceOID, effectStaminaDrainChanceDefault, "{1}")
+	elseIf (option == baseMessageChanceOID)
+		BaseMessageChance = baseMessageChanceDefault
+		SetSliderOptionValue(baseMessageChanceOID, baseMessageChanceDefault, "{1}")
+	elseIf (option == baseHornyChanceOID)
+		BaseHornyChance = baseHornyChanceDefault
+		SetSliderOptionValue(baseHornyChanceOID, baseHornyChanceDefault, "{1}")
+	elseIf (option == baseBumpPumpChanceOID)
+		BaseBumpPumpChance = BaseBumpPumpChanceDefault
+		SetSliderOptionValue(baseBumpPumpChanceOID, BaseBumpPumpChanceDefault, "{1}")
+	elseIf (option == VolumeOrgasmOID)
+		VolumeOrgasm = VolumeOrgasmDefault
+		SetSliderOptionValue(VolumeOrgasmOID, VolumeOrgasmDefault, "{3}")
+	elseIf (option == VolumeEdgedOID)
+		VolumeEdged = VolumeEdgedDefault
+		SetSliderOptionValue(VolumeEdgedOID, VolumeEdgedDefault, "{3}")
+	elseIf (option == VolumeVibrator)
+		VolumeVibrator = VolumeVibratorDefault
+		SetSliderOptionValue(VolumeVibratorOID, VolumeVibratorDefault, "{3}")
+	elseif option == ForbiddenTomeOID
+		ForbiddenTome = ForbiddenTomeDefault
+		SetToggleOptionValue(ForbiddenTomeOID, ForbiddenTome)
+	elseif option == SergiusExperimentOID
+		SergiusExperiment = SergiusExperimentDefault
+		SetToggleOptionValue(SergiusExperimentOID, SergiusExperiment)
+	elseif option == SurreptitiousStreetsOID
+		SurreptitiousStreets = SurreptitiousStreetsDefault
+		SetToggleOptionValue(SurreptitiousStreetsOID, SurreptitiousStreets)
+	elseif option == RadiantMasterOID
+		RadiantMaster = RadiantMasterDefault
+		SetToggleOptionValue(RadiantMasterOID, RadiantMaster)
+	elseIf (option == HardcoreEffectsOID)
+		HardcoreEffects = HardcoreEffectsDefault
+		SetToggleOptionValue(HardcoreEffectsOID, HardcoreEffectsDefault)
+	elseIf (option == ssSleepChanceOID)
+		ssSleepChance = ssSleepChanceDefault
+		SetSliderOptionValue(ssSleepChanceOID, ssSleepChanceDefault, "{1}")
+	elseIf (option == ssTrapChanceOID)
+		ssTrapChanceDefault = ssTrapChanceDefault
+		SetSliderOptionValue(ssTrapChanceOID, ssTrapChanceDefault, "{1}")
+	elseIf (option == rmHeartbeatIntervalOID)
+		rmHeartbeatInterval = rmHeartbeatIntervalDefault
+		SetSliderOptionValue(rmHeartbeatIntervalOID, rmHeartbeatIntervalDefault, "{3}")
+	elseIf (option == rmSummonHeartbeatIntervalOID)
+		rmSummonHeartbeatInterval = rmSummonHeartbeatIntervalDefault
+		SetSliderOptionValue(rmSummonHeartbeatIntervalOID, rmSummonHeartbeatIntervalDefault, "{3}")
+	elseIf (option == MasturbateOnBeltRemovalOID)
+		MasturbateOnBeltRemoval = MasturbateOnBeltRemovalDefault
+		SetToggleOptionValue(MasturbateOnBeltRemovalOID, MasturbateOnBeltRemovalDefault)
+	elseIf (option == ssWarningMessagesOID)
+		ssWarningMessages = ssWarningMessagesDefault
+		SetToggleOptionValue(ssWarningMessagesOID, ssWarningMessagesDefault)
+	elseIf (option == numNpcsOID)
+		numNpcs = numNpcsDefault
+		SetSliderOptionValue(numNpcsOID, numNpcs, "{1}")
+	elseIf (option == ifpOID)
+		ifp = ifpDefault
+		SetToggleOptionValue(ifpOID, ifp)
+	endIf
+EndEvent
+
+Event OnOptionHighlight(int option)
+	int i = 0
+	while i < libs.EventSlots.Slotted
+		if option == eventOIDs[i]
+			string help = libs.EventSlots.Slots[i].help
+			if help == ""
+				help = "Configure the probability for a "+libs.EventSlots.Slots[i].Name +" event to occur."
+			EndIf
+			SetInfoText(help+"\nDefault:"+libs.EventSlots.Slots[i].DefaultProbability)
+			return
+		EndIf
+		i+= 1
+	EndWhile
+
+	;Libs.Log("OnOptionHighlight("+option+")")			
+	if (option == thresholdOID)
+		SetInfoText("Base escape difficulty threshold. Higher is harder, lower is easier. At skill 100 and threshold 185, you would have a 15% chance to escape if not particularly aroused. At skill 100 and threshold 150, you would have a 50% chance to escape, and so forth. Note, that this is the base threshold, and that your actual milage will vary depending on the skill you attempt to escape with.\nDefault: "+thresholdDefault)
+	elseif (option == thresholdModifierOID)
+		SetInfoText("The Unlock Threshold will be increased by this much every time the player successfully escapes a device.\nDefault:"+thresholdModifierDefault)
+	elseif (option == blindfoldStrengthOID)
+		SetInfoText("Controls the strength of the blindfold effect.\nDefault:"+blindfoldStrengthDefault)
+	elseIf (option == beltRateOID)
+		SetInfoText("Arousal exposure multiplier while belted.\nDefault: "+beltRateDefault)
+	elseIf (option == plugRateOID)
+		SetInfoText("Arousal exposure multiplier while belted/plugged.\nDefault: "+plugRateDefault)
+	elseIf (option == keyCraftingOID)
+		SetInfoText("Key crafting difficulty.\nEasy: 1 iron ingot. Medium: 1 malachite ingot. Hard: 1 ebony ingot + 1 flawless diamond.")
+	elseIf (option == blindfoldModeOID)
+		SetInfoText("Switch between the three provided blindfold modes. DD's mode is intended for First Person play. While in first person, you will be able to move freely, and one of two effects will be applied to your screen. While in third person, you will be unable to move, but will be able to see clearly. The advantage of this mode is that you will be able to clearly see yourself in scenes (Sex, animations, etc), while still being forced to endure the blindfold to advance gameplay.\nLeeche's mode applies a dof-based blindfold effect constantly, and is intended for third person play.\nDefault:"+blindfoldList[blindfoldModeDefault])
+	elseIf (option == animsRegisterOID)
+		SetInfoText("Reregister animations provided by this mod.")
+	elseIf (option == npcMessagesOID)
+		SetInfoText("Enable/disable device related messages for NPC's.\nDefault:"+npcMessagesDefault)
+	elseIf (option == playerMessagesOID)
+		SetInfoText("Enable/disable device related messages for the player. Note: Messages crucial to device functionality (Such as the menu) will display regardless of this setting. The creator of this mod recommends that you leave this option enabled, unless you really loathe his writing.\nDefault:"+playerMessagesDefault+".")
+	elseIf (option == preserveAggroOID)
+		SetInfoText("Toggle the preservation of a scene's aggressiveness. Disable this for more variety in animations (At the cost of seeing consensual animations in rape-scenes, etc).\nDefault:"+preserveAggroDefault)
+	elseIf (option == useBoundAnimsOID)
+		SetInfoText("Use bound animations for the armbinder (Some clipping).\nDefault:"+useBoundAnimsDefault)
+	elseIf (option == destroyKeyOID)
+		SetInfoText("Enable/disable consuming the key upon device removal.\nDefault:"+destroyKeyDefault)
+	elseIf (option == skyreOID)
+		SetInfoText("Enable/disable SkyRe support. If enabled, this option will use the player's Pickpocket skill instead of their lockpick skill for escape attempts (Lockpick is Wayfaring in SkyRe, and Pickpocket is Fingersmithing).\nDefault:"+skyreDefault)
+	elseIf (option == logMessagesOID)
+		SetInfoText("Toggles display of debug messages in Papyrus.0.log. You can disable this if everything is working correctly.")
+	elseIf (option == eventIntervalOID)
+		SetInfoText("Configure how frequently device events are polled, measured in game hours. The lower this is, the more frequent all periodic events / effects are.\nDefault: " + eventIntervalDefault)
+	elseIf (option == effectVibrateChanceOID)
+		SetInfoText("Controls the probability of a Vibration effect being started via event polling.\nDefault:"+EffectVibrateChanceDefault)
+	elseIf (option == effectHealthDrainChanceOID)
+		SetInfoText("Controls the probability of a Health Drain effect being started via event polling.\nDefault:"+EffectHealthDrainChanceDefault)
+	elseIf (option == effectManaDrainChanceOID)
+		SetInfoText("Controls the probability of a Mana Drain effect being started via event polling.\nDefault:"+EffectManaDrainChanceDefault)
+	elseIf (option == effectStaminaDrainChanceOID)
+		SetInfoText("Controls the probability of a Stamina effect being started via event polling.\nDefault:"+effectStaminaDrainChanceDefault)
+	elseIf (option == baseMessageChanceOID)
+		SetInfoText("Controls the base probability of a Message Event being started via event polling. This chance will vary for some messages: This is merely the base chance.\nDefault:"+baseMessageChanceDefault)
+	elseIf (option == baseHornyChanceOID)
+		SetInfoText("Controls the base probability of a Horny-Animation Event being started via event polling. The chance for this event is highly influenced / increased by player arousal.\nDefault:"+baseHornyChanceDefault)
+	elseIf (option == baseBumpPumpChanceOID)
+		SetInfoText("Controls the base probability of a Bump-Pump Event being started via event polling, or via sitting/jumping. The chance for this event varies depending on what caused it.\nDefault:"+baseBumpPumpChanceDefault)
+	elseIf (option == VolumeOrgasmOID)
+		SetInfoText("Controls the volume of an an actor's moans during an orgasm.\nDefault:" + volumeOrgasmDefault)
+	elseIf (option == VolumeEdgedOID)
+		SetInfoText("Controls the volume of an actor's moans after being edged.\nDefault:" + volumeEdgedDefault)
+	elseIf (option == VolumeVibrator)
+		SetInfoText("Controls the volume of a vibrator. Note, that the stronger vibrators are inherently louder than the weaker ones. If you set this too low, you may not be able to hear the weaker ones.\nDefault:" + volumeVibratorDefault)
+	elseIf (option == ForbiddenTomeOID)
+		SetInfoText("Enable/disable the triggers to start the Forbidden Tome quest. Hint: This quest is started in the Arcanaeum.\nDefault:"+ForbiddenTomeDefault)
+	elseIf (option == SergiusExperimentOID)
+		SetInfoText("Enable/disable the triggers to start Sergius's Experiment quest. Hint: This quest is started by talking to Sergius.\nDefault:"+SergiusExperimentDefault)
+	elseIf (option == SurreptitiousStreetsOID)
+		SetInfoText("Enable/disable the 'Catch All' triggers that start the radiant master quests. Hint: Booty-trapped containers, sleep encounters, etc.\nDefault:"+SurreptitiousStreetsDefault)
+	elseIf (option == RadiantMasterOID)
+		SetInfoText("Enable/disable the 'Radiant Master' quest. This is a Surreptitious Streets quest. If there are no elligible quests enabled, Surreptitious Streets will do nothing.\nDefault:"+RadiantMaster)
+	elseIf (option == HardcoreEffectsOID)
+		SetInfoText("Enable/disable the more detrimental effects that some items (Such as restraints) apply.\nDefault:"+HardcoreEffectsDefault)
+	elseIf (option == ssSleepChanceOID)
+		SetInfoText("Configure the probability of a sleep capture event occuring while sleeping in an unsafe area.\nDefault:"+ssSleepChanceDefault)
+	elseIf (option == ssTrapChanceOID)
+		SetInfoText("Configure the probability of a trapped container spawning in an elligible location.\nDefault:"+ssTrapChanceDefault)
+	elseIf (option == rmHeartbeatIntervalOID)
+		SetInfoText("Configure how frequently master is polled / status is checked.\nDefault:"+rmHeartbeatIntervalDefault)
+	elseIf (option == rmSummonHeartbeatIntervalOID)
+		SetInfoText("Configure the frequency of summon reminders.\nDefault:"+rmSummonHeartbeatIntervalDefault)
+	elseIf (option == MasturbateOnBeltRemovalOID)
+		SetInfoText("Enable/disable the Masturbate On Belt Removal event that occurs when the belt is voluntarily unequipped while over a certain arousal threshold.\nDefault:"+MasturbateOnBeltRemovalDefault)
+	elseIf (option == ssWarningMessagesOID)
+		SetInfoText("Enable/disable warning messages prior to Surreptitious Streets events. This option will give provide a way to avoid traps / capture events in an immersion friendly manner, without disabling them all-together.\nDefault:"+ssWarningMessagesDefault)
+	elseIf (option == numNpcsOID)
+		SetInfoText("Configure the number of nearby belted NPCs (Per Area) that will be processed by event polling. Set to 0 to disable altogether. Higher values will increase script load.\nDefault:"+numNpcsDefault)
+	elseIf (option == ifpOID)
+		SetInfoText("Configures support for Immersive First Person.\nDefault:"+ifpDefault)
+	elseIf (option == boundAnimsOID)
+		SetInfoText("Are ZAP bound sex animations available?")
+	endIf
+EndEvent
+
+
+Event OnOptionSliderAccept(int option, float value)
+	int i = 0;
+	while i < libs.EventSlots.Slotted
+		if option == eventOIDs[i]
+			libs.EventSlots.Slots[i].Probability = value as int
+			SetSliderOptionValue(option, value, "{1}")
+			return
+		EndIf
+		i+= 1
+	EndWhile
+	;Libs.Log("OnOptionSliderAccept("+option+"/"+value+")")	
+	if (option == thresholdOID)
+		UnlockThreshold = value as int
+		SetSliderOptionValue(option, value, "{0}")
+	elseif (option == thresholdModifierOID)
+		thresholdModifier = value as int
+		SetSliderOptionValue(option, value, "{0}")
+	elseif (option == blindfoldStrengthOID)
+		blindfoldStrength = value
+		SetSliderOptionValue(option, value, "{2}")
+		Game.ForceFirstPerson()
+		Game.ForceThirdPerson()
+	elseIf (option == beltRateOID)
+		BeltRateMult = value
+		SetSliderOptionValue(option, value, "{1}")
+	elseIf (option == plugRateOID)
+		PlugRateMult = value
+		SetSliderOptionValue(option, value, "{1}")
+	elseIf (option == eventIntervalOID)
+		EventInterval = value
+		SetSliderOptionValue(option, value, "{1}")
+	elseIf option == effectVibrateChanceOID
+		effectVibrateChance = (value as Int)
+		SetSliderOptionValue(option, value, "{1}")
+	elseIf option == effectHealthDrainChanceOID
+		effectHealthDrainChance = (value as Int)
+		SetSliderOptionValue(option, value, "{1}")
+	elseIf option == effectManaDrainChanceOID
+		effectManaDrainChance = (value as Int)
+		SetSliderOptionValue(option, value, "{1}")
+	elseIf option == effectStaminaDrainChanceOID
+		effectStaminaDrainChance = (value as Int)
+		SetSliderOptionValue(option, value, "{1}")
+	elseIf option == baseMessageChanceOID
+		baseMessageChance = (value as Int)
+		SetSliderOptionValue(option, value, "{1}")
+	elseIf option == baseHornyChanceOID
+		baseHornyChance = (value as Int)
+		SetSliderOptionValue(option, value, "{1}")
+	elseIf option == baseBumpPumpChanceOID
+		BaseBumpPumpChance = (value as Int)
+		SetSliderOptionValue(option, value, "{1}")
+	elseIf option == VolumeOrgasmOID
+		VolumeOrgasm = (value as Float)
+		SetSliderOptionValue(option, value, "{3}")
+	elseIf option == VolumeVibratorOID
+		VolumeVibrator = (value as Float)
+		SetSliderOptionValue(option, value, "{3}")
+	elseIf option == VolumeEdgedOID
+		VolumeEdged = (value as Float)
+		SetSliderOptionValue(option, value, "{3}")
+	elseIf option == ssSleepChanceOID
+		ssSleepChance = (value as Int)
+		SetSliderOptionValue(option, value, "{1}")
+	elseIf option == ssTrapChanceOID
+		ssTrapChance = (value as Int)
+		SetSliderOptionValue(option, value, "{1}")
+	elseIf option == rmHeartbeatIntervalOID
+		rmHeartbeatInterval = (value as Float)
+		SetSliderOptionValue(option, value, "{3}")
+	elseIf option == rmSummonHeartbeatIntervalOID
+		rmSummonHeartbeatInterval = (value as Float)
+		SetSliderOptionValue(option, value, "{3}")
+	elseIf option == numNpcsOID
+		numNpcs = (value as Int)
+		SetSliderOptionValue(option, value, "{1}")
+	EndIf
+EndEvent

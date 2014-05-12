@@ -1,0 +1,71 @@
+' Format:	<type> -<option,option,...> <AnimEvent> <Animation File> [<AnimObject CK>]
+'		type: 	b (basic)
+'				o (animated objects) 	
+'		option: a (acyclic) 				default: cyclic
+'				h (headtracking remains) 	default: headtracking off
+'               Tn (clip transition "00Next Clip": used if another idle will follow immediately)
+'               Ts (clip transition "IdleStop": (should be "regular idle end", but in FNIS similar to Next Clip)
+'          					default "IdleForceDefaultState": everything set to default)
+'				B<n.m>						Blend time into Animation
+'
+'		<Animation File> without path (files expected in Animations\<mod name>)
+'
+' Example:
+' b -a,h,Tn,B1.2 MyAnimEvent1 MyAnimFile1.hkx
+'	
+' Comment:	' in column 1 / empty lines possible
+'
+' AnimEvents and Animation File names have to be unique through all mods (even for files in different folders)
+' so it's a good idea use mod specific abbrevioations for all our names
+
+' Sex Animations
+b DDBeltedSolo DDBeltedSolo.hkx
+
+' Events
+b DDZazHornyA ZazHornyA.hkx
+b DDZazHornyB ZazHornyB.hkx
+b DDZazHornyC ZazHornyC.hkx
+b DDZazHornyD ZazHornyD.hkx
+b DDZazHornyE ZazHornyE.hkx
+
+' Armbinder stuff
+b DDZaZAPArmBZaD01 ZaZAPArmBZaD01.HKX
+b DDZaZAPArmBZaD02 ZaZAPArmBZaD02.HKX
+b DDZaZAPArmBZaD03 ZaZAPArmBZaD03.HKX
+b DDZaZAPArmBZaD04 ZaZAPArmBZaD04.HKX
+b DDZaZAPArmBZaD05 ZaZAPArmBZaD05.HKX
+b DDZaZAPArmBZaD06 ZaZAPArmBZaD06.HKX
+b DDZaZAPArmBZaD07 ZaZAPArmBZaD07.HKX
+b DDZaZAPArmBZaD08 ZaZAPArmBZaD08.HKX
+b DDZaZAPArmBZaD09 ZaZAPArmBZaD09.HKX
+b DDZaZAPArmBZaD10 ZaZAPArmBZaD10.HKX
+ofa DDZaZAPArmBZaDOFF01 ZaZAPArmBZaDOFF01.HKX
+' New armbinder stuff
+b DDZaZAPCArmBZaD01 ZaZAPCArmBZaD01.HKX
+b DDZaZAPCArmBZaD02 ZaZAPCArmBZaD02.HKX
+b DDZaZAPCArmBZaD03 ZaZAPCArmBZaD03.HKX
+b DDZaZAPCArmBZaD04 ZaZAPCArmBZaD04.HKX
+b DDZaZAPCArmBZaD05 ZaZAPCArmBZaD05.HKX
+b DDZaZAPCArmBZaD06 ZaZAPCArmBZaD06.HKX
+b DDZaZAPCArmBZaD07 ZaZAPCArmBZaD07.HKX
+b DDZaZAPCArmBZaD08 ZaZAPCArmBZaD08.HKX
+b DDZaZAPCArmBZaD09 ZaZAPCArmBZaD09.HKX
+b DDZaZAPCArmBZaD10 ZaZAPCArmBZaD10.HKX
+b DDZaZAPCArmBZaD11 ZaZAPCArmBZaD11.HKX
+b DDZaZAPCArmBZaD12 ZaZAPCArmBZaD12.HKX
+b DDZaZAPCArmBZaD13 ZaZAPCArmBZaD13.HKX
+b DDZaZAPCArmBZaD14 ZaZAPCArmBZaD14.HKX
+b DDZaZAPCArmBZaD15 ZaZAPCArmBZaD15.HKX
+b DDZaZAPCArmBZaDH01 ZaZAPCArmBZaDH01.HKX
+b DDZaZAPCArmBZaDH02 ZaZAPCArmBZaDH02.HKX
+b DDZaZAPCArmBZaDH03 ZaZAPCArmBZaDH03.HKX
+ofa DDZaZAPCArmBZaDOFF01 ZaZAPCArmBZaDOFF01.HKX
+b DDZaZAPCArmBZaDS01 ZaZAPCArmBZaDS01.HKX
+b DDZaZAPCArmBZaDS02 ZaZAPCArmBZaDS02.HKX
+b DDZaZAPCArmBZaDS03 ZaZAPCArmBZaDS03.HKX
+b DDZaZAPCArmBZaDS04 ZaZAPCArmBZaDS04.HKX
+b DDZaZAPCArmBZaDS05 ZaZAPCArmBZaDS05.HKX
+b DDZaZAPCArmBZaDS06 ZaZAPCArmBZaDS06.HKX
+b DDZaZAPCArmBZaDS07 ZaZAPCArmBZaDS07.HKX
+b DDZaZAPCArmBZaDS08 ZaZAPCArmBZaDS08.HKX
+

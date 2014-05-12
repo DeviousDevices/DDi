@@ -1,0 +1,5 @@
+Scriptname zaddRadiantMasterTasks Extends Quest
+
+zaddRadiantMasterTaskRetrieval Property Retrieval Auto
+zaddRadiantMasterPunishments Property Punishments Auto
+zaddRadiantMasterRewards Property Rewards Auto

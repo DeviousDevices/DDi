@@ -1,0 +1,19 @@
+' Format:	<type> -<option,option,...> <AnimEvent> <Animation File> [<AnimObject CK>]
+'		type: 	b (basic)
+'				o (animated objects) 	
+'		option: a (acyclic) 				default: cyclic
+'				h (headtracking remains) 	default: headtracking off
+'               Tn (clip transition "00Next Clip": used if another idle will follow immediately)
+'               Ts (clip transition "IdleStop": (should be "regular idle end", but in FNIS similar to Next Clip)
+'          					default "IdleForceDefaultState": everything set to default)
+'				B<n.m>						Blend time into Animation
+'
+'		<Animation File> without path (files expected in Animations\<mod name>)
+'
+' Example:
+' b -a,h,Tn,B1.2 MyAnimEvent1 MyAnimFile1.hkx
+'	
+' Comment:	' in column 1 / empty lines possible
+'
+' AnimEvents and Animation File names have to be unique through all mods (even for files in different folders)
+' so it's a good idea use mod specific abbrevioations for all our names

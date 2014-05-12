@@ -1,0 +1,2 @@
+Scriptname zadPlugSoulgemScript extends zadPlugScript  
+

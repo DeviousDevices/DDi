@@ -1,0 +1,2 @@
+Scriptname zadRestraintScript extends zadEquipScript  
+
