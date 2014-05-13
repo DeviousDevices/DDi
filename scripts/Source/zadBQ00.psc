@@ -94,6 +94,7 @@ bool Property processBlindfoldEvent Auto
 bool Property processHarnessEvent Auto
 bool Property processPlugsEvent Auto
 
+bool Property FirstRun = True Auto ; Don't initialize until the game is reloaded.
 bool Property Tainted Auto ; Not going to offer support for tainted installations.
 string[] Property Registry Auto
 
@@ -106,8 +107,13 @@ function Shutdown(bool silent=false)
 EndFunction
 
 
-Function Maintenance(bool SkipAnims=false)
+Function Maintenance()
 	float curVersion = libs.GetVersion()
+	if FirstRun
+		libs.Log("New game detected: Not finishing initialization.")
+		FirstRun = False
+		return
+	EndIf
 	if zad_DeviousDevice == None
 		Debug.MessageBox("Devious Devices has not been correctly upgraded from its previous version. Please Clean Save, as per the instructions in the support thread.")
 		Libs.Error("zad_DeviousDevice == none in Maintenance()")
@@ -129,9 +135,7 @@ Function Maintenance(bool SkipAnims=false)
 	Parent.Maintenance()
 	; I doubt this will actually fix the MCM issue people are reporting, though who knows. Doesn't make sense that the animation failing 
 	; to register with Sexlab would cause zadConfig to not initialize properly. All the same, better to avoid that race condition.
-	if !SkipAnims
-		beltedAnims.LoadAnimations()
-	EndIf
+	beltedAnims.LoadAnimations()
 	libs.EnableEventProcessing()
 	; Finish initialization
 	Rehook()

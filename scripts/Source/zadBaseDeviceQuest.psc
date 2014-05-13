@@ -5,12 +5,11 @@ zadLibs Property libs Auto
 
 
 Event OnInit()
-	Maintenance(SkipAnims=true)
+	Maintenance()
 EndEvent
 
-Function Maintenance(bool SkipAnims=false)
+Function Maintenance()
 	libs.Log("Starting update chain.")
-	; Hmm. This should be safe, because calls to RegisterForSingleUpdate just override previous calls.
 	RegisterForSingleUpdateGameTime(libs.Config.EventInterval)
 EndFunction
 
