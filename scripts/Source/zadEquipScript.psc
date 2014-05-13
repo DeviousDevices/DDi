@@ -48,7 +48,7 @@ EndFunction
 Event OnEquipped(Actor akActor)
 	libs.Log("OnEquipped("+akActor.GetLeveledActorBase().GetName()+": "+deviceInventory.GetName()+")")
 	bool silently = ShouldEquipSilently(akActor)
-	if akActor.WornHasKeyword(zad_DeviousDevice); && akActor.GetItemCount(deviceRendered) == 0
+	if akActor.WornHasKeyword(zad_DeviousDevice) && akActor.GetItemCount(deviceRendered) == 0
  		menuDisable = true
 		if akActor != libs.PlayerRef
 			if silently
