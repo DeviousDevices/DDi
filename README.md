@@ -7,7 +7,7 @@ Devious Devices - Integration
 
 Basic Documentation:
 From zadLibs.psc:
-
+```
 ;===============================================================================
 ; Public Interface Functions
 ;===============================================================================
@@ -98,7 +98,7 @@ Function StopVibrating(actor akActor)
 
 ; Get duration left on current vibration event for actor.
 int Function GetVibrating(actor akActor)
-
+```
 
 
 
@@ -108,7 +108,7 @@ int Function GetVibrating(actor akActor)
 
 
 Events System Documentation:
-
+```
 ; So, I overhauled the Events system today: You can now supply periodic events, that will be executed alongside DD's via the same staggered system (To avoid too many events from spamming the player, the system does (and always has) stagger events depending on how many there are, and what the current update interval is). Furthermore, these events will automatically be included in the MCM menu.
  
 ; The following mod-events are now used:
@@ -135,3 +135,4 @@ EndFunction
 Function Execute(actor akActor)
 	libs.Warn("Default handler called for Event "+Name+".")
 EndFunction
+```

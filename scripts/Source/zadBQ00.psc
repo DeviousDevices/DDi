@@ -637,15 +637,25 @@ Event OnOrgasmStart(int threadID, bool HasPlayer)
 EndEvent
 
 
+Function RefreshBlindfoldState(actor[] actors)
+	int i = actors.length
+	while i > 0
+		i -= 1
+		if actors[i] == libs.PlayerRef && libs.PlayerRef.WornHasKeyword(libs.zad_DeviousBlindfold)
+			game.ForceFirstPerson()
+			game.ForceThirdPerson()
+		EndIf
+	EndWhile
+EndFunction
+
+
 Event OnAnimationEnd(int threadID, bool HasPlayer)
 	libs.Log("OnAnimationEnd()")
 	sslThreadController Controller = Sexlab.ThreadSlots.GetController(threadID)
-	if CountBeltedActors(controller.Positions) <= 0
-		return
-	Endif
 	actor[] actors = controller.Positions
 	sslBaseAnimation previousAnim = controller.Animation
-	if previousAnim.name=="DDBeltedSolo" && actors.length==1
+	int numBeltedActors = CountBeltedActors(controller.Positions)
+	if (numBeltedActors > 0) && previousAnim.name=="DDBeltedSolo" && actors.length==1
 		if actors[0]!=libs.PlayerRef
 			libs.NotifyNPC(actors[0].GetLeveledActorbase().GetName() + " ceases her efforts, looking both frustrated and aroused.")
 		else
@@ -656,6 +666,7 @@ Event OnAnimationEnd(int threadID, bool HasPlayer)
 		TogglePanelGag(actors, true)
 	EndIf
 	RetrieveArmbinders(actors)
+	RefreshBlindfoldState(actors)
 	Utility.Wait(5)
 	ChangeLockState(actors, false)
 EndEvent

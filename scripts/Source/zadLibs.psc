@@ -28,6 +28,8 @@ Keyword Property zad_DeviousHarness Auto
 Keyword Property zad_DeviousBlindfold Auto
 Keyword Property zad_DeviousBoots Auto
 Keyword Property zad_Lockable Auto
+Keyword Property zad_DeviousPiercingsNipple Auto
+Keyword Property zad_DeviousPiercingsVaginal Auto
 
 Keyword Property zad_PermitOral Auto
 Keyword Property zad_PermitAnal Auto
@@ -141,6 +143,7 @@ Armor Property plugChargeableRenderedVag Auto
 ; Keys
 Key Property chastityKey Auto
 Key Property restraintsKey Auto
+Key Property piercingKey Auto ; Piercing removal tool
 
 ; Sound fx
 Sound Property VibrateVeryStrongSound Auto
@@ -179,6 +182,10 @@ Soulgem Property SoulgemEmpty Auto
 Soulgem Property SoulgemFilled Auto
 MiscObject Property SoulgemStand Auto
 Perk Property LustgemCrafting Auto
+
+; Nipple Piercings
+Perk Property PiercedNipples Auto
+Perk Property PiercedClit Auto
 
 ;;;;Effects
 Keyword Property zad_HasPumps Auto
@@ -535,7 +542,7 @@ bool[] Function StartThirdPersonAnimation(actor akActor, idle animation, bool pe
 	return ret
 EndFunction
 
-
+; Wrapper for both Start/End third person animation. Use this unless you need more control during the wait period.
 Function PlayThirdPersonAnimation(actor akActor, idle animation, int duration, bool permitRestrictive=false)
 	Log("PlayThirdPersonAnimation("+akActor.GetLeveledActorBase().GetName()+","+animation+","+duration+")")
 	if IsAnimating(akActor)
@@ -838,6 +845,11 @@ EndFunction
 ;==================================================
 ; Effects
 ;==================================================
+; Cause actor to have an orgasm.
+;;; Function ActorOrgasm(actor akActor, int setArousalTo=-1, int vsID=-1)
+;;;             actor akActor, ; The actor to operate on.
+;;;             int setArousalTo=-1, ; The arousal value the actor should be set to post-orgasm
+;;;             int vsID=-1, ; Vibrating sound ID. If provided, will stop vibration sound.
 Function ActorOrgasm(actor akActor, int setArousalTo=-1, int vsID=-1)
 	SendModEvent("DeviceActorOrgasm", akActor.GetLeveledActorBase().GetName())
 	if setArousalTo < 0
@@ -862,12 +874,13 @@ Function ActorOrgasm(actor akActor, int setArousalTo=-1, int vsID=-1)
 	EndThirdPersonAnimation(akActor, cameraState, true)
 EndFunction
 
+; Play panting sound from actor
 Function Pant(actor akActor)
 	int psID = ShortPantSound.Play(akActor)
 	Sound.SetInstanceVolume(psID, 1)
 EndFunction
 
-;;; wrapper for Sexlab Aroused integrated moan.
+;;; wrapper for Sexlab Aroused integrated / gag integrated moan.
 Function SexlabMoan(actor akActor, int arousal=-1, sslBaseVoice voice = none)
 	; Is the player gagged?
 	if akActor.WornHasKeyword(zad_DeviousGag)
@@ -887,6 +900,7 @@ Function SexlabMoan(actor akActor, int arousal=-1, sslBaseVoice voice = none)
 	voice.Moan(akActor, arousal)
 EndFunction
 
+; Play non-sexlab-moans
 Function Moan(actor akActor, int arousal=-1, sslBaseVoice voice = none)
 	if akActor.WornHasKeyword(zad_DeviousGag)
 		int gsID = gaggedSound.Play(akActor)
@@ -919,7 +933,7 @@ bool Function PlaySceneAndWait(Scene toPlay, bool forceStart=false, int timeout=
 	return true
 EndFunction
 
-
+; Cause an actor to experience being edged.
 Function EdgeActor(actor akActor)
 	SendModEvent("DeviceEdgedActor", akActor.GetLeveledActorBase().GetName())
 	int sID = EdgedSound.Play(akActor)
@@ -999,7 +1013,7 @@ EndFunction
 
 ;;; Returns number of times actor came from this effect, -1 if it edged them, or -2 if an event was already ongoing.
 ; This function has suffered from feature creep pretty hard since it's inception, and is in need of refactoring. Still works, but very messy.
-; Will split this up to a small library in the future.
+; Will split this up to a small library in the future. Will document this properly at that point.
 int Function VibrateEffect(actor akActor, int vibStrength, int duration, bool teaseOnly=false, bool silent = false)
 	AcquireAndSpinlock()
 	If duration == 0
@@ -1319,11 +1333,12 @@ EndFunction
 ;==================================================
 ; Mutex Functions
 ;==================================================
+; Is the actor animating through Sexlab, or DD?
 bool Function IsAnimating(actor akActor)
 	return (akActor.IsInFaction(zadAnimatingFaction) || akActor.IsInFaction(Sexlab.AnimatingFaction))
 EndFunction
 
-
+; Set DD's actor animating status.
 Function SetAnimating(actor akActor, bool isAnimating=true)
 	if isAnimating
 		akActor.AddToFaction(zadAnimatingFaction)
@@ -1333,7 +1348,7 @@ Function SetAnimating(actor akActor, bool isAnimating=true)
 	EndIf
 EndFunction
 
-
+; Is the actor currently in a vibration event?
 bool Function IsVibrating(actor akActor)
 	return akActor.IsInFaction(zadVibratorFaction)
 EndFunction
@@ -1354,11 +1369,13 @@ Function SetVibrating(actor akActor, int duration)
 	akActor.SetFactionRank(zadVibratorFaction, duration)
 EndFunction
 
+; Stop vibration event on actor.
 Function StopVibrating(actor akActor)
 	akActor.SetFactionRank(zadVibratorFaction, 0)
 	akActor.RemoveFromFaction(zadVibratorFaction)
 EndFunction
 
+; Get duration left on current vibration event for actor.
 int Function GetVibrating(actor akActor)
 	if !akActor.IsInFaction(zadVibratorFaction)
 		return 0
