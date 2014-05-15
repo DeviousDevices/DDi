@@ -93,6 +93,9 @@ Function ApplySlotmask()
 	libs.PlayerRef.EquipItem(zad_DeviceHider, true, true)
 	if !libs.PlayerRef.IsOnMount() ; Warning not to do this if mounted in Actor.psc
 		libs.PlayerRef.QueueNiNodeUpdate()
+		if libs.PlayerRef.WornHasKeyword(libs.zad_DeviousGag)
+			libs.ApplyGagEffect(libs.PlayerRef)
+		EndIf
 	EndIf
 EndFunction
 
