@@ -198,7 +198,7 @@ Function SetupSlotMasks()
 	SlotMasks[1] = "Head (30)"
 	SlotMasks[2] = "Hair (31)"
 	SlotMasks[3] = "Body - Full (32)"
-	SlotMasks[4] = "Hands (DD Cuffs/Armbinder) (33)"
+	SlotMasks[4] = "Hands (33)"
 	SlotMasks[5] = "Forearms (34)"
 	SlotMasks[6] = "Amulet (35)"
 	SlotMasks[7] = "Ring (36)"

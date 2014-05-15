@@ -14,9 +14,12 @@ Function Logic(armor akArmor, bool equipOrUnequip)
 	EndIf
 	libs.Log("Logic("+equipOrUnequip+")")
 	int slotMask = akArmor.GetSlotMask()
+	if slotmask == 0
+		return
+	EndIf
 	int i = 0
 	While i <= 30
-		int slot = Math.LeftShift(1, i)
+		int slot = libs.DevicesUnderneath.ShiftCache[i]
 		; libs.Log("Checking slot "+(i+30) +": "+slot)
 		if Math.LogicalAnd(SlotMask, slot)
 			libs.DevicesUnderneath.UpdateSlotmask(i, slot, equipOrUnequip)

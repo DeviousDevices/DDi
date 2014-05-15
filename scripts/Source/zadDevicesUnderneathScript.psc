@@ -6,6 +6,8 @@ ArmorAddon Property zad_DeviceHiderAA Auto
 
 int[] Property SlotMaskFilters Auto
 int[] Property SlotMaskUsage Auto
+int[] Property ShiftCache Auto
+
 int Property SlotMask Auto ; Avoid repeated lookups
 
 
@@ -48,6 +50,12 @@ EndEvent
 Function SetDefaultSlotMasks()
 	SlotMaskFilters = new int[128]
 	SlotMaskUsage = new int[128]
+	ShiftCache = new int [32]
+	int i = 0
+	while i <= 32
+		ShiftCache[i] = Math.LeftShift(1, i)
+		i += 1
+	EndWhile
 	; SlotMaskFilters[2*4] = Math.LeftShift(1,26) ; For slot 32, hide slot 56.
 	HideEquipment(32, 56) ; When slot 32 is equipped, hide slot 56.
 EndFunction
@@ -62,7 +70,7 @@ Function HideEquipment(int slot1, int slot2)
 	int i = 0
 	while i < 4
 		if SlotMaskFilters[index+i] == 0
-			SlotMaskFilters[index+i] = Math.LeftShift(1, (slot2 - 30))
+			SlotMaskFilters[index+i] = ShiftCache[slot2 - 30]
 			libs.Log("DevicesUnderneath Registered(" + index+i + ":" + (slot2 - 30)+")")
 			return
 		EndIf
@@ -75,7 +83,7 @@ EndFunction
 Function Maintenance()
 	libs.Log("DevicesUnderneath::Maintenance()")
 	zad_DeviceHiderAA = zad_DeviceHider.GetNthArmorAddon(0)
-	if SlotMaskFilters.length <= 0
+	if SlotMaskFilters.length <= 0 || ShiftCache.Length <= 0
 		SetDefaultSlotMasks()
 		SlotMask = zad_DeviceHiderAA.GetSlotMask()
 	EndIf
@@ -135,12 +143,12 @@ Function RebuildSlotmask(actor akActor)
 	SlotMask = 0
  	int i = 0	
  	while i <= 30
- 		Armor x = akActor.GetWornForm(Math.LeftShift(1, i)) as Armor
+ 		Armor x = akActor.GetWornForm(ShiftCache[i]) as Armor
 		if x != None
 			int sm = x.GetSlotMask()
 			int j = 0
 			While j <= 30
-				int slot = Math.LeftShift(1, j)
+				int slot = ShiftCache[j]
 				if Math.LogicalAnd(sm, slot)
 					UpdateSlotmask(j, slot, true)
 				EndIf
