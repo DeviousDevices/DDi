@@ -104,6 +104,9 @@ float rmHeartbeatIntervalDefault = 2.0
 float Property rmSummonHeartbeatInterval Auto
 float rmSummonHeartbeatIntervalDefault = 0.25
 
+; Devices Underneath Configuration
+bool Property DevicesUnderneathEnabled = True Auto
+
 ; OID's
 int thresholdOID
 int beltRateOID
@@ -147,9 +150,12 @@ int blindfoldStrengthOID
 int[] eventOIDs
 int boundAnimsOID
 int useBoundAnimsOID
+int[] slotMaskOIDs
 
 string[] difficultyList
 string[] blindfoldList
+string[] slotMasks
+int[] SlotMaskValues
 
 Function SetupBlindfolds()
 	blindfoldList = new String[3]
@@ -167,30 +173,77 @@ Function SetupDifficulties()
 EndFunction
 
 Function SetupPages()
-	Pages = new string[6]
+	Pages = new string[7]
 	Pages[0] = "General"
 	Pages[1] = "Devices"
 	pages[2] = "Sex Animation Filter"
 	Pages[3] = "Events and Effects"
 	Pages[4] = "Sounds"
 	Pages[5] = "Quests"
+	Pages[6] = "Devices Underneath"
 EndFunction
 
+
+
+Function SetupSlotMasks()
+	SlotMasks = new String[32]
+	SlotMaskValues = new int[32]
+	SlotMasks[0] = "Empty"
+	int i = 1
+	while i < 30
+		SlotMasks[i] = "Slot " + (30 + i - 1)
+		SlotMaskValues[i] = Math.LeftShift(1, (i - 1))
+		libs.Log(slotMasks[i] + " == "+i + " == " + slotMaskValues[i])
+		i += 1
+	EndWhile
+	SlotMasks[1] = "Head (30)"
+	SlotMasks[2] = "Hair (31)"
+	SlotMasks[3] = "Body - Full (32)"
+	SlotMasks[4] = "Hands (DD Cuffs/Armbinder) (33)"
+	SlotMasks[5] = "Forearms (34)"
+	SlotMasks[6] = "Amulet (35)"
+	SlotMasks[7] = "Ring (36)"
+	SlotMasks[8] = "Feet (37)"
+	SlotMasks[9] = "Calves (38)"
+	SlotMasks[10] = "Shield (39)"
+	SlotMasks[11] = "Tail (40)"
+	SlotMasks[12] = "Long Hair (41)"
+	SlotMasks[13] = "Circlet (42)"
+	SlotMasks[14] = "Ears (43)"
+
+	SlotMasks[15] = "Gag Mouthpiece (44)"
+	SlotMasks[16] = "Collar (45)"
+
+	SlotMasks[19] = "Plugs (Anal) (48)"
+	SlotMasks[20] = "Chastity Belt (49)"
+	SlotMasks[21] = "Gag Straps (50)"
+	SlotMasks[22] = "Decapitate (51)"
+	SlotMasks[23] = "SoS (52)"
+	SlotMasks[24] = "Cuffs (Legs) (53)"
+	SlotMasks[25] = "Plug Vaginal (54)"
+	SlotMasks[26] = "Blindfold (55)"
+	SlotMasks[27] = "Chastity Bra / Piercings (56)"
+
+	SlotMasks[30] = "Cuffs (Arms) / Armbinder (59)"
+
+EndFunction
 
 Event OnConfigInit()
 	libs.Log("Building mcm menu.")
 	SetupPages()
 	SetupDifficulties()
 	SetupBlindfolds()
+	SlotMaskOIDS = new int[128]
 EndEvent
 
 int Function GetVersion()
-	return 10 ; mcm menu version
+	return 12 ; mcm menu version
 EndFunction
 
 Event OnVersionUpdate(int newVersion)
 	libs.Log("OnVersionUpdate("+newVersion+"/"+CurrentVersion+")")
 	if newVersion != CurrentVersion
+		SlotMaskOIDS = new int[128]
 		SetupPages()
 		SetupDifficulties()
 		SetupBlindfolds()
@@ -290,6 +343,23 @@ Event OnPageReset(string page)
 		; AddHeaderOption("Radiant Master Configuration")
 		; rmHeartbeatIntervalOID = AddSliderOption("Heartbeat Interval", rmHeartbeatInterval, "{3}")
 		; rmSummonHeartbeatIntervalOID = AddSliderOption("Summon Heartbeat Interval", rmSummonHeartbeatInterval, "{3}")
+	ElseIf page == "Devices Underneath"
+		SetupSlotMasks()
+		SetCursorFillMode(TOP_TO_BOTTOM)
+		int i = 1
+		while i < 32
+			int index = (i - 1) * 4
+			int j = 0
+			AddHeaderOption(SlotMasks[i])
+			while j < 4
+				slotMaskOIDs[index + j] = AddMenuOption(SlotMasks[i] + " #"+j, SlotMasks[LookupSlotMask(index+j)])
+				j += 1
+			EndWhile
+			if i == 15
+				SetCursorPosition(1) ; Move cursor to top right position
+			EndIf
+			i += 1
+		EndWhile
 	Endif
 EndEvent
 
@@ -304,6 +374,15 @@ Event OnOptionMenuOpen(int option)
 		SetMenuDialogStartIndex(BlindfoldMode)
 		SetMenuDialogDefaultIndex(blindfoldModeDefault)
 	EndIf
+	int i = 0
+	while i < 128
+		if option == slotMaskOIDs[i]
+			SetMenuDialogOptions(SlotMasks)
+			SetMenuDialogStartIndex(LookupSlotMask(i))
+			SetMenuDialogDefaultIndex(0)
+		EndIf
+		i += 1
+	EndWhile
 EndEvent
 
 Function CheckRemovePerk(Perk perkName)
@@ -337,6 +416,19 @@ Event OnOptionMenuAccept(int option, int index)
 		game.ForceThirdPerson()
 		libs.UpdateControls()
 	EndIf
+	int i = 0
+	while i < 128
+		if option == slotMaskOIDs[i]
+			int value = 0
+			if index != 0
+				value = Math.LeftShift(1, (index - 1))
+				libs.Log("Index:" + index + " = " + value + "/" + SlotMaskValues.find(value))
+			EndIf
+			libs.DevicesUnderneath.SlotMaskFilters[i] = value
+			SetMenuOptionValue(option, SlotMasks[index])
+		EndIf
+		i += 1
+	EndWhile
 EndEvent
 
 Event OnOptionSliderOpen(int option)
@@ -819,3 +911,12 @@ Event OnOptionSliderAccept(int option, float value)
 		SetSliderOptionValue(option, value, "{1}")
 	EndIf
 EndEvent
+
+int function LookupSlotMask(int i)
+	int value = (libs.DevicesUnderneath.SlotMaskFilters[i])
+	if value == 0
+		return 0
+	Else
+		return SlotMaskValues.Find(value)
+	EndIf
+EndFunction

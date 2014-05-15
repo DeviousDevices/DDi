@@ -10,6 +10,7 @@ zadConfig Property Config Auto
 zadNPCQuestScript Property zadNPCQuest Auto
 zadArmbinderQuestScript Property abq Auto
 zadEventSlots Property EventSlots Auto ; See zadBaseEvent.psc for how to use the new events system.
+zadDevicesUnderneathScript Property DevicesUnderneath Auto
 Quest Property zadNPCSlots Auto
 
 ; Keywords
@@ -164,6 +165,8 @@ Faction Property zadVibratorFaction Auto
 Faction Property zadGagPanelFaction Auto
 
 MiscObject Property zad_gagPanelPlug Auto
+Outfit Property zadEmptyOutfit Auto
+
 
 ; Internal Variables
 Armor Property deviceRemovalToken Auto         ; Internal token for removal events
@@ -591,6 +594,7 @@ EndFunction
 float Function GetVersion()
 	return 2.76
 EndFunction
+
 
 ;===============================================================================
 ; Internal Functions
