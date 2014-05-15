@@ -193,7 +193,6 @@ Function SetupSlotMasks()
 	while i < 30
 		SlotMasks[i] = "Slot " + (30 + i - 1)
 		SlotMaskValues[i] = Math.LeftShift(1, (i - 1))
-		libs.Log(slotMasks[i] + " == "+i + " == " + slotMaskValues[i])
 		i += 1
 	EndWhile
 	SlotMasks[1] = "Head (30)"
@@ -426,6 +425,7 @@ Event OnOptionMenuAccept(int option, int index)
 			EndIf
 			libs.DevicesUnderneath.SlotMaskFilters[i] = value
 			SetMenuOptionValue(option, SlotMasks[index])
+			libs.DevicesUnderneath.RebuildSlotmask(libs.PlayerRef)
 		EndIf
 		i += 1
 	EndWhile

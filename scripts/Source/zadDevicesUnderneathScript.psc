@@ -52,18 +52,6 @@ Function SetDefaultSlotMasks()
 	HideEquipment(32, 56) ; When slot 32 is equipped, hide slot 56.
 EndFunction
 
-; Can't implement this yet: Don't have generic device keyword. Could compare every keyword, but ehh.
-; Function UnequipAllSafe(actor akActor)
-; 	int i = 0
-; 	while i <= 60
-; 		form x = GetWornForm(akActor, Math.LeftShift(1, i))
-; 		if x.HasKeyword(libs.zad_Lockable)
-; 			;
-; 		EndIf
-; 		i += 1
-; 	EndWhile
-; EndFunction
-
 
 Function HideEquipment(int slot1, int slot2)
 	if slot1 < 30 || slot1 > 61 || slot2 < 30 || slot2 > 61
@@ -101,7 +89,7 @@ Function ApplySlotmask()
 	EndIf
 	zad_DeviceHiderAA.SetSlotMask(SlotMask)
 	libs.Log("Set slot mask to ["+SlotMask+"]: "+zad_DeviceHiderAA.GetSlotMask())
-	libs.PlayerRef.UnEquipItem(zad_DeviceHider, false, true)
+	; libs.PlayerRef.UnEquipItem(zad_DeviceHider, false, true)
 	libs.PlayerRef.EquipItem(zad_DeviceHider, true, true)
 	if !libs.PlayerRef.IsOnMount() ; Warning not to do this if mounted in Actor.psc
 		libs.PlayerRef.QueueNiNodeUpdate()
@@ -135,4 +123,28 @@ Function UpdateSlotmask(int index, int slot, bool equipOrUnequip)
 		i += 1
 	EndWhile
 	libs.Log("End UpdateSlotMask: "+SlotMask)
+EndFunction
+
+
+Function RebuildSlotmask(actor akActor)
+	libs.Log("RebuildSlotmask()")
+	SlotMaskUsage = new int[128]
+	SlotMask = 0
+ 	int i = 0	
+ 	while i <= 30
+ 		Armor x = akActor.GetWornForm(Math.LeftShift(1, i)) as Armor
+		if x != None
+			int sm = x.GetSlotMask()
+			int j = 0
+			While j <= 30
+				int slot = Math.LeftShift(1, j)
+				if Math.LogicalAnd(sm, slot)
+					UpdateSlotmask(j, slot, true)
+				EndIf
+				j += 1
+			EndWhile
+		EndIf
+ 		i += 1
+ 	EndWhile
+	ApplySlotMask()
 EndFunction

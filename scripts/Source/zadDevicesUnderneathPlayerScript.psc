@@ -12,7 +12,7 @@ Function Logic(armor akArmor, bool equipOrUnequip)
 	if akArmor == None
 		return
 	EndIf
-	; libs.Log("Logic("+equipOrUnequip+")")
+	libs.Log("Logic("+equipOrUnequip+")")
 	int slotMask = akArmor.GetSlotMask()
 	int i = 0
 	While i <= 30
