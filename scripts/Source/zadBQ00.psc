@@ -167,6 +167,7 @@ Function Maintenance()
 	; ResetAnimCache()
 EndFunction
 
+
 Function ResetAnimCache()
 	int i = Registry.Length
 	while i > 0
@@ -280,7 +281,7 @@ string Function BuildRegistryStr(int numActors, bool permitOral, bool permitVagi
 EndFunction
 
 
-sslBaseAnimation[] function FindValidAnimations(int numActors, sslBaseAnimation previousAnim, bool permitOral, bool permitVaginal, bool permitAnal, bool permitBoobjob, int numBoundActors, int NumExtraTags, string[] ExtraTags)
+sslBaseAnimation[] function FindValidAnimations(sslThreadController controller, int numActors, sslBaseAnimation previousAnim, bool permitOral, bool permitVaginal, bool permitAnal, bool permitBoobjob, int numBoundActors, int NumExtraTags, string[] ExtraTags)
         ; It is my understanding that these arrays will only contain references. Assuming this works similarly
         ; to C (As is my current understanding), each reference will not take up much memory (4ish bytes per
         ; reference) Thus, storing it like this, while not optimal, will not require further change, and
@@ -302,11 +303,15 @@ sslBaseAnimation[] function FindValidAnimations(int numActors, sslBaseAnimation 
 	; Registry.find(cache)
 
         sslBaseAnimation[] allAnims = SexLab.AnimSlots.Animations
+        int totalAnims = SexLab.AnimSlots.Slotted
+	if previousAnim.HasTag("Creature")
+		allAnims = SexLab.CreatureSlots.GetByRace(numActors, Controller.positions[(Controller.positions.Length - 1)].GetRace())
+		totalAnims = allAnims.Length
+	EndIf
         sslBaseAnimation[] chastityAnims
         sslBaseAnimation[] aggroAnims
         sslBaseAnimation[] foreplayAnims
 	sslBaseAnimation[] boundAnims
-        int totalAnims = SexLab.AnimSlots.Slotted
         int i = totalAnims
 	bool isBound = (numBoundActors > 0)
 
@@ -493,14 +498,14 @@ function Logic(int threadID, bool HasPlayer)
 		EndIf
 	Endif
 	libs.Log("Total actors: " + originalActors.length + ". Participating Actors: " + actors.length + ". Animation: " + previousAnim.name)
-	sslBaseAnimation[] anims = FindValidAnimations(actors.length, previousAnim, permitOral, permitVaginal, permitAnal, permitBoobjob, numBoundActors, numExtraTags, ExtraTags)
+	sslBaseAnimation[] anims = FindValidAnimations(controller, actors.length, previousAnim, permitOral, permitVaginal, permitAnal, permitBoobjob, numBoundActors, numExtraTags, ExtraTags)
 	if anims.length <= 0
 		libs.Log("No animations available! Trying fallbacks...")
 	EndIf
 	if anims.length <=0 && actors.length >=3 ; No anims, probably too many actors.
 		; Try removing actors, and shufflign them to solo scenes.
 		libs.Log("Trying to resize actors...")
-		SolveActorAnimations(actors, solos, anims, previousAnim, permitOral, permitVaginal, permitAnal, permitBoobjob, numBoundActors, NumExtraTags, ExtraTags)
+		SolveActorAnimations(controller, actors, solos, anims, previousAnim, permitOral, permitVaginal, permitAnal, permitBoobjob, numBoundActors, NumExtraTags, ExtraTags)
 	EndIf
 	if anims.length <= 0 && isBound ; No anims, while bound.
 		; Still no animations, after resizing actors. Drop armbinders, and try again.
@@ -508,14 +513,20 @@ function Logic(int threadID, bool HasPlayer)
 		StoreArmbinders(actors)
 		numBoundActors = 0
 		isBound = False
-		anims = FindValidAnimations(actors.length, previousAnim, permitOral, permitVaginal, permitAnal, permitBoobjob, numBoundActors, numExtraTags, ExtraTags)
+		anims = FindValidAnimations(controller, actors.length, previousAnim, permitOral, permitVaginal, permitAnal, permitBoobjob, numBoundActors, numExtraTags, ExtraTags)
 		if anims.length <= 0
-			SolveActorAnimations(actors, solos, anims, previousAnim, permitOral, permitVaginal, permitAnal, permitBoobjob, numBoundActors, NumExtraTags, ExtraTags)
+			SolveActorAnimations(controller, actors, solos, anims, previousAnim, permitOral, permitVaginal, permitAnal, permitBoobjob, numBoundActors, NumExtraTags, ExtraTags)
 		EndIf
 	EndIf
 	if anims.length <= 0
-		libs.Error("Failed to find any valid animations. Aborting.")
-		Controller.EndAnimation(quickly=true)
+		if previousAnim.HasTag("Creature")
+			libs.NotifyPlayer("You are being dry-humped!")
+			libs.Log("Failed to find any valid animations. PreviousAnim has creature tag. Done.")
+			return
+		Else
+			libs.Error("Failed to find any valid animations. Aborting.")
+			Controller.EndAnimation(quickly=true)
+		EndIf
         Endif
 	if actors.length != originalActors.length || solos.length >= 1
 		libs.Log("Requesting actor change to " + actors.length + " actors.")
@@ -534,13 +545,14 @@ function Logic(int threadID, bool HasPlayer)
 	ProcessSolos(solos)
 EndFunction
 
-Function SolveActorAnimations(actor[] actors, actor[] solos, sslBaseAnimation[] anims, sslBaseAnimation previousAnim, bool permitOral, bool permitVaginal, bool permitAnal, bool permitBoobjob, int numBoundActors, int NumExtraTags, string[] ExtraTags)
+
+Function SolveActorAnimations(sslThreadController controller, actor[] actors, actor[] solos, sslBaseAnimation[] anims, sslBaseAnimation previousAnim, bool permitOral, bool permitVaginal, bool permitAnal, bool permitBoobjob, int numBoundActors, int NumExtraTags, string[] ExtraTags)
 	; There has to be a better way to do this in papyrus. Missing python :(
 	int i = actors.length
 	while i >= 2 && anims.length==0
 		i -= 1
 		libs.Log("Reduced number of actors to " + i)
-		anims = FindValidAnimations(i, previousAnim, permitOral, permitVaginal, permitAnal, permitBoobjob, numBoundActors, numExtraTags, ExtraTags)
+		anims = FindValidAnimations(controller, i, previousAnim, permitOral, permitVaginal, permitAnal, permitBoobjob, numBoundActors, numExtraTags, ExtraTags)
 	EndWhile
 	if anims.length >=1
 		libs.Log("Found valid animation. Rebuilding actor lists.")
