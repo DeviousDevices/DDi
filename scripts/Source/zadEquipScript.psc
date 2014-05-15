@@ -87,6 +87,7 @@ Event OnEquipped(Actor akActor)
 	EndIf
         libs.CleanupDevices(akActor, zad_DeviousDevice, deviceRendered)
 	OnEquippedPre(akActor, silent=silently)
+	; akActor.SetOutfit(libs.zadEmptyOutfit, True)
 	akActor.EquipItem(DeviceInventory, false, true)
 	akActor.EquipItem(DeviceRendered, true, true)
 	SyncInventory(akActor)

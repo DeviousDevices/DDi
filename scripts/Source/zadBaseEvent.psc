@@ -68,7 +68,7 @@ EndFunction
 Event OnRegisterEvents(string eventName, string strArg, float numArg, Form sender)
 	int id = libs.EventSlots.Register(name, self)
 	if id == -1
-		libs.Error("Registration of event "+name+" failed.")
+		libs.Warn("Registration of event "+name+" failed.")
 	Else
 		libs.Log("["+name+"] Registered. Event #"+id)
 	EndIf
