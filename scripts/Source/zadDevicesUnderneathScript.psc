@@ -109,7 +109,7 @@ EndFunction
 
 
 Function UpdateSlotmask(int index, int slot, bool equipOrUnequip)
-	libs.Log("UpdateSlotMask("+(index+30)+").")
+	; libs.Log("UpdateSlotMask("+(index+30)+").")
 	index *= 4
 	if index >= 124
 		libs.Error("UpdateSlotmask received out of bound index: "+index)
@@ -117,9 +117,9 @@ Function UpdateSlotmask(int index, int slot, bool equipOrUnequip)
 	EndIf
 	int i = 0
 	while i < 4
-		libs.Log("Checking "+SlotMask +" vs "+SlotMaskFilters[index+i])
+		; libs.Log("Checking "+SlotMask +" vs "+SlotMaskFilters[index+i])
 		if SlotMaskFilters[index+i] != 0
-			libs.Log("Match.")
+			; libs.Log("Match.")
 			if equipOrUnequip
 				SlotMask = Math.LogicalOr(SlotMask, SlotMaskFilters[index+i])
 				SlotMaskUsage[index+i] = SlotMaskUsage[index+i] + 1
@@ -133,12 +133,12 @@ Function UpdateSlotmask(int index, int slot, bool equipOrUnequip)
 		EndIf
 		i += 1
 	EndWhile
-	libs.Log("End UpdateSlotMask: "+SlotMask)
+	; libs.Log("End UpdateSlotMask: "+SlotMask)
 EndFunction
 
 
 Function RebuildSlotmask(actor akActor)
-	libs.Log("RebuildSlotmask()")
+	; libs.Log("RebuildSlotmask()")
 	SlotMaskUsage = new int[128]
 	SlotMask = 0
  	int i = 0	

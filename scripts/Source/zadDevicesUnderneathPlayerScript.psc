@@ -12,7 +12,7 @@ Function Logic(armor akArmor, bool equipOrUnequip)
 	if akArmor == None
 		return
 	EndIf
-	libs.Log("Logic("+equipOrUnequip+")")
+	; libs.Log("Logic("+equipOrUnequip+")")
 	int slotMask = akArmor.GetSlotMask()
 	if slotmask == 0
 		return
@@ -27,7 +27,7 @@ Function Logic(armor akArmor, bool equipOrUnequip)
 		i += 1
 	EndWhile
 	libs.DevicesUnderneath.ApplySlotmask()
-	libs.Log("EndLogic()")
+	; libs.Log("EndLogic()")
 EndFunction
 
 

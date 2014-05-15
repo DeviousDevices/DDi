@@ -506,6 +506,8 @@ function Logic(int threadID, bool HasPlayer)
 		; Still no animations, after resizing actors. Drop armbinders, and try again.
 		libs.Log("Removing armbinders, Trying to resize actors...")
 		StoreArmbinders(actors)
+		numBoundActors = 0
+		isBound = False
 		anims = FindValidAnimations(actors.length, previousAnim, permitOral, permitVaginal, permitAnal, permitBoobjob, numBoundActors, numExtraTags, ExtraTags)
 		if anims.length <= 0
 			SolveActorAnimations(actors, solos, anims, previousAnim, permitOral, permitVaginal, permitAnal, permitBoobjob, numBoundActors, NumExtraTags, ExtraTags)
