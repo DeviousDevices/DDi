@@ -85,7 +85,7 @@ Function Maintenance()
 	zad_DeviceHiderAA = zad_DeviceHider.GetNthArmorAddon(0)
 	if SlotMaskFilters.length <= 0 || ShiftCache.Length <= 0
 		SetDefaultSlotMasks()
-		SlotMask = 0
+		RebuildSlotmask(libs.PlayerRef)
 	EndIf
 	ApplySlotmask()
 EndFunction
