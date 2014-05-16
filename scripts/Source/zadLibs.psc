@@ -1220,6 +1220,7 @@ int Function VibrateEffect(actor akActor, int vibStrength, int duration, bool te
 		Endif
 	Endif
 	SendModEvent("DeviceVibrateEffectStop", akActor.GetLeveledActorBase().GetName(), vibStrength * numVibratorsMult)
+	UpdateArousalTimeRate(akActor, vibStrength * numVibratorsMult)
 	Aroused.GetActorArousal(akActor)
 	return actorCame
 EndFunction
@@ -1538,4 +1539,11 @@ Function CheckForBoundAnims()
 	EndIf
 	BoundAnimsAvailable = (Sexlab.GetAnimationsByTag(2, "Bound").length >= 1)
 	Log("Bound Animation Status: " + BoundAnimsAvailable)
+EndFunction
+
+
+Function UpdateArousalTimerate(actor akActor, float val)
+	if Aroused.GetActorTimerate(akActor) <= 50.0
+		Aroused.UpdateActorTimeRate(akActor, val)
+	EndIf
 EndFunction

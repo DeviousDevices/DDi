@@ -133,6 +133,9 @@ Event OnUpdateGameTime()
 			return
 		EndIf
 	EndIf
+	if libs.PlayerRef.WornHasKeyword(libs.zad_DeviousPlug)
+		libs.UpdateArousalTimerate(akActor, 0.75)
+	EndIf
 	DoRegister()
 EndEvent
 

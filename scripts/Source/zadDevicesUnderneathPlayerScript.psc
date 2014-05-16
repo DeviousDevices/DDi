@@ -43,6 +43,7 @@ EndEvent
 Event OnObjectUnequipped(Form akBaseObject, ObjectReference akReference)
 	armor akArmor = (akBaseObject as Armor)
 	if akArmor == libs.DevicesUnderneath.zad_DeviceHider
+		libs.PlayerRef.EquipItem(libs.DevicesUnderneath.zad_DeviceHider, true, true)
 		return
 	EndIf
 	Logic(akArmor, false)

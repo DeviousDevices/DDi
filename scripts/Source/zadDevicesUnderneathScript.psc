@@ -50,7 +50,7 @@ EndEvent
 Function SetDefaultSlotMasks()
 	SlotMaskFilters = new int[128]
 	SlotMaskUsage = new int[128]
-	ShiftCache = new int [32]
+	ShiftCache = new int [33]
 	int i = 0
 	while i <= 32
 		ShiftCache[i] = Math.LeftShift(1, i)
@@ -85,25 +85,34 @@ Function Maintenance()
 	zad_DeviceHiderAA = zad_DeviceHider.GetNthArmorAddon(0)
 	if SlotMaskFilters.length <= 0 || ShiftCache.Length <= 0
 		SetDefaultSlotMasks()
-		RebuildSlotmask(libs.PlayerRef)
 	EndIf
-	ApplySlotmask()
+	if libs.Config.DevicesUnderneathSlot == 0
+		libs.Config.DevicesUnderneathSlot = libs.Config.DevicesUnderneathSlotDefault
+	EndIf
+	UpdateDeviceHiderSlot()
 EndFunction
 
 
 Function ApplySlotmask()
+	libs.PlayerRef.EquipItem(zad_DeviceHider, true, true)
+	if SlotMask == zad_DeviceHiderAA.GetSlotMask()
+		; No change
+		return
+	EndIf
 	if SlotMask < 0
 		SlotMask = 0
 	EndIf
 	zad_DeviceHiderAA.SetSlotMask(SlotMask)
-	libs.Log("Set slot mask to ["+SlotMask+"]: "+zad_DeviceHiderAA.GetSlotMask())
-	; libs.PlayerRef.UnEquipItem(zad_DeviceHider, false, true)
-	libs.PlayerRef.EquipItem(zad_DeviceHider, true, true)
-	if !libs.PlayerRef.IsOnMount() ; Warning not to do this if mounted in Actor.psc
+	; libs.Log("Set slot mask to ["+SlotMask+"]: "+zad_DeviceHiderAA.GetSlotMask())
+	if libs.Config.UseQueueNiNode && !libs.PlayerRef.IsOnMount() ; Warning not to do this if mounted in Actor.psc
+		; libs.Log("Using NiNode to update")
 		libs.PlayerRef.QueueNiNodeUpdate()
 		if libs.PlayerRef.WornHasKeyword(libs.zad_DeviousGag)
 			libs.ApplyGagEffect(libs.PlayerRef)
 		EndIf
+	Else
+		libs.PlayerRef.UnEquipItem(zad_DeviceHider, false, true)
+		libs.PlayerRef.EquipItem(zad_DeviceHider, true, true)
 	EndIf
 EndFunction
 
@@ -125,7 +134,7 @@ Function UpdateSlotmask(int index, int slot, bool equipOrUnequip)
 				SlotMaskUsage[index+i] = SlotMaskUsage[index+i] + 1
 			Else
 				SlotMaskUsage[index+i] = SlotMaskUsage[index+i] - 1
-				if SlotMaskUsage[index+i] <= 0
+				if SlotMaskUsage[index+i] <= 1
 					SlotMaskUsage[index+i] = 0
 					SlotMask = SlotMask - SlotMaskFilters[index+i]
 				EndIf
@@ -138,10 +147,14 @@ EndFunction
 
 
 Function RebuildSlotmask(actor akActor)
-	; libs.Log("RebuildSlotmask()")
-	SlotMaskUsage = new int[128]
+	libs.Log("RebuildSlotmask()")
+	int i = 0
+	while i < 128
+		SlotMaskUsage[i] = 0
+		i += 1
+	EndWhile
 	SlotMask = 0
- 	int i = 0	
+ 	i = 0	
  	while i <= 30
  		Armor x = akActor.GetWornForm(ShiftCache[i]) as Armor
 		if x != None
@@ -158,4 +171,13 @@ Function RebuildSlotmask(actor akActor)
  		i += 1
  	EndWhile
 	ApplySlotMask()
+EndFunction
+
+
+Function UpdateDeviceHiderSlot()
+	int slot = libs.Config.DevicesUnderneathSlot - 1
+	libs.Log("Set Device Hider slot to "+(slot+30)+".")
+	zad_DeviceHider.SetSlotMask(Math.LeftShift(1, slot))
+	RebuildSlotMask(libs.PlayerRef)
+	libs.PlayerRef.QueueNiNodeUpdate()
 EndFunction

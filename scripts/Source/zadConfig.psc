@@ -106,6 +106,10 @@ float rmSummonHeartbeatIntervalDefault = 0.25
 
 ; Devices Underneath Configuration
 bool Property DevicesUnderneathEnabled = True Auto
+Int Property DevicesUnderneathSlot Auto
+int Property DevicesUnderneathSlotDefault = 31 Auto
+bool Property UseQueueNiNode Auto
+bool UseQueueNiNodeDefault = False
 
 ; OID's
 int thresholdOID
@@ -151,6 +155,8 @@ int[] eventOIDs
 int boundAnimsOID
 int useBoundAnimsOID
 int[] slotMaskOIDs
+int DevicesUnderneathSlotOID
+int UseQueueNiNodeOID
 
 string[] difficultyList
 string[] blindfoldList
@@ -186,11 +192,11 @@ EndFunction
 
 
 Function SetupSlotMasks()
-	SlotMasks = new String[32]
-	SlotMaskValues = new int[32]
+	SlotMasks = new String[33]
+	SlotMaskValues = new int[33]
 	SlotMasks[0] = "Empty"
 	int i = 1
-	while i < 30
+	while i <= 32
 		SlotMasks[i] = "Slot " + (30 + i - 1)
 		SlotMaskValues[i] = Math.LeftShift(1, (i - 1))
 		i += 1
@@ -236,7 +242,7 @@ Event OnConfigInit()
 EndEvent
 
 int Function GetVersion()
-	return 12 ; mcm menu version
+	return 13 ; mcm menu version
 EndFunction
 
 Event OnVersionUpdate(int newVersion)
@@ -345,6 +351,9 @@ Event OnPageReset(string page)
 	ElseIf page == "Devices Underneath"
 		SetupSlotMasks()
 		SetCursorFillMode(TOP_TO_BOTTOM)
+		DevicesUnderneathSlotOID = AddMenuOption("Item Hider Slot", SlotMasks[DevicesUnderneathSlot])
+		UseQueueNiNodeOID = AddToggleOption("Use QueueNiNode", UseQueueNiNode)
+		; AddMenuOption("Item Hider Slot", SlotMasks[DevicesUnderneathSlot])
 		int i = 1
 		while i < 32
 			int index = (i - 1) * 4
@@ -354,7 +363,7 @@ Event OnPageReset(string page)
 				slotMaskOIDs[index + j] = AddMenuOption(SlotMasks[i] + " #"+j, SlotMasks[LookupSlotMask(index+j)])
 				j += 1
 			EndWhile
-			if i == 15
+			if i == 13
 				SetCursorPosition(1) ; Move cursor to top right position
 			EndIf
 			i += 1
@@ -372,6 +381,10 @@ Event OnOptionMenuOpen(int option)
 		SetMenuDialogOptions(blindfoldList)
 		SetMenuDialogStartIndex(BlindfoldMode)
 		SetMenuDialogDefaultIndex(blindfoldModeDefault)
+	ElseIf option == DevicesUnderneathSlotOID
+		SetMenuDialogOptions(SlotMasks)
+		SetMenuDialogStartIndex(DevicesUnderneathSlot)
+		SetMenuDialogDefaultIndex(DevicesUnderneathSlotDefault)
 	EndIf
 	int i = 0
 	while i < 128
@@ -414,6 +427,10 @@ Event OnOptionMenuAccept(int option, int index)
 		game.ForceFirstPerson()
 		game.ForceThirdPerson()
 		libs.UpdateControls()
+	ElseIf option == DevicesUnderneathSlotOID
+		DevicesUnderneathSlot = index
+		libs.DevicesUnderneath.UpdateDeviceHiderSlot()
+		SetMenuOptionValue(DevicesUnderneathSlotOID, SlotMasks[DevicesUnderneathSlot])
 	EndIf
 	int i = 0
 	while i < 128
@@ -599,6 +616,9 @@ Event OnOptionSelect(int option)
 	elseif option == ssWarningMessagesOID
 		 ssWarningMessages = !ssWarningMessages
 		SetToggleOptionValue(ssWarningMessagesOID, ssWarningMessages)
+	elseif option == UseQueueNiNodeOID
+		 UseQueueNiNode = !UseQueueNiNode
+		SetToggleOptionValue(UseQueueNiNodeOID, UseQueueNiNode)
 	elseif option == ifpOID
 		ifp = !ifp
 		SetToggleOptionValue(ifpOID, ifp)
@@ -638,6 +658,9 @@ Event OnOptionDefault(int option)
 	elseIf (option == blindfoldModeOID)
 		BlindfoldMode = BlindfoldModeDefault
 		SetMenuOptionValue(BlindfoldModeOID, blindfoldList[BlindfoldMode])
+	elseIf (option == DevicesUnderneathSlotOID)
+		DevicesUnderneathSlot = DevicesUnderneathSlotDefault
+		SetMenuOptionValue(DevicesUnderneathSlotOID, SlotMasks[DevicesUnderneathSlot])
 	elseIf (option == npcMessagesOID)
 		NpcMessages = npcMessagesDefault
 		SetToggleOptionValue(npcMessagesOID, npcMessagesDefault)
@@ -725,6 +748,9 @@ Event OnOptionDefault(int option)
 	elseIf (option == ssWarningMessagesOID)
 		ssWarningMessages = ssWarningMessagesDefault
 		SetToggleOptionValue(ssWarningMessagesOID, ssWarningMessagesDefault)
+	elseIf (option == UseQueueNiNodeOID)
+		UseQueueNiNode = UseQueueNiNodeDefault
+		SetToggleOptionValue(UseQueueNiNodeOID, UseQueueNiNodeDefault)
 	elseIf (option == numNpcsOID)
 		numNpcs = numNpcsDefault
 		SetSliderOptionValue(numNpcsOID, numNpcs, "{1}")
@@ -763,6 +789,8 @@ Event OnOptionHighlight(int option)
 		SetInfoText("Key crafting difficulty.\nEasy: 1 iron ingot. Medium: 1 malachite ingot. Hard: 1 ebony ingot + 1 flawless diamond.")
 	elseIf (option == blindfoldModeOID)
 		SetInfoText("Switch between the three provided blindfold modes. DD's mode is intended for First Person play. While in first person, you will be able to move freely, and one of two effects will be applied to your screen. While in third person, you will be unable to move, but will be able to see clearly. The advantage of this mode is that you will be able to clearly see yourself in scenes (Sex, animations, etc), while still being forced to endure the blindfold to advance gameplay.\nLeeche's mode applies a dof-based blindfold effect constantly, and is intended for third person play.\nDefault:"+blindfoldList[blindfoldModeDefault])
+	elseIf (option == DevicesUnderneathSlotOID)
+		SetInfoText("Configure which slot the hidden (Device / Equipment) Hider operates on. It doesn't matter what slot is set, though a slot must be set. If you set this to the same slot as a slot that is being used by a device, bad things will happen. Don't touch this unless you know what you're doing.\nDefault: "+SlotMasks[DevicesUnderneathSlotDefault])
 	elseIf (option == animsRegisterOID)
 		SetInfoText("Reregister animations provided by this mod.")
 	elseIf (option == npcMessagesOID)
@@ -823,6 +851,8 @@ Event OnOptionHighlight(int option)
 		SetInfoText("Enable/disable the Masturbate On Belt Removal event that occurs when the belt is voluntarily unequipped while over a certain arousal threshold.\nDefault:"+MasturbateOnBeltRemovalDefault)
 	elseIf (option == ssWarningMessagesOID)
 		SetInfoText("Enable/disable warning messages prior to Surreptitious Streets events. This option will give provide a way to avoid traps / capture events in an immersion friendly manner, without disabling them all-together.\nDefault:"+ssWarningMessagesDefault)
+	elseIf (option == UseQueueNiNodeOID)
+		SetInfoText("Toggles the use of QueueNiNode after Item Equip/Unequips. The advantage of QueueNiNode is that it will apply changes while you're in your inventory, and won't have an equip/unequip sound. This will work fine for some users, but for others will cause the game to lag briefly after an equip/unequip takes place.\nDefault:"+UseQueueNiNodeDefault)
 	elseIf (option == numNpcsOID)
 		SetInfoText("Configure the number of nearby belted NPCs (Per Area) that will be processed by event polling. Set to 0 to disable altogether. Higher values will increase script load.\nDefault:"+numNpcsDefault)
 	elseIf (option == ifpOID)
