@@ -103,7 +103,7 @@ Function ApplySlotmask()
 		SlotMask = 0
 	EndIf
 	zad_DeviceHiderAA.SetSlotMask(SlotMask)
-	; libs.Log("Set slot mask to ["+SlotMask+"]: "+zad_DeviceHiderAA.GetSlotMask())
+	libs.Log("Set slot mask to ["+SlotMask+"]: "+zad_DeviceHiderAA.GetSlotMask())
 	if libs.Config.UseQueueNiNode && !libs.PlayerRef.IsOnMount() ; Warning not to do this if mounted in Actor.psc
 		; libs.Log("Using NiNode to update")
 		libs.PlayerRef.QueueNiNodeUpdate()
@@ -134,10 +134,10 @@ Function UpdateSlotmask(int index, int slot, bool equipOrUnequip)
 				SlotMaskUsage[index+i] = SlotMaskUsage[index+i] + 1
 			Else
 				SlotMaskUsage[index+i] = SlotMaskUsage[index+i] - 1
-				if SlotMaskUsage[index+i] <= 1
-					SlotMaskUsage[index+i] = 0
-					SlotMask = SlotMask - SlotMaskFilters[index+i]
-				EndIf
+				; if SlotMaskUsage[index+i] <= 1
+				; 	SlotMaskUsage[index+i] = 0
+				SlotMask = SlotMask - SlotMaskFilters[index+i]
+				; EndIf
 			EndIf
 		EndIf
 		i += 1
