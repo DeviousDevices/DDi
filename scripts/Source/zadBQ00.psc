@@ -426,10 +426,10 @@ Function RetrieveArmbinders(actor[] originalActors)
 	EndWhile
 EndFunction
 
-
 function Logic(int threadID, bool HasPlayer)
 	sslThreadController Controller = Sexlab.ThreadSlots.GetController(threadID)
 	actor[] originalActors = Controller.Positions
+
 	int numBeltedActors = CountRestrictedActors(originalActors, libs.zad_PermitVaginal, libs.zad_DeviousBelt)
 	int numAnalBeltedActors = CountRestrictedActors(originalActors, libs.zad_PermitAnal, libs.zad_DeviousBelt)
 	int numGaggedActors = CountRestrictedActors(originalActors, libs.zad_PermitOral, libs.zad_DeviousGag)
@@ -470,9 +470,9 @@ function Logic(int threadID, bool HasPlayer)
 		libs.Log("Original animation (" + previousAnim.name + ") does not conflict. Done.")
 		return
 	EndIf
+
 	actor[] actors
 	actor[] solos
-
 	int actorIter = 0
 	int currentActorCount = originalActors.length
 
@@ -486,6 +486,7 @@ function Logic(int threadID, bool HasPlayer)
 		Endif
 		actorIter += 1
 	EndWhile
+
 	if actors.length == 1;  && !actors[0].WornHasKeyword(zad_DeviousDevice); Abusing belted npc? ;XXX2-SrendeVeladarius
 		; Slot 0 is (almost) always the female role. Just need to rearrange actors, I think?
 		if solos.length > 0
@@ -497,27 +498,56 @@ function Logic(int threadID, bool HasPlayer)
 			actors = tmp
 		EndIf
 	Endif
+
 	libs.Log("Total actors: " + originalActors.length + ". Participating Actors: " + actors.length + ". Animation: " + previousAnim.name)
 	sslBaseAnimation[] anims = FindValidAnimations(controller, actors.length, previousAnim, permitOral, permitVaginal, permitAnal, permitBoobjob, numBoundActors, numExtraTags, ExtraTags)
 	if anims.length <= 0
 		libs.Log("No animations available! Trying fallbacks...")
 	EndIf
-	if anims.length <=0 && actors.length >=3 ; No anims, probably too many actors.
-		; Try removing actors, and shufflign them to solo scenes.
-		libs.Log("Trying to resize actors...")
-		SolveActorAnimations(controller, actors, solos, anims, previousAnim, permitOral, permitVaginal, permitAnal, permitBoobjob, numBoundActors, NumExtraTags, ExtraTags)
-	EndIf
-	if anims.length <= 0 && isBound ; No anims, while bound.
-		; Still no animations, after resizing actors. Drop armbinders, and try again.
-		libs.Log("Removing armbinders, Trying to resize actors...")
-		StoreArmbinders(actors)
-		numBoundActors = 0
-		isBound = False
-		anims = FindValidAnimations(controller, actors.length, previousAnim, permitOral, permitVaginal, permitAnal, permitBoobjob, numBoundActors, numExtraTags, ExtraTags)
-		if anims.length <= 0
-			SolveActorAnimations(controller, actors, solos, anims, previousAnim, permitOral, permitVaginal, permitAnal, permitBoobjob, numBoundActors, NumExtraTags, ExtraTags)
+
+	int workaroundID = 0
+	int numWorkarounds = 2
+	actor[] actorsBak = actors
+	; This implementation is a workaround for papyrus not properly supporting pass-by-reference arrays.
+	while anims.length <= 0 && workaroundID < numWorkarounds
+		actors = actorsBak
+		if workaroundID == 0 && actors.length >=3
+			; Try removing actors, and shuffling them to solo scenes.
+			libs.Log("Trying to resize actors...")
 		EndIf
-	EndIf
+		if workaroundID == 1 && isBound ; No anims, while bound.
+			; Still no animations, after resizing actors. Drop armbinders, and try again.
+			libs.Log("Removing armbinders, Trying to resize actors...")
+			StoreArmbinders(actors)
+			numBoundActors = 0
+			isBound = False
+			anims = FindValidAnimations(controller, actors.length, previousAnim, permitOral, permitVaginal, permitAnal, permitBoobjob, numBoundActors, numExtraTags, ExtraTags)
+		EndIf
+		if anims.length <= 0
+			int i = actors.length
+			while i >= 2 && anims.length==0
+				i -= 1
+				libs.Log("Reduced number of actors to " + i)
+				anims = FindValidAnimations(controller, i, previousAnim, permitOral, permitVaginal, permitAnal, permitBoobjob, numBoundActors, numExtraTags, ExtraTags)
+			EndWhile
+			if anims.length >=1
+				libs.Log("Found valid animation. Rebuilding actor lists.")
+				actor[] tmp
+				int j = 0
+				while j < actors.length
+					if j < i
+						tmp = sslUtility.PushActor(actors[j], tmp)
+					Else
+						solos = sslUtility.PushActor(actors[j], solos)
+					Endif
+					j += 1
+				EndWhile
+				actors = tmp
+			EndIf
+		EndIf
+		numWorkarounds += 1
+	EndWhile
+
 	if anims.length <= 0
 		if previousAnim.HasTag("Creature")
 			libs.NotifyPlayer("You are being dry-humped!")
@@ -528,6 +558,8 @@ function Logic(int threadID, bool HasPlayer)
 			Controller.EndAnimation(quickly=true)
 		EndIf
         Endif
+
+        Controller.SetForcedAnimations(anims)
 	if actors.length != originalActors.length || solos.length >= 1
 		libs.Log("Requesting actor change to " + actors.length + " actors.")
 		int i = 0
@@ -536,39 +568,25 @@ function Logic(int threadID, bool HasPlayer)
 			i += 1
 		EndWhile
 		Controller.ChangeActors(actors)
+	Else
+		Controller.SetAnimation()
 	Endif
         libs.Log("Overriding animations.")
-        Controller.SetForcedAnimations(anims)
-	Controller.SetAnimation()
 	Controller.RealignActors()
 	; Process Solo Animations, if any
 	ProcessSolos(solos)
 EndFunction
 
 
-Function SolveActorAnimations(sslThreadController controller, actor[] actors, actor[] solos, sslBaseAnimation[] anims, sslBaseAnimation previousAnim, bool permitOral, bool permitVaginal, bool permitAnal, bool permitBoobjob, int numBoundActors, int NumExtraTags, string[] ExtraTags)
-	; There has to be a better way to do this in papyrus. Missing python :(
-	int i = actors.length
-	while i >= 2 && anims.length==0
-		i -= 1
-		libs.Log("Reduced number of actors to " + i)
-		anims = FindValidAnimations(controller, i, previousAnim, permitOral, permitVaginal, permitAnal, permitBoobjob, numBoundActors, numExtraTags, ExtraTags)
+; Pass by reference isn't working. Verify that it actually works like this, as per papyrus docs...
+function testArrayRef(int[] to)
+	int i = 0
+	while i < to.length
+		to[i] = i * i
+		i += 1
 	EndWhile
-	if anims.length >=1
-		libs.Log("Found valid animation. Rebuilding actor lists.")
-		actor[] tmp
-		int j = 0
-		while j < actors.length
-			if j < i
-				tmp = sslUtility.PushActor(actors[j], tmp)
-			Else
-				solos = sslUtility.PushActor(actors[j], solos)
-			Endif
-			j += 1
-		EndWhile
-		actors = tmp
-	Endif
 EndFunction
+
 
 function ProcessSolos(actor[] solos)
 	int i = solos.length
