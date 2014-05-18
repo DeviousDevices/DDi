@@ -523,7 +523,7 @@ function Logic(int threadID, bool HasPlayer)
 			isBound = False
 			anims = FindValidAnimations(controller, actors.length, previousAnim, permitOral, permitVaginal, permitAnal, permitBoobjob, numBoundActors, numExtraTags, ExtraTags)
 		EndIf
-		if anims.length <= 0
+		if anims.length <= 0 ; No flow-control keywords like continue/break...
 			int i = actors.length
 			while i >= 2 && anims.length==0
 				i -= 1

@@ -840,6 +840,14 @@ Function SendDeviceRemovalEvent(string deviceName, actor akActor)
 	SendDeviceEvent("DeviceRemoved"+deviceName, akActor.GetLeveledActorBase().GetName(), isPlayer)
 EndFunction
 
+Function SendDeviceEquippedEvent(string deviceName, actor akActor)
+	int isPlayer = 0
+	if akActor == PlayerRef
+		isPlayer = 1
+	EndIf
+	SendDeviceEvent("DeviceEquipped"+deviceName, akActor.GetLeveledActorBase().GetName(), isPlayer)
+EndFunction
+
 Function SendDeviceEvent(string eventName, string actorName, int isPlayer)
 	Log("Sending device event "+eventName+"("+actorName+":"+isPlayer+")")
 	SendModEvent(eventName, actorName, isPlayer)
