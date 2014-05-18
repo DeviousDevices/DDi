@@ -142,6 +142,8 @@ Armor Property beltPaddedOpen Auto        	       ; Inventory Device
 Armor Property beltPaddedOpenRendered Auto         ; Internal Device
 Armor Property plugChargeableVag Auto
 Armor Property plugChargeableRenderedVag Auto
+Armor Property plugTrainingVag Auto
+Armor Property plugTrainingRenderedVag Auto
 
 ; Keys
 Key Property chastityKey Auto
@@ -344,6 +346,9 @@ Function ManipulateDevice(actor akActor, armor device, bool equipOrUnequip, bool
 		deviceKeyword = zad_DeviousBelt
 	ElseIf device ==  plugChargeableVag
 		deviceRendered = plugChargeableRenderedVag
+		deviceKeyword = zad_DeviousPlugVaginal
+	ElseIf device ==  plugTrainingVag
+		deviceRendered = plugTrainingRenderedVag
 		deviceKeyword = zad_DeviousPlugVaginal
 	Else
 		Error("ManipulateDevice did not recognize device type that it received as an argument.")
