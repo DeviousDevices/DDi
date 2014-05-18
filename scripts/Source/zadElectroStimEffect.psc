@@ -52,6 +52,9 @@ Event OnEdged(string eventName, string argString, float argNum, form sender)
 EndEvent
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
+	if akTarget != libs.PlayerRef
+		return
+	EndIf
 	Target = akTarget
 	DoRegister()
 EndEvent

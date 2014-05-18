@@ -93,6 +93,9 @@ Event OnEquipped(Actor akActor)
 	akActor.EquipItem(DeviceRendered, true, true)
 	SyncInventory(akActor)
 	libs.DeviceMutex = false
+	if akActor != libs.PlayerRef
+		libs.RepopulateNpcs()
+	EndIf
 	OnEquippedPost(akActor)
 EndEvent
 

@@ -8,7 +8,7 @@ zadBQ00 Property questScript Auto
 Float Property LastUpdateTime Auto
 Bool Property IsProcessing Auto
 
-Function DoRegister()
+Function DoRegisterGameTime()
 	if GetName() == "zadNPCSlots"
 		Debug.Trace("[Zad]: Detected remnant script from NPC system upgrade. Aborting update loop. This is safe to ignore.")
 		return
@@ -23,13 +23,18 @@ Function DoRegister()
 		duration = libs.Config.EventInterval
 	EndIf
 	libs.Log("ZadNpc::DoRegister("+duration+")")
-	RegisterForSingleUpdateGameTime(duration)
+	RegisterForSingleUpdateGameTime(duration) ; Periodic Events
 EndFunction
 
-Event OnInit()
+Function DoRegister()
+	RegisterForUpdate(2.0)
+EndFunction
+
+Function Maintenance()
 	; Quest has been (re)started. Resume waiting from previous time waited.
 	DoRegister()
-EndEvent
+	DoRegisterGameTime()
+EndFunction
 
 Event OnUpdateGameTime()
 	if IsStopping() || IsStopped() ; Sanity check
@@ -51,17 +56,53 @@ Event OnUpdateGameTime()
 			akActor = MonitoredNpcs[i].GetActorReference()
 			if akActor && libs.IsValidActor(akActor)
 				; questScript.ProcessEffects(akActor)
-				if akActor.WornHasKeyword(questScript.zad_DeviousDevice)
-					; When I get to adding more of these, I'll stagger it in the same way I did in zadbq00
+				if akActor.WornHasKeyword(libs.zad_DeviousBelt)
+					; When I get around to adding more of these, I'll stagger it in the same way I did in zadbq00
 					zadBaseEvent horny = libs.EventSlots.GetByName("Horny")
 					if horny && horny.Filter(akActor)
 						horny.Execute(akActor)
 					EndIf
 				Endif
+				if akActor.WornHasKeyword(libs.zad_DeviousPlug)
+					zadBaseEvent vibrate = libs.EventSlots.GetByName("Vibration")
+					if vibrate && vibrate.Filter(akActor)
+						vibrate.Execute(akActor)
+					EndIf
+				EndIf
+			EndIf
+		EndIf
+		i += 1
+	EndWhile
+	DoRegisterGameTime()
+	IsProcessing = False
+EndEvent
+
+
+Event OnUpdate()
+	int i = 0
+	actor akActor
+	while i < libs.Config.NumNpcs
+		if MonitoredNpcs[i]
+			akActor = MonitoredNpcs[i].GetActorReference()
+			if akActor && libs.IsValidActor(akActor)
+				ProcessGagEffect(akActor)
+				ProcessArmbinderEffect(akActor)
 			EndIf
 		EndIf
 		i += 1
 	EndWhile
 	DoRegister()
-	IsProcessing = False
 EndEvent
+
+
+Function ProcessGagEffect(actor akActor)
+	if libs.ActorHasKeyword(akActor, libs.zad_DeviousGag)
+		libs.ApplyGagEffect(akActor)
+	EndIf
+EndFunction
+
+Function ProcessArmbinderEffect(actor akActor)
+	if libs.ActorHasKeyword(akActor, libs.zad_DeviousArmbinder)
+		libs.ApplyArmbinderAnim(akActor)
+	EndIf
+EndFunction

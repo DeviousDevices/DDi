@@ -66,6 +66,9 @@ EndFunction
 
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
+	if akTarget != libs.PlayerRef
+		return
+	EndIf
 	libs.Log("OnEffectStart(Chargeable)")
 	Target = akTarget
 	Terminate = False

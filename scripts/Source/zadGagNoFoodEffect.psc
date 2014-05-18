@@ -14,6 +14,9 @@ Keyword Property zad_PermitOral Auto
 bool panelGagOpen = false
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
+	if akTarget != libs.PlayerRef
+		return
+	EndIf
 	libs.Log("OnEffectStart(gag-noFood)")
 	target = akTarget
 	UpdateState()

@@ -67,6 +67,8 @@ Idle Property DDZaZAPCArmBZaDH01 Auto
 Idle Property DDZaZAPCArmBZaDH02  Auto
 Idle Property DDZaZAPCArmBZaDH03 Auto
 
+; Armbinder Offset Idle
+Idle Property ArmbinderIdle Auto
 
 ; All standard devices, at this time. Shorthand for mods, and to avoid the hassle of re-adding these as properties for other scripts.
 ; If you're using a custom device, you'll need to use EquipDevice, rather than the shorthand ManipulateDevice.
@@ -1258,18 +1260,21 @@ EndFunction
 
 
 Bool Function ShouldEdgeActor(actor akActor)
-	if akActor.HasMagicEffectWithKeyword(zad_EffectEdgeOnly)
+	if ActorHasKeyword(akActor, zad_EffectEdgeOnly)
 		return true
-	ElseIf akActor.HasMagicEffectWithKeyword(zad_EffectEdgeRandom) && Utility.RandomInt() >= 25
+	ElseIf ActorHasKeyword(akActor, zad_EffectEdgeRandom) && Utility.RandomInt() >= 25
 		return true
 	EndIf
 	return false
 EndFunction
 
+Bool Function ActorHasKeyword(actor akActor, keyword kwd)
+	return (akActor.HasMagicEffectWithKeyword(kwd) || akActor.WornHasKeyword(kwd))
+EndFunction
 
 Function SpellCastVibrate(Actor akActor, Form tmp)
 	Spell theSpell = (tmp as Spell)
-	if (akActor.WornHasKeyword(zad_DeviousBelt) || akActor.WornHasKeyword(zad_EffectPossessed)) && akActor.WornHasKeyword(zad_DeviousPlug) && akActor.HasMagicEffectWithKeyword(zad_EffectVibrateOnSpellCast)
+	if (akActor.WornHasKeyword(zad_DeviousBelt) || akActor.WornHasKeyword(zad_EffectPossessed)) && akActor.WornHasKeyword(zad_DeviousPlug) && ActorHasKeyword(akActor, zad_EffectVibrateOnSpellCast)
 		SendModEvent("EventOnCast")
 		Log("OnSpellCast()")
 		if !Config.HardcoreEffects && akActor == PlayerRef && akActor.GetCombatState() >= 1
@@ -1290,7 +1295,7 @@ Function SpellCastVibrate(Actor akActor, Form tmp)
 			vibStrength = 2
 			duration = 5
 		EndIf
-		if akActor.HasMagicEffectWithKeyword(zad_EffectTrainOnSpellCast)
+		if ActorHasKeyword(akActor, zad_EffectTrainOnSpellCast)
 			TrainingViolation(akActor, "SpellCast");
 			if vibStrength <= 1
 				vibStrength = 3
@@ -1396,7 +1401,6 @@ int Function GetVibrating(actor akActor)
 	return akActor.GetFactionRank(zadVibratorFaction)
 EndFunction
 
-
 Function ApplyGagEffect(actor akActor)
 	if (GetPhonemeModifier(akActor, 0, 1) != 100 || GetPhonemeModifier(akActor, 0, 11) != 70) && GetPhonemeModifier(akActor, 0, 0) != 70 ; Last check is for vibration mouth expressions. HoC
 		SetPhonemeModifier(akActor, 0, 1, 100)
@@ -1433,7 +1437,7 @@ Function RepopulateNpcs()
 	EndIf
 	repopulateMutex=true
 	Log("RepopulateNpcs()")
-	if Utility.GetCurrentRealTime() - lastRepopulateTime <= 15
+	if Utility.GetCurrentRealTime() - lastRepopulateTime <= 5
 		Log("Aborting repopulation of NPC slots: Hit throttle.")
 		repopulateMutex=false
 		return
@@ -1553,5 +1557,36 @@ EndFunction
 Function UpdateArousalTimerate(actor akActor, float val)
 	if Aroused.GetActorTimerate(akActor) <= 50.0
 		Aroused.UpdateActorTimeRate(akActor, val)
+	EndIf
+EndFunction
+
+
+Function ApplyArmbinderAnim(actor akActor, idle theIdle = None)
+	if theIdle == None
+		theIdle = ArmbinderIdle
+	EndIf
+	if akActor.GetEquippedWeapon()
+		akActor.UnequipItem(akActor.GetEquippedWeapon(), false, true)
+	EndIf
+	if akActor.GetEquippedWeapon(True)
+		akActor.UnequipItem(akActor.GetEquippedWeapon(true), false, true)
+	EndIf
+	If akActor.GetEquippedShield()
+		akActor.UnequipItem(akActor.GetEquippedShield(), false, true)
+	EndIf
+	if akActor.GetEquippedSpell(0)
+		akActor.UnequipSpell(akActor.GetEquippedSpell(0), 0)
+	EndIf
+	if akActor.GetEquippedSpell(1)
+		akActor.UnequipSpell(akActor.GetEquippedSpell(1), 1)
+	EndIf
+	if akActor.IsWeaponDrawn()
+		akActor.SheatheWeapon()
+	EndIf
+	if akActor.IsOnMount()
+		akActor.Dismount()
+	EndIf
+	if IsValidActor(akActor) && !IsAnimating(akActor)
+		akActor.PlayIdle(theIdle)
 	EndIf
 EndFunction

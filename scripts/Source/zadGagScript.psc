@@ -8,7 +8,7 @@ Message Property zad_GagPickLockSuccessMsg Auto
 Message Property zad_GagArmsTiedMsg Auto
 Message Property zad_GagBruteForceArmsTiedMsg Auto
 Message Property zad_GagBruteForceMsg Auto
-
+import MfgConsoleFunc
 
 Function OnEquippedPre(actor akActor, bool silent=false)
 	if !silent
@@ -80,4 +80,17 @@ Function DeviceMenuBruteForce()
 	Else
 		zad_GagBruteForceMsg.show()
 	EndIf
+EndFunction
+
+
+
+Function OnRemoveDevice(actor akActor)
+	if !libs.IsAnimating(akActor)
+		akActor.ClearExpressionOverride()
+		ResetPhonemeModifier(akActor)
+	EndIf
+EndFunction
+
+Function OnEquippedPost(actor akActor)
+	libs.ApplyGagEffect(akActor)
 EndFunction

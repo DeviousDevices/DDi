@@ -169,9 +169,6 @@ EndFunction
 Function OnEquippedPost(actor akActor)
 	float modRate = libs.GetModifiedRate(akActor)
         libs.Log("original exposure rate was " + libs.GetOriginalRate(akActor) + ". Setting to " + modRate + ".")
-	if akActor != libs.PlayerRef
-		libs.RepopulateNpcs()
-	EndIf
         Aroused.SetActorExposureRate(akActor, modRate)
 EndFunction
  

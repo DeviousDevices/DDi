@@ -31,27 +31,6 @@ EndFunction
 
 
 Event OnUpdate()
-	if target.GetEquippedWeapon()
-		target.UnequipItem(target.GetEquippedWeapon(), false, true)
-	EndIf
-	if target.GetEquippedWeapon(True)
-		target.UnequipItem(target.GetEquippedWeapon(true), false, true)
-	EndIf
-	If target.GetEquippedShield()
-		target.UnequipItem(target.GetEquippedShield(), false, true)
-	EndIf
-	if target.GetEquippedSpell(0)
-		target.UnequipSpell(target.GetEquippedSpell(0), 0)
-	EndIf
-	if target.GetEquippedSpell(1)
-		target.UnequipSpell(target.GetEquippedSpell(1), 1)
-	EndIf
-	if target.IsWeaponDrawn()
-		target.SheatheWeapon()
-	EndIf
-	if target.IsOnMount()
-		target.Dismount()
-	EndIf
 	if target == libs.PlayerRef && ((Game.IsMenuControlsEnabled() && libs.config.HardcoreEffects) || Game.IsFightingControlsEnabled() )
 		if !libs.IsAnimating(target)
 			libs.UpdateControls()
@@ -68,6 +47,9 @@ EndEvent
 
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
+	if akTarget != libs.PlayerRef
+		return
+	EndIf
 	libs.Log("OnEffectStart(): Armbinder")
 	target = akTarget
 	Terminate = False
@@ -134,7 +116,7 @@ EndEvent
 
 Function PlayBoundIdle(idle theIdle)
 	if !Terminate && libs.IsValidActor(target) && !libs.IsAnimating(target) && !target.IsInFaction(libs.SexLabAnimatingFaction) 
-		target.PlayIdle(theIdle)
+		libs.ApplyArmbinderAnim(target, theIdle)
 	EndIf
 EndFunction
 

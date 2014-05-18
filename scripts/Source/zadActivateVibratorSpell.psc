@@ -19,7 +19,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 		return
 	EndIf
 	zadMagic.IsRunning = True ; Initialize immediately to mitigate probable race condition.
-	if akTarget.HasMagicEffectWithKeyword(libs.zad_EffectVibratingVeryStrong) || akTarget.HasMagicEffectWithKeyword(libs.zad_EffectVibratingStrong) || akTarget.HasMagicEffectWithKeyword(libs.zad_EffectVibrating) || akTarget.HasMagicEffectWithKeyword(libs.zad_EffectVibratingWeak) || akTarget.HasMagicEffectWithKeyword(libs.zad_EffectVibratingVeryWeak) || akTarget.HasMagicEffectWithKeyword(libs.zad_EffectVibratingRandom)
+	if libs.ActorHasKeyword(akTarget, libs.zad_EffectVibratingVeryStrong) || libs.ActorHasKeyword(akTarget, libs.zad_EffectVibratingStrong) || libs.ActorHasKeyword(akTarget, libs.zad_EffectVibrating) || libs.ActorHasKeyword(akTarget, libs.zad_EffectVibratingWeak) || libs.ActorHasKeyword(akTarget, libs.zad_EffectVibratingVeryWeak) || libs.ActorHasKeyword(akTarget, libs.zad_EffectVibratingRandom)
 		zadMagic.StartChannel(akCaster, akTarget)
 		libs.VibrateEffect(akTarget, Strength, 120, teaseOnly=libs.ShouldEdgeActor(akTarget))
 		zadMagic.TerminateChannel()

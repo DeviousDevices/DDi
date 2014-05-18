@@ -3,10 +3,10 @@ scriptName zadEventVibrate extends zadBaseLinkedEvent
 Int Function GetChanceModified(actor akActor, int chanceMod)
 	; include both tags for truely active effects
 	float ret = Probability
-	if akActor.HasMagicEffectWithKeyword(libs.zad_EffectLively)
+	if libs.ActorHasKeyword(akActor, libs.zad_EffectLively)
 		ret *= 1.5
 	EndIf
-	if akActor.HasMagicEffectWithKeyword(libs.zad_EffectVeryLively)
+	if libs.ActorHasKeyword(akActor, libs.zad_EffectVeryLively)
 		ret *= 2
 	EndIf
 	return ((ret - Probability) as Int)
@@ -25,24 +25,24 @@ Bool Function Filter(actor akActor, int chanceMod=0)
 EndFunction
 
 bool Function HasKeywords(actor akActor)
-	return (akActor.HasMagicEffectWithKeyword(libs.zad_EffectVibratingRandom) || akActor.HasMagicEffectWithKeyword(libs.zad_EffectVibratingVeryStrong) || akActor.HasMagicEffectWithKeyword(libs.zad_EffectVibratingStrong) || akActor.HasMagicEffectWithKeyword(libs.zad_EffectVibrating) || akActor.HasMagicEffectWithKeyword(libs.zad_EffectVibratingWeak) || akActor.HasMagicEffectWithKeyword(libs.zad_EffectVibratingVeryWeak))
+	return (libs.ActorHasKeyword(akActor, libs.zad_EffectVibratingRandom) || libs.ActorHasKeyword(akActor, libs.zad_EffectVibratingVeryStrong) || libs.ActorHasKeyword(akActor, libs.zad_EffectVibratingStrong) || libs.ActorHasKeyword(akActor, libs.zad_EffectVibrating) || libs.ActorHasKeyword(akActor, libs.zad_EffectVibratingWeak) || libs.ActorHasKeyword(akActor, libs.zad_EffectVibratingVeryWeak))
 EndFunction
 
 Function Execute(actor akActor)
 	;libs.Log("VibrateEffect("+chance+")")
 	int vibStrength = 0
 	int duration = 0
-		if akActor.HasMagicEffectWithKeyword(libs.zad_EffectVibratingRandom)
+		if libs.ActorHasKeyword(akActor, libs.zad_EffectVibratingRandom)
 			vibStrength = utility.RandomInt(1,5)
-		elseif akActor.HasMagicEffectWithKeyword(libs.zad_EffectVibratingVeryStrong)
+		elseif libs.ActorHasKeyword(akActor, libs.zad_EffectVibratingVeryStrong)
 			vibStrength = 5
-		elseIf akActor.HasMagicEffectWithKeyword(libs.zad_EffectVibratingStrong)
+		elseIf libs.ActorHasKeyword(akActor, libs.zad_EffectVibratingStrong)
 			vibStrength = 4
-		elseIf akActor.HasMagicEffectWithKeyword(libs.zad_EffectVibrating)
+		elseIf libs.ActorHasKeyword(akActor, libs.zad_EffectVibrating)
 			vibStrength = 3
-		elseIf akActor.HasMagicEffectWithKeyword(libs.zad_EffectVibratingWeak)
+		elseIf libs.ActorHasKeyword(akActor, libs.zad_EffectVibratingWeak)
 			vibStrength = 2
-		elseIf akActor.HasMagicEffectWithKeyword(libs.zad_EffectVibratingVeryWeak)
+		elseIf libs.ActorHasKeyword(akActor, libs.zad_EffectVibratingVeryWeak)
 			vibStrength = 1
 		else
 			return

@@ -40,6 +40,9 @@ Function ApplyGagEffect()
 EndFunction
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
+	if akTarget != libs.PlayerRef
+		return
+	EndIf
 	libs.Log("OnEffectStart(gag)")
 	target = akTarget
 	Terminate = False

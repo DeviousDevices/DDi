@@ -105,6 +105,9 @@ EndFunction
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	if akTarget != libs.PlayerRef
+		return
+	EndIf
+	if akTarget != libs.PlayerRef
 		libs.Log("OnEffectStart(Training): Not player, doing nothing.")
 		return
 	EndIf

@@ -151,6 +151,7 @@ Function Maintenance()
 	libs.DeviceMutex = false
 	libs.repopulateMutex = false
 	libs.lastRepopulateTime = 0.0
+	libs.zadNPCQuest.Maintenance()
 	libs.RepopulateNpcs()
 	if !libs.PlayerRef.WornHasKeyword(libs.zad_DeviousArmbinder)
 		abq.EnableStruggling()

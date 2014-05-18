@@ -73,6 +73,9 @@ EndFunction
 
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
+	if akTarget != libs.PlayerRef
+		return
+	EndIf
 	libs.Log("OnEffectStart(blindfold)")
 	target = akTarget
 	if akTarget != libs.PlayerRef

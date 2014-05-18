@@ -194,7 +194,7 @@ EndFunction
 Function SetupSlotMasks()
 	SlotMasks = new String[33]
 	SlotMaskValues = new int[33]
-	SlotMasks[0] = "Empty"
+	SlotMasks[0] = "None "
 	int i = 1
 	while i <= 32
 		SlotMasks[i] = "Slot " + (30 + i - 1)

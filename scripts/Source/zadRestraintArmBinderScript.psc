@@ -29,6 +29,7 @@ Function OnEquippedPost(actor akActor)
 		abq.EnableStruggling()
 		SetCustomMessage()
 	EndIf
+	libs.ApplyArmbinderAnim(akActor)
 EndFunction
 
 
@@ -76,5 +77,8 @@ EndFunction
 Function OnRemoveDevice(actor akActor)
 	if akActor == libs.PlayerRef
 		SetDefaultMessages()
+	EndIf
+	if !libs.IsAnimating(akActor)
+		Debug.SendAnimationEvent(akActor, "IdleForceDefaultState")
 	EndIf
 EndFunction
