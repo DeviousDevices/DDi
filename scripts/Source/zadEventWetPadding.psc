@@ -1,8 +1,8 @@
 scriptName zadEventWetPadding extends zadBaseEvent
 
-Bool Function Filter(actor akActor, int chanceMod=0)
+bool Function HasKeywords(actor akActor)
 ; There's currently no material keywords. Hmm. This will fire on iron belts for the moment.
-	 return (akActor.WornHasKeyword(libs.zad_DeviousBelt) && Parent.Filter(akActor, chanceMod))
+	 return (akActor.WornHasKeyword(libs.zad_DeviousBelt) )
 EndFunction
 
 Function Execute(actor akActor)

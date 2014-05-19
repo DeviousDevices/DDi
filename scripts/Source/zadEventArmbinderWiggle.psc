@@ -1,7 +1,7 @@
 scriptName zadEventArmbinderWiggle extends zadBaseEvent
 
-Bool Function Filter(actor akActor, int chanceMod=0)
-	 return (akActor.WornHasKeyword(libs.zad_DeviousArmbinder) && Parent.Filter(akActor, chanceMod))
+bool Function HasKeywords(actor akActor)
+	 return (akActor.WornHasKeyword(libs.zad_DeviousArmbinder) )
 EndFunction
 
 Function Execute(actor akActor)

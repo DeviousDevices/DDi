@@ -35,7 +35,12 @@ Int Property DefaultProbability Auto ; Base Event Probability.
 ; Override this function to change conditions on which your event can fire. Don't forget to && your return with Parent.Filter(akActor, chanceMod)
 ; Return true if your event should execute, false if it should not.
 Bool Function Filter(actor akActor, int chanceMod = 0)
-	 return (Utility.RandomInt() <= (Probability + ChanceMod))
+	 return (HasKeywords(akActor) && Utility.RandomInt() <= (Probability + ChanceMod))
+EndFunction
+
+; Override this function instead of Filter, if your event does not require more advanced filtering.
+bool Function HasKeywords(actor akActor)
+	return true
 EndFunction
 
 ; Override this function to change behavior when your event is called.
@@ -50,7 +55,9 @@ EndFunction
 ;============================================================
 ; Placeholder function for linked effects, and the like. 
 Function Eval(actor akActor)
-	Execute(akActor)
+	if HasKeywords(akActor)
+		Execute(akActor)
+	EndIf
 EndFunction
 
 Event OnPlayerLoadGame()

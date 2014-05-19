@@ -1,7 +1,7 @@
 scriptName zadEventMounted extends zadBaseEvent
 
-Bool Function Filter(actor akActor, int chanceMod=0)
-	 return (akActor.WornHasKeyword(libs.zad_DeviousBelt) && akActor.IsOnMount() && Parent.Filter(akActor, chanceMod))
+bool Function HasKeywords(actor akActor)
+	 return (akActor.WornHasKeyword(libs.zad_DeviousBelt) && akActor.IsOnMount() )
 EndFunction
 
 Function Execute(actor akActor)

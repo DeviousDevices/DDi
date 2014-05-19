@@ -1,7 +1,7 @@
 scriptName zadEventArmorRestraints extends zadBaseEvent
 
-Bool Function Filter(actor akActor, int chanceMod=0)
-	 return (akActor.WornHasKeyword(libs.zad_Lockable) && akActor.GetWornForm(0x00000004) != None && Parent.Filter(akActor, chanceMod))
+bool Function HasKeywords(actor akActor)
+	 return (akActor.WornHasKeyword(libs.zad_Lockable) && akActor.GetWornForm(0x00000004) != None )
 EndFunction
 
 Function Execute(actor akActor)

@@ -1,7 +1,7 @@
 scriptName zadEventTightBra extends zadBaseEvent
 
-Bool Function Filter(actor akActor, int chanceMod=0)
-	 return (akActor.WornHasKeyword(libs.zad_DeviousBra) && Parent.Filter(akActor, chanceMod))
+bool Function HasKeywords(actor akActor)
+	 return (akActor.WornHasKeyword(libs.zad_DeviousBra) )
 EndFunction
 
 Function Execute(actor akActor)

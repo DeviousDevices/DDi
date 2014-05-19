@@ -60,13 +60,13 @@ Event OnUpdateGameTime()
 					; When I get around to adding more of these, I'll stagger it in the same way I did in zadbq00
 					zadBaseEvent horny = libs.EventSlots.GetByName("Horny")
 					if horny && horny.Filter(akActor)
-						horny.Execute(akActor)
+						horny.Eval(akActor)
 					EndIf
 				Endif
 				if akActor.WornHasKeyword(libs.zad_DeviousPlug)
 					zadBaseEvent vibrate = libs.EventSlots.GetByName("Vibration")
 					if vibrate && vibrate.Filter(akActor)
-						vibrate.Execute(akActor)
+						vibrate.Eval(akActor)
 					EndIf
 				EndIf
 			EndIf

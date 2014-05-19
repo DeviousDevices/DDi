@@ -11,7 +11,11 @@ Bool Function Filter(actor akActor, int chanceMod=0)
 	ElseIf arousal >= libs.ArousalThreshold("Horny")
 		chanceMod += 10
 	EndIf
-	 return ((akActor.WornHasKeyword(libs.zad_DeviousBelt) || akActor.WornHasKeyword(libs.zad_DeviousHarness)) && (arousal >= libs.ArousalThreshold("Desire") && Parent.Filter(akActor, (chanceMod * combatModifier) as Int)))
+	 return (arousal >= libs.ArousalThreshold("Desire")) && Parent.Filter(akActor, (chanceMod * combatModifier) as Int)
+EndFunction
+
+bool Function HasKeywords(actor akActor)
+	return (akActor.WornHasKeyword(libs.zad_DeviousBelt) || akActor.WornHasKeyword(libs.zad_DeviousHarness))
 EndFunction
 
 Function Execute(actor akActor)

@@ -1,7 +1,7 @@
 scriptName zadEventBlindfoldTrip extends zadBaseEvent
 
-Bool Function Filter(actor akActor, int chanceMod=0)
-	 return (akActor.WornHasKeyword(libs.zad_DeviousBlindfold) && Parent.Filter(akActor, chanceMod))
+bool Function HasKeywords(actor akActor)
+	 return (akActor.WornHasKeyword(libs.zad_DeviousBlindfold) )
 EndFunction
 
 Function Execute(actor akActor)

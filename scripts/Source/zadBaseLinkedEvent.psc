@@ -1,9 +1,5 @@
 scriptname zadBaseLinkedEvent extends zadBaseEvent
 
-; Linked events require this function to be extended. This should be used in your normal Filter() function (See zadEventHealth.psc for an example).
-bool Function HasKeywords(actor akActor)
-	return false
-EndFunction
 
 Function OnLoad()
 	RegisterForModEvent("DeviousEventLinked","OnLinkedEffect")
