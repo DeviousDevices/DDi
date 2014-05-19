@@ -36,6 +36,8 @@ Keyword Property zad_PermitOral Auto
 Keyword Property zad_PermitAnal Auto
 Keyword Property zad_PermitVaginal Auto
 
+Keyword Property zad_InventoryDevice Auto
+Keyword Property zad_BlockGeneric Auto ; Block generic removal of this device.
 ;Idles
 Idle Property DDZazHornyA Auto
 Idle Property DDZazHornyB Auto
@@ -361,6 +363,47 @@ Function ManipulateDevice(actor akActor, armor device, bool equipOrUnequip, bool
 	EndIf
 EndFunction
 
+;;; Thanks to lordescobar666 for the method used by these two functions:
+; As manipulate device, but will operate on any device lacking the zad_BlockGeneric keyword: Even those who's rendered device / keyword you don't know.
+Function ManipulateGenericDevice(actor akActor, armor device, bool equipOrUnequip, bool skipEvents = false)
+	ObjectReference tmpORef = akActor.placeAtMe(device, abInitiallyDisabled = true)
+	zadEquipScript tmpZRef = tmpORef as zadEquipScript
+	if tmpZRef != none
+		if tmpZref.HasKeyword(zad_BlockGeneric)
+			Warn("ManipulateGenericDevice called on armor with 'Block Generic Removal' keyword: zad_BlockGeneric")
+		Else
+			if equipOrUnequip
+				EquipDevice(akActor, device, tmpZRef.deviceRendered, tmpZRef.zad_DeviousDevice, skipEvents = skipEvents)
+			else
+				RemoveDevice(akActor, device, tmpZRef.deviceRendered, tmpZRef.zad_DeviousDevice, skipEvents = skipEvents)
+			EndIf
+		EndIf
+	Else
+		Warn("ManipulateGenericDevice received non DD argument.")
+	Endif
+    tmpORef.delete()
+EndFunction
+
+; Returns the currently equipped inventory device matching the supplied keyword.
+Armor Function GetWornDevice(Actor akActor, Keyword kw)
+	Armor retval = none
+	Int iFormIndex = akActor.GetNumItems()
+	bool breakFlag = false
+	While iFormIndex > 0 && !breakFlag
+		iFormIndex -= 1
+		Form kForm = akActor.GetNthForm(iFormIndex)
+		If kForm.HasKeyword(zad_InventoryDevice) && akActor.IsEquipped(kForm)
+			ObjectReference tmpORef = akActor.placeAtMe(kForm, abInitiallyDisabled = true)
+			zadEquipScript tmpZRef = tmpORef as zadEquipScript
+			if tmpZRef != none && tmpZRef.zad_DeviousDevice == kw && akActor.GetItemCount(tmpZRef.deviceRendered) > 0
+				retval = kForm as Armor
+				breakFlag = true
+			Endif
+			tmpORef.delete()
+		EndIf
+	EndWhile
+	return retval
+EndFunction
 
 ; Equip device on actor.
 ;;; Function EquipDevice(actor akActor, ; The actor that this should operate on.
