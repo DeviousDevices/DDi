@@ -119,6 +119,9 @@ EndFunction
 
 Event OnUpdateGameTime()
 	actor akActor = libs.PlayerRef
+	if libs.PlayerRef.WornHasKeyword(libs.zad_DeviousPlug)
+		libs.UpdateArousalTimerate(akActor, 1.75)
+	EndIf
 	if !libs.GlobalEventFlag
 		libs.Log("Event processing is currently disabled.")
 		return
@@ -132,9 +135,6 @@ Event OnUpdateGameTime()
 			OnUpdateGameTime()
 			return
 		EndIf
-	EndIf
-	if libs.PlayerRef.WornHasKeyword(libs.zad_DeviousPlug)
-		libs.UpdateArousalTimerate(akActor, 0.75)
 	EndIf
 	DoRegister()
 EndEvent

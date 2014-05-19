@@ -24,7 +24,7 @@ Actor Property target Auto
 bool Property Terminate Auto
 
 Function DoRegister()
-	if !Terminate
+	if !Terminate && target
 		RegisterForSingleUpdate(0.75)
 	EndIf
 EndFunction
@@ -121,8 +121,10 @@ Function PlayBoundIdle(idle theIdle)
 EndFunction
 
 Event OnCellLoad()
-	PlayBoundIdle(CurrentStandIdle)
-	DoRegister()
+	if target && ! Terminate
+		PlayBoundIdle(CurrentStandIdle)
+		DoRegister()
+	EndIf
 EndEvent
 
 Event OnCellAttach()
@@ -130,8 +132,7 @@ Event OnCellAttach()
 EndEvent
 
 Event OnLoad()
-	PlayBoundIdle(CurrentStandIdle)
-	DoRegister()
+	OnCellLoad
 EndEvent
 
 Event OnUnload()

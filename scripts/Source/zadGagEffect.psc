@@ -14,7 +14,7 @@ Function ClearMFG(actor ActorRef)
 EndFunction
 
 Function DoRegister()
-	if Terminate
+	if Terminate || !target
 		return
 	EndIf
 	RegisterForSingleUpdate(1.0)
@@ -26,7 +26,7 @@ Event OnUpdate()
 EndEvent
 
 Function ApplyGagEffect()
-	if Terminate
+	if Terminate || !target
 		return
 	EndIf
 	if (!Target.Is3DLoaded() || Target.IsDead() || Target.IsDisabled())
@@ -57,8 +57,10 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 EndEvent
 
 Event OnCellLoad()
-	ApplyGagEffect()
-	DoRegister()
+	if target && ! Terminate
+		ApplyGagEffect()
+		DoRegister()
+	EndIf
 EndEvent
 
 Event OnCellAttach()
@@ -66,8 +68,7 @@ Event OnCellAttach()
 EndEvent
 
 Event OnLoad()
-	ApplyGagEffect()
-	DoRegister()
+	OnCellLoad()
 EndEvent
 
 Event OnUnload()
