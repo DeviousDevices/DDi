@@ -19,7 +19,9 @@ bool Function HasKeywords(actor akActor)
 EndFunction
 
 Function Execute(actor akActor)
-	libs.NotifyPlayer("You absent-mindedly allow your hands to wander...")
+	if akActor == libs.PlayerRef
+		libs.NotifyPlayer("You absent-mindedly allow your hands to wander...")
+	EndIf
 	; want to buy table
 	int i = Utility.RandomInt(1,3)
 	Idle anim

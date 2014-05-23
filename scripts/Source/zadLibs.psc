@@ -4,6 +4,7 @@ SexLabFramework property SexLab auto
 ; import sslExpressionLibrary
 import MfgConsoleFunc
 import StringUtil
+import zadNativeFunctions
 
 slaUtilScr Property Aroused Auto
 zadConfig Property Config Auto
@@ -815,14 +816,11 @@ EndFunction
 Function ReEquipExistingDevice(actor akActor, keyword zad_DeviousDevice)
 	int i = akActor.GetNumItems()
 	if akActor.GetItemCount(zad_DeviousDevice)>0 && !akActor.WornHasKeyword(zad_DeviousDevice)
-		Log("ReEquipExistingDevice() is working")
-		while i > 0
-			i -= 1
-			Form f = akActor.GetNthForm(i)
-			if f && f.HasKeyword(zad_DeviousDevice)
-				akActor.EquipItem(f, false, true)
-			EndIf
-		EndWhile
+		Log("ReEquipExistingDevices() is working:" + akActor.GetItemCount(zad_DeviousDevice))
+		Form f = FindMatchingDevice(akActor, zad_DeviousDevice)
+		if f
+			akActor.EquipItem(f, false, true)
+		EndIf
 	Endif
 EndFunction
 

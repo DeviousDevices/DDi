@@ -2,3 +2,15 @@
 /scripts/Source/bak
 /scripts/Source/Min-Notes.txt
 /scripts/Source/*.bat
+/dd_plugin_src/*.user
+/dd_plugin_src/Debug/
+/dd_plugin_src/Release/
+/dd_plugin_src/*.ncb
+/dd_plugin_src/*.suo
+/dd_plugin_src/*.def
+/dd_plugin_src/common
+/dd_plugin_src/skse
+/SKSE/Plugins/*.exp
+/SKSE/Plugins/*.lib
+/SKSE/Plugins/*.pdb
+/SKSE/Plugins/*.ilk

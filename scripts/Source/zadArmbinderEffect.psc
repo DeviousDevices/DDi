@@ -132,7 +132,7 @@ Event OnCellAttach()
 EndEvent
 
 Event OnLoad()
-	OnCellLoad
+	OnCellLoad()
 EndEvent
 
 Event OnUnload()

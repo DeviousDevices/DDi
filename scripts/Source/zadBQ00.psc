@@ -65,6 +65,7 @@ zadNPCQuestScript Property npcs Auto
 zadArmbinderQuestScript Property abq Auto
 zadDeviousMagic Property zadMagic Auto
 zadAssets Property assets Auto
+zadBenchmark Property benchmark Auto
 
 ; Idles
 Idle Property DDBeltedSolo Auto
@@ -106,8 +107,8 @@ function Shutdown(bool silent=false)
     EndIf
 EndFunction
 
-
 Function Maintenance()
+	; benchmark.SetupBenchmarks()
 	float curVersion = libs.GetVersion()
 	if FirstRun
 		libs.Log("New game detected: Not finishing initialization.")
