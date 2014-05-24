@@ -14,21 +14,14 @@
 
 const char* INVALID_FORMAT_STRING = "INVALID FORMAT STRING";
 namespace DeviousDevices {
-  float TestCos(StaticFunctionTag* base, float val) {
-
-    return cos((val * M_PI / 180));
+  BSFixedString GetName(TESForm* thisForm)  {
+    if (!thisForm)
+      return NULL;
+    TESFullName* pFullName = DYNAMIC_CAST(thisForm, TESForm, TESFullName);
+    if (pFullName)
+      return pFullName->name.data;
+    return NULL;
   }
-  
-	BSFixedString GetName(TESForm* thisForm)
-	{
-		if (!thisForm)
-			return NULL;
-		
-		TESFullName* pFullName = DYNAMIC_CAST(thisForm, TESForm, TESFullName);
-		if (pFullName)
-			return pFullName->name.data;
-		return NULL;
-	}
 
   bool FormHasKeyword(StaticFunctionTag* base, TESForm* obj, BGSKeyword* kwd) {
     BGSKeywordForm* keywords = DYNAMIC_CAST(obj, TESForm, BGSKeywordForm);
@@ -36,10 +29,15 @@ namespace DeviousDevices {
       // _MESSAGE("Keywords cast failed.");
       return false;
     }
+    const char* p1, *p2;
     for(int i = 0; i < keywords->numKeywords; ++i) {	
       //_MESSAGE("Comparing %s to %s", keyword->keyword.Get(), kwd->keyword.Get());
-      if (strcmp(keywords->keywords[i]->keyword.Get(), kwd->keyword.Get()) == 0)
-	return true;
+      p1 = keywords->keywords[i]->keyword.Get();
+      p2 = kwd->keyword.Get();
+      if ((p1[0] == p2[0]) && // Compare first byte
+	  (keywords->keywords[i]->keyword.GetLen() == kwd->keyword.GetLen()) && // Compare length
+	  (strcmp(p1, p2) == 0)) // Compare whole string.
+	  return true;
     }
     return false;
   }
@@ -71,15 +69,13 @@ namespace DeviousDevices {
     return NULL;
   }
 
-
-
   bool RegisterFuncs(VMClassRegistry* registry) {
     _MESSAGE("registering functions");
 
-    registry->RegisterFunction(new NativeFunction1<StaticFunctionTag, float, float>("TestCos", "zadNativeFunctions", DeviousDevices::TestCos, registry));
+    //    registry->RegisterFunction(new NativeFunction1<StaticFunctionTag, float, float>("TestCos", "zadNativeFunctions", DeviousDevices::TestCos, registry));
     registry->RegisterFunction(new NativeFunction2<StaticFunctionTag, TESForm*, Actor*, BGSKeyword*>("FindMatchingDevice", "zadNativeFunctions", DeviousDevices::FindMatchingDevice, registry));
 
-    registry->SetFunctionFlags("zadNativeFunctions", "TestCos", VMClassRegistry::kFunctionFlag_NoWait);
+    //    registry->SetFunctionFlags("zadNativeFunctions", "TestCos", VMClassRegistry::kFunctionFlag_NoWait);
     registry->SetFunctionFlags("zadNativeFunctions", "FindMatchingDevice", VMClassRegistry::kFunctionFlag_NoWait);
 
     return true;

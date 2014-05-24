@@ -39,6 +39,7 @@ Bool Function Filter(actor akActor, int chanceMod = 0)
 EndFunction
 
 ; Override this function instead of Filter, if your event does not require more advanced filtering.
+; This function must be used for linked events, or your event will always be called.
 bool Function HasKeywords(actor akActor)
 	return true
 EndFunction

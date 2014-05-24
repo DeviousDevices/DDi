@@ -61,7 +61,7 @@ int Function ShowArmbinderMenu(int MsgChoice=0)
 		if IsLocked
 			if IsLoose
 				zad_ArmBinderRemoveLooseMsg.Show()
-				libs.ManipulateDevice(libs.PlayerRef, libs.Armbinder, false)
+				libs.ManipulateGenericDeviceByKeyword(libs.PlayerRef, libs.zad_DeviousArmbinder, false)
 				libs.SendDeviceRemovalEvent("Armbinder", libs.PlayerRef)
 				libs.Aroused.UpdateActorExposure(libs.PlayerRef,1)
 			Else
@@ -69,7 +69,7 @@ int Function ShowArmbinderMenu(int MsgChoice=0)
 			EndIf
 		Else
 			zad_ArmBinderRemoveUnlockedMsg.Show()
-			libs.ManipulateDevice(libs.PlayerRef, libs.Armbinder, false)
+			libs.ManipulateGenericDeviceByKeyword(libs.PlayerRef, libs.zad_DeviousArmbinder, false)
 			libs.SendDeviceRemovalEvent("Armbinder", libs.PlayerRef)
 			CustomStruggleImpossibleMsg = None
 			CustomStruggleMsg = None
@@ -151,14 +151,14 @@ EndFunction
 
 Function RemoveArmbinder(ObjectReference akSpeaker)
 	libs.Log("RemoveArmbinder()")
-	libs.ManipulateDevice(libs.PlayerRef, libs.ArmBinder, false)
+	libs.ManipulateGenericDeviceByKeyword(libs.PlayerRef, libs.zad_DeviousArmbinder, false)
 EndFunction
 
 
 Function PostRape(ObjectReference akSpeaker)
 	fg.DialogueDone = false
 	libs.Log("PostRape()")
-	libs.ManipulateDevice(libs.PlayerRef, libs.ArmBinder, true)
+	libs.ManipulateGenericDeviceByKeyword(libs.PlayerRef, libs.zad_DeviousArmbinder, true)
 	IsLoose = False
 	StruggleCount = 0
 	IsLocked = true

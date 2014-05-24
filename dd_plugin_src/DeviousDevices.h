@@ -16,7 +16,7 @@
 #include <math.h>
 
 namespace DeviousDevices {
-	float TestCos(StaticFunctionTag* base, float val);
-	//bool ReEquipExistingDevice(StaticFunctionTag* base, TESForm* obj, BGSKeyword kwd);
-	bool RegisterFuncs(VMClassRegistry* registry);
+  //float TestCos(StaticFunctionTag* base, float val);
+  TESForm* FindMatchingDevice(StaticFunctionTag* base, Actor* obj, BGSKeyword* kwd);
+  bool RegisterFuncs(VMClassRegistry* registry);
 }

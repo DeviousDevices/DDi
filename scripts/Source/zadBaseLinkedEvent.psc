@@ -7,15 +7,18 @@ Function OnLoad()
 EndFunction
 
 Function Eval(actor akActor)
+	libs.Log("BaseLinkedEvent::Eval("+Name+")")
 	if (akActor == libs.PlayerRef && akActor.HasMagicEffectWithKeyword(libs.zad_EffectsLinked))
-		SendModEvent("DeviousEventLinked", Name)
+		akActor.SendModEvent("DeviousEventLinked", Name)
 	EndIf
-	Parent.Eval(akActor)
+	if HasKeywords(akActor)
+		Execute(akActor)
+	EndIf
 EndFunction
 
 Event OnLinkedEffect(string eventName, string strArg, float numArg, Form sender)
-	libs.Log("OnLinkedEffect("+Name+")")
-	if HasKeywords(libs.PlayerRef)
+	if strArg != self.Name && HasKeywords(libs.PlayerRef)
+		libs.Log("OnLinkedEffect("+Name+"), called by "+strArg)
 		Execute(libs.PlayerRef)
 	EndIf
 EndEvent

@@ -33,25 +33,26 @@ Event OnKeyDown(Int KeyCode)
 		i = 0
 		libs.Log("Beginning benchmark.")
 		float startTime = Utility.GetCurrentRealTime()
-		while i < 500
+		while i < 2000
 			ReEquipUsingSKSE(libs.PlayerRef, libs.zad_DeviousBelt)
 			i += 1
 		EndWhile
 		float endTime = Utility.GetCurrentRealTime()
 		string msg = "New method took "+ (endTime - startTime) + " seconds."
 		libs.Log(msg)
-		libs.NotifyPlayer(msg, true)
+		libs.NotifyPlayer(msg)
 		startTime = Utility.GetCurrentRealTime()
 		endTime = 0
 		i = 0
-		while i < 500
+		while i < 2000
 			ReEquipUsingPapyrus(libs.PlayerRef, libs.zad_DeviousBelt)
 			i += 1
 		EndWhile
 		endTime = Utility.GetCurrentRealTime()
 		msg = "Old method took "+ (endTime - startTime) + " seconds."
 		libs.Log(msg)
-		libs.NotifyPlayer(msg, true)
+		libs.NotifyPlayer(msg)
+		libs.NotifyPlayer("Benchmark Complete. Check the log for results.", true)
 	EndIf
 EndEvent
 

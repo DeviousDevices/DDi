@@ -364,48 +364,6 @@ Function ManipulateDevice(actor akActor, armor device, bool equipOrUnequip, bool
 	EndIf
 EndFunction
 
-;;; Thanks to lordescobar666 for the method used by these two functions:
-; As manipulate device, but will operate on any device lacking the zad_BlockGeneric keyword: Even those who's rendered device / keyword you don't know.
-Function ManipulateGenericDevice(actor akActor, armor device, bool equipOrUnequip, bool skipEvents = false)
-	ObjectReference tmpORef = akActor.placeAtMe(device, abInitiallyDisabled = true)
-	zadEquipScript tmpZRef = tmpORef as zadEquipScript
-	if tmpZRef != none
-		if tmpZref.HasKeyword(zad_BlockGeneric)
-			Warn("ManipulateGenericDevice called on armor with 'Block Generic Removal' keyword: zad_BlockGeneric")
-		Else
-			if equipOrUnequip
-				EquipDevice(akActor, device, tmpZRef.deviceRendered, tmpZRef.zad_DeviousDevice, skipEvents = skipEvents)
-			else
-				RemoveDevice(akActor, device, tmpZRef.deviceRendered, tmpZRef.zad_DeviousDevice, skipEvents = skipEvents)
-			EndIf
-		EndIf
-	Else
-		Warn("ManipulateGenericDevice received non DD argument.")
-	Endif
-    tmpORef.delete()
-EndFunction
-
-; Returns the currently equipped inventory device matching the supplied keyword.
-Armor Function GetWornDevice(Actor akActor, Keyword kw)
-	Armor retval = none
-	Int iFormIndex = akActor.GetNumItems()
-	bool breakFlag = false
-	While iFormIndex > 0 && !breakFlag
-		iFormIndex -= 1
-		Form kForm = akActor.GetNthForm(iFormIndex)
-		If kForm.HasKeyword(zad_InventoryDevice) && akActor.IsEquipped(kForm)
-			ObjectReference tmpORef = akActor.placeAtMe(kForm, abInitiallyDisabled = true)
-			zadEquipScript tmpZRef = tmpORef as zadEquipScript
-			if tmpZRef != none && tmpZRef.zad_DeviousDevice == kw && akActor.GetItemCount(tmpZRef.deviceRendered) > 0
-				retval = kForm as Armor
-				breakFlag = true
-			Endif
-			tmpORef.delete()
-		EndIf
-	EndWhile
-	return retval
-EndFunction
-
 ; Equip device on actor.
 ;;; Function EquipDevice(actor akActor, ; The actor that this should operate on.
 ;;;                      armor deviceInventory ; The inventory device (See above explanation)
@@ -493,6 +451,149 @@ int Function IsWearingDevice(actor akActor, armor deviceRendered, keyword zad_De
 	EndIf
 	return 0
 EndFunction
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Begin Generic Functions
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Thanks to lordescobar666 for the method used by these functions:
+; As manipulate device, but will operate on any device lacking the zad_BlockGeneric keyword: Even those who's rendered device / keyword you don't know.
+; Returns true if a device was successfully manipulated.
+bool Function ManipulateGenericDevice(actor akActor, armor device, bool equipOrUnequip, bool skipEvents = false)
+	ObjectReference tmpORef = akActor.placeAtMe(device, abInitiallyDisabled = true)
+	zadEquipScript tmpZRef = tmpORef as zadEquipScript
+	if tmpZRef != none
+		if tmpZref.HasKeyword(zad_BlockGeneric)
+			Warn("ManipulateGenericDevice called on armor with 'Block Generic Removal' keyword: zad_BlockGeneric")
+		Else
+			if equipOrUnequip
+				EquipDevice(akActor, device, tmpZRef.deviceRendered, tmpZRef.zad_DeviousDevice, skipEvents = skipEvents)
+			else
+				RemoveDevice(akActor, device, tmpZRef.deviceRendered, tmpZRef.zad_DeviousDevice, skipEvents = skipEvents)
+			EndIf
+		EndIf
+	Else
+		Warn("ManipulateGenericDevice received non DD argument.")
+	Endif
+	tmpORef.delete()
+	return (tmpZref != none)
+EndFunction
+
+; Returns true if a device was successfully manipulated.
+bool Function ManipulateGenericDeviceByKeyword(Actor akActor, Keyword kw, bool equipOrUnequip, bool skipEvents = false)
+	Int iFormIndex = akActor.GetNumItems()
+	bool breakFlag = false
+	While iFormIndex > 0 && !breakFlag
+		iFormIndex -= 1
+		Form kForm = akActor.GetNthForm(iFormIndex)
+		If kForm.HasKeyword(zad_InventoryDevice) && akActor.IsEquipped(kForm)
+			ObjectReference tmpORef = akActor.placeAtMe(kForm, abInitiallyDisabled = true)
+			zadEquipScript tmpZRef = tmpORef as zadEquipScript
+			if tmpZRef != none && tmpZRef.zad_DeviousDevice == kw && akActor.GetItemCount(tmpZRef.deviceRendered) > 0
+				if !tmpZref.HasKeyword(zad_BlockGeneric)
+					breakFlag = True
+					if equipOrUnequip
+						EquipDevice(akActor, kForm as Armor, tmpZRef.deviceRendered, tmpZRef.zad_DeviousDevice, skipEvents = skipEvents)
+					else
+						RemoveDevice(akActor, kForm as Armor, tmpZRef.deviceRendered, tmpZRef.zad_DeviousDevice, skipEvents = skipEvents)
+					EndIf
+				EndIf
+			EndIf
+			tmpORef.delete()
+		EndIf				
+	EndWhile
+	return breakFlag
+EndFunction
+
+; Returns the currently equipped inventory device matching the supplied keyword.
+Armor Function GetWornDevice(Actor akActor, Keyword kw)
+	Armor retval = none
+	Int iFormIndex = akActor.GetNumItems()
+	bool breakFlag = false
+	While iFormIndex > 0 && !breakFlag
+		iFormIndex -= 1
+		Form kForm = akActor.GetNthForm(iFormIndex)
+		If kForm.HasKeyword(zad_InventoryDevice) && akActor.IsEquipped(kForm)
+			ObjectReference tmpORef = akActor.placeAtMe(kForm, abInitiallyDisabled = true)
+			zadEquipScript tmpZRef = tmpORef as zadEquipScript
+			if tmpZRef != none && tmpZRef.zad_DeviousDevice == kw && akActor.GetItemCount(tmpZRef.deviceRendered) > 0
+				retval = kForm as Armor
+				breakFlag = true
+			Endif
+			tmpORef.delete()
+		EndIf
+	EndWhile
+	return retval
+EndFunction
+
+; Finds device based on rendered device keywords (e.g. keyword zad_DeviousBelt also returns a harness)
+; Useful for situation where you just want to get the device occupying a specific slot without further differentiation
+Armor Function GetWornDeviceFuzzyMatch(Actor akActor, Keyword kw)
+    Armor retval = none
+    Int iFormIndex = akActor.GetNumItems()
+    bool breakFlag = false
+    While iFormIndex > 0 && !breakFlag
+        iFormIndex -= 1
+        Form kForm = akActor.GetNthForm(iFormIndex)
+        If kForm.HasKeyword(zad_InventoryDevice) && akActor.IsEquipped(kForm)
+            ObjectReference tmpORef = akActor.placeAtMe(kForm, abInitiallyDisabled = true)
+            zadEquipScript tmpZRef = tmpORef as zadEquipScript
+            if tmpZRef != none && tmpZRef.deviceRendered.hasKeyword(kw) && akActor.GetItemCount(tmpZRef.deviceRendered) > 0
+                retval = kForm as Armor
+                breakFlag = true
+            Endif
+            tmpORef.delete()
+        EndIf
+    EndWhile
+    return retval
+EndFunction
+
+; Retrieves correct key for a given inventory device
+Key Function GetDeviceKey(armor device)
+    Key retval = none
+    ObjectReference tmpORef = PlayerRef.placeAtMe(device, abInitiallyDisabled = true)
+    zadEquipScript tmpZRef = tmpORef as zadEquipScript
+    if tmpZRef != none
+        retval = tmpZRef.deviceKey
+    Else
+        Warn("GetDeviceKey received non DD argument.")
+    Endif
+    tmpORef.delete()
+    return retval
+EndFunction
+
+; Retrieves device keyword for a given inventory device
+Keyword Function GetDeviceKeyword(armor device)
+    Keyword retval = none
+    ObjectReference tmpORef = PlayerRef.placeAtMe(device, abInitiallyDisabled = true)
+    zadEquipScript tmpZRef = tmpORef as zadEquipScript
+    if tmpZRef != none
+        retval = tmpZRef.zad_DeviousDevice
+    Else
+        Warn("GetDeviceKeyword received non DD argument.")
+    Endif
+    tmpORef.delete()
+    return retval
+EndFunction
+
+
+; Retrieves rendered device for a given inventory device
+; Useful to check for keywords only present on the rendered device
+Armor Function GetRenderedDevice(armor device)
+    Armor retval = none
+    ObjectReference tmpORef = PlayerRef.placeAtMe(device, abInitiallyDisabled = true)
+    zadEquipScript tmpZRef = tmpORef as zadEquipScript
+    if tmpZRef != none
+        retval = tmpZRef.deviceRendered
+    Else
+        Warn("GetRenderedDevice received non DD argument.")
+    Endif
+    tmpORef.delete()
+    return retval
+EndFunction
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; End Generic Functions
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 ; This function is for mod consistency mostly
