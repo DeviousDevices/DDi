@@ -547,7 +547,7 @@ function Logic(int threadID, bool HasPlayer)
 				actors = tmp
 			EndIf
 		EndIf
-		numWorkarounds += 1
+		workaroundID += 1
 	EndWhile
 
 	if anims.length <= 0
