@@ -60,7 +60,7 @@ EndFunction
 ; Libraries
 SexLabFramework property SexLab auto
 slaUtilScr Property Aroused Auto
-zadBeltedAnims Property beltedAnims  Auto  
+zadBeltedAnims Property zadAnims  Auto  
 zadNPCQuestScript Property npcs Auto
 zadArmbinderQuestScript Property abq Auto
 zadDeviousMagic Property zadMagic Auto
@@ -136,7 +136,7 @@ Function Maintenance()
 	Parent.Maintenance()
 	; I doubt this will actually fix the MCM issue people are reporting, though who knows. Doesn't make sense that the animation failing 
 	; to register with Sexlab would cause zadConfig to not initialize properly. All the same, better to avoid that race condition.
-	beltedAnims.LoadAnimations()
+	zadAnims.LoadAnimations()
 	libs.EnableEventProcessing()
 	; Finish initialization
 	Rehook()
