@@ -12,7 +12,6 @@
 #include "skse/HashUtil.h"
 #include "skse/PapyrusForm.h"
 
-const char* INVALID_FORMAT_STRING = "INVALID FORMAT STRING";
 namespace DeviousDevices {
   BSFixedString GetName(TESForm* thisForm)  {
     if (!thisForm)
@@ -21,6 +20,26 @@ namespace DeviousDevices {
     if (pFullName)
       return pFullName->name.data;
     return NULL;
+  }
+
+  bool FormHasKeywordString(StaticFunctionTag* base, TESForm* obj, BSFixedString kwd){
+    if (!obj) {
+      _MESSAGE("FormHasKeywordString received none obj.");
+      return false;
+    }
+    BGSKeywordForm* keywords = DYNAMIC_CAST(obj, TESForm, BGSKeywordForm);
+    if (!keywords) {
+      _MESSAGE("Keywords cast failed.");
+      return false;
+    }
+    const char* p1 = kwd.data;
+    for(int i = 0; i < keywords->numKeywords; ++i) {	
+      const char* p2 = keywords->keywords[i]->keyword.Get();
+      // _MESSAGE("Comparing %s to %s", p1, p2);
+      if (strstr(p2, p1) != NULL)
+	return true;
+    }
+    return false;
   }
 
   bool FormHasKeyword(StaticFunctionTag* base, TESForm* obj, BGSKeyword* kwd) {
@@ -74,6 +93,7 @@ namespace DeviousDevices {
 
     //    registry->RegisterFunction(new NativeFunction1<StaticFunctionTag, float, float>("TestCos", "zadNativeFunctions", DeviousDevices::TestCos, registry));
     registry->RegisterFunction(new NativeFunction2<StaticFunctionTag, TESForm*, Actor*, BGSKeyword*>("FindMatchingDevice", "zadNativeFunctions", DeviousDevices::FindMatchingDevice, registry));
+    registry->RegisterFunction(new NativeFunction2<StaticFunctionTag, bool, TESForm*, BSFixedString>("FormHasKeywordString", "zadNativeFunctions", DeviousDevices::FormHasKeywordString, registry));
 
     //    registry->SetFunctionFlags("zadNativeFunctions", "TestCos", VMClassRegistry::kFunctionFlag_NoWait);
     registry->SetFunctionFlags("zadNativeFunctions", "FindMatchingDevice", VMClassRegistry::kFunctionFlag_NoWait);

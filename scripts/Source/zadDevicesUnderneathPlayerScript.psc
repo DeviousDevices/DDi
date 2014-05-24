@@ -1,7 +1,7 @@
 Scriptname zadDevicesUnderneathPlayerScript extends ReferenceAlias
 
 zadLibs Property libs Auto
-
+import zadNativeFunctions
 
 Event OnPlayerLoadGame()
 	libs.DevicesUnderneath.Maintenance()
@@ -10,6 +10,9 @@ EndEvent
 
 Function Logic(armor akArmor, bool equipOrUnequip)
 	if akArmor == None
+		return
+	EndIf
+	if FormHasKeywordString(akArmor as Form, "NoHide")
 		return
 	EndIf
 	; libs.Log("Logic("+equipOrUnequip+")")
@@ -29,7 +32,6 @@ Function Logic(armor akArmor, bool equipOrUnequip)
 	libs.DevicesUnderneath.ApplySlotmask()
 	; libs.Log("EndLogic()")
 EndFunction
-
 
 Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
 	armor akArmor = (akBaseObject as Armor)

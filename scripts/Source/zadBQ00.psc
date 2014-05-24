@@ -108,7 +108,7 @@ function Shutdown(bool silent=false)
 EndFunction
 
 Function Maintenance()
-	;  benchmark.SetupBenchmarks()
+	; benchmark.SetupBenchmarks()
 	float curVersion = libs.GetVersion()
 	if FirstRun
 		libs.Log("New game detected: Not finishing initialization.")

@@ -28,12 +28,12 @@ Event OnKeyDown(Int KeyCode)
 		int i =0
 		libs.PlayerRef.RemoveAllItems()
 		libs.NotifyPlayer("Adding items...")
-		libs.PlayerRef.AddItem(libs.braPaddedRendered, 2000, true)
+		libs.PlayerRef.AddItem(libs.braPaddedRendered, 20000, true)
 		libs.PlayerRef.AddItem(libs.beltPaddedRendered, 1, true)
 		i = 0
 		libs.Log("Beginning benchmark.")
 		float startTime = Utility.GetCurrentRealTime()
-		while i < 2000
+		while i < 100
 			ReEquipUsingSKSE(libs.PlayerRef, libs.zad_DeviousBelt)
 			i += 1
 		EndWhile
@@ -44,7 +44,7 @@ Event OnKeyDown(Int KeyCode)
 		startTime = Utility.GetCurrentRealTime()
 		endTime = 0
 		i = 0
-		while i < 2000
+		while i < 100
 			ReEquipUsingPapyrus(libs.PlayerRef, libs.zad_DeviousBelt)
 			i += 1
 		EndWhile

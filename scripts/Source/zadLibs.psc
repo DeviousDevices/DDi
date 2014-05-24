@@ -39,6 +39,7 @@ Keyword Property zad_PermitVaginal Auto
 
 Keyword Property zad_InventoryDevice Auto
 Keyword Property zad_BlockGeneric Auto ; Block generic removal of this device.
+
 ;Idles
 Idle Property DDZazHornyA Auto
 Idle Property DDZazHornyB Auto
