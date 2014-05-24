@@ -1610,7 +1610,7 @@ Function RepopulateNpcs()
 		If config.NumNpcs>0
 			; Feels like a race condition / timing issue?
 			; Perhaps if I call a short wait (Thus suspending execution, giving the quest a chance to fully stop?), it won't occur.
-			Utility.Wait(1.0)
+			Utility.Wait(2.0)
 			zadNPCSlots.Start()
 		Else
 			Log("Not repopulating NPC slots: Feature is disabled.")
