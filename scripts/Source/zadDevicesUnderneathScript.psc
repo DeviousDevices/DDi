@@ -1,6 +1,7 @@
 scriptname zadDevicesUnderneathScript extends Quest
 
 zadLibs Property libs Auto
+import zadNativeFunctions
 Armor Property zad_DeviceHider Auto
 ArmorAddon Property zad_DeviceHiderAA Auto
 
@@ -157,7 +158,7 @@ Function RebuildSlotmask(actor akActor)
  	i = 0	
  	while i <= 30
  		Armor x = akActor.GetWornForm(ShiftCache[i]) as Armor
-		if x != None
+		if x != None && !FormHasKeywordString(x as Form, "NoHide")
 			int sm = x.GetSlotMask()
 			int j = 0
 			While j <= 30
