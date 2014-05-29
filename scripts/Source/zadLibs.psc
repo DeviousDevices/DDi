@@ -463,6 +463,7 @@ EndFunction
 bool Function ManipulateGenericDevice(actor akActor, armor device, bool equipOrUnequip, bool skipEvents = false)
 	ObjectReference tmpORef = akActor.placeAtMe(device, abInitiallyDisabled = true)
 	zadEquipScript tmpZRef = tmpORef as zadEquipScript
+	bool manipulated = false
 	if tmpZRef != none
 		if tmpZref.HasKeyword(zad_BlockGeneric)
 			Warn("ManipulateGenericDevice called on armor with 'Block Generic Removal' keyword: zad_BlockGeneric")
@@ -472,12 +473,13 @@ bool Function ManipulateGenericDevice(actor akActor, armor device, bool equipOrU
 			else
 				RemoveDevice(akActor, device, tmpZRef.deviceRendered, tmpZRef.zad_DeviousDevice, skipEvents = skipEvents)
 			EndIf
+			manipulated = true
 		EndIf
 	Else
 		Warn("ManipulateGenericDevice received non DD argument.")
 	Endif
 	tmpORef.delete()
-	return (tmpZref != none)
+	return manipulated
 EndFunction
 
 ; Returns true if a device was successfully manipulated.
