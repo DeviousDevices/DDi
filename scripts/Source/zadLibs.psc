@@ -14,6 +14,8 @@ zadEventSlots Property EventSlots Auto ; See zadBaseEvent.psc for how to use the
 zadDevicesUnderneathScript Property DevicesUnderneath Auto
 Quest Property zadNPCSlots Auto
 
+zbfPlayerControl Property zbfPC Auto
+
 ; Keywords
 Keyword Property zad_DeviousPlug Auto
 Keyword Property zad_DeviousBelt Auto
@@ -1494,8 +1496,9 @@ Function UpdateControls()
 		fighting = false
 		menu = !config.HardcoreEffects
 	EndIf
-	Game.EnablePlayerControls(abMovement = movement, abFighting = fighting, abSneaking = sneaking, abMenu = menu, abActivate = activate)
-	Game.DisablePlayerControls(abMovement = !movement, abFighting = !fighting, abSneaking = !sneaking, abMenu = !menu, abActivate = !activate)
+	zbfPC.SetDisabledControls(abMovement = !movement, abFighting = !fighting, abSneaking = !sneaking, abMenu = !menu, abActivate = !activate)
+	;Game.EnablePlayerControls(abMovement = movement, abFighting = fighting, abSneaking = sneaking, abMenu = menu, abActivate = activate)
+	;Game.DisablePlayerControls(abMovement = !movement, abFighting = !fighting, abSneaking = !sneaking, abMenu = !menu, abActivate = !activate)
 EndFunction
 
 ;==================================================
