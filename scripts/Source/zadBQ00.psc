@@ -119,6 +119,7 @@ Function Maintenance()
 		Debug.MessageBox("Devious Devices has not been correctly upgraded from its previous version. Please Clean Save, as per the instructions in the support thread.")
 		Libs.Error("zad_DeviousDevice == none in Maintenance()")
 	Endif
+	bool regDevices = false 
 	if modVersion != curVersion
 		if modVersion <= 2.65 && modVersion >= 2.0
 			Debug.Messagebox("It seems that you're upgrading Devious Devices from a version prior to 2.6.6. Please note, that upgrading from version 2.6.5 to 2.6.6+ is unsupported. Do so at your own risk.")
@@ -127,6 +128,7 @@ Function Maintenance()
 		modVersion = curVersion
 		Debug.Notification("Devious Devices, version " + modVersion + " initialized.")
 		libs.Log("Initializing.")
+		regDevices = true
 	EndIf
 	if modVersion < 2.8
 		; Temporarily disable SS for curious users that enabled it.
@@ -167,6 +169,9 @@ Function Maintenance()
 		libs.DevicesUnderneath.Start()
 	EndIf
 	; ResetAnimCache()
+	If regDevices
+		libs.RegisterDevices() ; Might take a while, do it last
+	EndIf
 EndFunction
 
 

@@ -596,6 +596,40 @@ Armor Function GetRenderedDevice(armor device)
     tmpORef.delete()
     return retval
 EndFunction
+
+; Register a device to be used by GetGenericDeviceByKeyword()
+Function RegisterGenericDevice(Armor inventoryDevice)
+	if inventoryDevice == none || inventoryDevice.HasKeyword(zad_BlockGeneric) || !inventoryDevice.hasKeyword(zad_InventoryDevice)
+		return
+	endIf
+	
+	Keyword kw = GetDeviceKeyword(inventoryDevice)
+	if kw == none
+		return
+	endIf
+	
+	StorageUtil.FormListAdd(kw, "zad.GenericDevice", inventoryDevice, false)
+EndFunction
+
+; Retrieves a random inventory device with the given keyword, returns none if no devices are available
+Armor Function GetGenericDeviceByKeyword(Keyword kw)
+	int n = StorageUtil.FormListCount(kw, "zad.GenericDevice")
+	Armor device = none
+	while device == none && n > 0
+		; Fetch a random device
+		int i = Utility.RandomInt(0, n - 1)
+		device = StorageUtil.FormListGet(kw, "zad.GenericDevice", i) as Armor
+		if device == none
+			; Remove the index from the list if it's none, and avoid clearing the list completely
+			log("Found a none stored generic item, clearing...")
+			StorageUtil.FormListRemoveAt(kw, "zad.GenericDevice", i)
+			n = StorageUtil.FormListCount(kw, "zad.GenericDevice")
+		endIf
+	endWhile
+
+	return device 
+EndFunction
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; End Generic Functions
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -749,7 +783,7 @@ EndFunction
 
 
 float Function GetVersion()
-	return 2.80
+	return 2.81
 EndFunction
 
 
@@ -1742,4 +1776,37 @@ Function ApplyArmbinderAnim(actor akActor, idle theIdle = None)
 	if IsValidActor(akActor) && !IsAnimating(akActor)
 		akActor.PlayIdle(theIdle)
 	EndIf
+EndFunction
+
+Function RegisterDevices()
+
+	RegisterGenericDevice(braPadded)
+	RegisterGenericDevice(cuffsPaddedArms)
+	RegisterGenericDevice(cuffsPaddedLegs)
+	RegisterGenericDevice(cuffsPaddedCollar)
+	RegisterGenericDevice(cuffsPaddedComplete)
+	RegisterGenericDevice(collarPosture)
+	RegisterGenericDevice(armbinder)
+	RegisterGenericDevice(gagBall)
+	RegisterGenericDevice(gagPanel)
+	RegisterGenericDevice(gagRing)
+	RegisterGenericDevice(gagStrapBall)
+	RegisterGenericDevice(gagStrapRing)
+	RegisterGenericDevice(blindfold)
+	RegisterGenericDevice(cuffsLeatherArms)
+	RegisterGenericDevice(cuffsLeatherLegs)
+	RegisterGenericDevice(cuffsLeatherCollar)
+	RegisterGenericDevice(harnessBody)
+	RegisterGenericDevice(harnessCollar)
+	RegisterGenericDevice(plugIronVag)
+	RegisterGenericDevice(plugIronAn)
+	RegisterGenericDevice(plugPrimitiveVag)
+	RegisterGenericDevice(plugPrimitiveAn)
+	RegisterGenericDevice(plugSoulgemVag)
+	RegisterGenericDevice(plugSoulgemAn)
+	RegisterGenericDevice(plugInflatableVag)
+	RegisterGenericDevice(plugInflatableAn)
+	RegisterGenericDevice(beltPaddedOpen)
+
+	log("Finished registering devices.")
 EndFunction
