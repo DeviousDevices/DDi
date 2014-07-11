@@ -66,6 +66,7 @@ zadArmbinderQuestScript Property abq Auto
 zadDeviousMagic Property zadMagic Auto
 zadAssets Property assets Auto
 zadBenchmark Property benchmark Auto
+zbfBondageShell Property zbf Auto
 
 ; Idles
 Idle Property DDBeltedSolo Auto
@@ -289,11 +290,15 @@ EndFunction
 
 
 sslBaseAnimation[] function FindValidAnimations(sslThreadController controller, int numActors, sslBaseAnimation previousAnim, bool permitOral, bool permitVaginal, bool permitAnal, bool permitBoobjob, int numBoundActors, int NumExtraTags, string[] ExtraTags)
-        ; It is my understanding that these arrays will only contain references. Assuming this works similarly
-        ; to C (As is my current understanding), each reference will not take up much memory (4ish bytes per
-        ; reference) Thus, storing it like this, while not optimal, will not require further change, and
-        ; will permit me to easily debug this.
-        ; What I wouldnt do for a 2d array, or a dict...
+	; It is my understanding that these arrays will only contain references. Assuming this works similarly
+	; to C (As is my current understanding), each reference will not take up much memory (4ish bytes per
+	; reference) Thus, storing it like this, while not optimal, will not require further change, and
+	; will permit me to easily debug this.
+	; What I wouldnt do for a 2d array, or a dict...
+
+	If zbf == None
+		zbf = zbfUtil.GetMain()
+	EndIf
 
 	; Special Cases
 	; Two Actors, both wearing Armbinders
@@ -309,20 +314,24 @@ sslBaseAnimation[] function FindValidAnimations(sslThreadController controller, 
 	; string cache = BuildRegistryStr(numActors, permitOral, permitVaginal, permitAnal, permitBoobjob, numBoundActors, NumExtraTags, ExtraTags)
 	; Registry.find(cache)
 
-        sslBaseAnimation[] allAnims = SexLab.AnimSlots.Animations
-        int totalAnims = SexLab.AnimSlots.Slotted
+	sslBaseAnimation[] allAnims = SexLab.AnimSlots.Animations
+	int totalAnims = SexLab.AnimSlots.Slotted
 	if previousAnim.HasTag("Creature")
 		allAnims = SexLab.CreatureSlots.GetByRace(numActors, Controller.positions[(Controller.positions.Length - 1)].GetRace())
 		totalAnims = allAnims.Length
 	EndIf
-        sslBaseAnimation[] chastityAnims
-        sslBaseAnimation[] aggroAnims
-        sslBaseAnimation[] foreplayAnims
+	sslBaseAnimation[] chastityAnims
+	sslBaseAnimation[] aggroAnims
+	sslBaseAnimation[] foreplayAnims
 	sslBaseAnimation[] boundAnims
-        int i = totalAnims
+	int i = totalAnims
 	bool isBound = (numBoundActors > 0)
+	If isBound
+		ExtraTags[numExtraTags] = zbf.GetSexLabBoundTag(zbf.iBindArmbinder) ; Conservatively assume only armbinder support atm.
+		numExtraTags += 1
+	EndIf
 
-        while i >0 ; Filter out chastity-unfriendly animations
+	while i >0 ; Filter out chastity-unfriendly animations
 		i -= 1
 		;            if SexLab.AnimSlots.Searchable(previousAnim) && numActors==allAnims[i].ActorCount() && IsValidAnimation(allAnims[i])
 		if allAnims[i].enabled && allAnims[i].registered && numActors==allAnims[i].PositionCount && IsValidAnimation(allAnims[i], permitOral, permitVaginal, permitAnal, permitBoobjob, isBound, NumExtraTags, ExtraTags)
@@ -338,27 +347,27 @@ sslBaseAnimation[] function FindValidAnimations(sslThreadController controller, 
 				boundAnims = sslUtility.PushAnimation(allAnims[i], boundAnims)
 			EndIf
 		Endif
-        EndWhile
+	EndWhile
 
 	libs.Log("FindValidAnimations(numActors="+numActors+", previousAnim="+previousAnim.name+ ", permitOral="+permitOral+", permitVaginal="+permitVaginal+",permitAnal="+permitAnal+", isBound="+isBound+")")
-        libs.Log("Sexlab Animations Available (Chastity): " + chastityAnims.length + "/" + totalAnims + "(" + GetAnimationNames(chastityAnims) + ")")
-        libs.Log("Sexlab Animations Available (Aggressive): " + aggroAnims.length + "/" + totalAnims + "(" + GetAnimationNames(aggroAnims) + ")")
-        libs.Log("Sexlab Animations Available (Foreplay): " + foreplayAnims.length + "/" + totalAnims + "(" + GetAnimationNames(foreplayAnims) + ")")
+	libs.Log("Sexlab Animations Available (Chastity): " + chastityAnims.length + "/" + totalAnims + "(" + GetAnimationNames(chastityAnims) + ")")
+	libs.Log("Sexlab Animations Available (Aggressive): " + aggroAnims.length + "/" + totalAnims + "(" + GetAnimationNames(aggroAnims) + ")")
+	libs.Log("Sexlab Animations Available (Foreplay): " + foreplayAnims.length + "/" + totalAnims + "(" + GetAnimationNames(foreplayAnims) + ")")
 	libs.Log("Sexlab Animations Available (Bound): " +boundAnims.length + "/" + totalAnims + "(" + GetAnimationNames(boundAnims) + ")")
 
 	If isBound && boundAnims.length > 0
 		libs.log("Using only bound animation list.")
 		return boundAnims
-        Elseif previousAnim!=none && previousAnim.HasTag("foreplay") && foreplayAnims.length>=1
-            libs.Log("Using only foreplay animation list.")
-            return foreplayAnims
-        Elseif previousAnim!=none && previousAnim.HasTag("Aggressive") && aggroAnims.length>=1 && libs.config.PreserveAggro
-            libs.Log("Using only aggressive animation list.")
-            return aggroAnims
-        else
-            libs.Log("Using full chastity animation list.")
-            return chastityAnims
-        Endif
+	Elseif previousAnim!=none && previousAnim.HasTag("foreplay") && foreplayAnims.length>=1
+		libs.Log("Using only foreplay animation list.")
+		return foreplayAnims
+	Elseif previousAnim!=none && previousAnim.HasTag("Aggressive") && aggroAnims.length>=1 && libs.config.PreserveAggro
+		libs.Log("Using only aggressive animation list.")
+		return aggroAnims
+	else
+		libs.Log("Using full chastity animation list.")
+		return chastityAnims
+	Endif
 EndFunction
 
 
@@ -437,6 +446,10 @@ function Logic(int threadID, bool HasPlayer)
 	sslThreadController Controller = Sexlab.ThreadSlots.GetController(threadID)
 	actor[] originalActors = Controller.Positions
 
+	If zbf == None
+		zbf = zbfUtil.GetMain()
+	EndIf
+
 	int numBeltedActors = CountRestrictedActors(originalActors, libs.zad_PermitVaginal, libs.zad_DeviousBelt)
 	int numAnalBeltedActors = CountRestrictedActors(originalActors, libs.zad_PermitAnal, libs.zad_DeviousBelt)
 	int numGaggedActors = CountRestrictedActors(originalActors, libs.zad_PermitOral, libs.zad_DeviousGag)
@@ -473,7 +486,12 @@ function Logic(int threadID, bool HasPlayer)
 		numBoundActors = 0
 	EndIf
 
-	if IsValidAnimation(previousAnim, permitOral, permitVaginal, permitAnal, permitBoobjob, numBoundActors, numExtraTags, ExtraTags) ; && numRestrictedActors != originalActors.length  ; XXX1-SerendeVeladarius
+	If isBound
+		ExtraTags[numExtraTags] = zbf.GetSexLabBoundTag(zbf.iBindArmbinder) ; Conservatively assume only armbinder support atm.
+		numExtraTags += 1
+	EndIf
+
+	if IsValidAnimation(previousAnim, permitOral, permitVaginal, permitAnal, permitBoobjob, isBound, numExtraTags, ExtraTags) ; && numRestrictedActors != originalActors.length  ; XXX1-SerendeVeladarius
 		libs.Log("Original animation (" + previousAnim.name + ") does not conflict. Done.")
 		return
 	EndIf
