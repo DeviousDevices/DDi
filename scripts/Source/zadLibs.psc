@@ -169,6 +169,10 @@ Sound Property GaggedSound Auto
 Sound Property ShortMoanSound Auto
 Sound Property ShortPantSound Auto
 
+; Dialogue disable
+GlobalVariable Property DialogueGagDisable Auto
+GlobalVariable Property DialogueArmbinderDisable Auto
+
 ; Factions
 Faction Property zadAnimatingFaction Auto
 Faction Property zadVibratorFaction Auto
@@ -1531,8 +1535,6 @@ Function UpdateControls()
 		menu = !config.HardcoreEffects
 	EndIf
 	zbfPC.SetDisabledControls(abMovement = !movement, abFighting = !fighting, abSneaking = !sneaking, abMenu = !menu, abActivate = !activate)
-	;Game.EnablePlayerControls(abMovement = movement, abFighting = fighting, abSneaking = sneaking, abMenu = menu, abActivate = activate)
-	;Game.DisablePlayerControls(abMovement = !movement, abFighting = !fighting, abSneaking = !sneaking, abMenu = !menu, abActivate = !activate)
 EndFunction
 
 ;==================================================
@@ -1808,4 +1810,14 @@ Function RegisterDevices()
 	RegisterGenericDevice(beltPaddedOpen)
 
 	log("Finished registering devices.")
+EndFunction
+
+Function PauseDialogue()
+	DialogueGagDisable.Mod(1)
+	DialogueArmbinderDisable.Mod(1)
+EndFunction
+
+Function ResumeDialogue()
+	DialogueGagDisable.Mod(-1)
+	DialogueArmbinderDisable.Mod(-1)
 EndFunction
