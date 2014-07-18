@@ -177,6 +177,7 @@ GlobalVariable Property DialogueArmbinderDisable Auto
 Faction Property zadAnimatingFaction Auto
 Faction Property zadVibratorFaction Auto
 Faction Property zadGagPanelFaction Auto
+Faction Property zadDisableDialogueFaction Auto
 
 MiscObject Property zad_gagPanelPlug Auto
 Outfit Property zadEmptyOutfit Auto
@@ -1812,12 +1813,43 @@ Function RegisterDevices()
 	log("Finished registering devices.")
 EndFunction
 
+; Turns off dialogue processing. Note that Pausing uses a reference counting
+; system, so each pause must be matched with exactly one Resume.
+; 
 Function PauseDialogue()
 	DialogueGagDisable.Mod(1)
 	DialogueArmbinderDisable.Mod(1)
 EndFunction
 
+; Resumes dialogue processing. Note that Pausing uses a reference counting
+; system, so each resume must be in response to exactly one pause. Dialogue 
+; processing is not resumed until all pauses have been countered.
+; 
 Function ResumeDialogue()
 	DialogueGagDisable.Mod(-1)
 	DialogueArmbinderDisable.Mod(-1)
+EndFunction
+
+; Forces resume of dialogue pausing
+; 
+; Do not call this function directly. It's intended to be used at game load to 
+; prevent dialogue from becoming stuck.
+; 
+Function ResetDialogue()
+	DialogueGagDisable.SetValueInt(0)
+	DialogueArmbinderDisable.SetValueInt(0)
+EndFunction
+
+; Adds the actor to the faction that disables the built in gag
+; and armbinder dialogue.
+; 
+Function AddToDisableDialogueFaction(Actor akActor)
+	akActor.AddToFaction(zadDisableDialogueFaction)
+EndFunction
+
+; Removes the actor from the faction that disables the built in gag
+; and armbinder dialogue.
+; 
+Function RemoveFromDisableDialogueFaction(Actor akActor)
+	akActor.RemoveFromFaction(zadDisableDialogueFaction)
 EndFunction

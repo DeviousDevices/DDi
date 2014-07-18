@@ -11,6 +11,7 @@ Formlist Property SitBlockKeywords Auto
 Event OnPlayerLoadGame()
 	questScript.Maintenance()
 	cameraState.Maintenance()
+	libs.ResetDialogue()
 	AddInventoryEventFilter(libs.SoulgemFilled)
 EndEvent
 
