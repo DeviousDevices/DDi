@@ -88,7 +88,7 @@ Function Maintenance()
 		SetDefaultSlotMasks()
 	EndIf
 	if libs.Config.DevicesUnderneathSlot == 0
-		libs.Config.DevicesUnderneathSlot = libs.Config.DevicesUnderneathSlotDefault
+		; libs.Config.DevicesUnderneathSlot = libs.Config.DevicesUnderneathSlotDefault
 	EndIf
 	UpdateDeviceHiderSlot()
 EndFunction

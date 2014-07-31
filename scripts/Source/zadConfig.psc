@@ -179,14 +179,15 @@ Function SetupDifficulties()
 EndFunction
 
 Function SetupPages()
-	Pages = new string[7]
+	Pages = new string[8]
 	Pages[0] = "General"
 	Pages[1] = "Devices"
 	pages[2] = "Sex Animation Filter"
 	Pages[3] = "Events and Effects"
 	Pages[4] = "Sounds"
 	Pages[5] = "Quests"
-	Pages[6] = "Devices Underneath"
+	Pages[6] = "Devices Underneath (1)"
+	Pages[7] = "Devices Underneath (2)"
 EndFunction
 
 
@@ -194,7 +195,7 @@ EndFunction
 Function SetupSlotMasks()
 	SlotMasks = new String[33]
 	SlotMaskValues = new int[33]
-	SlotMasks[0] = "None "
+	SlotMasks[0] = "None (Disabled) "
 	int i = 1
 	while i <= 32
 		SlotMasks[i] = "Slot " + (30 + i - 1)
@@ -242,7 +243,7 @@ Event OnConfigInit()
 EndEvent
 
 int Function GetVersion()
-	return 13 ; mcm menu version
+	return 14 ; mcm menu version
 EndFunction
 
 Event OnVersionUpdate(int newVersion)
@@ -348,13 +349,30 @@ Event OnPageReset(string page)
 		; AddHeaderOption("Radiant Master Configuration")
 		; rmHeartbeatIntervalOID = AddSliderOption("Heartbeat Interval", rmHeartbeatInterval, "{3}")
 		; rmSummonHeartbeatIntervalOID = AddSliderOption("Summon Heartbeat Interval", rmSummonHeartbeatInterval, "{3}")
-	ElseIf page == "Devices Underneath"
+	ElseIf page == "Devices Underneath (1)"
 		SetupSlotMasks()
 		SetCursorFillMode(TOP_TO_BOTTOM)
 		DevicesUnderneathSlotOID = AddMenuOption("Item Hider Slot", SlotMasks[DevicesUnderneathSlot])
 		UseQueueNiNodeOID = AddToggleOption("Use QueueNiNode", UseQueueNiNode)
 		; AddMenuOption("Item Hider Slot", SlotMasks[DevicesUnderneathSlot])
 		int i = 1
+		while i < 16
+			int index = (i - 1) * 4
+			int j = 0
+			AddHeaderOption(SlotMasks[i])
+			while j < 4
+				slotMaskOIDs[index + j] = AddMenuOption(SlotMasks[i] + " #"+j, SlotMasks[LookupSlotMask(index+j)])
+				j += 1
+			EndWhile
+			if i == 12
+				SetCursorPosition(1) ; Move cursor to top right position
+			EndIf
+			i += 1
+		EndWhile
+	ElseIf page == "Devices Underneath (2)"
+		SetupSlotMasks()
+		SetCursorFillMode(TOP_TO_BOTTOM)
+		int i = 16
 		while i < 32
 			int index = (i - 1) * 4
 			int j = 0
@@ -363,11 +381,11 @@ Event OnPageReset(string page)
 				slotMaskOIDs[index + j] = AddMenuOption(SlotMasks[i] + " #"+j, SlotMasks[LookupSlotMask(index+j)])
 				j += 1
 			EndWhile
-			if i == 13
+			if i == 28
 				SetCursorPosition(1) ; Move cursor to top right position
 			EndIf
 			i += 1
-		EndWhile
+		EndWhile		
 	Endif
 EndEvent
 
@@ -436,13 +454,18 @@ Event OnOptionMenuAccept(int option, int index)
 	while i < 128
 		if option == slotMaskOIDs[i]
 			int value = 0
-			if index != 0
+			if index == 0
+				; libs.DevicesUnderneath.Stop()
+			Else
 				value = Math.LeftShift(1, (index - 1))
 				libs.Log("Index:" + index + " = " + value + "/" + SlotMaskValues.find(value))
+				libs.DevicesUnderneath.SlotMaskFilters[i] = value
+				SetMenuOptionValue(option, SlotMasks[index])
+				libs.DevicesUnderneath.RebuildSlotmask(libs.PlayerRef)
+				; if libs.DevicesUnderneath.IsStopped()
+				; 	libs.DevicesUnderneath.Start()
+				; EndIf
 			EndIf
-			libs.DevicesUnderneath.SlotMaskFilters[i] = value
-			SetMenuOptionValue(option, SlotMasks[index])
-			libs.DevicesUnderneath.RebuildSlotmask(libs.PlayerRef)
 		EndIf
 		i += 1
 	EndWhile

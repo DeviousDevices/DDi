@@ -80,7 +80,9 @@ int Function ShowArmbinderMenu(int MsgChoice=0)
 			libs.NotifyPlayer("You are far too tired to struggle with the armbinder.", true)
 		Else
 			libs.PlayerRef.DamageAV("Stamina", 35)
-			StruggleCount += 1
+			if !DisableStruggle
+				StruggleCount += 1
+			EndIf
 			if IsLoose || StruggleCount >= 5 && Utility.RandomInt() <= StruggleCount
 				zad_ArmBinderStruggleLooseMsg.Show()
 				libs.UpdateExposure(libs.PlayerRef,0.3)
