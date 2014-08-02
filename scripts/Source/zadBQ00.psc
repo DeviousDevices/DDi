@@ -575,7 +575,9 @@ function Logic(int threadID, bool HasPlayer)
 
 	if anims.length <= 0
 		if previousAnim.HasTag("Creature")
-			libs.NotifyPlayer("You are being dry-humped!")
+			If hasPlayer
+				libs.NotifyPlayer("You are being dry-humped!")
+			EndIf
 			libs.Log("Failed to find any valid animations. PreviousAnim has creature tag. Done.")
 			return
 		Else
