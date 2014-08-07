@@ -207,7 +207,7 @@ Function VersionChecks()
 	if !assets
 		libs.Error("Assets is undefined: You're probably running an out of date version of it. Please update Devious Devices - Assets to the latest version.")
 	EndIf
-	CheckCompatibility("Assets", 2.75, assets.GetVersion())
+	CheckCompatibility("Assets", 2.82, assets.GetVersion())
 	CheckCompatibility("Aroused", 20140124, Aroused.GetVersion())
 	CheckCompatibility("Sexlab", 15400, SexlabUtil.GetVersion())
 	libs.Log("[ Third Party Mod Compatibility Checks ]")
