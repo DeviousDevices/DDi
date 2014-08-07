@@ -219,6 +219,7 @@ Function SetupSlotMasks()
 
 	SlotMasks[15] = "Gag Mouthpiece (44)"
 	SlotMasks[16] = "Collar (45)"
+	SlotMasks[17] = "Harnesses / Corsets (46)"
 
 	SlotMasks[19] = "Plugs (Anal) (48)"
 	SlotMasks[20] = "Chastity Belt (49)"
@@ -364,7 +365,7 @@ Event OnPageReset(string page)
 				slotMaskOIDs[index + j] = AddMenuOption(SlotMasks[i] + " #"+j, SlotMasks[LookupSlotMask(index+j)])
 				j += 1
 			EndWhile
-			if i == 12
+			if i == 8
 				SetCursorPosition(1) ; Move cursor to top right position
 			EndIf
 			i += 1
@@ -381,7 +382,7 @@ Event OnPageReset(string page)
 				slotMaskOIDs[index + j] = AddMenuOption(SlotMasks[i] + " #"+j, SlotMasks[LookupSlotMask(index+j)])
 				j += 1
 			EndWhile
-			if i == 28
+			if i == 23
 				SetCursorPosition(1) ; Move cursor to top right position
 			EndIf
 			i += 1
@@ -454,18 +455,14 @@ Event OnOptionMenuAccept(int option, int index)
 	while i < 128
 		if option == slotMaskOIDs[i]
 			int value = 0
-			if index == 0
-				; libs.DevicesUnderneath.Stop()
-			Else
-				value = Math.LeftShift(1, (index - 1))
-				libs.Log("Index:" + index + " = " + value + "/" + SlotMaskValues.find(value))
-				libs.DevicesUnderneath.SlotMaskFilters[i] = value
-				SetMenuOptionValue(option, SlotMasks[index])
-				libs.DevicesUnderneath.RebuildSlotmask(libs.PlayerRef)
-				; if libs.DevicesUnderneath.IsStopped()
-				; 	libs.DevicesUnderneath.Start()
-				; EndIf
-			EndIf
+			value = Math.LeftShift(1, (index - 1))
+			libs.Log("Index:" + index + " = " + value + "/" + SlotMaskValues.find(value))
+			libs.DevicesUnderneath.SlotMaskFilters[i] = value
+			SetMenuOptionValue(option, SlotMasks[index])
+			libs.DevicesUnderneath.RebuildSlotmask(libs.PlayerRef)
+			; if libs.DevicesUnderneath.IsStopped()
+			; 	libs.DevicesUnderneath.Start()
+			; EndIf
 		EndIf
 		i += 1
 	EndWhile
