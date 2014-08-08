@@ -468,7 +468,7 @@ EndFunction
 ;;; Thanks to lordescobar666 for the method used by these functions:
 ; As manipulate device, but will operate on any device lacking the zad_BlockGeneric keyword: Even those who's rendered device / keyword you don't know.
 ; Returns true if a device was successfully manipulated.
-bool Function ManipulateGenericDevice(actor akActor, armor device, bool equipOrUnequip, bool skipEvents = false)
+bool Function ManipulateGenericDevice(actor akActor, armor device, bool equipOrUnequip, bool skipEvents = false , bool skipMutex = false)
 	ObjectReference tmpORef = akActor.placeAtMe(device, abInitiallyDisabled = true)
 	zadEquipScript tmpZRef = tmpORef as zadEquipScript
 	bool manipulated = false
@@ -477,9 +477,9 @@ bool Function ManipulateGenericDevice(actor akActor, armor device, bool equipOrU
 			Warn("ManipulateGenericDevice called on armor with 'Block Generic Removal' keyword: zad_BlockGeneric")
 		Else
 			if equipOrUnequip
-				EquipDevice(akActor, device, tmpZRef.deviceRendered, tmpZRef.zad_DeviousDevice, skipEvents = skipEvents)
+				EquipDevice(akActor, device, tmpZRef.deviceRendered, tmpZRef.zad_DeviousDevice, skipEvents = skipEvents, skipMutex = skipMutex)
 			else
-				RemoveDevice(akActor, device, tmpZRef.deviceRendered, tmpZRef.zad_DeviousDevice, skipEvents = skipEvents)
+				RemoveDevice(akActor, device, tmpZRef.deviceRendered, tmpZRef.zad_DeviousDevice, skipEvents = skipEvents, skipMutex = skipMutex)
 			EndIf
 			manipulated = true
 		EndIf
@@ -491,7 +491,7 @@ bool Function ManipulateGenericDevice(actor akActor, armor device, bool equipOrU
 EndFunction
 
 ; Returns true if a device was successfully manipulated.
-bool Function ManipulateGenericDeviceByKeyword(Actor akActor, Keyword kw, bool equipOrUnequip, bool skipEvents = false)
+bool Function ManipulateGenericDeviceByKeyword(Actor akActor, Keyword kw, bool equipOrUnequip, bool skipEvents = false, bool skipMutex = false)
 	Int iFormIndex = akActor.GetNumItems()
 	bool breakFlag = false
 	While iFormIndex > 0 && !breakFlag
@@ -504,9 +504,9 @@ bool Function ManipulateGenericDeviceByKeyword(Actor akActor, Keyword kw, bool e
 				if !tmpZref.HasKeyword(zad_BlockGeneric)
 					breakFlag = True
 					if equipOrUnequip
-						EquipDevice(akActor, kForm as Armor, tmpZRef.deviceRendered, tmpZRef.zad_DeviousDevice, skipEvents = skipEvents)
+						EquipDevice(akActor, kForm as Armor, tmpZRef.deviceRendered, tmpZRef.zad_DeviousDevice, skipEvents = skipEvents, skipMutex = skipMutex)
 					else
-						RemoveDevice(akActor, kForm as Armor, tmpZRef.deviceRendered, tmpZRef.zad_DeviousDevice, skipEvents = skipEvents)
+						RemoveDevice(akActor, kForm as Armor, tmpZRef.deviceRendered, tmpZRef.zad_DeviousDevice, skipEvents = skipEvents, skipMutex = skipMutex)
 					EndIf
 				EndIf
 			EndIf
