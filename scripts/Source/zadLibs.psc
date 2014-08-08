@@ -126,8 +126,10 @@ Armor Property cuffsLeatherCollar Auto               ; Inventory Device
 Armor Property cuffsLeatherCollarRendered Auto       ; Internal Device
 Armor Property harnessBody Auto                          ; Inventory Device
 Armor Property harnessBodyRendered Auto                  ; Internal Device
-Armor Property harnessCollar Auto                  ; Internal Device
+Armor Property harnessCollar Auto                  ; Inventory Device
 Armor Property harnessCollarRendered Auto          ; Internal Device
+Armor Property collarPostureLeather Auto
+Armor Property collarPostureLeatherRendered Auto
 
 Armor Property plugIronVag Auto                  ; Internal Device
 Armor Property plugIronVagRendered Auto          ; Internal Device
@@ -292,6 +294,9 @@ Function ManipulateDevice(actor akActor, armor device, bool equipOrUnequip, bool
 		deviceKeyword = zad_DeviousArmCuffs
 	ElseIf device == collarPosture
 		deviceRendered = collarPostureRendered
+		deviceKeyword = zad_DeviousCollar
+	ElseIf device == collarPostureLeather
+		deviceRendered = collarPostureLeatherRendered
 		deviceKeyword = zad_DeviousCollar
 	ElseIf device == armbinder
 		deviceRendered = armbinderRendered
@@ -1813,6 +1818,7 @@ Function RegisterDevices()
 	RegisterGenericDevice(plugInflatableVag)
 	RegisterGenericDevice(plugInflatableAn)
 	RegisterGenericDevice(beltPaddedOpen)
+	RegisterGenericDevice(collarPostureLeather)
 
 	log("Finished registering devices.")
 EndFunction
