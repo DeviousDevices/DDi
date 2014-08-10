@@ -124,6 +124,7 @@ Event OnUpdateGameTime()
 	EndIf
 	if !libs.GlobalEventFlag
 		libs.Log("Event processing is currently disabled.")
+		DoRegister()
 		return
 	EndIf
 	if ProcessNum == 0
