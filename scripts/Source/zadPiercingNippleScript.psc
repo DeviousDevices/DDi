@@ -20,7 +20,7 @@ EndFunction
 
 Function OnEquippedPre(actor akActor, bool silent=false)
 	if !akActor.HasPerk(libs.PiercedNipples)
-		libs.playerRef.AddSpell(libs.PiercedNipplesSpell, true)
+		akActor.AddSpell(libs.PiercedNipplesSpell, true)
 	Endif
 	if !silent
 		libs.NotifyActor("You carefully slip the piercings into "+GetMessageName(akActor)+" nipples. A quiet 'Click' is heard as the band clicks together, now seemingly seamless. ", akActor, true)

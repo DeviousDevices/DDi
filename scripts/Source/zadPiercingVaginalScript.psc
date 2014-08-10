@@ -20,7 +20,7 @@ EndFunction
 
 Function OnEquippedPre(actor akActor, bool silent=false)
 	if !akActor.HasPerk(libs.PiercedClit)
-		libs.playerRef.AddSpell(libs.PiercedClitSpell, true)
+		akActor.AddSpell(libs.PiercedClitSpell, true)
 	Endif
 	if !silent
 		libs.NotifyActor("You carefully slip the piercing into "+GetMessageName(akActor)+" clitoris. A quiet 'Click' is heard as the band clicks together, now seemingly seamless. ", akActor, true)
