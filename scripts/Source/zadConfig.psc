@@ -107,7 +107,7 @@ float rmSummonHeartbeatIntervalDefault = 0.25
 ; Devices Underneath Configuration
 bool Property DevicesUnderneathEnabled = True Auto
 Int Property DevicesUnderneathSlot Auto
-int Property DevicesUnderneathSlotDefault = 31 Auto
+int Property DevicesUnderneathSlotDefault = 21 Auto
 bool Property UseQueueNiNode Auto
 bool UseQueueNiNodeDefault = False
 
@@ -223,8 +223,8 @@ Function SetupSlotMasks()
 
 	SlotMasks[19] = "Plugs (Anal) (48)"
 	SlotMasks[20] = "Chastity Belt (49)"
-	SlotMasks[21] = "Gag Straps (50)"
-	SlotMasks[22] = "Decapitate (51)"
+	SlotMasks[21] = "Device Hider (50)"
+	SlotMasks[22] = "Vaginal Piercings (51)"
 	SlotMasks[23] = "SoS (52)"
 	SlotMasks[24] = "Cuffs (Legs) (53)"
 	SlotMasks[25] = "Plug Vaginal (54)"

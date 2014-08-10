@@ -4,10 +4,6 @@ int Function OnEquippedFilter(actor akActor, bool silent=false)
 	if akActor == none
 		akActor == libs.PlayerRef
 	EndIf
-	if !akActor.HasPerk(libs.PiercedNipples)
-		libs.NotifyPlayer(akActor.GetLeveledActorBase().GetName() + " lacks pierced nipples, and cannot wear these.", true)
-			return 2
-	Endif
 	if !akActor.IsEquipped(deviceRendered)
 		if akActor!=libs.PlayerRef && ShouldEquipSilently(akActor)
 			libs.Log("Avoiding FTM duplication bug (Piercings + Bra).")
@@ -23,6 +19,9 @@ EndFunction
 
 
 Function OnEquippedPre(actor akActor, bool silent=false)
+	if !akActor.HasPerk(libs.PiercedNipples)
+		libs.playerRef.AddSpell(libs.PiercedNipplesSpell, true)
+	Endif
 	if !silent
 		libs.NotifyActor("You carefully slip the piercings into "+GetMessageName(akActor)+" nipples. A quiet 'Click' is heard as the band clicks together, now seemingly seamless. ", akActor, true)
 	EndIf
@@ -31,6 +30,6 @@ EndFunction
 
 
 Function OnEquippedPost(actor akActor)
-	libs.Log("RestraintScript OnEquippedPost PiercingNipple")
+	libs.Log("RestraintScript OnEquippedPost PiercingNipples")
 	
 EndFunction

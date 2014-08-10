@@ -208,6 +208,9 @@ Perk Property LustgemCrafting Auto
 Perk Property PiercedNipples Auto
 Perk Property PiercedClit Auto
 
+Spell Property PiercedNipplesSpell Auto
+Spell Property PiercedClitSpell Auto
+
 ;;;;Effects
 Keyword Property zad_HasPumps Auto
 
@@ -1222,6 +1225,7 @@ Function ResetExpression(actor akActor, sslBaseExpression expression)
 	EndIf
 EndFunction
 
+
 ;;; Returns number of times actor came from this effect, -1 if it edged them, or -2 if an event was already ongoing.
 ; This function has suffered from feature creep pretty hard since it's inception, and is in need of refactoring. Still works, but very messy.
 ; Will split this up to a small library in the future. Will document this properly at that point.
@@ -1238,6 +1242,12 @@ int Function VibrateEffect(actor akActor, int vibStrength, int duration, bool te
 		deviceMutex = False
 		return -2
 	EndIf
+
+	bool Vaginal = akActor.WornHasKeyword(zad_DeviousPlugVaginal)
+	bool Anal = akActor.WornHasKeyword(zad_DeviousPlugAnal)
+	bool nPiercings = akActor.WornHasKeyword(zad_DeviousPiercingsNipple )
+	bool vPiercings = akActor.WornHasKeyword(zad_DeviousPiercingsVaginal )
+
 	deviceMutex = False
 	float numVibratorsMult = 0.0
 	if akActor.WornHasKeyword(zad_DeviousPlugVaginal)
