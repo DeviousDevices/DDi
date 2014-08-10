@@ -1226,6 +1226,63 @@ Function ResetExpression(actor akActor, sslBaseExpression expression)
 EndFunction
 
 
+string function GetVibrationStrength(int vibStrength)
+	if vibStrength == 5
+		return "extremely powerfully"
+	elseIf vibStrength == 4
+		return "strongly"
+	elseIf vibStrength == 3
+		return ""
+	elseIf vibStrength == 2
+		return "softly"
+	elseIf vibStrength == 1
+		return "agonizingly softly"
+	EndIf
+	return "Invalid"
+EndFunction
+
+
+string Function BuildVibrationString(actor akActor, int vibStrength, bool vPlug, bool aPlug, bool vPiercings, bool nPiercings)
+	if ((vPiercings || nPiercings) && (vPlug || aPlug))
+		return "Your piercing(s) (In addition to the plug(s) within you) begin to vibrate " + GetVibrationStrength(vibStrength) + "!"
+	ElseIf ((vPiercings) && !(vPlug || aPlug))
+		return "Your clitoral piercing begins to vibrate " + GetVibrationStrength(vibStrength) + "!"
+	ElseIf ((nPiercings) && !(vPlug || aPlug))
+		return "Your nipple piercings begins to vibrate " + GetVibrationStrength(vibStrength) + "!"
+	Else
+		return "The plug(s) within you begin to vibrate " + GetVibrationStrength(vibStrength) + "!"
+	EndIf
+EndFunction
+
+string Function BuildPostVibrationString(actor akActor, int vibStrength, bool vPlug, bool aPlug, bool vPiercings, bool nPiercings)
+	bool desperate = (Aroused.GetActorExposure(akActor) >= ArousalThreshold("Desperate"))
+	if ((vPiercings || nPiercings) && (vPlug || aPlug))
+		if Desperate
+			return "You let out a frustrated moan as your piercing and plugs abruptly cease to vibrate."
+		Else
+			return "Your piercings and plugs all cease to vibrate."
+		EndIf
+	ElseIf ((vPiercings) && !(vPlug || aPlug))
+		if Desperate
+			return "You let out a frustrated moan as your clitoral piercing ceases to vibrate."
+		Else
+			return "Your clitoral piercing ceases to vibrate."
+		EndIf
+	ElseIf ((nPiercings) && !(vPlug || aPlug))
+		if Desperate
+			return "You breathe a sigh of relief when the rings piercing your nipples cease to vibrate."
+		Else
+			return "Your nipple piercings cease to vibrate."
+		Endif
+	Else
+		if Desperate
+			return "Your pussy clenches around the plugs as they abruptly cease vibrating."
+		Else
+			return "The plugs cease vibrating."
+		EndIf
+	EndIf
+EndFunction
+
 ;;; Returns number of times actor came from this effect, -1 if it edged them, or -2 if an event was already ongoing.
 ; This function has suffered from feature creep pretty hard since it's inception, and is in need of refactoring. Still works, but very messy.
 ; Will split this up to a small library in the future. Will document this properly at that point.
@@ -1243,24 +1300,33 @@ int Function VibrateEffect(actor akActor, int vibStrength, int duration, bool te
 		return -2
 	EndIf
 
-	bool Vaginal = akActor.WornHasKeyword(zad_DeviousPlugVaginal)
-	bool Anal = akActor.WornHasKeyword(zad_DeviousPlugAnal)
+	bool vPlug = akActor.WornHasKeyword(zad_DeviousPlugVaginal)
+	bool aPlug = akActor.WornHasKeyword(zad_DeviousPlugAnal)
 	bool nPiercings = akActor.WornHasKeyword(zad_DeviousPiercingsNipple )
 	bool vPiercings = akActor.WornHasKeyword(zad_DeviousPiercingsVaginal )
 
 	deviceMutex = False
 	float numVibratorsMult = 0.0
-	if akActor.WornHasKeyword(zad_DeviousPlugVaginal)
+	;;; Plugs
+	if vPlug
 		numVibratorsMult += 0.7
 	EndIf
-	if akActor.WornHasKeyword(zad_DeviousPlugAnal)
+	if aPlug
 		numVibratorsMult += 0.3
 	EndIf
+	;;; Piercings
+	if nPiercings
+		numVibratorsMult += 0.25
+	EndIf
+	if vPiercings
+		numVibratorsMult += 0.5
+	EndIf
+
 	if numVibratorsMult == 0.0
 		numVibratorsMult = 1
 	EndIf
 	if akActor.WornHasKeyword(zad_DeviousBlindfold) ; Increased sensitivity!
-		numVibratorsMult += 0.15
+		numVibratorsMult *= 1.15
 	EndIf
 	if !wasVibrating
 		SendModEvent("DeviceVibrateEffectStart", akActor.GetLeveledActorBase().GetName(), vibStrength * numVibratorsMult)
@@ -1269,21 +1335,16 @@ int Function VibrateEffect(actor akActor, int vibStrength, int duration, bool te
 	Log("VibrateEffect("+vibStrength +" for "+duration+"). VibrateMult: "+numVibratorsMult)
 	sound vibSoundSelect
 	
-	string msg = ""
+	string msg = BuildVibrationString(akActor, vibStrength, vPlug, aPlug, vPiercings, nPiercings)
 	if vibStrength == 5
-		msg = "The plug(s) within you begin to vibrate extremely powerfully!"
 		vibSoundSelect = VibrateVeryStrongSound
 	elseIf vibStrength == 4
-		msg = "The plug(s) within you begin to vibrate strongly!"
 		vibSoundSelect = VibrateStrongSound
 	elseIf vibStrength == 3
-		msg = "The plug(s) within you begin to vibrate!"
 		vibSoundSelect = VibrateStandardSound
 	elseIf vibStrength == 2
-		msg = "The plug(s) within you begin to vibrate softly."
 		vibSoundSelect = VibrateWeakSound
 	elseIf vibStrength == 1
-		msg = "The plug(s) within you begin to vibrate agonizingly softly."
 		vibSoundSelect = VibrateVeryWeakSound
 	else
 		Error("Vibrator received invalid strength setting.")
@@ -1322,7 +1383,7 @@ int Function VibrateEffect(actor akActor, int vibStrength, int duration, bool te
 	EndIf
 
 	; Main Loop
-	While IsValidActor(akActor) && timeVibrated < GetVibrating(akActor) && akActor.WornHasKeyword(zad_DeviousPlug)
+	While IsValidActor(akActor) && timeVibrated < GetVibrating(akActor) && (akActor.WornHasKeyword(zad_DeviousPlug) || akActor.WornHasKeyword(zad_DeviousPiercingsNipple) || akActor.WornHasKeyword(zad_DeviousPiercingsVaginal))
 		; Log("XXX VibrateEffect: Begin Tick "+timeVibrated)
 		if (timeVibrated % 2) == 0 ; Make noise
 			; Log("XXX VibrateEffect: Making Noise")
@@ -1388,7 +1449,17 @@ int Function VibrateEffect(actor akActor, int vibStrength, int duration, bool te
 		if (Config.HardcoreEffects || akActor != PlayerRef) && (vibAnimStarted == 0) && Utility.RandomInt() <= (3+(VibStrength * 2)) && !IsAnimating(PlayerRef)
 			; Log("XXX Starting Horny Idle")
 			ApplyExpression(akActor, expression, (Aroused.GetActorExposure(akActor) * 0.75) as Int, openMouth=true)
-			cameraState=StartThirdPersonAnimation(akActor, AnimSwitchKeyword(akActor, zad_DeviousArmbinder, DDZaZAPCArmBZaDH01, DDZazhornyA), permitRestrictive=true)
+			; Select animation
+			idle anim1
+			idle anim2
+			if (nPiercings && !(vPlug || aPlug))
+				anim1 = DDZazhornyC
+				anim2 = DDZaZAPCArmBZaDS02
+			Else
+				anim1 = DDZazhornyA
+				anim2 = DDZaZAPCArmBZaDS01
+			EndIf
+			cameraState=StartThirdPersonAnimation(akActor, AnimSwitchKeyword(akActor, zad_DeviousArmbinder, anim2, anim1), permitRestrictive=true)
 			vibAnimStarted = timeVibrated + 1
 			; Log("XXX VibrateEffect: Done starting horny idle")
 		EndIf
@@ -1430,11 +1501,7 @@ int Function VibrateEffect(actor akActor, int vibStrength, int duration, bool te
 	EndIf
 	StopVibrating(akActor)
 	if !silent && akActor == PlayerRef
-		if Aroused.GetActorExposure(akActor) >= ArousalThreshold("Desperate")
-			NotifyPlayer("Your pussy clenches around the plugs as they abruptly cease vibrating.")
-		else
-			NotifyPlayer("The plugs cease vibrating.")
-		Endif
+		NotifyPlayer(BuildPostVibrationString(akActor, vibStrength, vPlug, aPlug, vPiercings, nPiercings))
 	Endif
 	SendModEvent("DeviceVibrateEffectStop", akActor.GetLeveledActorBase().GetName(), vibStrength * numVibratorsMult)
 	UpdateArousalTimeRate(akActor, vibStrength * numVibratorsMult)
