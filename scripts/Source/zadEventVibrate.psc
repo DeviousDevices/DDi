@@ -21,7 +21,7 @@ Bool Function Filter(actor akActor, int chanceMod=0)
 		libs.Log("Player is in a sexlab scene. Not starting new vibration effect.")
 		return false
 	EndIf
-	return (HasKeywords(akActor) && akActor.WornHasKeyword(libs.zad_DeviousPlug) && Parent.Filter(akActor, GetChanceModified(akActor, chanceMod)))
+	return (HasKeywords(akActor) && (akActor.WornHasKeyword(libs.zad_DeviousPlug) || akActor.WornHasKeyword(libs.zad_DeviousPiercingsNipple) || akActor.WornHasKeyword(libs.zad_DeviousPiercingsVaginal)) && Parent.Filter(akActor, GetChanceModified(akActor, chanceMod)))
 EndFunction
 
 bool Function HasKeywords(actor akActor)
