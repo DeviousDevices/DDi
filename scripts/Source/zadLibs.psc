@@ -505,10 +505,10 @@ bool Function ManipulateGenericDeviceByKeyword(Actor akActor, Keyword kw, bool e
 	While iFormIndex > 0 && !breakFlag
 		iFormIndex -= 1
 		Form kForm = akActor.GetNthForm(iFormIndex)
-		If kForm.HasKeyword(zad_InventoryDevice) && akActor.IsEquipped(kForm)
+		If kForm.HasKeyword(zad_InventoryDevice) && ((akActor.IsEquipped(kForm) && !equipOrUnequip) || (!akActor.IsEquipped(kForm) && equipOrUnequip))
 			ObjectReference tmpORef = akActor.placeAtMe(kForm, abInitiallyDisabled = true)
 			zadEquipScript tmpZRef = tmpORef as zadEquipScript
-			if tmpZRef != none && tmpZRef.zad_DeviousDevice == kw && akActor.GetItemCount(tmpZRef.deviceRendered) > 0
+			if tmpZRef != none && tmpZRef.zad_DeviousDevice == kw && ((akActor.GetItemCount(tmpZRef.deviceRendered) > 0 && !equipOrUnequip) || equipOrUnequip)
 				if !tmpZref.HasKeyword(zad_BlockGeneric)
 					breakFlag = True
 					if equipOrUnequip
