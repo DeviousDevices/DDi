@@ -216,11 +216,10 @@ Function SetupSlotMasks()
 	SlotMasks[12] = "Long Hair (41)"
 	SlotMasks[13] = "Circlet (42)"
 	SlotMasks[14] = "Ears (43)"
-
 	SlotMasks[15] = "Gags (44)"
 	SlotMasks[16] = "Collar (45)"
-	SlotMasks[17] = "Harnesses / Corsets (46)"
-
+	SlotMasks[17] = "Cloaks (46)"
+	SlotMasks[18] = "Backpacks (47)"
 	SlotMasks[19] = "Plugs (Anal) (48)"
 	SlotMasks[20] = "Chastity Belt (49)"
 	SlotMasks[21] = "Device Hider (50)"
@@ -231,6 +230,7 @@ Function SetupSlotMasks()
 	SlotMasks[26] = "Blindfold (55)"
 	SlotMasks[27] = "Chastity Bra / Piercings (56)"
 
+	SlotMasks[29] = "Harnesses / Corsets (58)"
 	SlotMasks[30] = "Cuffs (Arms) / Armbinder (59)"
 
 EndFunction
