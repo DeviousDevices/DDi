@@ -180,5 +180,7 @@ Function UpdateDeviceHiderSlot()
 	libs.Log("Set Device Hider slot to "+(slot+30)+".")
 	zad_DeviceHider.SetSlotMask(Math.LeftShift(1, slot))
 	RebuildSlotMask(libs.PlayerRef)
-	libs.PlayerRef.QueueNiNodeUpdate()
+	if !libs.PlayerRef.IsOnMount()
+		libs.PlayerRef.QueueNiNodeUpdate()
+	EndIf
 EndFunction
