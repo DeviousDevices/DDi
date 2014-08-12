@@ -154,6 +154,11 @@ Armor Property plugChargeableRenderedVag Auto
 Armor Property plugTrainingVag Auto
 Armor Property plugTrainingRenderedVag Auto
 
+Armor Property piercingVSoul Auto
+Armor Property piercingVSoulRendered Auto
+Armor Property piercingNSoul Auto
+Armor Property piercingNSoulRendered Auto
+
 ; Keys
 Key Property chastityKey Auto
 Key Property restraintsKey Auto
@@ -370,6 +375,12 @@ Function ManipulateDevice(actor akActor, armor device, bool equipOrUnequip, bool
 	ElseIf device ==  plugTrainingVag
 		deviceRendered = plugTrainingRenderedVag
 		deviceKeyword = zad_DeviousPlugVaginal
+	ElseIf device == piercingNSoul
+		deviceRendered = piercingNSoulRendered
+		deviceKeyword = zad_DeviousPiercingsNipple
+	ElseIf device == piercingVSoul
+		deviceRendered = piercingVSoulRendered
+		deviceKeyword = zad_DeviousPiercingsVaginal
 	Else
 		Error("ManipulateDevice did not recognize device type that it received as an argument.")
 		return
@@ -659,7 +670,7 @@ Armor Function GetDeviceByTags(Keyword kw, String tags, bool requireAll = true, 
 	log("GetDeviceByTags("+kw+", "+tags+")")
 	String[] tagArray = sslUtility.ArgString(tags, ",")
 	String[] supArray = sslUtility.ArgString(tagsToSuppress, ",")
-	Form[] resultList = new Form[64] ; workaround for sslUtility.pushForm() not seeming to work
+	Form[] resultList = new Form[64]
 	int n = 0
 	
 	int i = StorageUtil.FormListCount(kw, "zad.GenericDevice")
@@ -675,8 +686,10 @@ Armor Function GetDeviceByTags(Keyword kw, String tags, bool requireAll = true, 
 	EndWhile
 	
 	if n < 1 && fallBack
+		log("No devices found with tags, falling back to random device")
 		return GetGenericDeviceByKeyword(kw)
 	ElseIf n < 1
+		log("No devices found with tags")
 		return none
 	endIf
 	return resultList[Utility.RandomInt(0, n - 1)] as Armor
@@ -1974,6 +1987,8 @@ Function RegisterDevices()
 	RegisterGenericDevice(beltPaddedOpen		, "belt,metal,padded,open")
 	RegisterGenericDevice(beltPadded			, "belt,metal,padded,full")
 	RegisterGenericDevice(beltIron				, "belt,metal,iron")
+	RegisterGenericDevice(piercingNSoul		, "piercing,nipple,soulgem")
+	RegisterGenericDevice(piercingVSoul		, "piercing,vaginal,soulgem")
 
 	log("Finished registering devices.")
 EndFunction
