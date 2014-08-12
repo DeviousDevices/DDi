@@ -1986,7 +1986,7 @@ Function RegisterDevices()
 	RegisterGenericDevice(plugInflatableAn		, "plug,pump,anal,inflatable")
 	RegisterGenericDevice(beltPaddedOpen		, "belt,metal,padded,open")
 	RegisterGenericDevice(beltPadded			, "belt,metal,padded,full")
-	RegisterGenericDevice(beltIron				, "belt,metal,iron")
+	RegisterGenericDevice(beltIron				, "belt,metal,iron,full")
 	RegisterGenericDevice(piercingNSoul		, "piercing,nipple,soulgem")
 	RegisterGenericDevice(piercingVSoul		, "piercing,vaginal,soulgem")
 
