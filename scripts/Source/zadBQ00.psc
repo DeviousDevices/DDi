@@ -446,6 +446,12 @@ EndFunction
 function Logic(int threadID, bool HasPlayer)
 	sslThreadController Controller = Sexlab.ThreadSlots.GetController(threadID)
 	actor[] originalActors = Controller.Positions
+	sslBaseAnimation previousAnim = Controller.Animation
+
+	If previousAnim.HasTag("NoSwap")
+		libs.Log("Animation should not be replaced. Done.")
+		Return
+	EndIf
 
 	If zbf == None
 		zbf = zbfUtil.GetMain()
@@ -463,7 +469,6 @@ function Logic(int threadID, bool HasPlayer)
 		EndIf
 	EndIf
 
-	sslBaseAnimation previousAnim = Controller.Animation
 	if previousAnim.HasTag("Oral")
 		TogglePanelGag(originalActors, false)
 	EndIf
@@ -585,9 +590,9 @@ function Logic(int threadID, bool HasPlayer)
 			libs.Error("Failed to find any valid animations. Aborting.")
 			Controller.EndAnimation(quickly=true)
 		EndIf
-        Endif
+	Endif
 
-        Controller.SetForcedAnimations(anims)
+	Controller.SetForcedAnimations(anims)
 	if actors.length != originalActors.length || solos.length >= 1
 		libs.Log("Requesting actor change to " + actors.length + " actors.")
 		int i = 0
@@ -599,7 +604,7 @@ function Logic(int threadID, bool HasPlayer)
 	Else
 		Controller.SetAnimation()
 	Endif
-        libs.Log("Overriding animations.")
+	libs.Log("Overriding animations.")
 	Controller.RealignActors()
 	; Process Solo Animations, if any
 	ProcessSolos(solos)
