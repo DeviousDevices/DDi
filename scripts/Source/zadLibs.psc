@@ -612,7 +612,7 @@ Armor Function GetRenderedDevice(armor device)
 EndFunction
 
 ; Register a device to be used by GetGenericDeviceByKeyword()
-Function RegisterGenericDevice(Armor inventoryDevice)
+Function RegisterGenericDevice(Armor inventoryDevice, String tags)
 	if inventoryDevice == none || inventoryDevice.HasKeyword(zad_BlockGeneric) || !inventoryDevice.hasKeyword(zad_InventoryDevice)
 		return
 	endIf
@@ -623,6 +623,14 @@ Function RegisterGenericDevice(Armor inventoryDevice)
 	endIf
 	
 	StorageUtil.FormListAdd(kw, "zad.GenericDevice", inventoryDevice, false)
+	StorageUtil.StringListClear(inventoryDevice, "zad.deviceTags") ; Allow changing tags 
+	String[] tagArray = sslUtility.ArgString(tags, ",")
+	int i = tagArray.length
+	while i > 0
+		i -= 1
+		log("adding tag " + tagArray[i] + " for " + inventoryDevice.GetName())
+		StorageUtil.StringListAdd(inventoryDevice, "zad.deviceTags", tagArray[i])
+	endWhile
 EndFunction
 
 ; Retrieves a random inventory device with the given keyword, returns none if no devices are available
@@ -642,6 +650,75 @@ Armor Function GetGenericDeviceByKeyword(Keyword kw)
 	endWhile
 
 	return device 
+EndFunction
+
+; Retrieves a random inventory device with the given keyword and tag combination
+; If requireAll is true, ALL tags need to be found on the item to be returned
+; If fallback is true, a completely random device with the same keyword is returned if tag search fails
+Armor Function GetDeviceByTags(Keyword kw, String tags, bool requireAll = true, String tagsToSuppress = "", bool fallBack = true)
+	log("GetDeviceByTags("+kw+", "+tags+")")
+	String[] tagArray = sslUtility.ArgString(tags, ",")
+	String[] supArray = sslUtility.ArgString(tagsToSuppress, ",")
+	Form[] resultList = new Form[64] ; workaround for sslUtility.pushForm() not seeming to work
+	int n = 0
+	
+	int i = StorageUtil.FormListCount(kw, "zad.GenericDevice")
+	While i > 0
+		i -= 1
+		Armor current = StorageUtil.FormListGet(kw, "zad.GenericDevice", i) as Armor
+		If current && HasTags(current, tagArray, requireAll) && !HasTags(current, supArray, false)
+			resultList[n]	= current
+			n += 1
+		ElseIf current == none
+			StorageUtil.FormListRemoveAt(kw, "zad.GenericDevice", i)
+		EndIf
+	EndWhile
+	
+	if n < 1 && fallBack
+		return GetGenericDeviceByKeyword(kw)
+	ElseIf n < 1
+		return none
+	endIf
+	return resultList[Utility.RandomInt(0, n - 1)] as Armor
+EndFunction
+
+; Returns true if the given item has the given tag
+bool Function HasTag(Armor item, String tag)
+	int i = StorageUtil.StringListCount(item, "zad.deviceTags")
+	while i > 0
+		i -= 1
+		If StorageUtil.StringListGet(item, "zad.deviceTags", i) == tag
+			return true 
+		EndIf
+	endWhile
+	return false
+EndFunction
+
+; Returns true if the given item has the given tags, if requireAll true, all the tags need to be found on the item
+bool Function HasTags(Armor item, String[] tags, bool requireAll = true)
+	if tags.length < 1
+		return false
+	endIf
+
+	int i = StorageUtil.StringListCount(item, "zad.deviceTags")
+	int n = 0
+	int j
+	while i > 0
+		i -= 1
+		j = tags.length
+		String currentTag = StorageUtil.StringListGet(item, "zad.deviceTags", i)
+		While j > 0
+			j -= 1
+			If currentTag == tags[j]
+				If !requireAll
+					return true
+				EndIf
+				n += 1
+				j = 0 ; break
+			EndIf
+		endWhile
+	endWhile
+	return n == tags.length
 EndFunction
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1868,34 +1945,35 @@ Function ApplyArmbinderAnim(actor akActor, idle theIdle = None)
 EndFunction
 
 Function RegisterDevices()
-
-	RegisterGenericDevice(braPadded)
-	RegisterGenericDevice(cuffsPaddedArms)
-	RegisterGenericDevice(cuffsPaddedLegs)
-	RegisterGenericDevice(cuffsPaddedCollar)
-	RegisterGenericDevice(collarPosture)
-	RegisterGenericDevice(armbinder)
-	RegisterGenericDevice(gagBall)
-	RegisterGenericDevice(gagPanel)
-	RegisterGenericDevice(gagRing)
-	RegisterGenericDevice(gagStrapBall)
-	RegisterGenericDevice(gagStrapRing)
-	RegisterGenericDevice(blindfold)
-	RegisterGenericDevice(cuffsLeatherArms)
-	RegisterGenericDevice(cuffsLeatherLegs)
-	RegisterGenericDevice(cuffsLeatherCollar)
-	RegisterGenericDevice(harnessBody)
-	RegisterGenericDevice(harnessCollar)
-	RegisterGenericDevice(plugIronVag)
-	RegisterGenericDevice(plugIronAn)
-	RegisterGenericDevice(plugPrimitiveVag)
-	RegisterGenericDevice(plugPrimitiveAn)
-	RegisterGenericDevice(plugSoulgemVag)
-	RegisterGenericDevice(plugSoulgemAn)
-	RegisterGenericDevice(plugInflatableVag)
-	RegisterGenericDevice(plugInflatableAn)
-	RegisterGenericDevice(beltPaddedOpen)
-	RegisterGenericDevice(collarPostureLeather)
+	RegisterGenericDevice(braPadded 			, "bra,metal,padded")
+	RegisterGenericDevice(cuffsPaddedArms 		, "cuffs,arms,metal,padded")
+	RegisterGenericDevice(cuffsPaddedLegs		, "cuffs,legs,metal,padded")
+	RegisterGenericDevice(cuffsPaddedCollar	, "collar,metal,padded,short")
+	RegisterGenericDevice(collarPosture		, "collar,metal,posture,padded")
+	RegisterGenericDevice(armbinder				, "armbinder,leather,black")
+	RegisterGenericDevice(gagBall				, "gag,harness,ball,leather,black")
+	RegisterGenericDevice(gagPanel				, "gag,harness,panel,leather,black")
+	RegisterGenericDevice(gagRing				, "gag,harness,ring,leather,black")
+	RegisterGenericDevice(gagStrapBall			, "gag,strap,ball,leather,black")
+	RegisterGenericDevice(gagStrapRing			, "gag,strap,ring,leather,black")
+	RegisterGenericDevice(blindfold				, "blindfold,leather,black")
+	RegisterGenericDevice(cuffsLeatherArms		, "cuffs,arms,leather,black")
+	RegisterGenericDevice(cuffsLeatherLegs		, "cuffs,legs,leather,black")
+	RegisterGenericDevice(cuffsLeatherCollar	, "collar,leather,black,short")
+	RegisterGenericDevice(collarPostureLeather, "collar,leather,black,posture")
+	RegisterGenericDevice(harnessBody			, "harness,leather,black,full")
+	RegisterGenericDevice(harnessCollar		, "collar,harness,leather,black")
+	RegisterGenericDevice(plugIronVag			, "plug,vaginal,iron,simple")
+	RegisterGenericDevice(plugIronAn			, "plug,anal,iron,simple")
+	RegisterGenericDevice(plugPrimitiveVag		, "plug,vaginal,primitive,simple")
+	RegisterGenericDevice(plugPrimitiveAn		, "plug,anal,primitive,simple")
+	RegisterGenericDevice(plugSoulgemVag		, "plug,vaginal,soulgem,magic")
+	RegisterGenericDevice(plugSoulgemAn		, "plug,anal,soulgem,magic")
+	RegisterGenericDevice(plugInflatableVag	, "plug,pump,vaginal,inflatable")
+	RegisterGenericDevice(plugInflatableAn		, "plug,pump,anal,inflatable")
+	RegisterGenericDevice(beltPaddedOpen		, "belt,metal,padded,open")
+	RegisterGenericDevice(beltPadded			, "belt,metal,padded,full")
+	RegisterGenericDevice(beltIron				, "belt,metal,iron")
 
 	log("Finished registering devices.")
 EndFunction
