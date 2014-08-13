@@ -828,7 +828,7 @@ bool[] Function StartThirdPersonAnimation(actor akActor, idle animation, bool pe
 		; Not sure how to detect auto-walk: Tap 'forward' to disable it if it's active.
 		Input.TapKey(Input.GetMappedKey("Forward"))
 		; Freeze player controls
-		Game.DisablePlayerControls()
+		DisableControls()
 	Else
 		akActor.SetDontMove(true)
 	EndIf
@@ -1691,6 +1691,10 @@ bool Function IsValidActor(actor akActor)
 	return (akActor.Is3DLoaded() && !akActor.IsDead() && !akActor.IsDisabled() && akActor.GetCurrentScene() == none)
 EndFunction
 
+Function DisableControls()
+	; Mimics the behavior of Game.DisablePlayerControls()
+	zbfPC.SetDisabledControls(abMovement = True, abFighting = True, abSneaking = False, abMenu = True, abActivate = True)
+EndFunction
 
 Function UpdateControls()
 	; Centralized control management function.

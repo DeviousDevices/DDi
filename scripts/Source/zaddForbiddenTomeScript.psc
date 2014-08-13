@@ -437,7 +437,7 @@ Function DoUragBeltPlayer()
 	Debug.SendAnimationEvent((Alias_Urag.GetReference() as Actor), "IdleForceDefaultState") ; Reset idles from scene.
 	Alias_Urag.GetActorRef().SetDontMove(False)
 	tmpMsg.Show()
-	Game.EnablePlayerControls()
+	libs.UpdateControls()
 	SexLab.UnStripActor(akActor, playerItems)
 	UragResumeDialogueScene.ForceStart()
 EndFunction
