@@ -4,6 +4,14 @@ int Function OnEquippedFilter(actor akActor, bool silent=false)
 	if akActor == none
 		akActor == libs.PlayerRef
 	EndIf
+	if akActor.WornHasKeyword(libs.zad_DeviousBelt)
+		libs.NotifyPlayer(GetMessageName(akActor) + " cannot equip these piercings, due to the belt she wears.")
+		return 2
+	Endif
+	if akActor.WornHasKeyword(libs.zad_DeviousHarness)
+		libs.NotifyPlayer(GetMessageName(akActor) + " cannot equip these piercings, due to the harness she wears.")
+		return 2
+	Endif
 	if !akActor.IsEquipped(deviceRendered)
 		if akActor!=libs.PlayerRef && ShouldEquipSilently(akActor)
 			libs.Log("Avoiding FTM duplication bug (Vaginal Piercings).")
