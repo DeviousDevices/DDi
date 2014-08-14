@@ -1,6 +1,5 @@
 Scriptname zadBraScript extends zadEquipScript  
 
-
 int Function OnEquippedFilter(actor akActor, bool silent=false)
 	if akActor == none
 		akActor == libs.PlayerRef
@@ -23,4 +22,10 @@ Function OnEquippedPre(actor akActor, bool silent=false)
 	if !silent
 		libs.NotifyActor("You slip the bra around "+GetMessageName(akActor)+" chest, and it locks in place with a soft click.", akActor, true)
 	EndIf
+EndFunction
+
+
+Function OnRemoveDevice(actor akActor)
+	NetImmerse.SetNodeScale(akActor, "NPC L Breast", NodeScale, false)
+	NetImmerse.SetNodeScale(akActor, "NPC R Breast", NodeScale, false)
 EndFunction

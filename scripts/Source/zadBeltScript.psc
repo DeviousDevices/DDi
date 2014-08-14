@@ -79,14 +79,14 @@ string Function DeviceMenuBruteForceFail()
 EndFunction
 
 function BeltMenuExcrete()
-	Game.DisablePlayerControls()
+	libs.DisableControls()
 	libs.PlayerRef.PlayIdle(ZazAPCAO104)
 	;debug.notification("You answer the call of nature before cleaning yourself around the edges of the belt as much as possible.")
 	libs.Notify("A stream of urine escapes your bladder")
 	Utility.Wait(6) 				
 	Debug.SendAnimationEvent(libs.PlayerRef, "IdleForceDefaultState")
 	;libs.PlayerRef.PlayIdle(IdlePlayerStop)
-	Game.EnablePlayerControls()
+	libs.UpdateControls()
 EndFunction
 
 

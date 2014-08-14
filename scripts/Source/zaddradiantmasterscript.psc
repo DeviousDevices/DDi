@@ -303,7 +303,7 @@ Function StartupTrapCapture()
 	if !SanityCheck()
 		return
 	EndIf
-	game.DisablePlayerControls()
+	libs.DisableControls()
 	int tmp = 2; Utility.RandomInt(1,2)
 	if tmp == 1
 		TrappedChest01Msg.Show()
