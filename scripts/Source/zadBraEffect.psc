@@ -15,7 +15,13 @@ EndFunction
 
 
 Event OnUpdate()
-	libs.HideBreasts(Target)
+	if !Terminate
+		if !Target.GetWornForm(0x00000004)
+			libs.HideBreasts(Target)
+		Endif
+	Else ; Avoid race condition
+		libs.ShowBreasts(Target)
+	EndIf
 	DoRegister()
 EndEvent
 
