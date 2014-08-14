@@ -208,6 +208,7 @@ Soulgem Property SoulgemEmpty Auto
 Soulgem Property SoulgemFilled Auto
 MiscObject Property SoulgemStand Auto
 Perk Property LustgemCrafting Auto
+float Property BreastNodeScale Auto
 
 ; Nipple Piercings
 Perk Property PiercedNipples Auto
@@ -2036,4 +2037,30 @@ EndFunction
 ; 
 Function RemoveFromDisableDialogueFaction(Actor akActor)
 	akActor.RemoveFromFaction(zadDisableDialogueFaction)
+EndFunction
+
+
+
+Function StoreNodes(actor akActor)
+	BreastNodeScale = NetImmerse.GetNodeScale(akActor, "NPC L Breast", false)
+	log("Node Scale: "+BreastNodeScale)
+EndFunction
+
+
+Function HideBreasts(actor akActor)
+	if NetImmerse.GetNodeScale(akActor, "NPC L Breast", false) != 0.0
+		StoreNodes(akActor) ; Handle other mods resizing the breast nodes.
+	EndIf
+	if config.BreastNodeManagement
+		NetImmerse.SetNodeScale(akActor, "NPC L Breast", 0, false)
+		NetImmerse.SetNodeScale(akActor, "NPC R Breast", 0, false)
+	EndIf
+EndFunction
+
+
+Function ShowBreasts(actor akActor)
+	if BreastNodeScale != 0.0 && !config.BreastNodeManagement
+		NetImmerse.SetNodeScale(akActor, "NPC L Breast", BreastNodeScale, false)
+		NetImmerse.SetNodeScale(akActor, "NPC R Breast", BreastNodeScale, false)
+	EndIf
 EndFunction

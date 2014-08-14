@@ -81,3 +81,19 @@ Event OnLocationChange(Location akOldLoc, Location akNewLoc)
 	EndIf
 	libs.RepopulateNpcs()
 EndEvent
+
+
+Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
+	armor akArmor = (akBaseObject as Armor)
+	if libs.PlayerRef.WornHasKeyword(libs.zad_DeviousBra) && Math.LogicalAnd(akArmor.GetSlotMask(), 0x00000004)
+		libs.ShowBreasts(libs.PlayerRef)
+	EndIf
+EndEvent
+
+
+Event OnObjectUnequipped(Form akBaseObject, ObjectReference akReference)
+	armor akArmor = (akBaseObject as Armor)
+	if libs.PlayerRef.WornHasKeyword(libs.zad_DeviousBra) && Math.LogicalAnd(akArmor.GetSlotMask(), 0x00000004)
+		libs.HideBreasts(libs.PlayerRef)
+	EndIf
+EndEvent

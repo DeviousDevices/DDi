@@ -37,6 +37,8 @@ bool Property preserveAggro Auto
 bool preserveAggroDefault = true
 bool Property useBoundAnims Auto
 bool useBoundAnimsDefault = true
+bool Property breastNodeManagement Auto
+bool breastNodeManagementDefault = true
 
 ; Blindfold
 int Property blindfoldMode Auto ; 0 == DD's mode, 1 == DD's mode w/ leeches, 2 == leeches
@@ -157,6 +159,7 @@ int useBoundAnimsOID
 int[] slotMaskOIDs
 int DevicesUnderneathSlotOID
 int UseQueueNiNodeOID
+int breastNodeManagementOID
 
 string[] difficultyList
 string[] blindfoldList
@@ -297,6 +300,8 @@ Event OnPageReset(string page)
 		animsRegisterOID = AddTextOption("Reregister Animations", "Not Done")
 		AddHeaderOption("Debug")
 		logMessagesOID = AddToggleOption("Enable Debug Logging", LogMessages)
+		SetCursorPosition(1) ; Move cursor to top right position
+		; AddHeaderOption("General Settings")
 	ElseIf page == "Devices"
 		SetCursorFillMode(TOP_TO_BOTTOM)
 		SetCursorPosition(0) ; Can be removed because it starts at 0 anyway
@@ -306,6 +311,12 @@ Event OnPageReset(string page)
 		AddHeaderOption("Blindfold Options")
 		blindfoldModeOID = AddMenuOption("BlindfoldMode", blindfoldList[blindfoldMode])
 		blindfoldStrengthOID = AddSliderOption("Blindfold Strength", blindfoldStrength, "{2}")
+		AddHeaderOption("Bra Options")
+		int flags = 0
+		if libs.PlayerRef.WornHasKeyword(libs.zad_DeviousBra)
+			flags = OPTION_FLAG_DISABLED
+		EndIf
+		breastNodeManagementOID = AddToggleOption("Breast Node Management", breastNodeManagement, flags)
 	ElseIf page == "Sex Animation Filter"
 		libs.CheckForBoundAnims()
 		SetCursorFillMode(TOP_TO_BOTTOM)
@@ -642,6 +653,9 @@ Event OnOptionSelect(int option)
 	elseif option == ifpOID
 		ifp = !ifp
 		SetToggleOptionValue(ifpOID, ifp)
+	elseif option == breastNodeManagementOID
+		breastNodeManagement = !breastNodeManagement
+		SetToggleOptionValue(breastNodeManagementOID, breastNodeManagement)
 	EndIf
 EndEvent
 
@@ -777,6 +791,9 @@ Event OnOptionDefault(int option)
 	elseIf (option == ifpOID)
 		ifp = ifpDefault
 		SetToggleOptionValue(ifpOID, ifp)
+	elseIf (option == breastNodeManagementOID)
+		breastNodeManagement = breastNodeManagementDefault
+		SetToggleOptionValue(breastNodeManagementOID, breastNodeManagement)
 	endIf
 EndEvent
 
@@ -879,6 +896,8 @@ Event OnOptionHighlight(int option)
 		SetInfoText("Configures support for Immersive First Person.\nDefault:"+ifpDefault)
 	elseIf (option == boundAnimsOID)
 		SetInfoText("Are ZAP bound sex animations available?")
+	elseIf (option == breastNodeManagementOID)
+		SetInfoText("If enabled, breasts will be resized while the chastity bra is worn, to minimized HDT clipping.\nDefault: "+breastNodeManagementDefault)
 	endIf
 EndEvent
 

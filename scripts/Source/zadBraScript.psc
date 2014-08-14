@@ -24,8 +24,3 @@ Function OnEquippedPre(actor akActor, bool silent=false)
 	EndIf
 EndFunction
 
-
-Function OnRemoveDevice(actor akActor)
-	NetImmerse.SetNodeScale(akActor, "NPC L Breast", NodeScale, false)
-	NetImmerse.SetNodeScale(akActor, "NPC R Breast", NodeScale, false)
-EndFunction
