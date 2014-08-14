@@ -2053,7 +2053,6 @@ EndFunction
 Function HideBreasts(actor akActor)
 	StoreNodes(akActor) ; Handle other mods resizing the breast nodes.
 	if config.BreastNodeManagement
-		Log("HideBreasts()")
 		NetImmerse.SetNodeScale(akActor, "NPC L Breast", 0, false)
 		NetImmerse.SetNodeScale(akActor, "NPC R Breast", 0, false)
 	EndIf
@@ -2062,7 +2061,6 @@ EndFunction
 
 Function ShowBreasts(actor akActor)
 	if BreastNodeScale != 0.0 && config.BreastNodeManagement
-		Log("ShowBreasts()")
 		NetImmerse.SetNodeScale(akActor, "NPC L Breast", BreastNodeScale, false)
 		NetImmerse.SetNodeScale(akActor, "NPC R Breast", BreastNodeScale, false)
 	EndIf
