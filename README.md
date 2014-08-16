@@ -1,10 +1,10 @@
 DDi
 ===
 
-Devious Devices - Integration
+A (Work-in-progress) Wiki documenting Devious Devices can be found at: https://github.com/DeviousDevices/Docs/wiki
 
 
-
+***
 Basic Documentation:
 From zadLibs.psc:
 ```
