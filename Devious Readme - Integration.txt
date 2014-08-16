@@ -189,6 +189,51 @@ LoversLab Forum Members for some great suggestions and putting this mod to good 
 
 
 [ CHANGELOG ]
+[ 2.8.1 ]:
+  	New API functions, by Xaz: https://github.com/D...ement-Functions
+  	New API functions, by Srende: https://github.com/D...lecting-Devices
+  	Gags have now been consolidated to only use one slot (44). They previously used two (One for straps (50), and one for the mouthpiece (44)).
+  	The Devices Underneath MCM page has been split to two pages, to avoid text cut-off.
+  	The Device Hider now defaults to slot 50 (This is the new recommended slot, to avoid conflicts of all kinds).
+  	The Device Hider is now disablable, by setting the slot to None.
+  	A Leather Posture Collar has been added.
+  	Fixed a number of animations that were no longer playing, due to them being moved to the Zaz Animation Pack.
+  	DD Gags will no longer apply their facial expression for gags with the zbfAnimMouth001 keyword.
+  	Fixed an issue which would cause periodic events to cease processing until reload, after scenes which disabled it.
+  	Fixed an issue which allowed players to struggle out of struggle-proof armbinders.
+  	New Device: Soulgem Nipple Piercings. 
+  	New Device: Soulgem Vaginal Piercings.
+  	Corrected a QueueNiNodeUpdate call, which was causing Flying Horses, and Tumbling Carts.
+  	Masturbate On Device Removal now defaults to False.
+  	Vibrate Function updated to process new categories of vibrating devices (Piercings).
+  	Added version checks for Zaz Animation Pack, due to a dependency upon it's new functionalities.
+  	New (Properly aligned) animations will play for armbinder-bound actors which are participating in Sexlab scenes.
+  	Player Control Management is now done through ZAP, for improved compatibility with other mods.
+  	Zaz keywords added to all devices, for easier mod interoperability.
+  	HDT-Enabled Breasts should no longer clip through the chastity bra, due to a new system.
+  	Harnesses have been moved to slot 58.
+
+[ 2.8.0 ]:
+  	Mod initialization is now delayed until after a save/load cycle, to help alleviate mod initialization failure for some users
+  	Desyncs can now be fixed without the use of the console, by just re-equipping the device.
+  	Fixed blindfold third person controls issue post-sex.
+  	New System: Devices Underneath. This fully mcm-configurable system will hide worn items (Without unequipping them) on a slot-by-slot basis. Comes default configured to hide chastity-bra's when something is equipped on the body slot. Use the MCM menu to configure it to hide whatever you like, whenever you like: Undies, various armor pieces, jewelry, piercings, etc.
+  	Added creature support to the animation filter, now that proper tags are in place.
+  	Fixed a number of bugs with actor array resizing in the animation filter.
+  	Added Mod Events to device equips.
+  	Device effects / idles / events on NPC's are now fully armed and operational.
+  	New SKSE plugin: DeviousDevices.dll. I've begun moving some functions to the new SKSE plugin, in order to improve performance / accomplish things that would be impossible through straight-papyrus. So far, the logic for ReEquipExistingDevices has been moved. Users with massive numbers of items will see significant (90%) performance increases when interacting with / equipping devices.
+  	Added Periodic plug arousal-timerate increase. This is mostly to offset the Aroused formula change. Still tweaking this number.
+  	Added a number of new functions (Code provided by Lordescobar666) to zadLibs, to facilitate the manipulation of devices by loose paramaters.
+  	The expansion now features a new class of items, using new textures: Ebonite.
+  	The Expansion now fully supports UNPB bodies, as well as CBBE.
+  	
+  	New Bain/fomod installer for the expansion.
+  	New script for the expansion, to help modders easily manipulate the new devices (Thanks Srende).
+  	Thanks to Coopervane, Aelie, Zadil, Srende, and Ms.Leeches for their collaboration towards the development of the Devious Expansion.
+  	Fixed a bug associated with linked-events.
+  	Many other smaller changes...
+
 [ 2.7.4 ]:
   	Removed debug code that was erroneously causing the chargeable plugs to reach full-charge much faster than intending.
 	Fixed issue with gag no-food effect that was causing a number of oddly keyworded items to be removed (Snowberries, charred skeever, etc).
