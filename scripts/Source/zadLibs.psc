@@ -249,7 +249,7 @@ Keyword Property zad_EffectEdgeOnly Auto    ; Will never let the player cum for 
 Keyword Property zad_EffectEdgeRandom Auto    ; Will sometimes let the player cum for stimulating events (Vibration)
 
 Keyword Property zad_EffectsLinked Auto      ; If one effect fires, all effects fire.
-
+Keyword Property zad_EffectCompressBreasts Auto ; Compress breasts to avoid hdt clipping through bras.
 
 
 ;===============================================================================
