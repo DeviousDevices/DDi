@@ -315,8 +315,8 @@ sslBaseAnimation[] function FindValidAnimations(sslThreadController controller, 
 	; string cache = BuildRegistryStr(numActors, permitOral, permitVaginal, permitAnal, permitBoobjob, numBoundActors, NumExtraTags, ExtraTags)
 	; Registry.find(cache)
 
-	sslBaseAnimation[] allAnims = SexLab.AnimSlots.Animations
-	int totalAnims = SexLab.AnimSlots.Slotted
+	sslBaseAnimation[] allAnims = SexLab.GetOwnerAnimations(self)
+	int totalAnims = allAnims.length
 	if previousAnim.HasTag("Creature")
 		allAnims = SexLab.CreatureSlots.GetByRace(numActors, Controller.positions[(Controller.positions.Length - 1)].GetRace())
 		totalAnims = allAnims.Length
@@ -344,7 +344,7 @@ sslBaseAnimation[] function FindValidAnimations(sslThreadController controller, 
 			else
 				chastityAnims = sslUtility.PushAnimation(allAnims[i], chastityAnims)
 			EndIf
-			if allAnims[i].HasTag("Bound")
+			if allAnims[i].HasTag("Bound") || allAnims[i].HasTag("Armbinder")
 				boundAnims = sslUtility.PushAnimation(allAnims[i], boundAnims)
 			EndIf
 		Endif
@@ -485,7 +485,7 @@ function Logic(int threadID, bool HasPlayer)
 	int NumExtraTags = 0
 	string[] ExtraTags = new String[12]
 
-	if isBound && (!libs.BoundAnimsAvailable || !libs.config.useBoundAnims)
+	if isBound && (!libs.BoundAnimsAvailable || !libs.config.useBoundAnims) && originalActors.length != 1
 		libs.Log("One or more actors were bound, but there are no bound animations available. Removing armbinder(s).")
 		StoreArmbinders(originalActors)
 		isBound = False
@@ -546,7 +546,7 @@ function Logic(int threadID, bool HasPlayer)
 			; Try removing actors, and shuffling them to solo scenes.
 			libs.Log("Trying to resize actors...")
 		EndIf
-		if workaroundID == 1 && isBound ; No anims, while bound.
+		if ((workaroundID == 0 && actors.length <= 2 ) || workaroundID == 1) && isBound ; No anims, while bound.
 			; Still no animations, after resizing actors. Drop armbinders, and try again.
 			libs.Log("Removing armbinders, Trying to resize actors...")
 			StoreArmbinders(actors)
@@ -723,7 +723,14 @@ Event OnAnimationEnd(int threadID, bool HasPlayer)
 	actor[] actors = controller.Positions
 	sslBaseAnimation previousAnim = controller.Animation
 	int numBeltedActors = CountBeltedActors(controller.Positions)
-	if (numBeltedActors > 0) && previousAnim.name=="DDBeltedSolo" && actors.length==1
+	if previousAnim.name == "DDArmbinderSolo" && actors.length == 1
+		if actors[0]!=libs.PlayerRef
+			libs.NotifyNPC(actors[0].GetLeveledActorbase().GetName() + " ceases her efforts, looking both frustrated and aroused.")
+		else
+			libs.NotifyPlayer("With a sigh, you realize that this is futile. You cannot possibly reach yourself, bound as you are. Your struggle has left you feeling even more aroused than when you began.", true)
+		Endif
+	EndIf
+	If (numBeltedActors > 0) && previousAnim.name=="DDBeltedSolo" && actors.length==1
 		if actors[0]!=libs.PlayerRef
 			libs.NotifyNPC(actors[0].GetLeveledActorbase().GetName() + " ceases her efforts, looking both frustrated and aroused.")
 		else
