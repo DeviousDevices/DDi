@@ -42,7 +42,10 @@ Keyword Property zad_PermitVaginal Auto
 Keyword Property zad_InventoryDevice Auto
 Keyword Property zad_BlockGeneric Auto ; Block generic removal of this device.
 
-Keyword Property zbfAnimMouth001 Auto ; Don't apply gag expression for devices with this keyword (Zaz gags).
+; Don't apply gag expression for devices with these keywords (Zaz gags).
+Keyword Property zbfAnimMouth001 Auto 
+Keyword Property zbfEffectOpenMouth Auto
+
 ;Idles
 Idle Property DDZazHornyA Auto
 Idle Property DDZazHornyB Auto
@@ -1770,7 +1773,7 @@ int Function GetVibrating(actor akActor)
 EndFunction
 
 Function ApplyGagEffect(actor akActor)
-	if (akActor.WornHasKeyword(zbfAnimMouth001))
+	if (akActor.WornHasKeyword(zbfAnimMouth001) || akActor.WornHasKeyword(zbfEffectOpenMouth)) ; Let Zap handle these.
 		return
 	EndIf
 	if (GetPhonemeModifier(akActor, 0, 1) != 100 || GetPhonemeModifier(akActor, 0, 11) != 70) && GetPhonemeModifier(akActor, 0, 0) != 70 ; Last check is for vibration mouth expressions. HoC
