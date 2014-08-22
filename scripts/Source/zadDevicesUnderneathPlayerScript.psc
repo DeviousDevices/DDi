@@ -3,12 +3,15 @@ Scriptname zadDevicesUnderneathPlayerScript extends ReferenceAlias
 zadLibs Property libs Auto
 import zadNativeFunctions
 
+Bool Property Working Auto
+
 Event OnPlayerLoadGame()
 	libs.DevicesUnderneath.Maintenance()
 EndEvent
 
 
 Function Logic(armor akArmor, bool equipOrUnequip)
+	; libs.Log("equipOrUnequip = " + equipOrUnequip)
 	if akArmor == None
 		return
 	EndIf
@@ -34,19 +37,35 @@ Function Logic(armor akArmor, bool equipOrUnequip)
 EndFunction
 
 Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
+	int timeout = 0
+	While Working && timeout <= 500
+		timeout += 1
+		Utility.Wait(0.01)
+	EndWhile
+	Working = True
 	armor akArmor = (akBaseObject as Armor)
 	if akArmor == libs.DevicesUnderneath.zad_DeviceHider
+		Working = False
 		return
 	EndIf
 	Logic(akArmor, true)
+	Working = False
 EndEvent
 
 
 Event OnObjectUnequipped(Form akBaseObject, ObjectReference akReference)
+	int timeout = 0
+	While Working && timeout <= 500
+		timeout += 1
+		Utility.Wait(0.01)
+	EndWhile
+	Working = True
 	armor akArmor = (akBaseObject as Armor)
 	if akArmor == libs.DevicesUnderneath.zad_DeviceHider
 		libs.PlayerRef.EquipItem(libs.DevicesUnderneath.zad_DeviceHider, true, true)
+		Working = False
 		return
 	EndIf
 	Logic(akArmor, false)
+	Working = False
 EndEvent
