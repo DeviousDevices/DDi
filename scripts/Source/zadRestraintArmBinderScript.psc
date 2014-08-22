@@ -8,6 +8,8 @@ Message Property zad_ArmBinderEquipPostMsg Auto
 Message Property zad_ArmBinderDisableLocksMsg Auto
 Message Property zad_ArmBinderEnableLocksMsg Auto
 
+Bool Property Locked = true Auto
+
 Function OnEquippedPre(actor akActor, bool silent=false)
 	if !silent
 		if akActor == libs.PlayerRef
@@ -49,14 +51,15 @@ int Function OnEquippedFilter(actor akActor, bool silent=false)
 	EndIf
         int interaction = zad_ArmBinderPreEquipMsg.show()
         if interaction == 0 ; Equip Device
+		abq.IsLocked = Locked
 		return 0 ; Proceed
 	ElseIf interaction == 1 ; Manipulate Locks
-		if abq.IsLocked
+		if Locked
 			zad_ArmBinderDisableLocksMsg.Show()
-			abq.IsLocked = false
+			Locked = False
 		Else
 			zad_ArmBinderEnableLocksMsg.Show()
-			abq.IsLocked = true
+			Locked = True
 		EndIf
 		return OnEquippedFilter(akActor)
 	ElseIf interaction == 2 ; Put it away
