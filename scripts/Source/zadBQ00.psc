@@ -212,7 +212,7 @@ Function VersionChecks()
 	CheckCompatibility("Assets", 2.82, assets.GetVersion())
 	CheckCompatibility("Zaz Animation Pack", 555, zbfUtil.GetVersion())
 	CheckCompatibility("Aroused", 20140124, Aroused.GetVersion())
-	CheckCompatibility("Sexlab", 15400, SexlabUtil.GetVersion())
+	CheckCompatibility("Sexlab", 15800, SexlabUtil.GetVersion())
 	libs.Log("[ Third Party Mod Compatibility Checks ]")
 	; ...
 	libs.Log("[ Sanity Checks ]")
