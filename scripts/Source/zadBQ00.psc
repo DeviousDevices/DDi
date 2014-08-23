@@ -328,7 +328,7 @@ sslBaseAnimation[] function FindValidAnimations(sslThreadController controller, 
 		int i = 0
 		int j = 0
 		int tlen = Sexlab.AnimSlots.Slotted
-		While i < tlen && j <= 128
+		While i < tlen && j < 128
 			if sexlabAnims[i].enabled && sexlabAnims[i].registered
 				allAnims[j] = sexlabAnims[i]
 				j += 1
@@ -337,7 +337,7 @@ sslBaseAnimation[] function FindValidAnimations(sslThreadController controller, 
 		EndWhile
 		i = 0
 		tlen = ownerAnims.length
-		While i < tlen && j <= 128
+		While i < tlen && j < 128
 			allAnims[j] = ownerAnims[i]
 			j += 1
 			i += 1
