@@ -100,6 +100,8 @@ bool Property FirstRun = True Auto ; Don't initialize until the game is reloaded
 bool Property Tainted Auto ; Not going to offer support for tainted installations.
 string[] Property Registry Auto
 
+import sslUtility
+
 function Shutdown(bool silent=false)
     ; this is not finished yet.
     UnregisterForAllModEvents()
@@ -301,7 +303,7 @@ sslBaseAnimation[] function FindValidAnimations(sslThreadController controller, 
 		zbf = zbfUtil.GetMain()
 	EndIf
 
-	; Special Cases
+	;;; Process Special Cases
 	; Two Actors, both wearing Armbinders
 	if numActors == numBoundActors == 2
 		ExtraTags[numExtraTags] = "SubSub"
@@ -311,15 +313,36 @@ sslBaseAnimation[] function FindValidAnimations(sslThreadController controller, 
 		ExtraTags[numExtraTags] = "DomSub"
 		numExtraTags+=1
 	EndIf
-
-	; string cache = BuildRegistryStr(numActors, permitOral, permitVaginal, permitAnal, permitBoobjob, numBoundActors, NumExtraTags, ExtraTags)
-	; Registry.find(cache)
-
-	sslBaseAnimation[] allAnims = SexLab.GetOwnerAnimations(self)
-	int totalAnims = allAnims.length
+	
+	;;;; Build list of available animations. 
+	sslBaseAnimation[] allAnims
+	int totalAnims = 0
 	if previousAnim.HasTag("Creature")
 		allAnims = SexLab.CreatureSlots.GetByRace(numActors, Controller.positions[(Controller.positions.Length - 1)].GetRace())
 		totalAnims = allAnims.Length
+	Else
+		sslBaseAnimation[] ownerAnims = SexLab.GetOwnerAnimations(self)
+		sslBaseAnimation[] sexlabAnims = Sexlab.AnimSlots.Animations
+		int len = ownerAnims.length + Sexlab.AnimSlots.Slotted
+		allAnims = sslUtility.AnimationArray(len)
+		int i = 0
+		int j = 0
+		int tlen = Sexlab.AnimSlots.Slotted
+		While i < tlen && j <= 128
+			if sexlabAnims[i].enabled && sexlabAnims[i].registered
+				allAnims[j] = sexlabAnims[i]
+				j += 1
+			EndIf
+			i += 1
+		EndWhile
+		i = 0
+		tlen = ownerAnims.length
+		While i < tlen && j <= 128
+			allAnims[j] = ownerAnims[i]
+			j += 1
+			i += 1
+		EndWhile
+		totalAnims = j
 	EndIf
 	sslBaseAnimation[] chastityAnims
 	sslBaseAnimation[] aggroAnims
@@ -335,17 +358,18 @@ sslBaseAnimation[] function FindValidAnimations(sslThreadController controller, 
 	while i >0 ; Filter out chastity-unfriendly animations
 		i -= 1
 		;            if SexLab.AnimSlots.Searchable(previousAnim) && numActors==allAnims[i].ActorCount() && IsValidAnimation(allAnims[i])
-		if allAnims[i].enabled && allAnims[i].registered && numActors==allAnims[i].PositionCount && IsValidAnimation(allAnims[i], permitOral, permitVaginal, permitAnal, permitBoobjob, isBound, NumExtraTags, ExtraTags)
+		if numActors==allAnims[i].PositionCount && IsValidAnimation(allAnims[i], permitOral, permitVaginal, permitAnal, permitBoobjob, isBound, NumExtraTags, ExtraTags)
 			if allAnims[i].HasTag("Aggressive")
 				aggroAnims = sslUtility.PushAnimation(allAnims[i], aggroAnims)
 			EndIf
 			if allAnims[i].HasTag("Foreplay")
 				foreplayAnims = sslUtility.PushAnimation(allAnims[i], foreplayAnims)
 			else
-				chastityAnims = sslUtility.PushAnimation(allAnims[i], chastityAnims)
-			EndIf
-			if allAnims[i].HasTag("Bound") || allAnims[i].HasTag("Armbinder")
-				boundAnims = sslUtility.PushAnimation(allAnims[i], boundAnims)
+				if allAnims[i].HasTag("Bound") || allAnims[i].HasTag("Armbinder")
+					boundAnims = sslUtility.PushAnimation(allAnims[i], boundAnims)
+				Else
+					chastityAnims = sslUtility.PushAnimation(allAnims[i], chastityAnims)
+				EndIf
 			EndIf
 		Endif
 	EndWhile
