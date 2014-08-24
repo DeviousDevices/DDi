@@ -189,6 +189,20 @@ LoversLab Forum Members for some great suggestions and putting this mod to good 
 
 
 [ CHANGELOG ]
+[ 2.8.2 ]:
+  	(Hopefully) Fixed the cause of DD failing to initialize for some users.
+	Zenetx's Gags Overhaul has been adopted as the official behavior for gags, and has been merged in to Integration (Thanks Zenetx!).
+	Fixed a race condition when swapping armor with the Devices Underneath system.
+	Added a new animation for solo masturbation scenes, while wearing an armbinder.
+	DD now utilizes phantom animations to avoid polluting the Sexlab animation pool (For DDBeltedSolo, and DDArmbinderSolo).
+	Fixed the armbinder fallback, for the animation filter.
+	Fixed a keyword bug associated with the vaginal piercing menu.
+	Fixed incorrect vaginal piercing menu text.
+	Added a new keyword to the breast compression enchantment. Modders that wish to develop more revealing Bras can now exclude the zad_effBra magic effect to avoid breast compression.
+	Cursed plugs should now render properly.
+	Manipulating the lock on one armbinder will no longer permit the player to escape the next equipped armbinder.
+	Gags containing the zbfEffectOpenMouth or zbfAnimMouth001 keywords will no longer apply the open mouth expression to actors.
+
 [ 2.8.1 ]:
   	New API functions, by Xaz: https://github.com/D...ement-Functions
   	New API functions, by Srende: https://github.com/D...lecting-Devices
