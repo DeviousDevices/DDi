@@ -43,9 +43,9 @@ int Property SlotMask Auto ; Avoid repeated lookups
 ;; [58]: 0x10000000
 ;; [59]: 0x20000000
 
-Event OnInit()
-	Maintenance()
-EndEvent
+; Event OnInit()
+; 	Maintenance()
+; EndEvent
 
 
 Function SetDefaultSlotMasks()

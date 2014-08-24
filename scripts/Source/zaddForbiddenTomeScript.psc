@@ -240,9 +240,9 @@ Armor Property CurrentBra Auto
 ; Local quest variables
 form[] playerItems
 
-Function OnInit()
-	libs.Log("Forbidden Tome OnInit()")
-EndFunction
+; Function OnInit()
+; 	libs.Log("Forbidden Tome OnInit()")
+; EndFunction
 
 
 ;;; Set up wrapper to support custom devices

@@ -96,7 +96,6 @@ bool Property processBlindfoldEvent Auto
 bool Property processHarnessEvent Auto
 bool Property processPlugsEvent Auto
 
-bool Property FirstRun = True Auto ; Don't initialize until the game is reloaded.
 bool Property Tainted Auto ; Not going to offer support for tainted installations.
 string[] Property Registry Auto
 
@@ -110,14 +109,19 @@ function Shutdown(bool silent=false)
     EndIf
 EndFunction
 
+
+Event OnInit()
+	RegisterForModEvent("__DeviousDevicesInit", "OnInitialize")
+EndEvent
+
+Event OnInitialize(string eventName, string strArg, float numArg, Form sender)
+	UnregisterForModEvent("__DeviousDevicesInit")
+	Maintenance()
+EndEvent
+
 Function Maintenance()
 	; benchmark.SetupBenchmarks()
 	float curVersion = libs.GetVersion()
-	if FirstRun
-		libs.Log("New game detected: Not finishing initialization.")
-		FirstRun = False
-		return
-	EndIf
 	if zad_DeviousDevice == None
 		Debug.MessageBox("Devious Devices has not been correctly upgraded from its previous version. Please Clean Save, as per the instructions in the support thread.")
 		Libs.Error("zad_DeviousDevice == none in Maintenance()")
@@ -170,6 +174,12 @@ Function Maintenance()
 	libs.CheckForBoundAnims()
 	if !libs.DevicesUnderneath.IsRunning() && libs.config.DevicesUnderneathEnabled
 		libs.DevicesUnderneath.Start()
+		int timeout = 0
+		while !libs.DevicesUnderneath.IsRunning() && timeout < 25
+			timeout += 1
+			Utility.Wait(0.2)
+		EndWhile
+		libs.DevicesUnderneath.Maintenance()
 	EndIf
 	; ResetAnimCache()
 	If regDevices

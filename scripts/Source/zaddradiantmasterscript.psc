@@ -139,9 +139,9 @@ form[] playerItems
 ;==================================================
 ; 
 ;==================================================
-Event OnInit()
-	Maintenance()
-EndEvent
+; Event OnInit()
+; 	Maintenance()
+; EndEvent
 
 
 Function Maintenance()

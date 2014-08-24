@@ -18,12 +18,13 @@ Event OnPlayerLoadGame()
 EndEvent
 
 
-Event OnInit()
-	Maintenance()
-EndEvent
+; Event OnInit()
+; 	Maintenance()
+; EndEvent
 
 
 Function Maintenance()
+	GoToState("Enabled")
 	questMonitor.Maintenance()
 	RemoveAllInventoryEventFilters()
 	AddInventoryEventFilter(BogusItem) ; Avoid calls to OnItemAdded when they're not needed anymore.
@@ -32,6 +33,17 @@ Function Maintenance()
 	libs.Log("QuestMonitor is now tracking player.")
 EndFunction
 
+
+Auto State Disabled
+
+Event OnItemAdded(Form akBaseItem, int aiItemCount, ObjectReference akItemReference, ObjectReference akSourceContainer)
+
+EndEvent
+
+EndState
+
+
+State Enabled
 
 Event OnItemAdded(Form akBaseItem, int aiItemCount, ObjectReference akItemReference, ObjectReference akSourceContainer)
 	libs.Log("QuestMonitor: OnItemAdded()")
@@ -95,3 +107,5 @@ Event OnLocationChange(Location akOldLoc, Location akNewLoc)
 		EndIf
 	EndIf
 EndEvent
+
+EndState

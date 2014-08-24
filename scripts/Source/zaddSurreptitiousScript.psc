@@ -18,16 +18,16 @@ ReferenceAlias Property Player Auto
 
 FormList Property SafeLocations Auto
 
-Event OnInit()
-	libs.Log("SS is initializing.")
-	Maintenance()
-EndEvent
+; Event OnInit()
+;  	libs.Log("SS is initializing.")
+; 	Maintenance()
+; EndEvent
 
-Function Maintenance()
-	UnregisterForSleep()
-	RegisterForSleep()
-	libs.Log("SS is now tracking player.")
-EndFunction
+; Function Maintenance()
+; 	UnregisterForSleep()
+; 	RegisterForSleep()
+; 	libs.Log("SS is now tracking player.")
+; EndFunction
 
 
 Function StartRadiantMaster(LocationAlias myLocation, ReferenceAlias myContainer, ReferenceAlias myMaster, ReferenceAlias myMarker, int stage)

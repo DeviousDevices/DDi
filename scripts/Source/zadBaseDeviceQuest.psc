@@ -3,11 +3,6 @@ Scriptname zadBaseDeviceQuest Extends Quest Hidden
 Keyword Property zad_DeviousDevice Auto
 zadLibs Property libs Auto
 
-
-Event OnInit()
-	Maintenance()
-EndEvent
-
 Function Maintenance()
 	libs.Log("Starting update chain.")
 	RegisterForSingleUpdateGameTime(libs.Config.EventInterval)

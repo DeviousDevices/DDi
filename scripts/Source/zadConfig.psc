@@ -262,7 +262,23 @@ Event OnVersionUpdate(int newVersion)
 			libs.PlayerRef.AddPerk(zad_keyCraftingHard)
 		EndIf
 	EndIf
+	; if CurrentVersion == 0 ; New Game
+	; 	SexlabFramework SexLab = SexLabUtil.GetAPI()
+	; 	If SexLab == None
+	; 		libs.Error("Mod initialization failed: Could not fetch Sexlab API.")
+	; 	EndIf
+	; 	; Wait for Sexlab to finish initializing.
+	; 	int timeout = 0
+	; 	float waitFor = 5.0
+	; 	While (!Sexlab.Enabled && (timeout * waitFor) < 180.0)
+	; 		libs.Log("Waiting for Sexlab to initialize... (Waited " + (timeout * waitFor) + " seconds).")
+	; 		timeout += 1
+	; 		Utility.Wait(waitFor)
+	; 	EndWhile
+	; 	SendModEvent("__DeviousDevicesInit")
+	; EndIf
 EndEvent
+
 
 Event OnPageReset(string page)
 	Libs.Log("OnPageReset("+page+")")

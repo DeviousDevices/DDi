@@ -62,16 +62,13 @@ Function Eval(actor akActor)
 EndFunction
 
 Event OnPlayerLoadGame()
-	OnLoad()
-EndEvent
-
-Function OnLoad()
 	RegisterForModEvent("zadRegisterEvents","OnRegisterEvents")
 	if Probability < 0
 		Probability = DefaultProbability
 	EndIf
 	libs.Log("["+name+"] Loaded: "+Probability+"%")
-EndFunction
+EndEvent
+
 
 Event OnRegisterEvents(string eventName, string strArg, float numArg, Form sender)
 	int id = libs.EventSlots.Register(name, self)

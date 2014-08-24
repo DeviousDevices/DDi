@@ -14,9 +14,9 @@ zaddRadiantMasterScript Property RadiantMaster Auto
 ReferenceAlias Property Urag Auto
 
 
-Event OnInit()
-	Maintenance()
-EndEvent
+; Event OnInit()
+; 	Maintenance()
+; EndEvent
 
 
 Function Maintenance()
