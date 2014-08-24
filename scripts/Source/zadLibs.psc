@@ -891,7 +891,7 @@ EndFunction
 
 
 float Function GetVersion()
-	return 2.81
+	return 2.82
 EndFunction
 
 
