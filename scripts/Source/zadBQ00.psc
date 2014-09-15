@@ -67,6 +67,7 @@ zadDeviousMagic Property zadMagic Auto
 zadAssets Property assets Auto
 zadBenchmark Property benchmark Auto
 zbfBondageShell Property zbf Auto
+zbfSexLab Property zbfSL Auto
 
 ; Idles
 Idle Property DDBeltedSolo Auto
@@ -220,9 +221,9 @@ Function VersionChecks()
 		libs.Error("Assets is undefined: You're probably running an out of date version of it. Please update Devious Devices - Assets to the latest version.")
 	EndIf
 	CheckCompatibility("Assets", 2.82, assets.GetVersion())
-	CheckCompatibility("Zaz Animation Pack", 555, zbfUtil.GetVersion())
+	CheckCompatibility("Zaz Animation Pack", 600, zbfUtil.GetVersion())
 	CheckCompatibility("Aroused", 20140124, Aroused.GetVersion())
-	CheckCompatibility("Sexlab", 15800, SexlabUtil.GetVersion())
+	CheckCompatibility("Sexlab", 15900, SexlabUtil.GetVersion())
 	libs.Log("[ Third Party Mod Compatibility Checks ]")
 	; ...
 	libs.Log("[ Sanity Checks ]")
@@ -301,6 +302,16 @@ string Function BuildRegistryStr(int numActors, bool permitOral, bool permitVagi
 	return ret
 EndFunction
 
+; Dynamically "links" to Zaz Animation Pack
+; 
+Function LinkZap()
+	If zbf == None
+		zbf = zbfUtil.GetMain()
+	EndIf
+	If zbfSL == None
+		zbfSL = zbfUtil.GetSexLab()
+	EndIf
+EndFunction
 
 sslBaseAnimation[] function FindValidAnimations(sslThreadController controller, int numActors, sslBaseAnimation previousAnim, bool permitOral, bool permitVaginal, bool permitAnal, bool permitBoobjob, int numBoundActors, int NumExtraTags, string[] ExtraTags)
 	; It is my understanding that these arrays will only contain references. Assuming this works similarly
@@ -309,9 +320,7 @@ sslBaseAnimation[] function FindValidAnimations(sslThreadController controller, 
 	; will permit me to easily debug this.
 	; What I wouldnt do for a 2d array, or a dict...
 
-	If zbf == None
-		zbf = zbfUtil.GetMain()
-	EndIf
+	LinkZap()
 
 	;;; Process Special Cases
 	; Two Actors, both wearing Armbinders
