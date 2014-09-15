@@ -44,9 +44,10 @@ Function CreateDDBeltedSolo(int id)
 		;	Anim.AddTag("Masturbation")
 		Anim.AddTag("F")
 		Anim.AddTag("DeviousDevice")
+		Anim.AddTag("NoSwap")
 		
 		; REQUIRED - after configuring the animation, you must call Save() in order to finalize it.
-		Anim.Save()
+		Anim.Save(-1)
 	EndIf
 EndFunction
 
@@ -72,9 +73,10 @@ Function CreateDDArmbinderSolo(int id)
 		Anim.AddTag("F")
 		Anim.AddTag("Armbinder")
 		Anim.AddTag("DeviousDevice")
+		Anim.AddTag("NoSwap")
 		
 		; REQUIRED - after configuring the animation, you must call Save() in order to finalize it.
-		Anim.Save()
+		Anim.Save(-1)
 	EndIf
 EndFunction
 
