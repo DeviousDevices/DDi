@@ -37,7 +37,7 @@ Function CreateDDBeltedSolo(int id)
 		Anim.AddPositionStage(a1, "DDBeltedSolo", 0, silent=false)
 		
 		; (optional) Give them set timed lengths to fit your mods purpose
-		Anim.SetStageTimer(1, 20.0) ; 10 seconds for stage 1
+		Anim.SetStageTimer(1, 20.0) ; 20 seconds for stage 1
 		
 		; (optional) Add any tags you think are necessary
 		Anim.AddTag("Solo")
