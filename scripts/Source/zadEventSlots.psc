@@ -121,6 +121,7 @@ Event OnUpdateGameTime()
 	actor akActor = libs.PlayerRef
 	if libs.PlayerRef.WornHasKeyword(libs.zad_DeviousPlug)
 		libs.UpdateArousalTimerate(akActor, 1.75)
+		libs.UpdateExposure(akActor, 0.5)
 	EndIf
 	if !libs.GlobalEventFlag
 		libs.Log("Event processing is currently disabled.")

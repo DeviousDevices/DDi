@@ -35,6 +35,9 @@ EndFunction
 
 
 Event OnPlayerCameraState(int oldState, int newState)
+	if newState == -1 ; Do not process map state changes
+		return
+	EndIf
 	if libs.config.blindfoldMode == 2 ; Leeches Mode
 		ApplyBlindfold()
 		libs.UpdateControls()
