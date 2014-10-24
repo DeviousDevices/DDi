@@ -14,6 +14,7 @@ zadEventSlots Property EventSlots Auto ; See zadBaseEvent.psc for how to use the
 zadDevicesUnderneathScript Property DevicesUnderneath Auto
 Quest Property zadNPCSlots Auto
 
+zbfBondageShell Property zbf Auto
 zbfPlayerControl Property zbfPC Auto
 
 ; Keywords
