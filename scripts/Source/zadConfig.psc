@@ -502,7 +502,7 @@ Event OnOptionSliderOpen(int option)
 		if option == eventOIDs[i]
 			SetSliderDialogStartValue(libs.EventSlots.Slots[i].Probability)
 			SetSliderDialogDefaultValue(libs.EventSlots.Slots[i].DefaultProbability)
-			SetSliderDialogRange(1,100)
+			SetSliderDialogRange(0,100)
 			SetSliderDialogInterval(1)			
 			return
 		EndIf

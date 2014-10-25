@@ -65,7 +65,7 @@ Function CheckAllEvents()
 	ProcessNum = 0
 	int i = 0
 	while i < Slotted
-		if Slots[i].Filter(libs.PlayerRef)
+		if Slots[i].Probability > 0 && Slots[i].Filter(libs.PlayerRef)
 			Slots[i].Process = True
 			ProcessNum += 1
 		EndIf
