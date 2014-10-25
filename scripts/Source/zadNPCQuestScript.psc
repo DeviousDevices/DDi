@@ -27,7 +27,7 @@ Function DoRegisterGameTime()
 EndFunction
 
 Function DoRegister()
-	RegisterForUpdate(2.0)
+	RegisterForSingleUpdate(2.0)
 EndFunction
 
 Function Maintenance()
