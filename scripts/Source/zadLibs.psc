@@ -443,6 +443,10 @@ EndFunction
 ; Remove device from actor.
 Function RemoveDevice(actor akActor, armor deviceInventory, armor deviceRendered, keyword zad_DeviousDevice, bool destroyDevice=false, bool skipEvents=false, bool skipMutex=false)
 	Log("RemoveDevice called for " + deviceInventory.GetName())
+	if !akActor.IsEquipped(deviceInventory) && !akActor.IsEquipped(deviceRendered)
+		Warn("RemoveDevice called for " + deviceInventory +", but this device is not currently worn.")
+		return
+	EndIf
 	if !skipMutex
 		AcquireAndSpinlock()
 	EndIf
@@ -456,9 +460,7 @@ Function RemoveDevice(actor akActor, armor deviceInventory, armor deviceRendered
 			DeviceMutex = false
 		EndIf
 	Else
-		if !skipMutex
-			akActor.AddItem(deviceRemovalToken, 1, true)
-		EndIf
+		akActor.AddItem(deviceRemovalToken, 1, true)
 		akActor.UnequipItemEx(deviceInventory, 0, false)
 		akActor.RemoveItem(deviceRendered, 1, true) 
 	Endif
