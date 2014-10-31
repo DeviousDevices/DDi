@@ -486,7 +486,422 @@ Function RetrieveArmbinders(actor[] originalActors)
 	EndWhile
 EndFunction
 
+; Returns true if anal sex on this actor is blocked.
+; 
+Bool Function IsBlockedAnal(Actor akActor)
+	Return akActor.WornHasKeyword(libs.zad_DeviousBelt) && !akActor.WornHasKeyword(libs.zad_PermitAnal)
+EndFunction
+
+; Returns true if vaginal sex on/by this actor is blocked.
+; 
+Bool Function IsBlockedVaginal(Actor akActor)
+	Return akActor.WornHasKeyword(libs.zad_DeviousBelt) && !akActor.WornHasKeyword(libs.zad_PermitVaginal)
+EndFunction
+
+; Returns true if "breast sex" on this actor is blocked.
+; 
+Bool Function IsBlockedBreast(Actor akActor)
+	Return akActor.WornHasKeyword(libs.zad_DeviousBra)
+EndFunction
+
+; Returns true if oral sex by this actor is blocked.
+; 
+Bool Function IsBlockedOral(Actor akActor)
+	; Two kinds of gags _allow_ "oral": "panel" and "ring". Ring is equipped with PermitOral, panel with DeviousGagPanel.
+	Return akActor.WornHasKeyword(libs.zad_DeviousGag) && !akActor.WornHasKeyword(libs.zad_DeviousGagPanel) && !akActor.WornHasKeyword(libs.zad_PermitOral)
+EndFunction
+
+; Returns the set of blocked tags on the specified actor by looking at worn keywords.
+; 
+; Tags returned from this function can be used for SexLab filtering, but are expected to primarily
+; conform to zbfSexLabBaseEntry actor specific tags.
+; 
+String[] Function GetBlockedTagsFromKeywords(Actor akActor)
+	String[] list = New String[4]
+	Int i = 0
+	If IsBlockedVaginal(akActor)
+		list[i] = "Vaginal"
+		i += 1
+	EndIf
+	If IsBlockedAnal(akActor)
+		list[i] = "Anal"
+		i += 1
+	EndIf
+	If IsBlockedOral(akActor)
+		list[i] = "Oral"
+		i += 1
+	EndIf
+	If IsBlockedBreast(akActor)
+		list[i] = "Breast"
+		i += 1
+	EndIf
+
+	libs.Log("Blocked tags on " + akActor.GetActorBase().GetName() + " are " + list)
+	Return list
+EndFunction
+
+; Returns a list of tags required on the actor
+; 
+; Currently checks for armbinders only, mimicing the previous behavior.
+; 
+String[] Function GetRequiredTagsFromKeywords(Actor akActor)
+	String[] list = New String[1]
+	If libs.IsBound(akActor)
+		list[0] = zbf.GetSexLabBoundTag(zbf.iBindArmbinder)
+	EndIf
+	Return list
+EndFunction
+
+; Returns a fully qualified animation name from the worn keywords
+; 
+; Checks for armbinder only at the moment.
+; 
+String Function GetAnimationNameFromKeywords(zbfSexLabBaseEntry akEntry, Actor akActor)
+	Int iBindType = zbf.iBindUnbound
+	If libs.IsBound(akActor) ; May be more appropriate to check for animation type here
+		iBindType = zbf.iBindArmbinder
+	EndIf
+	Return zbf.GetSexLabAnimationName(akEntry, iBindType)
+EndFunction
+
+zbfSexLabBaseEntry[] Function GetEntries(String asVanillaPriorityId = "")
+	zbfSexLabBaseEntry[] list = zbfSL.GetEntries()
+	Int iFirstFree = list.Find(None)
+	list[iFirstFree] = list[0]
+	list[0] = zbfSL.GetEntryByVanillaId(asVanillaPriorityId)
+	Return list
+EndFunction
+
+; Filters the list based on akActor worn keywords.
+; 
+Function FilterActor(zbfSexLabBaseEntry[] akList, Actor akActor, Int aiActorIndex)
+	String[] required = GetRequiredTagsFromKeywords(akActor)
+	String[] blocked = GetBlockedTagsFromKeywords(akActor)
+	Bool bTagFound
+
+	bTagFound = bTagFound || (required[0] != "")
+	bTagFound = bTagFound || (blocked[0] != "")
+
+	zbfSL.FilterEntries(akList, aiActorIndex, required, blocked)
+EndFunction
+
+; Returns a shallow copy of a list of zbfSexLabBaseEntry objects
+; 
+zbfSexLabBaseEntry[] Function CopyList(zbfSexLabBaseEntry[] akList)
+	zbfSexLabBaseEntry[] filtered = New zbfSexLabBaseEntry[15]
+	Int i = akList.Length
+	While i > 0
+		i -= 1
+		filtered[i] = akList[i]
+	EndWhile
+	Return filtered
+EndFunction
+
+; Returns a random matching entry
+; 
+; Entries have been pre-filtered based on bindings and other constraints on the actors.
+; 
+; Finally, entries are also selected based on the number of active actors in the animation. Since the 
+; DD filtering algorithm will progressively add actors, it's not practical to filter the set of animations
+; based on the number of actors.
+; 
+zbfSexLabBaseEntry Function SelectRandomEntry(zbfSexLabBaseEntry[] akList, Int aiActorCount)
+	If (akList[0] != None) && (aiActorCount == akList[0].NumActors)
+		Return akList[0]
+	EndIf
+
+	Int[] iFoundIndex = New Int[15] ; All found entry indices are stored here, then referenced again
+	Int iActive = 0
+	Int i = akList.Length
+	While i > 0
+		i -= 1
+		If (akList[i] != None) && (aiActorCount == akList[i].NumActors)
+			iFoundIndex[iActive] = i
+			iActive += 1
+		EndIf
+	EndWhile
+	If iActive < 1
+		Return None
+	EndIf
+
+	Debug.Trace("Entries " + iActive + " found from " + iFoundIndex)
+	Return akList[iFoundIndex[Utility.RandomInt(0, iActive - 1)]]
+EndFunction
+
+Function OpenPanelGags(zbfSexLabBaseEntry akEntry, Actor[] akActors)
+	If akEntry != None
+		Actor[] oralActors
+		Int i = akActors.Length
+		While i > 0
+			i -= 1
+			If akEntry.HasTagForActor(i + 1, "Oral")
+				oralActors = sslUtility.PushActor(akActors[i], oralActors)
+			EndIf
+		EndWhile
+		TogglePanelGag(oralActors, insert = False)
+	EndIf
+EndFunction
+
 function Logic(int threadID, bool HasPlayer)
+	Int i
+
+	sslThreadController Controller = Sexlab.ThreadSlots.GetController(threadID)
+	Actor[] originalActors = Controller.Positions
+	sslBaseAnimation previousAnim = Controller.Animation
+
+	If previousAnim.HasTag("NoSwap") || previousAnim.HasTag("DeviousDevice")
+		libs.Log("Animation should not be replaced. Done.")
+		Return
+	EndIf
+
+	LinkZap() ; Link ZAP dynamically if not done before.
+
+	Bool bPermitAnal = True
+	Bool bPermitOral = True
+	Bool bPermitVaginal = True
+	Bool bPermitBoobs = True
+	Bool bNoBindings = True
+	i = originalActors.Length
+	While i > 0
+		i -= 1
+		bPermitAnal = bPermitAnal && !IsBlockedAnal(originalActors[i])
+		bPermitVaginal = bPermitVaginal && !IsBlockedVaginal(originalActors[i])
+		bPermitBoobs = bPermitBoobs && !IsBlockedBreast(originalActors[i])
+		bPermitOral = bPermitOral && !IsBlockedOral(originalActors[i])
+		bNoBindings = bNoBindings && !originalActors[i].WornHasKeyword(libs.zad_DeviousArmbinder)
+	EndWhile
+	Bool bIsCreatureAnim = previousAnim.HasTag("Creature")
+	
+	libs.Log("bPermitAnal " + bPermitAnal)
+	libs.Log("bPermitVaginal " + bPermitVaginal)
+	libs.Log("bPermitBoobs " + bPermitBoobs)
+	libs.Log("bPermitOral " + bPermitOral)
+	libs.Log("bNoBindings " + bNoBindings)
+	libs.Log("bIsCreatureAnim " + bIsCreatureAnim)
+
+	; If no actor was restrained in any way we can detect, then don't change the animation.
+	If bPermitAnal && bPermitVaginal && bPermitOral && bPermitBoobs && bNoBindings
+		libs.Log("No sex-act-restricted actors present in this sex scene.")
+		; Actors could still be wearing a panel gag that's can be opened and doesn't flag as restricted ....
+		OpenPanelGags(zbfSL.GetEntryByVanillaId(previousAnim.Name), originalActors)
+		Return
+	EndIf
+
+	;branch off code to handle vanilla animations if bNoBindings is set.
+
+	; Objective of this part of the function is to fill variables
+	; actors - with all actors remaining in the sex scene
+	; solos - all actors going solo
+	; anims - all animations that are still available after filtering
+	; 
+	Actor[] actors
+	Actor[] solos
+	sslBaseAnimation[] anims
+	If bNoBindings
+		libs.Log("Selecting the DD path.")
+
+		int NumExtraTags = 0
+		string[] ExtraTags = new String[12]
+		Int iNumBoundActors = 0
+		Bool isBound = False
+		if IsValidAnimation(previousAnim, bPermitOral, bPermitVaginal, bPermitAnal, bPermitBoobs, iNumBoundActors > 0, numExtraTags, ExtraTags) ; && numRestrictedActors != originalActors.length  ; XXX1-SerendeVeladarius
+			libs.Log("Original animation (" + previousAnim.name + ") does not conflict. Done.")
+			return
+		EndIf
+
+		int actorIter = 0
+		int currentActorCount = originalActors.length
+
+		while actorIter < currentActorCount
+			if originalActors[actorIter].WornHasKeyword(zad_DeviousDevice) && actorIter!=0
+				; Can't have a belted actor pitching. Move to solo.
+				libs.Log("Moving belted actor " + originalActors[actorIter].GetLeveledActorBase().GetName() + " to solos")
+				solos = sslUtility.PushActor(originalActors[actorIter], solos)
+			Else
+				actors = sslUtility.PushActor(originalActors[actorIter], actors)
+			Endif
+			actorIter += 1
+		EndWhile
+
+		if actors.length == 1;  && !actors[0].WornHasKeyword(zad_DeviousDevice); Abusing belted npc? ;XXX2-SrendeVeladarius
+			; Slot 0 is (almost) always the female role. Just need to rearrange actors, I think?
+			if solos.length > 0
+				libs.Log("Moved too many actors to Solos. Rearranging actors list.")
+				actor[] tmp
+				tmp = sslUtility.PushActor(solos[0], tmp)
+				solos[0] = none
+				tmp = sslUtility.Pushactor(actors[0], tmp)
+				actors = tmp
+			EndIf
+		Endif
+
+		libs.Log("Total actors: " + originalActors.length + ". Participating Actors: " + actors.length + ". Animation: " + previousAnim.name)
+		anims = FindValidAnimations(controller, actors.length, previousAnim, bPermitOral, bPermitVaginal, bPermitAnal, bPermitBoobs, iNumBoundActors, numExtraTags, ExtraTags)
+		if anims.length <= 0
+			libs.Log("No animations available! Trying fallbacks...")
+		EndIf
+
+		int workaroundID = 0
+		int numWorkarounds = 2
+		actor[] actorsBak = actors
+		; This implementation is a workaround for papyrus not properly supporting pass-by-reference arrays.
+		while anims.length <= 0 && workaroundID < numWorkarounds
+			Utility.Wait(0.2)
+			libs.Log("Inner loop " + workaroundID)
+			actors = actorsBak
+			if workaroundID == 0 && actors.length >=3
+				; Try removing actors, and shuffling them to solo scenes.
+				libs.Log("Trying to resize actors...")
+			EndIf
+			if ((workaroundID == 0 && actors.length <= 2 ) || workaroundID == 1) && isBound ; No anims, while bound.
+				; Still no animations, after resizing actors. Drop armbinders, and try again.
+				libs.Log("Removing armbinders, Trying to resize actors...")
+				StoreArmbinders(actors)
+				anims = FindValidAnimations(controller, actors.length, previousAnim, bPermitOral, bPermitVaginal, bPermitAnal, bPermitBoobs, iNumBoundActors, numExtraTags, ExtraTags)
+			EndIf
+			if anims.length <= 0 ; No flow-control keywords like continue/break...
+				i = actors.length
+				while i >= 2 && anims.length==0
+					i -= 1
+					libs.Log("Reduced number of actors to " + i)
+					anims = FindValidAnimations(controller, i, previousAnim, bPermitOral, bPermitVaginal, bPermitAnal, bPermitBoobs, iNumBoundActors, numExtraTags, ExtraTags)
+				EndWhile
+				if anims.length >=1
+					libs.Log("Found valid animation. Rebuilding actor lists.")
+					actor[] tmp
+					int j = 0
+					while j < actors.length
+						if j < i
+							tmp = sslUtility.PushActor(actors[j], tmp)
+						Else
+							solos = sslUtility.PushActor(actors[j], solos)
+						Endif
+						j += 1
+					EndWhile
+					actors = tmp
+				EndIf
+			EndIf
+			workaroundID += 1
+		EndWhile
+	Else
+		libs.Log("Selecting the ZAP path.")
+
+		; Fetch a list of all entries
+		zbfSexLabBaseEntry[] list = GetEntries(asVanillaPriorityId = previousAnim.Name)
+
+		; Global filter on creatures
+		If bIsCreatureAnim
+			String[] tags = zbfSL.StrList("Creature", MiscUtil.GetActorRaceEditorID(originalActors[originalActors.Length - 1]))
+			zbfSL.FilterEntries(list, 0, tags, zbfSL.StrList())
+		EndIf
+
+		; Filter tags for each actor in the original animation
+		zbfSexLabBaseEntry entry
+		i = 0
+		While i < originalActors.Length
+			FilterActor(list, originalActors[i], i + 1)
+			zbfSexLabBaseEntry tempEntry = SelectRandomEntry(list, aiActorCount = (i + 1))
+			If tempEntry != None
+				entry = tempEntry
+				libs.Log("Entry selected, " + entry.Name + ", with " + entry.NumActors + " actors.")
+			EndIf
+
+			i += 1
+		EndWhile
+
+		; Split solo actors from regular actors. If no entry was found, all actors become solo actors.
+		i = 0
+		If entry != None
+			While i < entry.NumActors
+				actors = sslUtility.PushActor(originalActors[i], actors)
+				i += 1
+			EndWhile
+		EndIf
+		While i < originalActors.Length
+			solos = sslUtility.PushActor(originalActors[i], solos)
+			i += 1
+		EndWhile
+		
+		; If there are any actors left, and an animation was selected, define that animation and override
+		If (actors.Length > 0) && (entry != None)
+			anims = New sslBaseAnimation[1]
+			anims[0] = zbfSL.NewAnimation("Devious Devices") ; Will auto release after animation finished playing
+
+			; Set up animation names for all involved actors
+			String[] sAnim = New String[4]
+			i = actors.Length
+			While i > 0
+				i -= 1
+				sAnim[i] = GetAnimationNameFromKeywords(entry, actors[i])
+				libs.Log("Actor ["+i+"]: "+actors[i].GetLeveledActorBase().GetName())
+			EndWhile
+
+			; Set up the sslBaseAnimation to play
+			zbfSL.DefineAnimationFromEntry(entry.BaseId, anims[0], "DD_ZAP_" + entry.BaseId, sAnim[0], sAnim[1], sAnim[2], sAnim[3])
+
+			; If actors have tags "Oral", then make sure any panel gags are opened, because panel gags will not block Oral.
+			OpenPanelGags(entry, originalActors)
+
+			libs.Log("Requesting ZAP animation change to " + anims[0].Name + ".")
+		EndIf
+	EndIf
+
+	; Internal consistency checks; solos and actors are now selected.
+	If actors.Length + solos.Length != originalActors.Length
+		libs.Warn("SexLab override lost actors when assigning solo animations.")
+	EndIf
+
+	; Could not find any animations, but creatures can dry-hump. Check for dry-humping.
+	; If not dry humping creatures, then terminate the animation. All actors are sent off to solos.
+	If actors.Length <= 0
+		If bIsCreatureAnim
+			If hasPlayer
+				libs.NotifyPlayer("You are being dry-humped!")
+			EndIf
+			libs.Log("Failed to find any valid animations. PreviousAnim has creature tag. Done.")
+			Return
+		Else
+			libs.Log("Failed to find any valid animations. Sending off all actors to solos.")
+			Controller.EndAnimation(quickly = True)
+		EndIf
+	EndIf
+
+	Controller.SetForcedAnimations(anims)
+	if actors.Length != originalActors.Length || solos.Length >= 1
+		libs.Log("Requesting actor change to " + actors.Length + " actors.")
+		i = 0
+		while i < actors.Length
+			libs.Log("Actor ["+i+"]: "+actors[i].GetLeveledActorBase().GetName())
+			i += 1
+		EndWhile
+		i = 0
+		while i < solos.Length
+			libs.Log("Solo ["+i+"]: "+solos[i].GetLeveledActorBase().GetName())
+			i += 1
+		EndWhile
+		Controller.ChangeActors(actors)
+	Else
+		Controller.SetAnimation()
+	Endif
+	libs.Log("Overriding animations.")
+	Controller.RealignActors()
+
+	; Process Solo Animations, if any
+	;ProcessSolos(solos)
+	; Optional code to use if SexLab doesn't crash.... 
+	If solos.Length > 0
+		Faction animatingFaction = SexLab.ActorLib.AnimatingFaction
+		i = solos.Length
+		While i > 0
+			i -= 1
+			solos[i].RemoveFromFaction(animatingFaction)
+		EndWhile
+		ProcessSolos(solos)
+	EndIf
+EndFunction
+
+
+function Logic2(int threadID, bool HasPlayer)
 	sslThreadController Controller = Sexlab.ThreadSlots.GetController(threadID)
 	actor[] originalActors = Controller.Positions
 	sslBaseAnimation previousAnim = Controller.Animation
@@ -584,6 +999,8 @@ function Logic(int threadID, bool HasPlayer)
 	actor[] actorsBak = actors
 	; This implementation is a workaround for papyrus not properly supporting pass-by-reference arrays.
 	while anims.length <= 0 && workaroundID < numWorkarounds
+		Utility.Wait(0.2)
+		libs.Log("Inner loop " + workaroundID)
 		actors = actorsBak
 		if workaroundID == 0 && actors.length >=3
 			; Try removing actors, and shuffling them to solo scenes.
@@ -675,22 +1092,29 @@ function ProcessSolos(actor[] solos)
 			if SexLab.GetGender(solos[i]) == 0
 				gender = "M"
 			Endif
-				if solos[i].WornHasKeyword(zad_DeviousDevice)
-					soloAnims = SexLab.GetAnimationsByTag(1, "Solo", "F", "DeviousDevice", requireAll=true)
-				else
-					soloAnims = SexLab.GetAnimationsByTag(1, "Solo", "Masturbation", gender, requireAll=true)
-				Endif
-				if soloAnims.length <=0
-					libs.Log("Could not find valid solo scene for " + solos[i].GetLeveledActorbase().GetName())
-					libs.Notify("Could not find valid solo scene for " + solos[i].GetLeveledActorBase().GetName() + ".")
-				else
-					actor[] solosTmp = new actor[1] ; There must be a better way.
-					solosTmp[0] = solos[i] 
-					SexLab.UnequipStrapon(solos[i])
-					SexLab.StartSex(solosTmp, soloAnims)
-				Endif
-			EndIf
-		EndWhile
+			if solos[i].WornHasKeyword(zad_DeviousDevice)
+				;soloAnims = SexLab.GetAnimationsByTag(1, "Solo", "F", "DeviousDevice", requireAll=true)
+				soloAnims = New sslBaseAnimation[1]
+				If solos[i].WornHasKeyword(libs.zad_DeviousArmbinder)	; Again, being conservative with binding support
+					soloAnims[0] = SexLab.GetAnimationObject("DDArmbinderSolo")
+				Else
+					soloAnims[0] = SexLab.GetAnimationObject("DDBeltedSolo")
+				EndIf
+				Debug.Trace("ZZZ anims: " + soloAnims)
+			else
+				soloAnims = SexLab.GetAnimationsByTag(1, "Solo", "Masturbation", gender, requireAll=true)
+			Endif
+			if soloAnims.length <=0
+				libs.Log("Could not find valid solo scene for " + solos[i].GetLeveledActorbase().GetName())
+				libs.Notify("Could not find valid solo scene for " + solos[i].GetLeveledActorBase().GetName() + ".")
+			else
+				actor[] solosTmp = new actor[1] ; There must be a better way.
+				solosTmp[0] = solos[i]
+				SexLab.UnequipStrapon(solos[i])
+				SexLab.StartSex(solosTmp, soloAnims)
+			Endif
+		EndIf
+	EndWhile
 EndFunction
 
 
