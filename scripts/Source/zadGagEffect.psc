@@ -53,6 +53,7 @@ EndEvent
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	libs.Log("OnEffectFinish(gag)")
 	Terminate = true
+	Utility.Wait(0.2) ; Wait for menus to close
 	ClearMFG(target)
 EndEvent
 

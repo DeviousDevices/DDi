@@ -697,14 +697,14 @@ function Logic(int threadID, bool HasPlayer)
 	Actor[] actors
 	Actor[] solos
 	sslBaseAnimation[] anims
-	If bNoBindings
+	If bNoBindings  || originalActors.length == 1 ; Zap does not properly handle 1-actor scenes.
 		libs.Log("Selecting the DD path.")
 
 		int NumExtraTags = 0
 		string[] ExtraTags = new String[12]
-		Int iNumBoundActors = 0
-		Bool isBound = False
-		if IsValidAnimation(previousAnim, bPermitOral, bPermitVaginal, bPermitAnal, bPermitBoobs, iNumBoundActors > 0, numExtraTags, ExtraTags) ; && numRestrictedActors != originalActors.length  ; XXX1-SerendeVeladarius
+		Int iNumBoundActors = CountBoundActors(originalActors)
+		Bool isBound = (iNumBoundActors > 0)
+		if IsValidAnimation(previousAnim, bPermitOral, bPermitVaginal, bPermitAnal, bPermitBoobs, isBound, numExtraTags, ExtraTags) ; && numRestrictedActors != originalActors.length  ; XXX1-SerendeVeladarius
 			libs.Log("Original animation (" + previousAnim.name + ") does not conflict. Done.")
 			return
 		EndIf
@@ -900,7 +900,6 @@ function Logic(int threadID, bool HasPlayer)
 	EndIf
 EndFunction
 
-
 ; Pass by reference isn't working. Verify that it actually works like this, as per papyrus docs...
 function testArrayRef(int[] to)
 	int i = 0
@@ -950,13 +949,10 @@ function ProcessSolos(actor[] solos)
 	EndWhile
 EndFunction
 
-
-
 Event OnAnimationStart(int threadID, bool HasPlayer)
     libs.Log("OnAnimationStart()")
     Logic(threadID, hasPlayer)
 EndEvent
-
 
 Event OnLeadInEnd(int threadID, bool HasPlayer)
     libs.Log("OnLeadInEnd()")

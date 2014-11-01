@@ -65,7 +65,7 @@ Function CheckAllEvents()
 	ProcessNum = 0
 	int i = 0
 	while i < Slotted
-		if Slots[i].Filter(libs.PlayerRef)
+		if Slots[i].Probability > 0 && Slots[i].Filter(libs.PlayerRef)
 			Slots[i].Process = True
 			ProcessNum += 1
 		EndIf
@@ -121,6 +121,7 @@ Event OnUpdateGameTime()
 	actor akActor = libs.PlayerRef
 	if libs.PlayerRef.WornHasKeyword(libs.zad_DeviousPlug)
 		libs.UpdateArousalTimerate(akActor, 1.75)
+		libs.UpdateExposure(akActor, 0.5)
 	EndIf
 	if !libs.GlobalEventFlag
 		libs.Log("Event processing is currently disabled.")
