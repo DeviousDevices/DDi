@@ -682,7 +682,7 @@ function Logic(int threadID, bool HasPlayer)
 	; If no actor was restrained in any way we can detect, then don't change the animation.
 	If bPermitAnal && bPermitVaginal && bPermitOral && bPermitBoobs && bNoBindings
 		libs.Log("No sex-act-restricted actors present in this sex scene.")
-		; Actors could still be wearing a panel gag that's can be opened and doesn't flag as restricted ....
+		; Actors could still be wearing a panel gag that can be opened and doesn't flag as restricted ....
 		OpenPanelGags(zbfSL.GetEntryByVanillaId(previousAnim.Name), originalActors)
 		Return
 	EndIf
@@ -922,7 +922,9 @@ function ProcessSolos(actor[] solos)
 			if SexLab.GetGender(solos[i]) == 0
 				gender = "M"
 			Endif
-			if solos[i].WornHasKeyword(zad_DeviousDevice)
+			if solos[i].WornHasKeyword(zad_DeviousDevice) || solos[i].WornHasKeyword(libs.zad_DeviousArmbinder)
+				libs.Log("Devious Devices solo scene.")
+
 				;soloAnims = SexLab.GetAnimationsByTag(1, "Solo", "F", "DeviousDevice", requireAll=true)
 				soloAnims = New sslBaseAnimation[1]
 				If solos[i].WornHasKeyword(libs.zad_DeviousArmbinder)	; Again, being conservative with binding support
@@ -930,10 +932,11 @@ function ProcessSolos(actor[] solos)
 				Else
 					soloAnims[0] = SexLab.GetAnimationObject("DDBeltedSolo")
 				EndIf
-				Debug.Trace("ZZZ anims: " + soloAnims)
 			else
+				libs.Log("Vanilla solo scene.")
 				soloAnims = SexLab.GetAnimationsByTag(1, "Solo", "Masturbation", gender, requireAll=true)
 			Endif
+
 			if soloAnims.length <=0
 				libs.Log("Could not find valid solo scene for " + solos[i].GetLeveledActorbase().GetName())
 				libs.Notify("Could not find valid solo scene for " + solos[i].GetLeveledActorBase().GetName() + ".")
