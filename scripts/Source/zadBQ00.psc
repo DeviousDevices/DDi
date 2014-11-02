@@ -166,7 +166,7 @@ Function Maintenance()
 	libs.lastRepopulateTime = 0.0
 	libs.zadNPCQuest.Maintenance()
 	libs.RepopulateNpcs()
-	if !libs.PlayerRef.WornHasKeyword(libs.zad_DeviousArmbinder)
+	if !HasArmbinder(libs.PlayerRef)
 		abq.EnableStruggling()
 	EndIf
 	VersionChecks()
@@ -625,7 +625,7 @@ function Logic(int threadID, bool HasPlayer)
 		bPermitVaginal = bPermitVaginal && !IsBlockedVaginal(originalActors[i])
 		bPermitBoobs = bPermitBoobs && !IsBlockedBreast(originalActors[i])
 		bPermitOral = bPermitOral && !IsBlockedOral(originalActors[i])
-		bNoBindings = bNoBindings && !originalActors[i].WornHasKeyword(libs.zad_DeviousArmbinder)
+		bNoBindings = bNoBindings && !HasArmbinder(originalActors[i])
 	EndWhile
 	Bool bIsCreatureAnim = previousAnim.HasTag("Creature")
 	
@@ -668,7 +668,7 @@ function Logic(int threadID, bool HasPlayer)
 		int currentActorCount = originalActors.length
 
 		while actorIter < currentActorCount
-			if originalActors[actorIter].WornHasKeyword(zad_DeviousDevice) && actorIter!=0
+			if HasBelt(originalActors[actorIter]) && actorIter!=0
 				; Can't have a belted actor pitching. Move to solo.
 				libs.Log("Moving belted actor " + originalActors[actorIter].GetLeveledActorBase().GetName() + " to solos")
 				solos = sslUtility.PushActor(originalActors[actorIter], solos)
@@ -770,7 +770,7 @@ function Logic(int threadID, bool HasPlayer)
 			solos = sslUtility.PushActor(originalActors[i], solos)
 			i += 1
 		EndWhile
-		
+
 		; If there are any actors left, and an animation was selected, define that animation and override
 		If (actors.Length > 0) && (entry != None)
 			anims = New sslBaseAnimation[1]
@@ -792,6 +792,30 @@ function Logic(int threadID, bool HasPlayer)
 			OpenPanelGags(entry, originalActors)
 
 			libs.Log("Requesting ZAP animation change to " + anims[0].Name + ".")
+
+		ElseIf actors.Length == 0
+			; Potential opportunity to reuse the Thread, so do that. Prioritize the player if possible.
+			Int index = solos.Find(libs.PlayerRef)
+			If index < 0
+				index = 0
+			EndIf
+
+			actors = New Actor[1]
+			actors[0] = solos[index]
+			solos[index] = None
+
+			; No array/list remove function
+			Actor[] tmpSolos
+			i = 0
+			While i < solos.Length
+				If solos[i] != None
+					tmpSolos = sslUtility.PushActor(solos[i], tmpSolos)
+				EndIf
+				i += 1
+			EndWhile
+			solos = tmpSolos
+
+			anims = GetSoloAnimations(actors[0])
 		EndIf
 	EndIf
 
@@ -850,33 +874,53 @@ function Logic(int threadID, bool HasPlayer)
 EndFunction
 
 
+Bool Function HasBelt(Actor akActor)
+	Return (akActor != None) && (akActor.WornHasKeyword(zad_DeviousDevice))
+EndFunction
+
+
+Bool Function HasArmbinder(Actor akActor)
+	Return (akActor != None) && (akActor.WornHasKeyword(libs.zad_DeviousArmbinder))
+EndFunction
+
+
+sslBaseAnimation[] Function GetSoloAnimations(Actor akActor)
+	sslBaseAnimation[] soloAnims
+	Bool bHasBelt = HasBelt(akActor)
+	Bool bHasArmbinder = HasArmbinder(akActor) ; Conservative with binding support
+
+	String gender = "F"
+	if SexLab.GetGender(akActor) == 0
+		gender = "M"
+	Endif
+
+	if bHasBelt || bHasArmbinder
+		libs.Log("Devious Devices solo scene.")
+
+		soloAnims = New sslBaseAnimation[1]
+		If bHasArmbinder
+			soloAnims[0] = SexLab.GetAnimationObject("DDArmbinderSolo")
+		Else
+			soloAnims[0] = SexLab.GetAnimationObject("DDBeltedSolo")
+		EndIf
+	else
+		libs.Log("Vanilla solo scene.")
+		soloAnims = SexLab.GetAnimationsByTag(1, "Solo", "Masturbation", gender, requireAll = True)
+	Endif
+
+	Return soloAnims
+EndFunction
+
+
 function ProcessSolos(actor[] solos)
 	int i = solos.length
 	while i > 0
 		i -= 1
 		if solos[i] != none
 			libs.Log("Starting solo scene for " + solos[i].GetLeveledActorBase().GetName())
-			sslBaseAnimation[] soloAnims
-			string gender = "F"
-			if SexLab.GetGender(solos[i]) == 0
-				gender = "M"
-			Endif
-			if solos[i].WornHasKeyword(zad_DeviousDevice) || solos[i].WornHasKeyword(libs.zad_DeviousArmbinder)
-				libs.Log("Devious Devices solo scene.")
+			sslBaseAnimation[] soloAnims = GetSoloAnimations(solos[i])
 
-				;soloAnims = SexLab.GetAnimationsByTag(1, "Solo", "F", "DeviousDevice", requireAll=true)
-				soloAnims = New sslBaseAnimation[1]
-				If solos[i].WornHasKeyword(libs.zad_DeviousArmbinder)	; Again, being conservative with binding support
-					soloAnims[0] = SexLab.GetAnimationObject("DDArmbinderSolo")
-				Else
-					soloAnims[0] = SexLab.GetAnimationObject("DDBeltedSolo")
-				EndIf
-			else
-				libs.Log("Vanilla solo scene.")
-				soloAnims = SexLab.GetAnimationsByTag(1, "Solo", "Masturbation", gender, requireAll=true)
-			Endif
-
-			if soloAnims.length <=0
+			if soloAnims.length <= 0
 				libs.Log("Could not find valid solo scene for " + solos[i].GetLeveledActorbase().GetName())
 				libs.Notify("Could not find valid solo scene for " + solos[i].GetLeveledActorBase().GetName() + ".")
 			else
@@ -912,7 +956,7 @@ Function ChangeLockState(actor[] actors, bool lockState)
 	int i = actors.length
 	while i > 0
 		i -= 1
-	 	if actors[i].WornHasKeyword(zad_DeviousDevice) || StorageUtil.GetFloatValue(actors[i], "zad.StoredExposureRate", 0.0) >= 1; Avoid potential race-condition
+	 	if HasBelt(actors[i]) || StorageUtil.GetFloatValue(actors[i], "zad.StoredExposureRate", 0.0) >= 1; Avoid potential race-condition
 			string 	tmp
 			float exposureRate = 0
 			if !lockState
@@ -1007,7 +1051,7 @@ Event OnSleepStop(bool abInterrupted)
 		return
 	EndIf
 	actor akActor = libs.PlayerRef
-	if !akActor.WornHasKeyword(zad_DeviousDevice)
+	if !HasBelt(akActor)
 		return
 	Endif
 	int arousal = Aroused.GetActorExposure(akActor)
