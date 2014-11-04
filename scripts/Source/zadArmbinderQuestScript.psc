@@ -1,4 +1,4 @@
-Scriptname zadArmbinderQuestScript extends Quest
+Scriptname zadArmbinderQuestScript extends Quest conditional
 
 SexLabFramework Property SexLab Auto
 zadLibs Property libs Auto
@@ -25,6 +25,15 @@ Bool Property IsLoose Auto
 Int Property StruggleCount Auto
 Bool Property MenuMutex Auto
 Bool Property DisableStruggle Auto
+Bool Property DisableDial Auto Conditional
+
+Function DisableDialogue()
+	DisableDial = true
+EndFunction
+
+Function EnableDialogue()
+	DisableDial = false
+EndFunction
 
 Function DisableStruggling()
 	DisableStruggle = true

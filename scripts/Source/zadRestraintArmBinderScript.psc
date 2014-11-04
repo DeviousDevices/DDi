@@ -29,6 +29,7 @@ Function OnEquippedPost(actor akActor)
 		abq.IsLoose = False
 		abq.StruggleCount = 0
 		abq.EnableStruggling()
+		abq.EnableDialogue()
 		SetCustomMessage()
 	EndIf
 	libs.ApplyArmbinderAnim(akActor)
