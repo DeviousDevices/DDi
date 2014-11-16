@@ -41,7 +41,9 @@ Event OnUpdate()
 	; ElseIf target == libs.PlayerRef || target.GetAnimationVariableFloat("Speed") != 0
 	; 	PlayBoundIdle(idles[0])
 	; EndIf
-	PlayBoundIdle(CurrentStandIdle)
+	If (StorageUtil.GetIntValue(Game.GetPlayer(), "_SD_iEnslaved") != 1) ; SD+ compatibility
+		PlayBoundIdle(CurrentStandIdle)
+	EndIf
 	DoRegister()
 EndEvent
 
