@@ -174,7 +174,6 @@ Function Maintenance()
 	libs.EventSlots.Initialize()
 	libs.EventSlots.Maintenance()
 	; Check to see if bound anims are available.
-	libs.CheckForBoundAnims()
 	if !libs.DevicesUnderneath.IsRunning() && libs.config.DevicesUnderneathEnabled
 		libs.DevicesUnderneath.Start()
 		int timeout = 0

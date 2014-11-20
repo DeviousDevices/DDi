@@ -13,6 +13,7 @@ Message Property zad_DeviceRemoveMsg auto  ; Device removal message
 Armor Property deviceRendered Auto         ; Internal Device
 Armor Property deviceInventory Auto        ; Inventory Device
 Key Property deviceKey  Auto               ; Key type to unlock this device
+Bool Property JammedLock = False Auto      ; Is the lock currently jammed?
 MiscObject Property Lockpick Auto
 
 ; Keywords
@@ -86,6 +87,7 @@ Event OnEquipped(Actor akActor)
 		return
 	EndIf
         libs.CleanupDevices(akActor, zad_DeviousDevice, deviceRendered)
+	JammedLock = False
 	OnEquippedPre(akActor, silent=silently)
 	libs.SendDeviceEquippedEvent(deviceName, akActor)
 	; akActor.SetOutfit(libs.zadEmptyOutfit, True)
@@ -267,19 +269,34 @@ EndFunction
 
 
 Function RemoveDevice(actor akActor, bool destroyDevice=false, bool skipMutex=false)
+	if libs.Config.DestroyKeyProbability > 0.0 && deviceKey != none
+		; At the time of writing this, only the player may unlock themselves / npc's via this function.
+		; I don't really see that changing in the future, so using an explicit reference to the
+		; player here is probably the way to go. Quests will manipulate this via the API anyways,
+		; and this function is only for internal use.
+		if Utility.RandomInt() <= libs.Config.DestroyKeyProbability
+			if Utility.RandomInt() <= libs.Config.DestroyKeyJamChance
+				if (deviceInventory.HasKeyword(libs.zad_BlockGeneric) || deviceRendered.HasKeyword(libs.zad_BlockGeneric))
+					Libs.Log("Not breaking key for non-generic device.")
+					return
+				EndIf
+				libs.NotifyPlayer("The key breaks while attempting to remove the "+deviceName+", and the broken key becomes stuck in the lock!", true)
+				JammedLock = True
+			Else
+				libs.NotifyPlayer("The key breaks while attempting to remove the "+deviceName+"!", true)
+			EndIf
+			libs.PlayerRef.RemoveItem(deviceKey, 1, true)
+			return
+		Else
+			; Display some sort of a success message?
+		EndIf
+	Endif
 	libs.SendDeviceRemovalEvent(deviceName, akActor)
 	libs.RemoveDevice(akActor, deviceInventory, deviceRendered, zad_DeviousDevice, destroyDevice, skipMutex=skipMutex)
 	if deviceKey != none && akActor.GetItemCount(deviceKey) < 1 && libs.config.thresholdModifier > 0
 		libs.Log("Player escaped device without having the key. Modifying unlock threshold.")
 		libs.Config.UnlockThreshold = (libs.Config.UnlockThreshold + libs.Config.thresholdModifier) ; += giving syntax errors? 
 	EndIf
-	if libs.Config.DestroyKey && deviceKey != none
-		; At the time of writing this, only the player may unlock themselves / npc's via this function.
-		; I don't really see that changing in the future, so using an explicit reference to the
-		; player here is probably the way to go. Quests will manipulate this via the API anyways,
-		; and this function is only for internal use.
-		libs.PlayerRef.RemoveItem(deviceKey, 1, true)
-	Endif
 EndFunction
 
 
@@ -287,10 +304,15 @@ bool Function RemoveDeviceWithKey(actor akActor = none, bool destroyDevice=false
 	if akActor == none
 		akActor = libs.PlayerRef
 	EndIf
+	if JammedLock
+		libs.Log("RemoveDeviceWithKey called, but lock is jammed.")
+		libs.Notify("You attempt to unlock the "+deviceName+", but the lock is jammed!", true)
+		return false
+	EndIf
 	if akActor.GetItemCount(deviceKey)>=1
 		libs.Log("RemoveDeviceWithKey called, actor has correct key. Removing "+ deviceName +".")
 		RemoveDevice(akActor)
-		return true
+		return !JammedLock
 	else
 		libs.Log("RemoveDeviceWithKey called for a "+deviceName+" while actor does not possess key.")
 		libs.Notify("You do not posess the correct key to manipulate this " + deviceName + ".")

@@ -205,7 +205,7 @@ Float Property lastRepopulateTime Auto ; Avoid 2.6.3 bug
 Actor Property PlayerRef Auto
 Faction Property SexLabAnimatingFaction Auto
 Spell Property ShockEffect Auto
-bool Property BoundAnimsAvailable = False Auto
+bool Property BoundAnimsAvailable = True Auto ; Obsolete. Bound anims are now always available, post zap 6
 
 ; Rechargeable Soulgem Stuff
 Soulgem Property SoulgemEmpty Auto
@@ -1918,17 +1918,6 @@ EndFunction
 Form Function GetWornArmbinderInstance(actor akActor)
 	; akActor.GetWornForm(0x20000000)
 	return GetRenderedDeviceInstance(akActor, 0x00000008, zad_DeviousArmbinder)
-EndFunction
-
-
-Function CheckForBoundAnims()
-	if SexLab == None || Sexlab.AnimSlots == None
-		Log("CheckForBoundAnims: SexLab isn't yet initialized. Assuming no bound anims are available.")
-		BoundAnimsAvailable = False
-		return
-	EndIf
-	BoundAnimsAvailable = (Sexlab.GetAnimationsByTag(2, "Bound").length >= 1)
-	Log("Bound Animation Status: " + BoundAnimsAvailable)
 EndFunction
 
 
