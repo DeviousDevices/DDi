@@ -894,7 +894,7 @@ EndFunction
 
 
 float Function GetVersion()
-	return 2.82
+	return 2.83
 EndFunction
 
 
@@ -1173,17 +1173,24 @@ Function ActorOrgasm(actor akActor, int setArousalTo=-1, int vsID=-1)
 	Sound.SetInstanceVolume(sid, Config.VolumeOrgasm)
 	Aroused.SetActorExposure(akActor, setArousalTo)
 	Aroused.UpdateActorOrgasmDate(akActor)
-	bool[] cameraState = StartThirdPersonAnimation(akActor, AnimSwitchKeyword(akActor, zad_DeviousArmbinder, DDZaZAPCArmBZaDH03, DDZazhornye), true)
-	int i = 0
-	while i < 20
-		i+= 1
+	if !IsAnimating(akActor)
+		bool[] cameraState = StartThirdPersonAnimation(akActor, AnimSwitchKeyword(akActor, zad_DeviousArmbinder, DDZaZAPCArmBZaDH03, DDZazhornye), true)
+		int i = 0
+		while i < 20
+			i+= 1
+			if !IsVibrating(akActor) && vsID != -1
+				Sound.StopInstance(vsID)
+				vsID=-1
+			EndIf
+			Utility.Wait(1)
+		EndWhile
+	        EndThirdPersonAnimation(akActor, cameraState, true)
+	Else
 		if !IsVibrating(akActor) && vsID != -1
 			Sound.StopInstance(vsID)
 			vsID=-1
 		EndIf
-		Utility.Wait(1)
-	EndWhile
-	EndThirdPersonAnimation(akActor, cameraState, true)
+	EndIf
 EndFunction
 
 ; Play panting sound from actor
@@ -1959,37 +1966,37 @@ Function ApplyArmbinderAnim(actor akActor, idle theIdle = None)
 EndFunction
 
 Function RegisterDevices()
-	RegisterGenericDevice(braPadded 			, "bra,metal,padded")
-	RegisterGenericDevice(cuffsPaddedArms 		, "cuffs,arms,metal,padded")
-	RegisterGenericDevice(cuffsPaddedLegs		, "cuffs,legs,metal,padded")
-	RegisterGenericDevice(cuffsPaddedCollar	, "collar,metal,padded,short")
-	RegisterGenericDevice(collarPosture		, "collar,metal,posture,padded")
-	RegisterGenericDevice(armbinder				, "armbinder,leather,black")
-	RegisterGenericDevice(gagBall				, "gag,harness,ball,leather,black")
-	RegisterGenericDevice(gagPanel				, "gag,harness,panel,leather,black")
-	RegisterGenericDevice(gagRing				, "gag,harness,ring,leather,black")
-	RegisterGenericDevice(gagStrapBall			, "gag,strap,ball,leather,black")
-	RegisterGenericDevice(gagStrapRing			, "gag,strap,ring,leather,black")
-	RegisterGenericDevice(blindfold				, "blindfold,leather,black")
-	RegisterGenericDevice(cuffsLeatherArms		, "cuffs,arms,leather,black")
-	RegisterGenericDevice(cuffsLeatherLegs		, "cuffs,legs,leather,black")
-	RegisterGenericDevice(cuffsLeatherCollar	, "collar,leather,black,short")
-	RegisterGenericDevice(collarPostureLeather, "collar,leather,black,posture")
-	RegisterGenericDevice(harnessBody			, "harness,leather,black,full")
-	RegisterGenericDevice(harnessCollar		, "collar,harness,leather,black")
-	RegisterGenericDevice(plugIronVag			, "plug,vaginal,iron,simple")
-	RegisterGenericDevice(plugIronAn			, "plug,anal,iron,simple")
-	RegisterGenericDevice(plugPrimitiveVag		, "plug,vaginal,primitive,simple")
-	RegisterGenericDevice(plugPrimitiveAn		, "plug,anal,primitive,simple")
-	RegisterGenericDevice(plugSoulgemVag		, "plug,vaginal,soulgem,magic")
-	RegisterGenericDevice(plugSoulgemAn		, "plug,anal,soulgem,magic")
-	RegisterGenericDevice(plugInflatableVag	, "plug,pump,vaginal,inflatable")
-	RegisterGenericDevice(plugInflatableAn		, "plug,pump,anal,inflatable")
-	RegisterGenericDevice(beltPaddedOpen		, "belt,metal,padded,open")
-	RegisterGenericDevice(beltPadded			, "belt,metal,padded,full")
-	RegisterGenericDevice(beltIron				, "belt,metal,iron,full")
-	RegisterGenericDevice(piercingNSoul		, "piercing,nipple,soulgem")
-	RegisterGenericDevice(piercingVSoul		, "piercing,vaginal,soulgem")
+	RegisterGenericDevice(braPadded 			, "bra,metal,padded, DDi")
+	RegisterGenericDevice(cuffsPaddedArms 		, "cuffs,arms,metal,padded, DDi")
+	RegisterGenericDevice(cuffsPaddedLegs		, "cuffs,legs,metal,padded, DDi")
+	RegisterGenericDevice(cuffsPaddedCollar	, "collar,metal,padded,short, DDi")
+	RegisterGenericDevice(collarPosture		, "collar,metal,posture,padded, DDi")
+	RegisterGenericDevice(armbinder				, "armbinder,leather,black, DDi")
+	RegisterGenericDevice(gagBall				, "gag,harness,ball,leather,black, DDi")
+	RegisterGenericDevice(gagPanel				, "gag,harness,panel,leather,black, DDi")
+	RegisterGenericDevice(gagRing				, "gag,harness,ring,leather,black, DDi")
+	RegisterGenericDevice(gagStrapBall			, "gag,strap,ball,leather,black, DDi")
+	RegisterGenericDevice(gagStrapRing			, "gag,strap,ring,leather,black, DDi")
+	RegisterGenericDevice(blindfold				, "blindfold,leather,black, DDi")
+	RegisterGenericDevice(cuffsLeatherArms		, "cuffs,arms,leather,black, DDi")
+	RegisterGenericDevice(cuffsLeatherLegs		, "cuffs,legs,leather,black, DDi")
+	RegisterGenericDevice(cuffsLeatherCollar	, "collar,leather,black,short, DDi")
+	RegisterGenericDevice(collarPostureLeather, "collar,leather,black,posture, DDi")
+	RegisterGenericDevice(harnessBody			, "harness,leather,black,full, DDi")
+	RegisterGenericDevice(harnessCollar		, "collar,harness,leather,black, DDi")
+	RegisterGenericDevice(plugIronVag			, "plug,vaginal,iron,simple, DDi")
+	RegisterGenericDevice(plugIronAn			, "plug,anal,iron,simple, DDi")
+	RegisterGenericDevice(plugPrimitiveVag		, "plug,vaginal,primitive,simple, DDi")
+	RegisterGenericDevice(plugPrimitiveAn		, "plug,anal,primitive,simple, DDi")
+	RegisterGenericDevice(plugSoulgemVag		, "plug,vaginal,soulgem,magic, DDi")
+	RegisterGenericDevice(plugSoulgemAn		, "plug,anal,soulgem,magic, DDi")
+	RegisterGenericDevice(plugInflatableVag	, "plug,pump,vaginal,inflatable, DDi")
+	RegisterGenericDevice(plugInflatableAn		, "plug,pump,anal,inflatable, DDi")
+	RegisterGenericDevice(beltPaddedOpen		, "belt,metal,padded,open, DDi")
+	RegisterGenericDevice(beltPadded			, "belt,metal,padded,full, DDi")
+	RegisterGenericDevice(beltIron				, "belt,metal,iron,full, DDi")
+	RegisterGenericDevice(piercingNSoul		, "piercing,nipple,soulgem, DDi")
+	RegisterGenericDevice(piercingVSoul		, "piercing,vaginal,soulgem, DDi")
 
 	log("Finished registering devices.")
 EndFunction
