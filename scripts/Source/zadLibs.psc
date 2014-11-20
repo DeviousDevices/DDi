@@ -1172,6 +1172,7 @@ Function ActorOrgasm(actor akActor, int setArousalTo=-1, int vsID=-1)
 	int sID = OrgasmSound.Play(akActor)
 	Sound.SetInstanceVolume(sid, Config.VolumeOrgasm)
 	Aroused.SetActorExposure(akActor, setArousalTo)
+	Aroused.UpdateActorOrgasmDate(akActor)
 	bool[] cameraState = StartThirdPersonAnimation(akActor, AnimSwitchKeyword(akActor, zad_DeviousArmbinder, DDZaZAPCArmBZaDH03, DDZazhornye), true)
 	int i = 0
 	while i < 20

@@ -226,9 +226,7 @@ Function VersionChecks()
 	EndIf
 	libs.Log("Verifying that installation is untainted by an unsupported upgrade: "+status)
 	status="OK"
-	libs.Log("Okay seriously, I'm going to make fun of you if you post the following as an error. This is not an error, it is a check to ensure that you're not running the obsolete .esp.")
-	bool obsoleteEspInstalled = (game.GetFormFromFile(0x0000F624, "Devious Devices - Integration.esp") != none)
-	libs.Log("Okay seriously, I'm going to make fun of you if you post the above as an error. This is not an error, it is a check to ensure that you're not running the obsolete .esp.")
+	bool obsoleteEspInstalled = !(Game.GetModByName("Devious Devices - Integration.esp") > 0)
 	if obsoleteEspInstalled
 		status = "FAIL"
 		libs.Error("Obsolete file Devious Devices - Integration.esp detected. Note, that upgrading from 2.6.5 to 2.6.6+ is not supported. Please delete Devious Devices - Integration.esp (Using Devious Devices - Integration.esm instead), and try again.")
