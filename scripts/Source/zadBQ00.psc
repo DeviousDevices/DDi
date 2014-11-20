@@ -615,6 +615,9 @@ function Logic(int threadID, bool HasPlayer)
 	Bool bPermitVaginal = True
 	Bool bPermitBoobs = True
 	Bool bNoBindings = True
+	int NumExtraTags = 0
+	string[] ExtraTags = new String[12]
+	bool UsingArmbinder = False
 	i = originalActors.Length
 	While i > 0
 		i -= 1
@@ -623,6 +626,12 @@ function Logic(int threadID, bool HasPlayer)
 		bPermitBoobs = bPermitBoobs && !IsBlockedBreast(originalActors[i])
 		bPermitOral = bPermitOral && !IsBlockedOral(originalActors[i])
 		bNoBindings = bNoBindings && !HasArmbinder(originalActors[i])
+		; This step is needed, in order to determine if the prior animation is valid (Prevent replacing valid bound anims).
+		if !UsingArmbinder && HasArmbinder(originalActors[i])
+			ExtraTags[NumExtraTags] = "Armbinder"
+			NumExtraTags+=1
+		EndIf
+		; Yoke support
 	EndWhile
 	Bool bIsCreatureAnim = previousAnim.HasTag("Creature")
 	
@@ -640,6 +649,11 @@ function Logic(int threadID, bool HasPlayer)
 		OpenPanelGags(zbfSL.GetEntryByVanillaId(previousAnim.Name), originalActors)
 		Return
 	EndIf
+	
+	if IsValidAnimation(previousAnim, bPermitOral, bPermitVaginal, bPermitAnal, bPermitBoobs, numExtraTags, ExtraTags)
+		libs.Log("Original animation (" + previousAnim.name + ") does not conflict. Done.")
+		return
+	EndIf
 
 	;branch off code to handle vanilla animations if bNoBindings is set.
 
@@ -653,14 +667,6 @@ function Logic(int threadID, bool HasPlayer)
 	sslBaseAnimation[] anims
 	If bNoBindings
 		libs.Log("Selecting the DD path.")
-
-		int NumExtraTags = 0
-		string[] ExtraTags = new String[12]
-		if IsValidAnimation(previousAnim, bPermitOral, bPermitVaginal, bPermitAnal, bPermitBoobs, numExtraTags, ExtraTags) ; && numRestrictedActors != originalActors.length  ; XXX1-SerendeVeladarius
-			libs.Log("Original animation (" + previousAnim.name + ") does not conflict. Done.")
-			return
-		EndIf
-
 		int actorIter = 0
 		int currentActorCount = originalActors.length
 
