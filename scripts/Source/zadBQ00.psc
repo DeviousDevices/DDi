@@ -665,7 +665,7 @@ function Logic(int threadID, bool HasPlayer)
 	Actor[] actors
 	Actor[] solos
 	sslBaseAnimation[] anims
-	If bNoBindings
+	If bNoBindings || bIsCreatureAnim
 		libs.Log("Selecting the DD path.")
 		int actorIter = 0
 		int currentActorCount = originalActors.length
