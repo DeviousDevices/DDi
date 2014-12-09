@@ -654,7 +654,7 @@ function Logic(int threadID, bool HasPlayer)
 		libs.Log("Original animation (" + previousAnim.name + ") does not conflict. Done.")
 		return
 	EndIf
-
+	NumExtraTags = 0 ; Reset.
 	;branch off code to handle vanilla animations if bNoBindings is set.
 
 	; Objective of this part of the function is to fill variables
