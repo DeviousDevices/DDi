@@ -276,9 +276,7 @@ Function RemoveDevice(actor akActor, bool destroyDevice=false, bool skipMutex=fa
 		; and this function is only for internal use.
 		if (deviceInventory.HasKeyword(libs.zad_BlockGeneric) || deviceRendered.HasKeyword(libs.zad_BlockGeneric))
 			Libs.Log("Not breaking key for non-generic device.")
-			return
-		EndIf
-		if Utility.RandomInt() <= libs.Config.DestroyKeyProbability
+		Elseif Utility.RandomInt() <= libs.Config.DestroyKeyProbability
 			if Utility.RandomInt() <= libs.Config.DestroyKeyJamChance
 				libs.NotifyPlayer("The key breaks while attempting to remove the "+deviceName+", and the broken key becomes stuck in the lock!", true)
 				JammedLock = True
@@ -287,8 +285,6 @@ Function RemoveDevice(actor akActor, bool destroyDevice=false, bool skipMutex=fa
 			EndIf
 			libs.PlayerRef.RemoveItem(deviceKey, 1, true)
 			return
-		Else
-			; Display some sort of a success message?
 		EndIf
 	Endif
 	libs.SendDeviceRemovalEvent(deviceName, akActor)
@@ -296,6 +292,9 @@ Function RemoveDevice(actor akActor, bool destroyDevice=false, bool skipMutex=fa
 	if deviceKey != none && akActor.GetItemCount(deviceKey) < 1 && libs.config.thresholdModifier > 0
 		libs.Log("Player escaped device without having the key. Modifying unlock threshold.")
 		libs.Config.UnlockThreshold = (libs.Config.UnlockThreshold + libs.Config.thresholdModifier) ; += giving syntax errors? 
+	EndIf
+	If libs.Config.destroyKey
+		libs.PlayerRef.RemoveItem(deviceKey, 1, true)
 	EndIf
 EndFunction
 

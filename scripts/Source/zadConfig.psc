@@ -25,6 +25,10 @@ bool Property NpcMessages Auto
 bool npcMessagesDefault = true
 bool Property PlayerMessages Auto
 bool playerMessagesDefault = true
+
+bool Property DestroyKey Auto
+bool destroyKeyDefault = False
+
 int Property DestroyKeyProbability Auto
 int destroyKeyProbabilityDefault = 0
 
@@ -125,6 +129,7 @@ int keyCraftingOID
 int thresholdModifierOID
 int animsRegisterOID
 int playerMessagesOID
+int destroyKeyOID
 int npcMessagesOID
 int destroyKeyProbabilityOID
 int destroyKeyJamChanceOID
@@ -250,7 +255,7 @@ Event OnConfigInit()
 EndEvent
 
 int Function GetVersion()
-	return 14 ; mcm menu version
+	return 15 ; mcm menu version
 EndFunction
 
 Event OnVersionUpdate(int newVersion)
@@ -308,17 +313,17 @@ Event OnPageReset(string page)
 			thresholdOID = AddSliderOption("Unlock Threshold", UnlockThreshold)
 			thresholdModifierOID = AddSliderOption("Unlock Threshold Modifier", ThresholdModifier)
 			keyCraftingOID = AddMenuOption("Key Creation Difficulty", difficultyList[KeyCrafting])
-			destroyKeyProbabilityOID = AddSliderOption("Destroy Key Chance", destroyKeyProbability, "{1}")
+			destroyKeyOID = AddToggleOption("Destroy Key", destroyKey)
+			destroyKeyProbabilityOID = AddSliderOption("Key Break Chance", destroyKeyProbability, "{1}")
 			destroyKeyJamChanceOID = AddSliderOption("Jam LockChance", destroyKeyJamChance, "{1}")
 			skyreOID = AddToggleOption("Using SkyRe", SkyRe)
 		EndIf
 		AddHeaderOption("Camera Configuration")
 		ifpOID = AddToggleOption("Immersive First Person", ifp)
+		SetCursorPosition(1) ; Move cursor to top right position
 		AddHeaderOption("Message Visibility Settings")
 		npcMessagesOID = AddToggleOption("Show NPC Messages", NpcMessages)
 		playerMessagesOID = AddToggleOption("Show Player Messages", PlayerMessages)
-		AddHeaderOption("Device Animation Options")
-		animsRegisterOID = AddTextOption("Reregister Animations", "Not Done")
 		AddHeaderOption("Debug")
 		logMessagesOID = AddToggleOption("Enable Debug Logging", LogMessages)
 		SetCursorPosition(1) ; Move cursor to top right position
@@ -639,6 +644,9 @@ Event OnOptionSelect(int option)
 	elseif option == playerMessagesOID
 		PlayerMessages = !PlayerMessages
 		SetToggleOptionValue(playerMessagesOID, PlayerMessages)
+	elseif option == destroyKeyOID
+		destroyKey = !destroyKey
+		SetToggleOptionValue(destroyKeyOID, destroyKey)
 	elseif option == preserveAggroOID
 		PreserveAggro = !PreserveAggro
 		SetToggleOptionValue(PreserveAggroOID, PreserveAggro)
@@ -723,6 +731,9 @@ Event OnOptionDefault(int option)
 	elseIf (option == playerMessagesOID)
 		PlayerMessages = playerMessagesDefault
 		SetToggleOptionValue(playerMessagesOID, playerMessagesDefault)
+	elseIf (option == destroyKeyOID)
+		destroyKey = destroyKeyDefault
+		SetToggleOptionValue(destroyKeyOID, destroyKeyDefault)
 	elseIf (option == destroyKeyProbabilityOID)
 		destroyKeyProbability = destroyKeyProbabilityDefault
 		SetToggleOptionValue(destroyKeyProbabilityOID, destroyKeyProbabilityDefault)
@@ -858,8 +869,10 @@ Event OnOptionHighlight(int option)
 		SetInfoText("Enable/disable device related messages for the player. Note: Messages crucial to device functionality (Such as the menu) will display regardless of this setting. The creator of this mod recommends that you leave this option enabled, unless you really loathe his writing.\nDefault:"+playerMessagesDefault+".")
 	elseIf (option == preserveAggroOID)
 		SetInfoText("Toggle the preservation of a scene's aggressiveness. Disable this for more variety in animations (At the cost of seeing consensual animations in rape-scenes, etc).\nDefault:"+preserveAggroDefault)
+	elseIf (option == destroyKeyOID)
+		SetInfoText("Toggle whether or not the key should be destroyed after device removal.")
 	elseIf (option == destroyKeyProbabilityOID)
-		SetInfoText("Set the chance of the key being destroyed upon device removal.\nDefault:"+destroyKeyProbabilityDefault)
+		SetInfoText("Set the chance of the key being destroyed prior to device removal.\nDefault:"+destroyKeyProbabilityDefault)
 	elseIf (option == destroyKeyJamChanceOID)
 		SetInfoText("Set the chance of the lock jamming, if the key is destroyed.\nDefault:"+destroyKeyJamChanceDefault)
 	elseIf (option == skyreOID)
@@ -997,10 +1010,10 @@ Event OnOptionSliderAccept(int option, float value)
 		SetSliderOptionValue(option, value, "{3}")
 	elseIf (option == destroyKeyProbabilityOID)
 		destroyKeyProbability = value as Int
-		SetSliderOptionValue(option, value, "{1})")
+		SetSliderOptionValue(option, value, "{1}")
 	elseIf (option == destroyKeyJamChanceOID)
 		destroyKeyJamChance = value as Int
-		SetSliderOptionValue(option, value, "{1})")
+		SetSliderOptionValue(option, value, "{1}")
 	elseIf option == numNpcsOID
 		numNpcs = (value as Int)
 		SetSliderOptionValue(option, value, "{1}")
