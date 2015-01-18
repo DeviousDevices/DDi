@@ -1945,9 +1945,10 @@ Function ApplyArmbinderAnim(actor akActor, idle theIdle = None)
 	if akActor.GetEquippedWeapon(True)
 		akActor.UnequipItem(akActor.GetEquippedWeapon(true), false, true)
 	EndIf
-	If akActor.GetEquippedShield()
-		akActor.UnequipItem(akActor.GetEquippedShield(), false, true)
-	EndIf
+	;Armbinders now are shields, so any equipped shield will be removed automatically
+	;If akActor.GetEquippedShield()
+	;	akActor.UnequipItem(akActor.GetEquippedShield(), false, true)
+	;EndIf
 	if akActor.GetEquippedSpell(0)
 		akActor.UnequipSpell(akActor.GetEquippedSpell(0), 0)
 	EndIf
