@@ -88,7 +88,7 @@ Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
 	if !akArmor
 		return
 	EndIf
-	if libs.PlayerRef.HasMagicEffectWithKeyword(libs.zad_EffectCompressBreasts) && libs.PlayerRef.WornHasKeyword(libs.zad_DeviousBra) && Math.LogicalAnd(akArmor.GetSlotMask(), 0x00000004)
+	if libs.PlayerRef.HasMagicEffectWithKeyword(libs.zad_EffectCompressBreasts) && libs.PlayerRef.WornHasKeyword(libs.zad_DeviousBra) && (Math.LogicalAnd(akArmor.GetSlotMask(), 0x00000004) && !akArmor.HasKeyword(libs.zad_DeviousHarness))
 		libs.ShowBreasts(libs.PlayerRef)
 	EndIf
 EndEvent

@@ -16,7 +16,7 @@ EndFunction
 
 Event OnUpdate()
 	if !Terminate
-		if !Target.GetWornForm(0x00000004)
+		if (!Target.GetWornForm(0x00000004) || Target.WornHasKeyword(libs.zad_DeviousHarness))
 			libs.HideBreasts(Target)
 		Endif
 	Else ; Avoid race condition
@@ -36,10 +36,10 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 
 	libs.StoreNodes(Target)
 	OriginalNodeScale = libs.BreastNodeScale
-	if Target.WornHasKeyword(libs.zad_DeviousBra) && !Target.GetWornForm(0x00000004)
+	if Target.WornHasKeyword(libs.zad_DeviousBra) && (!Target.GetWornForm(0x00000004) || Target.WornHasKeyword(libs.zad_DeviousHarness))
 		libs.HideBreasts(Target)
 	EndIf
-	DoRegister()
+	RegisterForSingleUpdate(2.0)
 EndEvent
 
 

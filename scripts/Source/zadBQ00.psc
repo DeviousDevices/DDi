@@ -212,7 +212,7 @@ Function VersionChecks()
 	if !assets
 		libs.Error("Assets is undefined: You're probably running an out of date version of it. Please update Devious Devices - Assets to the latest version.")
 	EndIf
-	CheckCompatibility("Assets", 2.82, assets.GetVersion())
+	CheckCompatibility("Assets", 2.83, assets.GetVersion())
 	CheckCompatibility("Zaz Animation Pack", 600, zbfUtil.GetVersion())
 	CheckCompatibility("Aroused", 20140124, Aroused.GetVersion())
 	CheckCompatibility("Sexlab", 15900, SexlabUtil.GetVersion())
@@ -406,28 +406,28 @@ Function TogglePanelGag(actor[] actors, bool insert)
 EndFunction
 
 
-Function StoreArmbinders(actor[] originalActors)
+Function StoreHeavyBondage(actor[] originalActors)
 	int i = originalActors.Length
 	while i > 0
 		i -= 1
-		Form storedArmbinder = libs.GetWornArmbinderInstance(originalActors[i])
-		if storedArmbinder != None
-			libs.Log("Stored armbinder: " + storedArmbinder)
-			StorageUtil.SetFormValue(originalActors[i], "zadStoredArmbinder", storedArmbinder)
-			originalActors[i].UnequipItem(storedArmbinder, false, true)
+		Form storedBondage = libs.GetWornHeavyBondageInstance(originalActors[i])
+		if storedBondage != None
+			libs.Log("Stored Bondage: " + storedBondage)
+			StorageUtil.SetFormValue(originalActors[i], "zadStoredBondage", storedBondage)
+			originalActors[i].UnequipItem(storedBondage, false, true)
 		EndIf
 	EndWhile
 EndFunction
 
 
-Function RetrieveArmbinders(actor[] originalActors)
+Function RetrieveHeavyBondage(actor[] originalActors)
 	int i = originalActors.Length
 	while i > 0
 		i -= 1
-		Form storedArmbinder = StorageUtil.GetFormValue(originalActors[i], "zadStoredArmbinder")
-		if storedArmbinder != None
-			StorageUtil.UnSetFormValue(originalActors[i], "zadStoredArmbinder")
-			originalActors[i].EquipItem(storedArmbinder, true, true)
+		Form storedBondage = StorageUtil.GetFormValue(originalActors[i], "zadStoredBondage")
+		if storedBondage != None
+			StorageUtil.UnSetFormValue(originalActors[i], "zadStoredBondage")
+			originalActors[i].EquipItem(storedBondage, true, true)
 		EndIf
 	EndWhile
 EndFunction
@@ -557,7 +557,7 @@ EndFunction
 ; DD filtering algorithm will progressively add actors, it's not practical to filter the set of animations
 ; based on the number of actors.
 ; 
-zbfSexLabBaseEntry Function SelectRandomEntry(zbfSexLabBaseEntry[] akList, Int aiActorCount)
+zbfSexLabBaseEntry Function SelectRandomEntry(zbfSexLabBaseEntry[] akList, Int aiActorCount, bool permitGay=True)
 	If (akList[0] != None) && (aiActorCount == akList[0].NumActors)
 		Return akList[0]
 	EndIf
@@ -567,7 +567,7 @@ zbfSexLabBaseEntry Function SelectRandomEntry(zbfSexLabBaseEntry[] akList, Int a
 	Int i = akList.Length
 	While i > 0
 		i -= 1
-		If (akList[i] != None) && (aiActorCount == akList[i].NumActors)
+		If (akList[i] != None) && (aiActorCount == akList[i].NumActors) && (!akList[i].HasTag("Lesbian") || permitGay)
 			iFoundIndex[iActive] = i
 			iActive += 1
 		EndIf
@@ -655,6 +655,12 @@ function Logic(int threadID, bool HasPlayer)
 		return
 	EndIf
 	NumExtraTags = 0 ; Reset.
+
+	if !bNoBindings && !libs.config.useBoundAnims ; Actor is bound, config specifies to not use bound anims.
+		libs.Log("One or more actors were bound, but there are no bound animations available. Removing bindings.")
+		StoreHeavyBondage(originalActors)
+		bNoBindings = True
+	EndIf
 	;branch off code to handle vanilla animations if bNoBindings is set.
 
 	; Objective of this part of the function is to fill variables
@@ -665,7 +671,7 @@ function Logic(int threadID, bool HasPlayer)
 	Actor[] actors
 	Actor[] solos
 	sslBaseAnimation[] anims
-	If bNoBindings || bIsCreatureAnim
+	If (bNoBindings || !libs.config.useBoundAnims) || bIsCreatureAnim
 		libs.Log("Selecting the DD path.")
 		int actorIter = 0
 		int currentActorCount = originalActors.length
@@ -750,9 +756,14 @@ function Logic(int threadID, bool HasPlayer)
 		; Filter tags for each actor in the original animation
 		zbfSexLabBaseEntry entry
 		i = 0
+		int curGender = Sexlab.GetGender(originalActors[i])
+		bool permitGay = True
 		While i < originalActors.Length
+			if curGender != Sexlab.GetGender(originalActors[i+1])
+				permitGay = False ; Only use same sex animations if actors are the same sex.
+			EndIf
 			FilterActor(list, originalActors[i], i + 1)
-			zbfSexLabBaseEntry tempEntry = SelectRandomEntry(list, aiActorCount = (i + 1))
+			zbfSexLabBaseEntry tempEntry = SelectRandomEntry(list, aiActorCount = (i + 1), permitGay=permitGay)
 			If tempEntry != None
 				entry = tempEntry
 				libs.Log("Entry selected, " + entry.Name + ", with " + entry.NumActors + " actors.")
@@ -1027,7 +1038,7 @@ Event OnAnimationEnd(int threadID, bool HasPlayer)
 	if previousAnim.HasTag("Aggressive")
 		TogglePanelGag(actors, true)
 	EndIf
-	RetrieveArmbinders(actors)
+	RetrieveHeavyBondage(actors)
 	RefreshBlindfoldState(actors)
 	Utility.Wait(5)
 	ChangeLockState(actors, false)

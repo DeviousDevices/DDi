@@ -269,7 +269,7 @@ EndFunction
 
 
 Function RemoveDevice(actor akActor, bool destroyDevice=false, bool skipMutex=false)
-	if libs.Config.DestroyKeyProbability > 0.0 && deviceKey != none
+	if (akActor == libs.PlayerRef) && libs.Config.DestroyKeyProbability > 0.0 && deviceKey != none
 		; At the time of writing this, only the player may unlock themselves / npc's via this function.
 		; I don't really see that changing in the future, so using an explicit reference to the
 		; player here is probably the way to go. Quests will manipulate this via the API anyways,
@@ -277,7 +277,7 @@ Function RemoveDevice(actor akActor, bool destroyDevice=false, bool skipMutex=fa
 		if (deviceInventory.HasKeyword(libs.zad_BlockGeneric) || deviceRendered.HasKeyword(libs.zad_BlockGeneric))
 			Libs.Log("Not breaking key for non-generic device.")
 		Elseif Utility.RandomInt() <= libs.Config.DestroyKeyProbability
-			if Utility.RandomInt() <= libs.Config.DestroyKeyJamChance
+			if (Utility.RandomInt() <= libs.Config.DestroyKeyJamChance)
 				libs.NotifyPlayer("The key breaks while attempting to remove the "+deviceName+", and the broken key becomes stuck in the lock!", true)
 				JammedLock = True
 			Else
