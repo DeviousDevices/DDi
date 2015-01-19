@@ -1,4 +1,4 @@
-Version V2.8.2
+Version V2.9.0
 ' Format:	<type> -<option,option,...> <AnimEvent> <Animation File> [<AnimObject CK>]
 '		type: 	b (basic)
 '				o (animated objects) 	
