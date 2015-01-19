@@ -277,7 +277,7 @@ Function RemoveDevice(actor akActor, bool destroyDevice=false, bool skipMutex=fa
 		if (deviceInventory.HasKeyword(libs.zad_BlockGeneric) || deviceRendered.HasKeyword(libs.zad_BlockGeneric))
 			Libs.Log("Not breaking key for non-generic device.")
 		Elseif Utility.RandomInt() <= libs.Config.DestroyKeyProbability
-			if Utility.RandomInt() <= libs.Config.DestroyKeyJamChance
+			if (akActor == libs.PlayerRef) && (Utility.RandomInt() <= libs.Config.DestroyKeyJamChance)
 				libs.NotifyPlayer("The key breaks while attempting to remove the "+deviceName+", and the broken key becomes stuck in the lock!", true)
 				JammedLock = True
 			Else
