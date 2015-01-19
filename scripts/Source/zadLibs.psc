@@ -523,7 +523,7 @@ bool Function ManipulateGenericDeviceByKeyword(Actor akActor, Keyword kw, bool e
 	While iFormIndex > 0 && !breakFlag
 		iFormIndex -= 1
 		Form kForm = akActor.GetNthForm(iFormIndex)
-		If kForm.HasKeyword(zad_InventoryDevice) && ((akActor.IsEquipped(kForm) && !equipOrUnequip) || (!akActor.IsEquipped(kForm) && equipOrUnequip))
+		If kForm.HasKeyword(zad_InventoryDevice) && (((akActor.IsEquipped(kForm) || akActor != playerRef) && !equipOrUnequip) || (!akActor.IsEquipped(kForm) && equipOrUnequip))
 			ObjectReference tmpORef = akActor.placeAtMe(kForm, abInitiallyDisabled = true)
 			zadEquipScript tmpZRef = tmpORef as zadEquipScript
 			if tmpZRef != none && tmpZRef.zad_DeviousDevice == kw && ((akActor.GetItemCount(tmpZRef.deviceRendered) > 0 && !equipOrUnequip) || equipOrUnequip)
@@ -550,7 +550,7 @@ Armor Function GetWornDevice(Actor akActor, Keyword kw)
 	While iFormIndex > 0 && !breakFlag
 		iFormIndex -= 1
 		Form kForm = akActor.GetNthForm(iFormIndex)
-		If kForm.HasKeyword(zad_InventoryDevice) && akActor.IsEquipped(kForm)
+		If kForm.HasKeyword(zad_InventoryDevice) && (akActor.IsEquipped(kForm) || akActor != playerRef)
 			ObjectReference tmpORef = akActor.placeAtMe(kForm, abInitiallyDisabled = true)
 			zadEquipScript tmpZRef = tmpORef as zadEquipScript
 			if tmpZRef != none && tmpZRef.zad_DeviousDevice == kw && akActor.GetItemCount(tmpZRef.deviceRendered) > 0
@@ -572,7 +572,7 @@ Armor Function GetWornDeviceFuzzyMatch(Actor akActor, Keyword kw)
     While iFormIndex > 0 && !breakFlag
         iFormIndex -= 1
         Form kForm = akActor.GetNthForm(iFormIndex)
-        If kForm.HasKeyword(zad_InventoryDevice) && akActor.IsEquipped(kForm)
+        If kForm.HasKeyword(zad_InventoryDevice) && (akActor.IsEquipped(kForm) || akActor != playerRef)
             ObjectReference tmpORef = akActor.placeAtMe(kForm, abInitiallyDisabled = true)
             zadEquipScript tmpZRef = tmpORef as zadEquipScript
             if tmpZRef != none && tmpZRef.deviceRendered.hasKeyword(kw) && akActor.GetItemCount(tmpZRef.deviceRendered) > 0
@@ -821,7 +821,7 @@ bool[] Function StartThirdPersonAnimation(actor akActor, idle animation, bool pe
 		ElseIf cameraOld == 12 ; Dragon? Wtf?
 			Warn("Actor is dragon? Not sure what happened here.")
 			return ret
-		ElseIf cameraOld == 8 || cameraOld == 9	;;; 8 / 9 are third person.
+		ElseIf cameraOld == 8 || cameraOld == 9 || cameraOld ==  7 ;;; 8 / 9 are third person. 7 is tween menu.
 		;
 		Else
 			ret[0] = true
@@ -1712,6 +1712,7 @@ Function DisableControls()
 EndFunction
 
 Function UpdateControls()
+	log("UpdateControls()")
 	; Centralized control management function.
 	bool movement = true
 	bool fighting = true
