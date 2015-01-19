@@ -46,7 +46,8 @@ bool preserveAggroDefault = true
 bool Property breastNodeManagement Auto
 bool breastNodeManagementDefault = true
 
-bool Property useBoundAnims =  true Auto ; Obsolete. Left in for backwards compatibility with DH.
+bool Property useBoundAnims =  true Auto
+bool useBoundAnimsDefault = true
 
 ; Blindfold
 int Property blindfoldMode Auto ; 0 == DD's mode, 1 == DD's mode w/ leeches, 2 == leeches
@@ -168,6 +169,7 @@ int[] slotMaskOIDs
 int DevicesUnderneathSlotOID
 int UseQueueNiNodeOID
 int breastNodeManagementOID
+int useBoundAnimsOID
 
 string[] difficultyList
 string[] blindfoldList
@@ -348,6 +350,7 @@ Event OnPageReset(string page)
 		SetCursorPosition(0) ; Can be removed because it starts at 0 anyway
 		AddHeaderOption("Animation Options")
 		preserveAggroOID = AddToggleOption("Preserve Scene Aggressiveness", preserveAggro)
+		useBoundAnimsOID = AddToggleOption("Use Bound Animations", useBoundAnims)
 	ElseIf page == "Events and Effects"
 		SetCursorFillMode(TOP_TO_BOTTOM)
 		AddHeaderOption("Global Events/Effects Configuration")
@@ -650,6 +653,9 @@ Event OnOptionSelect(int option)
 	elseif option == preserveAggroOID
 		PreserveAggro = !PreserveAggro
 		SetToggleOptionValue(PreserveAggroOID, PreserveAggro)
+	elseif option == useBoundAnimsOID
+		useBoundAnims = !useBoundAnims
+		SetToggleOptionValue(useBoundAnimsOID, useBoundAnims)
 	elseif option == skyreOID
 		SkyRe = !SkyRe
 		SetToggleOptionValue(skyreOID, SkyRe)
@@ -743,6 +749,9 @@ Event OnOptionDefault(int option)
 	elseIf (option == PreserveAggroOID)
 		PreserveAggro = PreserveAggroDefault
 		SetToggleOptionValue(PreserveAggroOID, PreserveAggroDefault)
+	elseIf (option == useBoundAnimsOID)
+		useBoundAnims = useBoundAnimsDefault
+		SetToggleOptionValue(useBoundAnimsOID, useBoundAnimsDefault)
 	elseIf (option == skyreOID)
 		SkyRe = skyreDefault
 		SetToggleOptionValue(skyreOID, skyreDefault)
@@ -869,12 +878,14 @@ Event OnOptionHighlight(int option)
 		SetInfoText("Enable/disable device related messages for the player. Note: Messages crucial to device functionality (Such as the menu) will display regardless of this setting. The creator of this mod recommends that you leave this option enabled, unless you really loathe his writing.\nDefault:"+playerMessagesDefault+".")
 	elseIf (option == preserveAggroOID)
 		SetInfoText("Toggle the preservation of a scene's aggressiveness. Disable this for more variety in animations (At the cost of seeing consensual animations in rape-scenes, etc).\nDefault:"+preserveAggroDefault)
+	elseIf (option == useBoundAnimsOID)
+		SetInfoText("Toggle the use of bound animations within scenes. Without this option, Yokes / Armbinders / etc will be removed until the sex act has concluded.\nDefault:"+useBoundAnimsDefault)
 	elseIf (option == destroyKeyOID)
 		SetInfoText("Toggle whether or not the key should be destroyed after device removal.")
 	elseIf (option == destroyKeyProbabilityOID)
 		SetInfoText("Set the chance of the key being destroyed prior to device removal.\nDefault:"+destroyKeyProbabilityDefault)
 	elseIf (option == destroyKeyJamChanceOID)
-		SetInfoText("Set the chance of the lock jamming, if the key is destroyed.\nDefault:"+destroyKeyJamChanceDefault)
+		SetInfoText("Set the chance of the lock jamming, if the key is destroyed.\nWARNING: If you do not have an alternative method of escape (Such as through a mod like Captured Dreams), do not enable this feature, or you will permanently be stuck wearing the device!\nDefault:"+destroyKeyJamChanceDefault)
 	elseIf (option == skyreOID)
 		SetInfoText("Enable/disable SkyRe support. If enabled, this option will use the player's Pickpocket skill instead of their lockpick skill for escape attempts (Lockpick is Wayfaring in SkyRe, and Pickpocket is Fingersmithing).\nDefault:"+skyreDefault)
 	elseIf (option == logMessagesOID)

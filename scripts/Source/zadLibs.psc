@@ -1923,9 +1923,15 @@ Form Function GetRenderedDeviceInstance(actor akActor, int Slot, Keyword kwd)
 	return none
 EndFunction
 
-Form Function GetWornArmbinderInstance(actor akActor)
+Form Function GetWornHeavyBondageInstance(actor akActor)
 	; akActor.GetWornForm(0x20000000)
-	return GetRenderedDeviceInstance(akActor, 0x00000008, zad_DeviousArmbinder)
+	form armb = GetRenderedDeviceInstance(akActor, 0x00000008, zad_DeviousArmbinder)
+	if !armb
+		; check new slot
+		armb = GetRenderedDeviceInstance(akActor, 0x00000200, zad_DeviousArmbinder)
+	EndIf
+	; Need to add yoke support here.
+	return armb
 EndFunction
 
 
