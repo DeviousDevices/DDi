@@ -557,7 +557,7 @@ EndFunction
 ; DD filtering algorithm will progressively add actors, it's not practical to filter the set of animations
 ; based on the number of actors.
 ; 
-zbfSexLabBaseEntry Function SelectRandomEntry(zbfSexLabBaseEntry[] akList, Int aiActorCount)
+zbfSexLabBaseEntry Function SelectRandomEntry(zbfSexLabBaseEntry[] akList, Int aiActorCount, bool permitGay=True)
 	If (akList[0] != None) && (aiActorCount == akList[0].NumActors)
 		Return akList[0]
 	EndIf
@@ -567,7 +567,7 @@ zbfSexLabBaseEntry Function SelectRandomEntry(zbfSexLabBaseEntry[] akList, Int a
 	Int i = akList.Length
 	While i > 0
 		i -= 1
-		If (akList[i] != None) && (aiActorCount == akList[i].NumActors)
+		If (akList[i] != None) && (aiActorCount == akList[i].NumActors) && (!akList[i].HasTag("Lesbian") || permitGay)
 			iFoundIndex[iActive] = i
 			iActive += 1
 		EndIf
@@ -756,9 +756,14 @@ function Logic(int threadID, bool HasPlayer)
 		; Filter tags for each actor in the original animation
 		zbfSexLabBaseEntry entry
 		i = 0
+		int curGender = Sexlab.GetGender(originalActors[i])
+		bool permitGay = True
 		While i < originalActors.Length
+			if curGender != Sexlab.GetGender(originalActors[i+1])
+				permitGay = False ; Only use same sex animations if actors are the same sex.
+			EndIf
 			FilterActor(list, originalActors[i], i + 1)
-			zbfSexLabBaseEntry tempEntry = SelectRandomEntry(list, aiActorCount = (i + 1))
+			zbfSexLabBaseEntry tempEntry = SelectRandomEntry(list, aiActorCount = (i + 1), permitGay=permitGay)
 			If tempEntry != None
 				entry = tempEntry
 				libs.Log("Entry selected, " + entry.Name + ", with " + entry.NumActors + " actors.")
