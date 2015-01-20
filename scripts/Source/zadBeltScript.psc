@@ -170,6 +170,7 @@ Function OnEquippedPost(actor akActor)
 	float modRate = libs.GetModifiedRate(akActor)
         libs.Log("original exposure rate was " + libs.GetOriginalRate(akActor) + ". Setting to " + modRate + ".")
         Aroused.SetActorExposureRate(akActor, modRate)
+	libs.CorsetMagic(akActor)
 EndFunction
  
 int Function OnContainerChangedFilter(ObjectReference akNewContainer, ObjectReference akOldContainer)
@@ -201,6 +202,7 @@ Function OnRemoveDevice(actor akActor)
 		Endif
 	EndIf
 	RestoreSettings(akActor)
+	libs.CorsetMagic(akActor)
 EndFunction
 
 

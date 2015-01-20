@@ -2076,3 +2076,24 @@ Function ShowBreasts(actor akActor)
 		NetImmerse.SetNodeScale(akActor, "NPC R Breast", BreastNodeScale, false)
 	EndIf
 EndFunction
+
+
+Function CorsetMagic(actor akActor)
+	Form tmp = StorageUtil.GetFormValue(akActor, "zad_StoredCorsetInventory")
+	if(!tmp)
+		Log("CorsetMagic(): No corset equipped, done.")
+		return
+	EndIf
+	Log("Stored Corset: " + tmp)
+	Log("stored rendered corset: " + StorageUtil.GetFormValue(akActor, "zad_StoredCorsetRendered"))
+	ObjectReference tmpOr = akActor.DropObject(tmp, 1)
+	tmpOr.disable()
+	;akActor.AddItem(tmpOr, 1, true)
+	zadCorsetScript corset = (tmpOr as zadCorsetScript)
+	if !corset
+		Error("Failed to cast corset as zadCorsetScript")
+		return
+	EndIf
+	corset.UpdateState(akActor)
+	tmpOr.delete()
+EndFunction
