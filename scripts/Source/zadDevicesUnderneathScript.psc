@@ -58,7 +58,8 @@ Function SetDefaultSlotMasks()
 		i += 1
 	EndWhile
 	; SlotMaskFilters[2*4] = Math.LeftShift(1,26) ; For slot 32, hide slot 56.
-	HideEquipment(32, 56) ; When slot 32 is equipped, hide slot 56.
+	HideEquipment(32, 56) ; When slot 32 is equipped, hide slot 56 (Bras / Piercings).
+	HideEquipment(32, 58) ; When slot 32 is equipped, hide slot 58 (Corsets).
 EndFunction
 
 
