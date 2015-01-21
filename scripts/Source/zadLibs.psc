@@ -10,6 +10,7 @@ slaUtilScr Property Aroused Auto
 zadConfig Property Config Auto
 zadNPCQuestScript Property zadNPCQuest Auto
 zadArmbinderQuestScript Property abq Auto
+zadYokeQuestScript Property ybq Auto
 zadEventSlots Property EventSlots Auto ; See zadBaseEvent.psc for how to use the new events system.
 zadDevicesUnderneathScript Property DevicesUnderneath Auto
 Quest Property zadNPCSlots Auto
@@ -25,6 +26,14 @@ Keyword Property zad_DeviousCollar Auto
 Keyword Property zad_DeviousArmCuffs Auto
 Keyword Property zad_DeviousLegCuffs Auto
 Keyword Property zad_DeviousArmbinder Auto
+
+Keyword Property zad_DeviousYoke Auto
+Keyword Property zad_DeviousCorset Auto
+Keyword Property zad_DeviousClamps Auto
+Keyword Property zad_DeviousGloves Auto
+Keyword Property zad_DeviousHood Auto
+Keyword Property zad_DeviousSuit Auto
+
 Keyword Property zad_DeviousGag Auto
 Keyword Property zad_DeviousGagPanel Auto
 Keyword Property zad_DeviousPlugVaginal Auto

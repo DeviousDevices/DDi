@@ -62,7 +62,10 @@ SexLabFramework property SexLab auto
 slaUtilScr Property Aroused Auto
 zadBeltedAnims Property zadAnims  Auto  
 zadNPCQuestScript Property npcs Auto
+
 zadArmbinderQuestScript Property abq Auto
+zadYokeQuestScript Property ybq Auto
+
 zadDeviousMagic Property zadMagic Auto
 zadAssets Property assets Auto
 zadBenchmark Property benchmark Auto
@@ -168,6 +171,9 @@ Function Maintenance()
 	libs.RepopulateNpcs()
 	if !HasArmbinder(libs.PlayerRef)
 		abq.EnableStruggling()
+	EndIf
+	if !HasYoke(libs.PlayerRef)
+		ybq.EnableStruggling()
 	EndIf
 	VersionChecks()
 	; Start up periodic events system
@@ -345,7 +351,7 @@ sslBaseAnimation[] function FindValidAnimations(sslThreadController controller, 
 			if allAnims[i].HasTag("Foreplay")
 				foreplayAnims = sslUtility.PushAnimation(allAnims[i], foreplayAnims)
 			else
-				if allAnims[i].HasTag("Bound") || allAnims[i].HasTag("Armbinder")
+				if allAnims[i].HasTag("Bound") || allAnims[i].HasTag("Armbinder") || allAnims[i].HasTag("Yoke")
 					boundAnims = sslUtility.PushAnimation(allAnims[i], boundAnims)
 				Else
 					chastityAnims = sslUtility.PushAnimation(allAnims[i], chastityAnims)
@@ -489,12 +495,13 @@ EndFunction
 
 ; Returns a list of tags required on the actor
 ; 
-; Currently checks for armbinders only, mimicing the previous behavior.
-; 
 String[] Function GetRequiredTagsFromKeywords(Actor akActor)
 	String[] list = New String[1]
-	If libs.IsBound(akActor)
+	If HasArmbinder(akActor)
 		list[0] = zbf.GetSexLabBoundTag(zbf.iBindArmbinder)
+	EndIf
+	If HasYoke(akActor)
+		list[0] = zbf.GetSexLabBoundTag(zbf.iBindYoke)
 	EndIf
 	Return list
 EndFunction
@@ -502,12 +509,13 @@ EndFunction
 
 ; Returns a fully qualified animation name from the worn keywords
 ; 
-; Checks for armbinder only at the moment.
-; 
 String Function GetAnimationNameFromKeywords(zbfSexLabBaseEntry akEntry, Actor akActor)
 	Int iBindType = zbf.iBindUnbound
-	If libs.IsBound(akActor) ; May be more appropriate to check for animation type here
+	If HasArmbinder(akActor) ; May be more appropriate to check for animation type here
 		iBindType = zbf.iBindArmbinder
+	EndIf
+	if HasYoke(akActor)
+		iBindType = zbf.iBindYoke
 	EndIf
 	Return zbf.GetSexLabAnimationName(akEntry, iBindType)
 EndFunction
@@ -618,6 +626,7 @@ function Logic(int threadID, bool HasPlayer)
 	int NumExtraTags = 0
 	string[] ExtraTags = new String[12]
 	bool UsingArmbinder = False
+	bool UsingYoke = False
 	i = originalActors.Length
 	While i > 0
 		i -= 1
@@ -632,6 +641,10 @@ function Logic(int threadID, bool HasPlayer)
 			NumExtraTags+=1
 		EndIf
 		; Yoke support
+		if !UsingYoke && HasYoke(originalActors[i])
+			ExtraTags[NumExtraTags] = "Yoke"
+			NumExtraTags+=1
+		EndIf
 	EndWhile
 	Bool bIsCreatureAnim = previousAnim.HasTag("Creature")
 	
@@ -897,23 +910,30 @@ Bool Function HasArmbinder(Actor akActor)
 	Return (akActor != None) && (akActor.WornHasKeyword(libs.zad_DeviousArmbinder))
 EndFunction
 
+Bool Function HasYoke(Actor akActor)
+	Return (akActor != None) && (akActor.WornHasKeyword(libs.zad_DeviousYoke))
+EndFunction
+
 
 sslBaseAnimation[] Function GetSoloAnimations(Actor akActor)
 	sslBaseAnimation[] soloAnims
 	Bool bHasBelt = HasBelt(akActor)
 	Bool bHasArmbinder = HasArmbinder(akActor) ; Conservative with binding support
+	Bool bHasYoke = HasYoke(akActor) ; Conservative with binding support
 
 	String gender = "F"
 	if SexLab.GetGender(akActor) == 0
 		gender = "M"
 	Endif
 
-	if bHasBelt || bHasArmbinder
+	if bHasBelt || bHasArmbinder || bhasYoke
 		libs.Log("Devious Devices solo scene.")
 
 		soloAnims = New sslBaseAnimation[1]
 		If bHasArmbinder
 			soloAnims[0] = SexLab.GetAnimationObject("DDArmbinderSolo")
+		ElseIf bHasYoke
+			soloAnims[0] = SexLab.GetAnimationObject("DDYokeSolo")
 		Else
 			soloAnims[0] = SexLab.GetAnimationObject("DDBeltedSolo")
 		EndIf
@@ -1021,7 +1041,7 @@ Event OnAnimationEnd(int threadID, bool HasPlayer)
 	actor[] actors = controller.Positions
 	sslBaseAnimation previousAnim = controller.Animation
 	int numBeltedActors = CountBeltedActors(controller.Positions)
-	if previousAnim.name == "DDArmbinderSolo" && actors.length == 1
+	if (previousAnim.name == "DDArmbinderSolo" || previousAnim.name == "DDYokeSolo" ) && actors.length == 1
 		if actors[0]!=libs.PlayerRef
 			libs.NotifyNPC(actors[0].GetLeveledActorbase().GetName() + " ceases her efforts, looking both frustrated and aroused.")
 		else
