@@ -460,7 +460,7 @@ Function RemoveDevice(actor akActor, armor deviceInventory, armor deviceRendered
 			DeviceMutex = false
 		EndIf
 	Else
-		akActor.AddItem(deviceRemovalToken, 1, true)
+		StorageUtil.SetIntValue(akActor, "zad_RemovalToken" + deviceInventory, 1)
 		akActor.UnequipItemEx(deviceInventory, 0, false)
 		akActor.RemoveItem(deviceRendered, 1, true) 
 	Endif
@@ -2085,15 +2085,34 @@ Function CorsetMagic(actor akActor)
 		return
 	EndIf
 	Log("Stored Corset: " + tmp)
-	Log("stored rendered corset: " + StorageUtil.GetFormValue(akActor, "zad_StoredCorsetRendered"))
-	ObjectReference tmpOr = akActor.DropObject(tmp, 1)
-	tmpOr.disable()
-	;akActor.AddItem(tmpOr, 1, true)
-	zadCorsetScript corset = (tmpOr as zadCorsetScript)
-	if !corset
-		Error("Failed to cast corset as zadCorsetScript")
-		return
+	Log("stored rendered corset: " + StorageUtil.GetIntValue(akActor, "zad_StoredCorsetRendered"))
+	if UpdateCorsetState(akActor)
+		akActor.UnequipItemEx(tmp, 0, false)  ; Trigger an update
+		ObjectReference tmpOr = akActor.DropObject(tmp, 1)
+		if tmpOr
+			tmpOr.disable()
+			tmpOr.delete()
+		EndIf
+	Endif
+EndFunction
+
+
+bool Function UpdateCorsetState(actor akActor)
+	Log("UpdateCorset()")
+	int deviceState
+	int tmp = StorageUtil.GetIntValue(akActor, "zad_StoredCorsetRendered", 0)  
+	if akActor.WornHasKeyword(zad_DeviousBelt)
+		if akActor.WornHasKeyword(zad_PermitAnal)
+			deviceState = 1
+			Log("Using stateBeltedOpen")
+		Else
+			Log("Using stateBeltedFull")
+			deviceState = 2
+		EndIf
+	Else
+		Log("Using stateDefault")
+		deviceState = 0
 	EndIf
-	corset.UpdateState(akActor)
-	tmpOr.delete()
+	StorageUtil.SetIntValue(akActor, "zad_StoredCorsetRendered", deviceState)
+	return (deviceState != tmp)
 EndFunction

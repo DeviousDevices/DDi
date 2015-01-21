@@ -4,45 +4,43 @@ Armor Property stateDefault Auto
 Armor Property stateBeltedFull Auto 
 Armor Property stateBeltedOpen Auto 
 
-Function UpdateState(actor akActor)
-	libs.Log("UpdateCorset()")
-	;Armor tmp = DeviceRendered
-	Armor tmp = StorageUtil.GetFormValue(akActor, "zad_StoredCorsetRendered", stateDefault) as Armor
-	if akActor.WornHasKeyword(libs.zad_DeviousBelt)
-		if akActor.WornHasKeyword(libs.zad_PermitAnal)
-			DeviceRendered = stateBeltedOpen
-			libs.Log("Using stateBeltedOpen")
-		Else
-			libs.Log("Using stateBeltedFull")
-			DeviceRendered = stateBeltedFull
-		EndIf
-	Else
-		libs.Log("Using stateDefault")
+
+Function UpdateState(actor akActor) 
+	armor tmp = DeviceRendered
+	int currentState = StorageUtil.GetIntValue(akActor, "zad_StoredCorsetRendered", 0)
+	libs.Log("UpdateState("+currentState+")")
+	if currentState == 0
 		DeviceRendered = stateDefault
+	ElseIf currentState == 1
+		deviceRendered = stateBeltedOpen
+	ElseIf currentState == 2
+		deviceRendered = stateBeltedFull
 	EndIf
-	if (DeviceRendered != tmp)
-		akActor.EquipItem(DeviceRendered, true, true)
-		akActor.RemoveItem(tmp, 1, true)
-		StorageUtil.SetFormValue(akActor, "zad_StoredCorsetRendered", DeviceRendered)
+	if !akActor.IsEquipped(deviceRendered)
+		akActor.RemoveItem(stateDefault, 1, true)
+		akActor.RemoveItem(stateBeltedFull, 1, true)
+		akActor.RemoveItem(stateBeltedOpen, 1, true)
+		akActor.EquipItem(deviceRendered, true, true)
 	EndIf
 EndFunction
-
 
 Function StoreCorset(actor akActor)
 	libs.Log("StoreCorset("+deviceInventory+")")
 	StorageUtil.SetFormValue(akActor, "zad_StoredCorsetInventory", deviceInventory)
-	StorageUtil.SetFormValue(akActor, "zad_StoredCorsetRendered", deviceRendered)
+	; StorageUtil.SetFormValue(akActor, "zad_StoredCorsetRendered", deviceRendered)
 EndFunction
 
 Function PurgeCorset(actor akActor)
+	StorageUtil.UnSetIntValue(akActor, "zad_StoredCorsetRendered")
 	StorageUtil.UnSetFormValue(akActor, "zad_StoredCorsetInventory")
-	StorageUtil.UnSetFormValue(akActor, "zad_StoredCorsetRendered")
+	libs.Log("PurgeCorset()")
 EndFunction
 
 Function OnEquippedPre(actor akActor, bool silent=false)
 	if !silent
 		libs.NotifyActor("You pull the corset around "+GetMessageName(akActor)+" waist, and lock it in the back.", akActor, true)
 	EndIf
+	libs.UpdateCorsetState(akActor)
 	UpdateState(akActor)
 	StoreCorset(akActor)
 	Parent.OnEquippedPre(akActor, silent)
@@ -56,10 +54,14 @@ Function OnRemoveDevice(actor akActor)
 	PurgeCorset(akActor)
 EndFunction
 
-Function SyncInventory(actor akActor=none)
-	if akActor == none
-		akActor = libs.PlayerRef
+Function OnUnequipped(actor akActor)
+	if StorageUtil.GetIntValue(akActor, "zad_RemovalToken" + deviceInventory, 0) < 1
+		UpdateState(akActor)
 	EndIf
-	DeviceRendered = StorageUtil.GetFormValue(akActor, "zad_StoredCorsetRendered", stateDefault) as Armor
-	Parent.SyncInventory(akActor)
+	Parent.OnUnequipped(akActor)
+EndFunction
+
+Function EquipDevice(actor akActor, bool skipMutex=false)
+	UpdateState(akActor)
+	Parent.EquipDevice(akActor, skipMutex)
 EndFunction

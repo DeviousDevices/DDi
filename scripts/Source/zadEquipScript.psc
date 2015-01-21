@@ -105,11 +105,12 @@ EndEvent
 Event OnUnequipped(Actor akActor)
 	unequipMutex = true
 	libs.Log("OnUnequipped("+akActor.GetLeveledActorBase().GetName()+": "+deviceInventory.GetName()+")")
-	if akActor.GetItemCount(libs.deviceRemovalToken) >= 1
+	
+	if StorageUtil.GetIntValue(akActor, "zad_RemovalToken" + deviceInventory, 0) >= 1
 		libs.Log("Detected removal token. Done.")
 		akActor.RemoveItem(deviceRendered, 1, true) ; This shouldn't be necessary, but ensure that SD+ bug does not reoccur.
 		OnRemoveDevice(akActor)
-		akActor.RemoveItem(libs.deviceRemovalToken, 1, true)
+		StorageUtil.UnsetIntValue(akActor, "zad_RemovalToken"+deviceInventory)
 		unequipMutex = false
 		libs.DeviceMutex = false
 		return
