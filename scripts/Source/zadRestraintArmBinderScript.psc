@@ -32,7 +32,7 @@ Function OnEquippedPost(actor akActor)
 		abq.EnableDialogue()
 		SetCustomMessage()
 	EndIf
-	libs.ApplyArmbinderAnim(akActor)
+	libs.ApplyBoundAnim(akActor)
 EndFunction
 
 

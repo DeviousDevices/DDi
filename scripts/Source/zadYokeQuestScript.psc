@@ -60,7 +60,7 @@ EndFunction
 
 
 ; This is here, instead of in zadArmbinderQuestScript.psc, to facilitate the tween menu override in zadArmbinderEffect
-int Function ShowArmbinderMenu(int MsgChoice=0)
+int Function ShowYokeMenu(int MsgChoice=0)
 	if MenuMutex ; Don't stack menu's
 		return 0
 	EndIf
@@ -70,7 +70,7 @@ int Function ShowArmbinderMenu(int MsgChoice=0)
 		if IsLocked
 			if IsLoose
 				zad_ArmBinderRemoveLooseMsg.Show()
-				libs.ManipulateGenericDeviceByKeyword(libs.PlayerRef, libs.zad_DeviousArmbinder, false)
+				libs.ManipulateGenericDeviceByKeyword(libs.PlayerRef, libs.zad_DeviousYoke, false)
 				libs.SendDeviceRemovalEvent("Armbinder", libs.PlayerRef)
 				libs.Aroused.UpdateActorExposure(libs.PlayerRef,1)
 			Else
@@ -78,7 +78,7 @@ int Function ShowArmbinderMenu(int MsgChoice=0)
 			EndIf
 		Else
 			zad_ArmBinderRemoveUnlockedMsg.Show()
-			libs.ManipulateGenericDeviceByKeyword(libs.PlayerRef, libs.zad_DeviousArmbinder, false)
+			libs.ManipulateGenericDeviceByKeyword(libs.PlayerRef, libs.zad_DeviousYoke, false)
 			libs.SendDeviceRemovalEvent("Armbinder", libs.PlayerRef)
 			CustomStruggleImpossibleMsg = None
 			CustomStruggleMsg = None
@@ -162,14 +162,14 @@ EndFunction
 
 Function RemoveArmbinder(ObjectReference akSpeaker)
 	libs.Log("RemoveArmbinder()")
-	libs.ManipulateGenericDeviceByKeyword(libs.PlayerRef, libs.zad_DeviousArmbinder, false)
+	libs.ManipulateGenericDeviceByKeyword(libs.PlayerRef, libs.zad_DeviousYoke, false)
 EndFunction
 
 
 Function PostRape(ObjectReference akSpeaker)
 	fg.DialogueDone = false
 	libs.Log("PostRape()")
-	libs.ManipulateGenericDeviceByKeyword(libs.PlayerRef, libs.zad_DeviousArmbinder, true)
+	libs.ManipulateGenericDeviceByKeyword(libs.PlayerRef, libs.zad_DeviousYoke, true)
 	IsLoose = False
 	StruggleCount = 0
 	IsLocked = true

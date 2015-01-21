@@ -102,7 +102,7 @@ Function ProcessGagEffect(actor akActor)
 EndFunction
 
 Function ProcessArmbinderEffect(actor akActor)
-	if libs.ActorHasKeyword(akActor, libs.zad_DeviousArmbinder)
-		libs.ApplyArmbinderAnim(akActor)
+	if libs.ActorHasKeyword(akActor, libs.zad_DeviousArmbinder) || libs.ActorHasKeyword(akActor, libs.zad_DeviousYoke)
+		libs.ApplyBoundAnim(akActor)
 	EndIf
 EndFunction

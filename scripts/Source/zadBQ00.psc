@@ -413,6 +413,7 @@ EndFunction
 
 
 Function StoreHeavyBondage(actor[] originalActors)
+	libs.Log("StoreHeavyBondage()")
 	int i = originalActors.Length
 	while i > 0
 		i -= 1
@@ -634,7 +635,7 @@ function Logic(int threadID, bool HasPlayer)
 		bPermitVaginal = bPermitVaginal && !IsBlockedVaginal(originalActors[i])
 		bPermitBoobs = bPermitBoobs && !IsBlockedBreast(originalActors[i])
 		bPermitOral = bPermitOral && !IsBlockedOral(originalActors[i])
-		bNoBindings = bNoBindings && !HasArmbinder(originalActors[i])
+		bNoBindings = bNoBindings && (!HasArmbinder(originalActors[i]) && !HasYoke(originalActors[i]))
 		; This step is needed, in order to determine if the prior animation is valid (Prevent replacing valid bound anims).
 		if !UsingArmbinder && HasArmbinder(originalActors[i])
 			ExtraTags[NumExtraTags] = "Armbinder"
@@ -1107,5 +1108,5 @@ Event OnSleepStop(bool abInterrupted)
 	; 	tmp.Show()
 	; EndIf
 	tmp.Show()
-	libs.PlayThirdPersonAnimation(akActor, libs.AnimSwitchKeyword(akActor, libs.zad_DeviousArmbinder, libs.ddZazaparmbzad03, DDZazhornyA), utility.RandomInt(5,9))
+	libs.PlayThirdPersonAnimation(akActor, libs.AnimSwitchKeyword(akActor, "Horny01"), utility.RandomInt(5,9))
 EndEvent
