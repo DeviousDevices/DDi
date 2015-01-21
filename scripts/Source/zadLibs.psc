@@ -87,8 +87,19 @@ Idle Property DDZaZAPCArmBZaDH01 Auto
 Idle Property DDZaZAPCArmBZaDH02  Auto
 Idle Property DDZaZAPCArmBZaDH03 Auto
 
-; Armbinder Offset Idle
+; Default Armbinder Offset Idle
 Idle Property ArmbinderIdle Auto
+
+; Default Yoke Offset Idle
+Idle Property YokeIdle01 Auto
+Idle Property YokeIdle02 Auto
+Idle Property YokeIdle03 Auto
+Idle Property YokeIdle04 Auto
+
+; Yoke Horny Idles
+Idle Property ZapYokeHorny01 Auto
+Idle Property ZapYokeHorny02 Auto
+Idle Property ZapYokeHorny03 Auto
 
 ; All standard devices, at this time. Shorthand for mods, and to avoid the hassle of re-adding these as properties for other scripts.
 ; If you're using a custom device, you'll need to use EquipDevice, rather than the shorthand ManipulateDevice.
@@ -877,12 +888,12 @@ EndFunction
 Function EndThirdPersonAnimation(actor akActor, bool[] cameraState, bool permitRestrictive=false)
 	Log("EndThirdPersonAnimation("+akActor.GetLeveledActorBase().GetName()+","+cameraState+")")
 	SetAnimating(akActor, false)
-	bool IsWearingArmbinder = akActor.WornHasKeyword(zad_DeviousArmBinder)
+	bool isBound = akActor.WornHasKeyword(zad_DeviousArmBinder) || akActor.WornHasKeyword(zad_DeviousYoke)
 	if (!akActor.Is3DLoaded() ||  akActor.IsDead() || akActor.IsDisabled())
 		Log("Actor is not loaded (Or is otherwise invalid). Aborting.")
 		return
 	EndIf
-	if !IsWearingArmbinder
+	if !IsBound
 		Debug.SendAnimationEvent(akActor, "IdleForceDefaultState")
 	EndIf
 	if akActor == PlayerRef
@@ -1183,7 +1194,7 @@ Function ActorOrgasm(actor akActor, int setArousalTo=-1, int vsID=-1)
 	Aroused.SetActorExposure(akActor, setArousalTo)
 	Aroused.UpdateActorOrgasmDate(akActor)
 	if !IsAnimating(akActor)
-		bool[] cameraState = StartThirdPersonAnimation(akActor, AnimSwitchKeyword(akActor, zad_DeviousArmbinder, DDZaZAPCArmBZaDH03, DDZazhornye), true)
+		bool[] cameraState = StartThirdPersonAnimation(akActor, AnimSwitchKeyword(akActor, "Orgasm"), true)
 		int i = 0
 		while i < 20
 			i+= 1
@@ -1269,7 +1280,7 @@ Function EdgeActor(actor akActor)
 	if akActor == PlayerRef
 		Game.ShakeCamera(akActor, 0.5, 3)
 	EndIf
-	PlayThirdPersonAnimation(akActor, AnimSwitchKeyword(akActor, zad_DeviousArmbinder, DDZaZAPCArmBZaDH02, DDZazhornyD), 15, permitRestrictive=true)
+	PlayThirdPersonAnimation(akActor, AnimSwitchKeyword(akActor, "Edged"), 15, permitRestrictive=true)
 EndFunction
 
 
@@ -1485,7 +1496,7 @@ int Function VibrateEffect(actor akActor, int vibStrength, int duration, bool te
 	sslBaseExpression expression = SexLab.RandomExpressionByTag("Pleasure")
 	if Utility.RandomInt() <= (10*vibStrength) && (Config.HardcoreEffects || akActor != PlayerRef)
 		ApplyExpression(akActor, expression, (Aroused.GetActorExposure(akActor) * 0.75) as Int, openMouth=true)
-		PlayThirdPersonAnimation(akActor, AnimSwitchKeyword(akActor, zad_DeviousArmbinder, DDZaZAPCArmBZaDH01, DDZazhornyA), 3, permitRestrictive=true)
+		PlayThirdPersonAnimation(akActor, AnimSwitchKeyword(akActor, "Horny01"), 3, permitRestrictive=true)
 	Else
 		ApplyExpression(akActor, expression, (Aroused.GetActorExposure(akActor) * 0.75) as Int)
 	EndIf
@@ -1564,16 +1575,13 @@ int Function VibrateEffect(actor akActor, int vibStrength, int duration, bool te
 			; Log("XXX Starting Horny Idle")
 			ApplyExpression(akActor, expression, (Aroused.GetActorExposure(akActor) * 0.75) as Int, openMouth=true)
 			; Select animation
-			idle anim1
-			idle anim2
+			string randomAnim
 			if (nPiercings && !(vPlug || aPlug))
-				anim1 = DDZazhornyC
-				anim2 = DDZaZAPCArmBZaDS02
+				randomAnim = "Horny03"
 			Else
-				anim1 = DDZazhornyA
-				anim2 = DDZaZAPCArmBZaDS01
+				randomAnim = "Horny01"
 			EndIf
-			cameraState=StartThirdPersonAnimation(akActor, AnimSwitchKeyword(akActor, zad_DeviousArmbinder, anim2, anim1), permitRestrictive=true)
+			cameraState=StartThirdPersonAnimation(akActor, AnimSwitchKeyword(akActor, randomAnim), permitRestrictive=true)
 			vibAnimStarted = timeVibrated + 1
 			; Log("XXX VibrateEffect: Done starting horny idle")
 		EndIf
@@ -1703,9 +1711,9 @@ Function SpellCastVibrate(Actor akActor, Form tmp)
 		EndIf
 		;NotifyPlayer("The plugs respond to the magicka flowing through you, and begin to vibrate!")
 		if Config.HardcoreEffects && Utility.RandomInt() <= vibStrength * 15
-			;libs.Log("Interrupting cast.")
-			; libs.PlayerRef.InterruptCast()
-			; libs.NotifyPlayer("Your concentration wanes, and the spell fizzles.")
+			;Log("Interrupting cast.")
+			; PlayerRef.InterruptCast()
+			; NotifyPlayer("Your concentration wanes, and the spell fizzles.")
 		EndIf
 		VibrateEffect(akActor, vibStrength, duration, teaseOnly=ShouldEdgeActor(akActor))
 	EndIf
@@ -1733,7 +1741,7 @@ Function UpdateControls()
 		movement = false
 		sneaking = false
 	EndIf
-	if playerRef.WornHasKeyword(zad_DeviousArmbinder)
+	if IsBound(playerRef)
 		fighting = false
 		menu = !config.HardcoreEffects
 	EndIf
@@ -1816,12 +1824,50 @@ string Function MakeSingularIfPlural(string theString)
 	return theString
 EndFunction
 
-Idle Function AnimSwitchKeyword(actor akActor, keyword filter, idle ifFilter, idle ifNotFilter)
-	if akActor.WornHasKeyword(filter)
-		return ifFilter
-	Else
-		return ifNotFilter
+Idle Function AnimSwitchKeyword(actor akActor, string idleName )
+	; w2b switch, map, hash table, etc...
+	if idleName == "Horny01"
+		if akActor.WornHasKeyword(zad_DeviousArmbinder)
+			return DDZaZAPCArmBZaDH01
+		ElseIf akActor.WornHasKeyword(zad_DeviousYoke)
+			return ZapYokeHorny01
+		Else
+			return DDZazHornyA
+		EndIf
+	ElseIf idleName == "Horny02"
+		if akActor.WornHasKeyword(zad_DeviousArmbinder)
+			return DDZaZAPCArmBZaDH02
+		ElseIf akActor.WornHasKeyword(zad_DeviousYoke)
+			return ZapYokeHorny01
+		Else 
+			return DDZazHornyB
+		EndIf
+	ElseIf idleName == "Horny03"
+		if akActor.WornHasKeyword(zad_DeviousArmbinder)
+			return DDZaZAPCArmBZaDH01
+		ElseIf akActor.WornHasKeyword(zad_DeviousYoke)
+			return ZapYokeHorny01
+		Else 
+			return DDZazHornyC
+		EndIf
+	ElseIf idleName == "Edged"
+		if akActor.WornHasKeyword(zad_DeviousArmbinder)
+			return DDZaZAPCArmBZaDH02
+		ElseIf akActor.WornHasKeyword(zad_DeviousYoke)
+			return ZapYokeHorny02
+		Else 
+			return DDZazHornyD
+		EndIf
+	ElseIf idleName == "Orgasm"
+		if akActor.WornHasKeyword(zad_DeviousArmbinder)
+			return DDZaZAPCArmBZaDH03
+		ElseIf akActor.WornHasKeyword(zad_DeviousYoke)
+			return ZapYokeHorny03
+		Else 
+			return DDZazHornyE
+		EndIf
 	EndIf
+	Error("Failed to find valid animation for presentation.")
 EndFunction
 
 
@@ -1890,7 +1936,7 @@ EndFunction
 
 
 bool Function IsBound(actor akActor)
-	return akActor.WornHasKeyword(zad_DeviousArmbinder)
+	return akActor.WornHasKeyword(zad_DeviousArmbinder) || akActor.WornHasKeyword(zad_deviousYoke)
 EndFunction
 
 
@@ -1951,9 +1997,13 @@ Function UpdateArousalTimerate(actor akActor, float val)
 EndFunction
 
 
-Function ApplyArmbinderAnim(actor akActor, idle theIdle = None)
+Function ApplyBoundAnim(actor akActor, idle theIdle = None)
 	if theIdle == None
-		theIdle = ArmbinderIdle
+		if akActor.WornHasKeyword(zad_DeviousYoke)
+			theIdle = YokeIdle01
+		Else
+			theIdle = ArmbinderIdle
+		EndIf
 	EndIf
 	if akActor.GetEquippedWeapon()
 		akActor.UnequipItem(akActor.GetEquippedWeapon(), false, true)

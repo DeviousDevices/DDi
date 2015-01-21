@@ -118,7 +118,7 @@ EndEvent
 
 Function PlayBoundIdle(idle theIdle)
 	if !Terminate && libs.IsValidActor(target) && !libs.IsAnimating(target) && !target.IsInFaction(libs.SexLabAnimatingFaction) 
-		libs.ApplyArmbinderAnim(target, theIdle)
+		libs.ApplyBoundAnim(target, theIdle)
 	EndIf
 EndFunction
 

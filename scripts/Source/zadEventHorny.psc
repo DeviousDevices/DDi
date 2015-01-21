@@ -26,11 +26,11 @@ Function Execute(actor akActor)
 	int i = Utility.RandomInt(1,3)
 	Idle anim
 	if i == 1
-		anim = libs.AnimSwitchKeyword(akActor, libs.zad_DeviousArmbinder, libs.ddZazaparmbzad03, libs.DDZazhornyA)
+		anim = libs.AnimSwitchKeyword(akActor, "Horny01")
 	ElseIf i == 2
-		anim = libs.AnimSwitchKeyword(akActor, libs.zad_DeviousArmbinder, libs.ddZazaparmbzad09, libs.DDZazhornyB)
+		anim = libs.AnimSwitchKeyword(akActor, "Horny02")
 	Else
-		anim = libs.AnimSwitchKeyword(akActor, libs.zad_DeviousArmbinder, libs.ddZazaparmbzad10, libs.DDZazhornyC)
+		anim = libs.AnimSwitchKeyword(akActor, "Horny03")
 	EndIf
 	libs.PlayThirdPersonAnimation(akActor, anim, Utility.RandomInt(5,10), permitRestrictive=true)
 EndFunction
