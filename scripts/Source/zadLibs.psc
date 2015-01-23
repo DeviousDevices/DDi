@@ -2173,3 +2173,52 @@ bool Function UpdateCorsetState(actor akActor)
 	StorageUtil.SetIntValue(akActor, "zad_StoredCorsetRendered", deviceState)
 	return (deviceState != tmp)
 EndFunction
+
+
+string Function LookupDeviceType(keyword kwd)
+	if kwd == zad_DeviousPlug
+		return "Plug"
+	ElseIf kwd == zad_DeviousBelt
+		return "Belt" 
+	ElseIf kwd == zad_DeviousBra
+		return "Bra"  
+	ElseIf kwd == zad_DeviousCollar
+		return "Collar"  
+	ElseIf kwd == zad_DeviousArmCuffs
+		return "ArmCuffs"  
+	ElseIf kwd == zad_DeviousLegCuffs
+		return "LegCuffs"  
+	ElseIf kwd == zad_DeviousArmbinder
+		return "Armbinder"  
+	ElseIf kwd == zad_DeviousYoke
+		return "Yoke"  
+	ElseIf kwd == zad_DeviousCorset
+		return "Corset"  
+	ElseIf kwd == zad_DeviousClamps
+		return "Clamps"  
+	ElseIf kwd == zad_DeviousGloves
+		return "Gloves"  
+	ElseIf kwd == zad_DeviousHood
+		return "Hood"  
+	ElseIf kwd == zad_DeviousSuit
+		return "Suit"  
+	ElseIf kwd == zad_DeviousGag
+		return "Gag"  
+	ElseIf kwd == zad_DeviousGagPanel
+		return "GagPanel"  
+	ElseIf kwd == zad_DeviousPlugVaginal
+		return "PlugVaginal"  
+	ElseIf kwd == zad_DeviousPlugAnal
+		return "PlugAnal"  
+	ElseIf kwd == zad_DeviousHarness
+		return "Harness"  
+	ElseIf kwd == zad_DeviousBlindfold
+		return "Blindfold"  
+	ElseIf kwd == zad_DeviousBoots
+		return "Boots"  
+	ElseIf kwd == zad_DeviousPiercingsNipple
+		return "PiercingsNipple"  
+	ElseIf kwd == zad_DeviousPiercingsVaginal
+		return "PiercingsVaginal" 
+	EndIf
+EndFunction

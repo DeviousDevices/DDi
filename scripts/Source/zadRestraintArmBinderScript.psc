@@ -72,7 +72,7 @@ EndFunction
 
 
 Function DeviceMenu(Int msgChoice = 0)
-	msgChoice = abq.ShowArmbinderMenu(msgChoice)
+	msgChoice = abq.ShowDeviceMenu(msgChoice)
 	DeviceMenuExt(msgChoice)
 	SyncInventory()
 EndFunction

@@ -98,7 +98,7 @@ EndEvent
 Event OnKeyDown(Int KeyCode) 
 	PlayBoundIdle(idles[0]); Work around pose issue from skyrim limitations by reapplying on sprint.
 	if !Game.IsMenuControlsEnabled() && KeyCode == TweenMenuKey && !UI.IsMenuOpen("Dialogue Menu") && !UI.IsMenuOpen("BarterMenu") && !UI.IsMenuOpen("ContainerMenu") && !UI.IsMenuOpen("Sleep/Wait Menu")
-		abq.ShowArmbinderMenu()
+		abq.ShowDeviceMenu()
 	EndIf
 EndEvent
 

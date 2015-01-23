@@ -88,6 +88,11 @@ Event OnEquipped(Actor akActor)
 	EndIf
         libs.CleanupDevices(akActor, zad_DeviousDevice, deviceRendered)
 	JammedLock = False
+	; I would extend this to NPC's, but I am concerned about potential bloating.
+	; ( NPC's going out of cell, resetting inventories, etc. without OnRemoveDevice() being called )
+	if akActor == libs.PlayerRef ; Store equipped devices for faster generic calls.
+		StoreEquippedDevice(akActor)
+	EndIf
 	OnEquippedPre(akActor, silent=silently)
 	libs.SendDeviceEquippedEvent(deviceName, akActor)
 	; akActor.SetOutfit(libs.zadEmptyOutfit, True)
@@ -109,6 +114,7 @@ Event OnUnequipped(Actor akActor)
 	if StorageUtil.GetIntValue(akActor, "zad_RemovalToken" + deviceInventory, 0) >= 1
 		libs.Log("Detected removal token. Done.")
 		akActor.RemoveItem(deviceRendered, 1, true) ; This shouldn't be necessary, but ensure that SD+ bug does not reoccur.
+		UnsetStoredDevice(akActor)
 		OnRemoveDevice(akActor)
 		StorageUtil.UnsetIntValue(akActor, "zad_RemovalToken"+deviceInventory)
 		unequipMutex = false
@@ -625,3 +631,15 @@ EndFunction
 Function OnRemoveDevice(actor akActor)
 	; This is reliably called, so long as the API is used.
 EndFunction
+
+
+Function StoreEquippedDevice(actor akActor)
+	StorageUtil.SetFormValue(akActor, "zad_Equipped" + libs.LookupDeviceType(zad_DeviousDevice) + "_Inventory", DeviceInventory)
+	StorageUtil.SetFormValue(akActor, "zad_Equipped" + libs.LookupDeviceType(zad_DeviousDevice) + "_Rendered", DeviceRendered)
+EndFunction
+
+Function UnsetStoredDevice(actor akActor)
+	StorageUtil.UnsetFormValue(akActor, "zad_Equipped" + libs.LookupDeviceType(zad_DeviousDevice) + "_Inventory")
+	StorageUtil.UnsetFormValue(akActor, "zad_Equipped" + libs.LookupDeviceType(zad_DeviousDevice) + "_Rendered")
+EndFunction
+

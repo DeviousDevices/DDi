@@ -72,7 +72,7 @@ EndFunction
 
 
 Function DeviceMenu(Int msgChoice = 0)
-	msgChoice = ybq.ShowYokeMenu(msgChoice)
+	msgChoice = ybq.ShowDeviceMenu(msgChoice)
 	DeviceMenuExt(msgChoice)
 	SyncInventory()
 EndFunction

@@ -1,7 +1,5 @@
-Scriptname zadArmbinderQuestScript extends Quest conditional
+Scriptname zadArmbinderQuestScript extends zadHeavyBondageQuestScript Conditional
 
-SexLabFramework Property SexLab Auto
-zadLibs Property libs Auto
 Scene Property PostRapeScene Auto
 zaddReliableForceGreet Property fg Auto
 ReferenceAlias Property ArmbinderRescuer Auto
@@ -11,114 +9,60 @@ Message Property zad_ArmBinderRemoveUnlockedMsg Auto
 Message Property zad_ArmBinderRemoveLooseMsg Auto
 Message Property zad_ArmBinderStruggleMsg Auto
 Message Property zad_ArmBinderStruggleLooseMsg Auto
-Message Property zad_DeviceMsg Auto
 Message Property zad_ArmbinderImpossibleStruggleMsg Auto
 
-Message Property CustomStruggleMsg Auto
-Message Property CustomStruggleImpossibleMsg Auto
-
-Idle[] Property struggleIdles Auto
-
-
-Bool Property IsLocked Auto
-Bool Property IsLoose Auto
-Int Property StruggleCount Auto
-Bool Property MenuMutex Auto
-Bool Property DisableStruggle Auto
-Bool Property DisableDial Auto Conditional
-
-Function DisableDialogue()
-	DisableDial = true
-EndFunction
-
-Function EnableDialogue()
-	DisableDial = false
-EndFunction
-
-Function DisableStruggling()
-	DisableStruggle = true
-EndFunction
-
-Function EnableStruggling()
-	DisableStruggle = false
-EndFunction
-
-Function StruggleScene(actor akActor)
-	if libs.IsAnimating(akActor)
-		return
-	EndIf
-	int len = struggleIdles.length - 1
-	bool[] cameraState = libs.StartThirdPersonAnimation(akActor, struggleIdles[Utility.RandomInt(0, len)], true)
-	Utility.Wait(2.5)
-	libs.Pant(libs.PlayerRef)
-	Utility.Wait(2.5)
-	akActor.PlayIdle(struggleIdles[Utility.RandomInt(0, len)])
-	Utility.Wait(5)
-	libs.EndThirdPersonAnimation(akActor, cameraState, true)
-	libs.SexlabMoan(libs.PlayerRef)
-EndFunction
-
-
-; This is here, instead of in zadArmbinderQuestScript.psc, to facilitate the tween menu override in zadArmbinderEffect
-int Function ShowArmbinderMenu(int MsgChoice=0)
-	if MenuMutex ; Don't stack menu's
-		return 0
-	EndIf
-	MenuMutex = True
-        msgChoice = zad_DeviceMsg.Show() ; display menu
-	if msgChoice == 0 ; Take it off
-		if IsLocked
-			if IsLoose
-				zad_ArmBinderRemoveLooseMsg.Show()
-				libs.ManipulateGenericDeviceByKeyword(libs.PlayerRef, libs.zad_DeviousArmbinder, false)
-				libs.SendDeviceRemovalEvent("Armbinder", libs.PlayerRef)
-				libs.Aroused.UpdateActorExposure(libs.PlayerRef,1)
-			Else
-				zad_ArmBinderRemoveLockedMsg.Show()
-			EndIf
-		Else
-			zad_ArmBinderRemoveUnlockedMsg.Show()
+Function DeviceMenuRemove()
+	if IsLocked
+		if IsLoose
+			zad_ArmBinderRemoveLooseMsg.Show()
 			libs.ManipulateGenericDeviceByKeyword(libs.PlayerRef, libs.zad_DeviousArmbinder, false)
 			libs.SendDeviceRemovalEvent("Armbinder", libs.PlayerRef)
-			CustomStruggleImpossibleMsg = None
-			CustomStruggleMsg = None
-			libs.UpdateExposure(libs.PlayerRef,1)
-		EndIf
-	elseif msgChoice == 1 ; Struggle
-		if libs.PlayerRef.GetAv("Stamina")<=35
-			libs.NotifyPlayer("You are far too tired to struggle with the armbinder.", true)
+			libs.Aroused.UpdateActorExposure(libs.PlayerRef,1)
 		Else
-			libs.PlayerRef.DamageAV("Stamina", 35)
-			if !DisableStruggle
-				StruggleCount += 1
-			EndIf
-			if IsLoose || StruggleCount >= 5 && Utility.RandomInt() <= StruggleCount
-				zad_ArmBinderStruggleLooseMsg.Show()
-				libs.UpdateExposure(libs.PlayerRef,0.3)
-				IsLoose = true
-			Else
-				StruggleScene(libs.PlayerRef)
-				if DisableStruggle
-					if CustomStruggleImpossibleMsg != None
-						CustomStruggleImpossibleMsg.Show()
-					Else
-						zad_ArmbinderImpossibleStruggleMsg.show()
-					EndIf
-				Else
-					if CustomStruggleMsg != None
-						CustomStruggleMsg.Show()
-					Else
-						zad_ArmBinderStruggleMsg.Show()
-					EndIf
-				Endif
-			EndIf
+			zad_ArmBinderRemoveLockedMsg.Show()
 		EndIf
-	elseif msgChoice == 2 ; Endure Bonds
-		
-	endif
-	MenuMutex = False
-	return MsgChoice
+	Else
+		zad_ArmBinderRemoveUnlockedMsg.Show()
+		libs.ManipulateGenericDeviceByKeyword(libs.PlayerRef, libs.zad_DeviousArmbinder, false)
+		libs.SendDeviceRemovalEvent("Armbinder", libs.PlayerRef)
+		CustomStruggleImpossibleMsg = None
+		CustomStruggleMsg = None
+		libs.UpdateExposure(libs.PlayerRef,1)
+	EndIf
 EndFunction
+
+Function DeviceMenuPostStruggle()
+	if IsLoose || StruggleCount >= 5 && Utility.RandomInt() <= StruggleCount
+		zad_ArmBinderStruggleLooseMsg.Show()
+		libs.UpdateExposure(libs.PlayerRef,0.3)
+		IsLoose = true
+	Else
+		if DisableStruggle
+			if CustomStruggleImpossibleMsg != None
+				CustomStruggleImpossibleMsg.Show()
+			Else
+				zad_ArmbinderImpossibleStruggleMsg.show()
+			EndIf
+		Else
+			if CustomStruggleMsg != None
+				CustomStruggleMsg.Show()
+			Else
+				zad_ArmBinderStruggleMsg.Show()
+			EndIf
+		Endif
+	EndIf
+EndFunction
+
+
+Function DeviceMenuEndureBonds()
+	;
+EndFunction
+
+
+Function DeviceMenuExt(int msgChoice=0)
+	;
+EndFunction
+
 
 ;==================================================
 ; Generic Quest Hooks
@@ -160,16 +104,20 @@ Function RapeSex(ObjectReference akSpeaker)
 EndFunction
 
 
-Function RemoveArmbinder(ObjectReference akSpeaker)
+Function RemoveArmbinder(ObjectReference akSpeaker=None)
 	libs.Log("RemoveArmbinder()")
-	libs.ManipulateGenericDeviceByKeyword(libs.PlayerRef, libs.zad_DeviousArmbinder, false)
+	Armor id = StorageUtil.GetFormValue(libs.PlayerRef, "zad_Equipped" + libs.LookupDeviceType(libs.zad_DeviousArmbinder) + "_Inventory") as Armor
+	Armor rd = StorageUtil.GetFormValue(libs.PlayerRef, "zad_Equipped" + libs.LookupDeviceType(libs.zad_DeviousArmbinder) + "_Rendered") as Armor
+	lastInventoryDevice = id
+	lastRenderedDevice = rd
+	libs.RemoveDevice(libs.playerRef, id, rd, libs.zad_DeviousArmbinder)
 EndFunction
 
 
 Function PostRape(ObjectReference akSpeaker)
 	fg.DialogueDone = false
 	libs.Log("PostRape()")
-	libs.ManipulateGenericDeviceByKeyword(libs.PlayerRef, libs.zad_DeviousArmbinder, true)
+	libs.EquipDevice(libs.PlayerRef, lastInventoryDevice, lastRenderedDevice, libs.zad_DeviousArmbinder)
 	IsLoose = False
 	StruggleCount = 0
 	IsLocked = true
@@ -181,3 +129,4 @@ Event StartPostRape(string eventName, string argString, float argNum, form sende
 	fg.ForceGreet(PostRapeScene)
 	UnregisterForModEvent("AnimationEnd")
 EndEvent
+
