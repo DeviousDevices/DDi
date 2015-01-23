@@ -25,6 +25,10 @@ int Function OnEquippedFilter(actor akActor, bool silent=false)
 			MultipleItemFailMessage("Collar")
 			return 2
 		Endif
+		if akActor.WornHasKeyword(libs.zad_DeviousCorset)
+			MultipleItemFailMessage("Corset")
+			return 2
+		Endif
 	Endif
 	return 0
 EndFunction
