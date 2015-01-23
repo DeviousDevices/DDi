@@ -9,7 +9,6 @@ Function OnEquippedPre(actor akActor, bool silent=false)
 			
 		EndIf
 	EndIf
-	Parent.OnEquippedPre(akActor, silent)
 EndFunction
 
 int Function OnEquippedFilter(actor akActor, bool silent=false)
