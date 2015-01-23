@@ -6,13 +6,13 @@ int Function OnEquippedFilter(actor akActor, bool silent=false)
 	EndIf
 	if !akActor.IsEquipped(deviceRendered)
 		if akActor!=libs.PlayerRef && ShouldEquipSilently(akActor)
-			libs.Log("Avoiding FTM duplication bug (Piercings + Bra).")
+			libs.Log("Avoiding FTM duplication bug (Nipple Piercings).")
 			return 0
 		EndIf
-		if akActor.WornHasKeyword(libs.zad_DeviousBra)
-			MultipleItemFailMessage("Piercings/Bra")
-			return 2
-		Endif
+		; if akActor.WornHasKeyword(libs.zad_DeviousBra)
+		; 	MultipleItemFailMessage("Piercings/Bra")
+		; 	return 2
+		; Endif
 	Endif
 	return 0
 EndFunction
