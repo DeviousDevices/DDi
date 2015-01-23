@@ -231,7 +231,7 @@ Function SetupSlotMasks()
 	SlotMasks[14] = "Ears (43)"
 	SlotMasks[15] = "Gags (44)"
 	SlotMasks[16] = "Collar (45)"
-	SlotMasks[17] = "Cloaks (46)"
+	SlotMasks[17] = "Armbinders / Yokes / Cloaks (46)"
 	SlotMasks[18] = "Backpacks (47)"
 	SlotMasks[19] = "Plugs (Anal) (48)"
 	SlotMasks[20] = "Chastity Belt (49)"

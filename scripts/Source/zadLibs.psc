@@ -1980,12 +1980,11 @@ EndFunction
 
 Form Function GetWornHeavyBondageInstance(actor akActor)
 	; akActor.GetWornForm(0x20000000)
-	form armb = GetRenderedDeviceInstance(akActor, 0x00000008, zad_DeviousArmbinder)
-	if !armb
-		; check new slot
-		armb = GetRenderedDeviceInstance(akActor, 0x00000200, zad_DeviousArmbinder)
+	; 0x00010000 is slot 46, the new "Heavy Bondage" slot.
+	form armb = GetRenderedDeviceInstance(akActor, 0x00010000, zad_DeviousArmbinder)
+	if !armb ; Check for yokes
+		GetRenderedDeviceInstance(akActor, 0x00010000, zad_DeviousYoke)
 	EndIf
-	; Need to add yoke support here.
 	return armb
 EndFunction
 
