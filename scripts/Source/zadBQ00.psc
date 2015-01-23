@@ -152,6 +152,10 @@ Function Maintenance()
 		libs.config.SurreptitiousStreets = false
 		libs.config.RadiantMaster = false
 	EndIf
+	if modVersion <= 2.9
+		; Fix duplicate keyword baked in to savegames
+		libs.zad_DeviousBoots = (Game.GetFormFromFile(0x00027f29, "Devious Devices - Assets.esm") as Keyword)
+	EndIf
 	Parent.Maintenance()
 	; I doubt this will actually fix the MCM issue people are reporting, though who knows. Doesn't make sense that the animation failing 
 	; to register with Sexlab would cause zadConfig to not initialize properly. All the same, better to avoid that race condition.
