@@ -100,3 +100,13 @@ EndFunction
 Function DeviceMenuExt(int msgChoice=0)
 	;
 EndFunction
+
+
+Function RemoveHeavyBondage(keyword kwd)
+	libs.Log("RemoveHeavyBondage(" + libs.LookupDeviceType(kwd) + ")")
+	Armor id = StorageUtil.GetFormValue(libs.PlayerRef, "zad_Equipped" + libs.LookupDeviceType(libs.zad_DeviousArmbinder) + "_Inventory") as Armor
+	Armor rd = StorageUtil.GetFormValue(libs.PlayerRef, "zad_Equipped" + libs.LookupDeviceType(libs.zad_DeviousArmbinder) + "_Rendered") as Armor
+	lastInventoryDevice = id
+	lastRenderedDevice = rd
+	libs.RemoveDevice(libs.playerRef, id, rd, kwd)
+EndFunction

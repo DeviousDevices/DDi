@@ -15,7 +15,7 @@ Function DeviceMenuRemove()
 	if IsLocked
 		if IsLoose
 			zad_ArmBinderRemoveLooseMsg.Show()
-			libs.ManipulateGenericDeviceByKeyword(libs.PlayerRef, libs.zad_DeviousArmbinder, false)
+			RemoveHeavyBondage(libs.zad_DeviousArmbinder)
 			libs.SendDeviceRemovalEvent("Armbinder", libs.PlayerRef)
 			libs.Aroused.UpdateActorExposure(libs.PlayerRef,1)
 		Else
@@ -23,7 +23,7 @@ Function DeviceMenuRemove()
 		EndIf
 	Else
 		zad_ArmBinderRemoveUnlockedMsg.Show()
-		libs.ManipulateGenericDeviceByKeyword(libs.PlayerRef, libs.zad_DeviousArmbinder, false)
+		RemoveHeavyBondage(libs.zad_DeviousArmbinder)
 		libs.SendDeviceRemovalEvent("Armbinder", libs.PlayerRef)
 		CustomStruggleImpossibleMsg = None
 		CustomStruggleMsg = None
@@ -101,16 +101,6 @@ Function RapeSex(ObjectReference akSpeaker)
 	UnregisterForModEvent("AnimationEnd")
 	RegisterForModEvent("AnimationEnd", "StartPostRape")
 	SexScene(akSpeaker, true)
-EndFunction
-
-
-Function RemoveArmbinder(ObjectReference akSpeaker=None)
-	libs.Log("RemoveArmbinder()")
-	Armor id = StorageUtil.GetFormValue(libs.PlayerRef, "zad_Equipped" + libs.LookupDeviceType(libs.zad_DeviousArmbinder) + "_Inventory") as Armor
-	Armor rd = StorageUtil.GetFormValue(libs.PlayerRef, "zad_Equipped" + libs.LookupDeviceType(libs.zad_DeviousArmbinder) + "_Rendered") as Armor
-	lastInventoryDevice = id
-	lastRenderedDevice = rd
-	libs.RemoveDevice(libs.playerRef, id, rd, libs.zad_DeviousArmbinder)
 EndFunction
 
 
