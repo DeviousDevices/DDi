@@ -2141,8 +2141,7 @@ Function CorsetMagic(actor akActor)
 		Log("CorsetMagic(): No corset equipped, done.")
 		return
 	EndIf
-	Log("Stored Corset: " + tmp)
-	Log("stored rendered corset: " + StorageUtil.GetIntValue(akActor, "zad_StoredCorsetRendered"))
+	Log("CorsetMagic()")
 	if UpdateCorsetState(akActor)
 		akActor.UnequipItemEx(tmp, 0, false)  ; Trigger an update
 		ObjectReference tmpOr = akActor.DropObject(tmp, 1)
@@ -2155,19 +2154,15 @@ EndFunction
 
 
 bool Function UpdateCorsetState(actor akActor)
-	Log("UpdateCorset()")
 	int deviceState
 	int tmp = StorageUtil.GetIntValue(akActor, "zad_StoredCorsetRendered", 0)  
 	if akActor.WornHasKeyword(zad_DeviousBelt)
 		if akActor.WornHasKeyword(zad_PermitAnal)
 			deviceState = 1
-			Log("Using stateBeltedOpen")
 		Else
-			Log("Using stateBeltedFull")
 			deviceState = 2
 		EndIf
 	Else
-		Log("Using stateDefault")
 		deviceState = 0
 	EndIf
 	StorageUtil.SetIntValue(akActor, "zad_StoredCorsetRendered", deviceState)
@@ -2221,4 +2216,5 @@ string Function LookupDeviceType(keyword kwd)
 	ElseIf kwd == zad_DeviousPiercingsVaginal
 		return "PiercingsVaginal" 
 	EndIf
+	Error("LookupDeviceType received invalid keyword " + kwd)
 EndFunction

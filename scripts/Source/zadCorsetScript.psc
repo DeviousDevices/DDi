@@ -8,7 +8,6 @@ Armor Property stateBeltedOpen Auto
 Function UpdateState(actor akActor) 
 	armor tmp = DeviceRendered
 	int currentState = StorageUtil.GetIntValue(akActor, "zad_StoredCorsetRendered", 0)
-	libs.Log("UpdateState("+currentState+")")
 	if currentState == 0
 		DeviceRendered = stateDefault
 	ElseIf currentState == 1
@@ -25,7 +24,6 @@ Function UpdateState(actor akActor)
 EndFunction
 
 Function StoreCorset(actor akActor)
-	libs.Log("StoreCorset("+deviceInventory+")")
 	StorageUtil.SetFormValue(akActor, "zad_StoredCorsetInventory", deviceInventory)
 	; StorageUtil.SetFormValue(akActor, "zad_StoredCorsetRendered", deviceRendered)
 EndFunction
@@ -33,7 +31,6 @@ EndFunction
 Function PurgeCorset(actor akActor)
 	StorageUtil.UnSetIntValue(akActor, "zad_StoredCorsetRendered")
 	StorageUtil.UnSetFormValue(akActor, "zad_StoredCorsetInventory")
-	libs.Log("PurgeCorset()")
 EndFunction
 
 Function OnEquippedPre(actor akActor, bool silent=false)
