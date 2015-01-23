@@ -7,6 +7,7 @@ Bool Property Working Auto
 
 Event OnPlayerLoadGame()
 	libs.DevicesUnderneath.Maintenance()
+	libs.PlayerRef.RemoveItem(libs.DevicesUnderneath.zad_DeviceHider, 5, true)
 EndEvent
 
 
