@@ -138,6 +138,10 @@ Function Maintenance()
 			Debug.Messagebox("It seems that you're upgrading Devious Devices from a version prior to 2.6.6. Please note, that upgrading from version 2.6.5 to 2.6.6+ is unsupported. Do so at your own risk.")
 			Tainted=True
 		EndIf
+		if modVersion < 2.9 
+			; device hider migration
+			libs.config.DevicesUnderneathSlot = 12 ; Slot 41
+		EndIf
 		modVersion = curVersion
 		Debug.Notification("Devious Devices, version " + modVersion + " initialized.")
 		libs.Log("Initializing.")

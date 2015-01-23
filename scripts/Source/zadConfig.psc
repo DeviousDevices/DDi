@@ -118,7 +118,7 @@ float rmSummonHeartbeatIntervalDefault = 0.25
 ; Devices Underneath Configuration
 bool Property DevicesUnderneathEnabled = True Auto
 Int Property DevicesUnderneathSlot Auto
-int Property DevicesUnderneathSlotDefault = 21 Auto
+int Property DevicesUnderneathSlotDefault = 12 Auto
 bool Property UseQueueNiNode Auto
 bool UseQueueNiNodeDefault = False
 
