@@ -30,6 +30,13 @@ EndFunction
 
 Function Execute(actor akActor)
 	;libs.Log("VibrateEffect("+chance+")")
+	if libs.ActorHasKeyword(akActor, libs.zad_EffectShockOnFullArousal) && libs.Aroused.GetActorArousal(akActor) >= 99
+		libs.NotifyPlayer("A devestating jolt of electricity rocks through you,")
+		libs.NotifyPlayer("leaving you writhing in pain.")
+		libs.ShockEffect.RemoteCast(akActor, akActor, akActor)
+		libs.Aroused.SetActorExposure(akActor, 1)
+		return
+	EndIf
 	int vibStrength = 0
 	int duration = 0
 		if libs.ActorHasKeyword(akActor, libs.zad_EffectVibratingRandom)

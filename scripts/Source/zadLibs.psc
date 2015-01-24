@@ -97,9 +97,9 @@ Idle Property YokeIdle03 Auto
 Idle Property YokeIdle04 Auto
 
 ; Yoke Horny Idles
-Idle Property ZapYokeHorny01 Auto
-Idle Property ZapYokeHorny02 Auto
-Idle Property ZapYokeHorny03 Auto
+Idle Property YokeHorny01 Auto
+Idle Property YokeHorny02 Auto
+Idle Property YokeHorny03 Auto
 
 ; All standard devices, at this time. Shorthand for mods, and to avoid the hassle of re-adding these as properties for other scripts.
 ; If you're using a custom device, you'll need to use EquipDevice, rather than the shorthand ManipulateDevice.
@@ -177,6 +177,15 @@ Armor Property plugChargeableVag Auto
 Armor Property plugChargeableRenderedVag Auto
 Armor Property plugTrainingVag Auto
 Armor Property plugTrainingRenderedVag Auto
+
+Armor Property collarRestrictive Auto
+Armor Property collarRestrictiveRendered Auto
+Armor Property corset Auto
+Armor Property corsetRendered Auto
+Armor Property glovesRestrictive Auto
+Armor Property glovesRestrictiveRendered Auto
+Armor Property yoke Auto
+Armor Property yokeRendered Auto
 
 Armor Property piercingVSoul Auto
 Armor Property piercingVSoulRendered Auto
@@ -258,6 +267,10 @@ Keyword Property zad_EffectElectroStim Auto
 Keyword Property zad_EffectHealthDraining Auto
 Keyword Property zad_EffectStaminaDraining Auto
 Keyword Property zad_EffectManaDraining Auto
+
+Keyword Property zad_EffectShocking Auto ; Periodically shock actor.
+Keyword Property zad_EffectChaosPlug Auto ; Coopervane's Random Plug.
+Keyword Property zad_EffectShockOnFullArousal Auto ; Instead of vibrating, shock on full arousal.
 
  ; Effect modifiers
 Keyword Property zad_EffectPossessed Auto ; Plugs will function stand-alone if this keyword is present.
@@ -406,6 +419,18 @@ Function ManipulateDevice(actor akActor, armor device, bool equipOrUnequip, bool
 	ElseIf device == piercingVSoul
 		deviceRendered = piercingVSoulRendered
 		deviceKeyword = zad_DeviousPiercingsVaginal
+	ElseIf device == collarRestrictive 
+		deviceRendered = collarRestrictiveRendered
+		deviceKeyword = zad_DeviousCollar
+	ElseIf device == corset 
+		deviceRendered = corsetRendered
+		deviceKeyword = zad_DeviousCorset
+	ElseIf device == glovesRestrictive 
+		deviceRendered = glovesRestrictiveRendered
+		deviceKeyword =zad_DeviousGloves
+	ElseIf device == yoke 
+		deviceRendered = yokeRendered
+		deviceKeyword =zad_DeviousYoke
 	Else
 		Error("ManipulateDevice did not recognize device type that it received as an argument.")
 		return
@@ -1830,7 +1855,7 @@ Idle Function AnimSwitchKeyword(actor akActor, string idleName )
 		if akActor.WornHasKeyword(zad_DeviousArmbinder)
 			return DDZaZAPCArmBZaDH01
 		ElseIf akActor.WornHasKeyword(zad_DeviousYoke)
-			return ZapYokeHorny01
+			return YokeHorny01
 		Else
 			return DDZazHornyA
 		EndIf
@@ -1838,7 +1863,7 @@ Idle Function AnimSwitchKeyword(actor akActor, string idleName )
 		if akActor.WornHasKeyword(zad_DeviousArmbinder)
 			return DDZaZAPCArmBZaDH02
 		ElseIf akActor.WornHasKeyword(zad_DeviousYoke)
-			return ZapYokeHorny01
+			return YokeHorny01
 		Else 
 			return DDZazHornyB
 		EndIf
@@ -1846,7 +1871,7 @@ Idle Function AnimSwitchKeyword(actor akActor, string idleName )
 		if akActor.WornHasKeyword(zad_DeviousArmbinder)
 			return DDZaZAPCArmBZaDH01
 		ElseIf akActor.WornHasKeyword(zad_DeviousYoke)
-			return ZapYokeHorny01
+			return YokeHorny01
 		Else 
 			return DDZazHornyC
 		EndIf
@@ -1854,7 +1879,7 @@ Idle Function AnimSwitchKeyword(actor akActor, string idleName )
 		if akActor.WornHasKeyword(zad_DeviousArmbinder)
 			return DDZaZAPCArmBZaDH02
 		ElseIf akActor.WornHasKeyword(zad_DeviousYoke)
-			return ZapYokeHorny02
+			return YokeHorny02
 		Else 
 			return DDZazHornyD
 		EndIf
@@ -1862,7 +1887,7 @@ Idle Function AnimSwitchKeyword(actor akActor, string idleName )
 		if akActor.WornHasKeyword(zad_DeviousArmbinder)
 			return DDZaZAPCArmBZaDH03
 		ElseIf akActor.WornHasKeyword(zad_DeviousYoke)
-			return ZapYokeHorny03
+			return YokeHorny03
 		Else 
 			return DDZazHornyE
 		EndIf
