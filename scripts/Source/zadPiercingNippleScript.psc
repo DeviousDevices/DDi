@@ -19,10 +19,6 @@ int Function OnEquippedFilter(actor akActor, bool silent=false)
 			EndIf
 			return 2
 		Endif
-		; if akActor.WornHasKeyword(libs.zad_DeviousBra)
-		; 	MultipleItemFailMessage("Piercings/Bra")
-		; 	return 2
-		; Endif
 	Endif
 	return 0
 EndFunction
@@ -78,6 +74,6 @@ Function NoKeyFailMessage(Actor akActor)
 	if akActor == libs.PlayerRef
 		libs.NotifyPlayer("Try as you might, the bra you are wearing prevents you from removing the piercings.", true)
 	Else
-		libs.NotifyNPC("The bra that "+akActor.GetLeveledActorBase().GetName() + " is wearing is securely locking the piercings  in place. You must remove it prior to removing them.", true)
+		libs.NotifyNPC("The bra that "+akActor.GetLeveledActorBase().GetName() + " is wearing is securely locking the piercings in place. You must remove it prior to removing them.", true)
 	EndIf
 EndFunction

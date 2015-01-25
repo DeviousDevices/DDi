@@ -10,7 +10,7 @@ Function Execute(actor akActor)
 	if num == 0
 		msg = "The piercings rub against your clothes, stimulating you."
 	ElseIf num == 1
-		msg = "The back-and-fourth movement of the piercings chafe your nipples."
+		msg = "The back-and-forth movement of the piercings chafe your nipples."
 	ElseIf num == 2
 		msg = "The weight of the piercings make your nipples sore."
 	ElseIf num == 4
