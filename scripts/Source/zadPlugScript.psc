@@ -1,18 +1,26 @@
 Scriptname zadPlugScript extends zadEquipScript
-Keyword Property zad_DeviousBelt Auto
 
-string strFailEquip =  "Try as you might, the belt you are wearing prevents you from inserting these plugs."
+string strFailEquipBelt =  "Try as you might, the belt you are wearing prevents you from inserting these plugs."
+string strFailEquipHarness =  "Try as you might, the harness you are wearing prevents you from inserting these plugs."
 
 int Function OnEquippedFilter(actor akActor, bool silent=false)
 	; FTM optimization
 	if silent && akActor != libs.PlayerRef
 		return 0
 	EndIf
-	if akActor.WornHasKeyword(zad_DeviousBelt)
+	if akActor.WornHasKeyword(libs.zad_DeviousBelt)
 		if akActor == libs.PlayerRef && !silent
-			libs.NotifyActor(strFailEquip, akActor, true)
+			libs.NotifyActor(strFailEquipBelt, akActor, true)
 		ElseIf  !silent
 			libs.NotifyActor("The belt " + akActor.GetLeveledActorBase().GetName() + " is wearing prevents you from inserting these plugs.", akActor, true)
+		EndIf
+		return 2
+	Endif
+	if akActor.WornHasKeyword(libs.zad_DeviousHarness)
+		if akActor == libs.PlayerRef && !silent
+			libs.NotifyActor(strFailEquipHarness, akActor, true)
+		ElseIf  !silent
+			libs.NotifyActor("The harness " + akActor.GetLeveledActorBase().GetName() + " is wearing prevents you from inserting these plugs.", akActor, true)
 		EndIf
 		return 2
 	Endif
@@ -49,7 +57,7 @@ Function OnEquippedPost(actor akActor)
 	if analSlot && vagSlot && analSlot == vagSlot
 		legacyPlugs = true
 	EndIf
-	if ((!akActor.WornHasKeyword(zad_DeviousBelt))  || (akActor.WornHasKeyword(zad_DeviousBelt) && akActor.WornHasKeyword(libs.zad_PermitAnal) && !legacyPlugs && deviceRendered.HasKeyword(libs.zad_DeviousPlugAnal))) && akActor.WornHasKeyword(zad_DeviousDevice) && !akActor.WornHasKeyword(libs.zad_EffectPossessed) && akActor == libs.PlayerRef && akActor.GetActorBase().GetSex() != 0
+	if ((!akActor.WornHasKeyword(libs.zad_DeviousBelt) && !akActor.WornHasKeyword(libs.zad_DeviousHarness))  || ((akActor.WornHasKeyword(libs.zad_DeviousBelt) || akActor.WornHasKeyword(libs.zad_DeviousHarness)) && akActor.WornHasKeyword(libs.zad_PermitAnal) && !legacyPlugs && deviceRendered.HasKeyword(libs.zad_DeviousPlugAnal))) && akActor.WornHasKeyword(zad_DeviousDevice) && !akActor.WornHasKeyword(libs.zad_EffectPossessed) && akActor == libs.PlayerRef && akActor.GetActorBase().GetSex() != 0
 		libs.Log("Belt not worn: Removing plugs.")
 		RemoveDevice(akActor)
 		if akActor == libs.PlayerRef
@@ -64,7 +72,10 @@ EndFunction
 
 
 int Function OnUnequippedFilter(actor akActor)
-	if akActor.WornHasKeyword(zad_DeviousBelt)
+	if akActor.WornHasKeyword(libs.zad_DeviousBelt)
+		return 1
+	EndIf
+	if akActor.WornHasKeyword(libs.zad_DeviousHarness)
 		return 1
 	EndIf
 	return 0
@@ -73,12 +84,14 @@ EndFunction
 
 Function DeviceMenu(Int msgChoice = 0)
         msgChoice = zad_DeviceMsg.Show() ; display menu
-	if msgChoice==0 ; Not wearing a belt, no plugs
+	if msgChoice==0 ; Not wearing a belt/harness, no plugs
 		Debug.Notification("You choose to put the plugs in.")
 		libs.EquipDevice(libs.PlayerRef, deviceInventory, deviceRendered, zad_DeviousDevice)
-	elseif msgChoice==1 ; Wearing a belt, no plugs
-		Debug.MessageBox(strFailEquip)
-	elseif msgChoice==2 ; Not wearing a belt, plugs
+	elseif msgChoice==1 ; Wearing a harness, no plugs
+		Debug.MessageBox(strFailEquipHarness)
+	elseif msgChoice==2 ; Wearing a belt, no plugs
+		Debug.MessageBox(strFailEquipBelt)
+	elseif msgChoice==3 ; Not wearing a belt/harness, plugs
 		string msg = ""
 		if Aroused.GetActorExposure(libs.PlayerRef) < libs.ArousalThreshold("Desire")
 			msg = "You easily slide the plugs out of your holes and feel no regret."
@@ -91,18 +104,28 @@ Function DeviceMenu(Int msgChoice = 0)
 		endif
 		libs.NotifyPlayer(msg, true)
 		RemoveDevice(libs.PlayerRef)
-	elseif msgChoice==3 ; Wearing a belt, plugs
-		NoKeyFailMessage(libs.PlayerRef)
+	elseif msgChoice==4 ; Wearing a harness, plugs
+		NoKeyFailMessageHarness(libs.PlayerRef)
+	elseif msgChoice==5 ; Wearing a belt, plugs
+		NoKeyFailMessageBelt(libs.PlayerRef)
 	Endif
 	DeviceMenuExt(msgChoice)
 	SyncInventory()
 EndFunction
 		
 
-Function NoKeyFailMessage(Actor akActor)
+Function NoKeyFailMessageBelt(Actor akActor)
 	if akActor == libs.PlayerRef
 		libs.NotifyPlayer("Try as you might, the belt you are wearing prevents you from removing these plugs.", true)
 	Else
 		libs.NotifyNPC("The belt that "+akActor.GetLeveledActorBase().GetName() + " is wearing is securely locking these plugs in place. You must remove it prior to removing them.", true)
+	EndIf
+EndFunction
+
+Function NoKeyFailMessageHarness(Actor akActor)
+	if akActor == libs.PlayerRef
+		libs.NotifyPlayer("Try as you might, the harness you are wearing prevents you from removing these plugs.", true)
+	Else
+		libs.NotifyNPC("The harness that "+akActor.GetLeveledActorBase().GetName() + " is wearing is securely locking these plugs in place. You must remove it prior to removing them.", true)
 	EndIf
 EndFunction
