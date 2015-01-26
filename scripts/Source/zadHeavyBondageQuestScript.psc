@@ -64,7 +64,7 @@ int Function ShowDeviceMenu(int MsgChoice=0)
 		DeviceMenuRemove()
 	elseif msgChoice == 1 ; Struggle
 		if libs.PlayerRef.GetAv("Stamina")<=35
-			libs.NotifyPlayer("You are far too tired to struggle with the armbinder.", true)
+			libs.NotifyPlayer("You are far too tired to struggle with the binding.", true)
 		Else
 			libs.PlayerRef.DamageAV("Stamina", 35)
 			if !DisableStruggle
@@ -104,8 +104,8 @@ EndFunction
 
 Function RemoveHeavyBondage(keyword kwd)
 	libs.Log("RemoveHeavyBondage(" + libs.LookupDeviceType(kwd) + ")")
-	Armor id = StorageUtil.GetFormValue(libs.PlayerRef, "zad_Equipped" + libs.LookupDeviceType(libs.zad_DeviousArmbinder) + "_Inventory") as Armor
-	Armor rd = StorageUtil.GetFormValue(libs.PlayerRef, "zad_Equipped" + libs.LookupDeviceType(libs.zad_DeviousArmbinder) + "_Rendered") as Armor
+	Armor id = StorageUtil.GetFormValue(libs.PlayerRef, "zad_Equipped" + libs.LookupDeviceType(kwd) + "_Inventory") as Armor
+	Armor rd = StorageUtil.GetFormValue(libs.PlayerRef, "zad_Equipped" + libs.LookupDeviceType(kwd) + "_Rendered") as Armor
 	lastInventoryDevice = id
 	lastRenderedDevice = rd
 	libs.RemoveDevice(libs.playerRef, id, rd, kwd)
