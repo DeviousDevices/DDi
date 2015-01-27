@@ -6,9 +6,7 @@ Scriptname ZadYoke__0605228B Extends TopicInfo Hidden
 Function Fragment_1(ObjectReference akSpeakerRef)
 Actor akSpeaker = akSpeakerRef as Actor
 ;BEGIN CODE
-PlayerRef.RemoveItem(ItemGold, 2000)
-questScript.RemoveHeavyBondage(questScript.libs.zad_DeviousYoke)
-; Add code to enable debt thing here
+	questScript.BlacksmithRemoveHeavyBondage(akSpeakerRef)
 ;END CODE
 EndFunction
 ;END FRAGMENT

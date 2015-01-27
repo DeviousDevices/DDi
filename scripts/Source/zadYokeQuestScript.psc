@@ -3,6 +3,7 @@ Scriptname zadYokeQuestScript extends zadHeavyBondageQuestScript Conditional
 Scene Property PostRapeScene Auto
 zaddReliableForceGreet Property fg Auto
 ReferenceAlias Property YokeRescuer Auto
+MiscObject Property ItemGold Auto
 
 Message Property zad_YokeRemoveLockedMsg Auto ; "Take it off", no key.
 Message Property zad_YokeRemoveUnlockedMsg Auto ; Escaped via manipulated locks.
@@ -161,3 +162,11 @@ Event StartPostRape(string eventName, string argString, float argNum, form sende
 	UnregisterForModEvent("AnimationEnd")
 EndEvent
 
+
+
+Function BlacksmithRemoveHeavyBondage(ObjectReference akSpeaker)
+	; if libs.PlayerRef.GetItemCount(itemGold, 
+	libs.PlayerRef.RemoveItem(ItemGold, 2000)
+	RemoveHeavyBondage(libs.zad_DeviousYoke)
+	; Add code to enable debt thing here
+EndFunction
