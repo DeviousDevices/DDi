@@ -4,24 +4,93 @@ Scene Property PostRapeScene Auto
 zaddReliableForceGreet Property fg Auto
 ReferenceAlias Property YokeRescuer Auto
 
-Message Property zad_YokeRemoveLockedMsg Auto
-Message Property zad_YokeRemoveUnlockedMsg Auto
-Message Property zad_YokeRemoveUnlockedFailMsg Auto
-Message Property zad_YokeRemoveLooseMsg Auto
-Message Property zad_YokeRemoveLooseFailMsg Auto
-Message Property zad_YokeStruggleMsg Auto
-Message Property zad_YokeStruggleLooseMsg Auto
-Message Property zad_YokeStruggleKeyMsg Auto
-Message Property zad_YokeStruggleKeyLooseMsg Auto
+Message Property zad_YokeRemoveLockedMsg Auto ; "Take it off", no key.
+Message Property zad_YokeRemoveUnlockedMsg Auto ; Escaped via manipulated locks.
+Message Property zad_YokeRemoveUnlockedFailMsg Auto ; Failed to escape manipulated locks.
+Message Property zad_YokeRemoveLooseMsg Auto ; Removed the yoke.
+Message Property zad_YokeRemoveLooseFailMsg Auto ; Fail to remove unlocked yoke.
+Message Property zad_YokeStruggleMsg Auto ; Base struggle message
+Message Property zad_YokeStruggleLooseMsg Auto ; Realization that struggling is impossible message.
+Message Property zad_YokeStruggleKeyMsg Auto ; Attempt to use key message.
+Message Property zad_YokeStruggleKeyLooseMsg Auto ; Got the locks loose, move to removing the lock.
 
+
+bool Function AttemptRemoveYoke()
+	if Utility.RandomInt(1,100) <= 25
+		RemoveHeavyBondage(libs.zad_DeviousYoke)
+		return true
+	Else
+		; Display failure message
+	EndIf
+EndFunction
+
+
+
+Function DoStruggle()
+	StruggleCount += 1
+	StruggleScene(libs.PlayerRef)
+	DeviceMenuPostStruggle()
+EndFunction
 
 Function DeviceMenuRemove()
-	;
+	if IsLocked
+		If IsLoose || libs.PlayerRef.GetItemCount(GetKey()) >= 1
+			DoStruggle()
+		Else
+			zad_YokeRemoveLockedMsg.Show() ; Can't escape like that!
+		EndIf
+	Else ; Player manipulated locks beforehand.
+		DoStruggle()
+	EndIf
+EndFunction
+
+Key Function GetKey()
+	return (StorageUtil.GetFormValue(libs.PlayerRef, "zad_Equipped" + libs.LookupDeviceType(libs.zad_DeviousYoke) + "_Key") as Key)
 EndFunction
 
 
 Function DeviceMenuPostStruggle()
-	;
+	if !IsLocked
+		if !AttemptRemoveYoke()
+			zad_YokeRemoveUnlockedFailMsg.Show()
+		Else
+			zad_YokeRemoveUnlockedMsg.Show()
+		EndIf
+		return
+	EndIf		
+	int attempt = Utility.RandomInt()
+	libs.UpdateExposure(libs.PlayerRef,0.3)
+	if IsLoose
+		if !AttemptRemoveYoke()
+			zad_YokeRemoveLooseFailMsg.Show()
+		Else
+			zad_YokeRemoveLooseMsg.Show()
+		EndIf		
+	Else
+		if StruggleCount >= 3 && (attempt*1.5) <= StruggleCount
+			If libs.PlayerRef.GetItemCount(GetKey()) >= 1
+				IsLoose = true
+				zad_YokeStruggleKeyLooseMsg.Show()
+			Else
+				if CustomStruggleImpossibleMsg != None
+					CustomStruggleImpossibleMsg.Show()
+				Else
+					zad_YokeStruggleLooseMsg.Show()
+				EndIf
+			EndIf
+		Else
+			if libs.PlayerRef.GetItemCount(GetKey()) >= 1
+				zad_YokeStruggleKeyMsg.Show()
+			Else
+				if CustomStruggleMsg != None
+					CustomStruggleMsg.Show()
+				Else
+					zad_YokeStruggleMsg.Show()
+				EndIf
+			Endif
+		EndIf			
+
+	EndIf
 EndFunction
 
 

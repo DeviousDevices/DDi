@@ -64,7 +64,7 @@ int Function ShowDeviceMenu(int MsgChoice=0)
 		DeviceMenuRemove()
 	elseif msgChoice == 1 ; Struggle
 		if libs.PlayerRef.GetAv("Stamina")<=35
-			libs.NotifyPlayer("You are far too tired to struggle with the binding.", true)
+			libs.NotifyPlayer("You are far too tired to struggle with your restraints.", true)
 		Else
 			libs.PlayerRef.DamageAV("Stamina", 35)
 			if !DisableStruggle
