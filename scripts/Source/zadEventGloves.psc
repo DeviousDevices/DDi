@@ -5,5 +5,7 @@ bool Function HasKeywords(actor akActor)
 EndFunction
 
 Function Execute(actor akActor)
-	libs.Log("FIXME: Finish placeholder gloves event.")
+	if (akActor == libs.PlayerRef)
+		libs.NotifyPlayer("A sudden loss of grip reminds you of the gloves you are wearing.")
+	endif
 EndFunction
