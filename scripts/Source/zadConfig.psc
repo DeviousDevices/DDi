@@ -122,6 +122,10 @@ int Property DevicesUnderneathSlotDefault = 12 Auto
 bool Property UseQueueNiNode Auto
 bool UseQueueNiNodeDefault = False
 
+; Devious Expansion Configuration
+bool Property bootsSlowdownToggle = True Auto Conditional
+bool bootsSlowdownToggleDefault = True 
+
 ; OID's
 int thresholdOID
 int beltRateOID
@@ -170,11 +174,14 @@ int DevicesUnderneathSlotOID
 int UseQueueNiNodeOID
 int breastNodeManagementOID
 int useBoundAnimsOID
+int bootsSlowdownToggleOID
+
 
 string[] difficultyList
 string[] blindfoldList
 string[] slotMasks
 int[] SlotMaskValues
+
 
 Function SetupBlindfolds()
 	blindfoldList = new String[3]
@@ -192,7 +199,7 @@ Function SetupDifficulties()
 EndFunction
 
 Function SetupPages()
-	Pages = new string[8]
+	Pages = new string[9]
 	Pages[0] = "General"
 	Pages[1] = "Devices"
 	pages[2] = "Sex Animation Filter"
@@ -201,6 +208,7 @@ Function SetupPages()
 	Pages[5] = "Quests"
 	Pages[6] = "Devices Underneath (1)"
 	Pages[7] = "Devices Underneath (2)"
+	Pages[8] = "Devious Expansion"
 EndFunction
 
 
@@ -257,7 +265,7 @@ Event OnConfigInit()
 EndEvent
 
 int Function GetVersion()
-	return 15 ; mcm menu version
+	return 16 ; mcm menu version
 EndFunction
 
 Event OnVersionUpdate(int newVersion)
@@ -423,7 +431,15 @@ Event OnPageReset(string page)
 				SetCursorPosition(1) ; Move cursor to top right position
 			EndIf
 			i += 1
-		EndWhile		
+		EndWhile
+	ElseIf Page == "Devious Expansion"
+		; Check for DDx
+		if (Game.GetModByName("Devious Devices - Expansion.esm") > 0) ; DDx is present
+			bootsSlowdownToggleOID = AddToggleOption("Boots Slowdown Effect", bootsSlowdownToggle)
+		Else
+			AddTextOption("Devious Devices - Expansion is not loaded.", "", OPTION_FLAG_DISABLED)
+			AddTextOption("This menu is disabled.", "", OPTION_FLAG_DISABLED)
+		EndIf
 	Endif
 EndEvent
 
@@ -686,6 +702,9 @@ Event OnOptionSelect(int option)
 	elseif option == UseQueueNiNodeOID
 		 UseQueueNiNode = !UseQueueNiNode
 		SetToggleOptionValue(UseQueueNiNodeOID, UseQueueNiNode)
+	elseif option == bootsSlowdownToggleOID
+		 bootsSlowdownToggle = !bootsSlowdownToggle
+		SetToggleOptionValue(bootsSlowdownToggleOID, bootsSlowdownToggle)
 	elseif option == ifpOID
 		ifp = !ifp
 		SetToggleOptionValue(ifpOID, ifp)
@@ -827,6 +846,9 @@ Event OnOptionDefault(int option)
 	elseIf (option == UseQueueNiNodeOID)
 		UseQueueNiNode = UseQueueNiNodeDefault
 		SetToggleOptionValue(UseQueueNiNodeOID, UseQueueNiNodeDefault)
+	elseIf (option == bootsSlowdownToggleOID)
+		bootsSlowdownToggle = bootsSlowdownToggleDefault
+		SetToggleOptionValue(bootsSlowdownToggleOID, bootsSlowdownToggleDefault)
 	elseIf (option == numNpcsOID)
 		numNpcs = numNpcsDefault
 		SetSliderOptionValue(numNpcsOID, numNpcs, "{1}")
@@ -936,6 +958,8 @@ Event OnOptionHighlight(int option)
 		SetInfoText("Enable/disable warning messages prior to Surreptitious Streets events. This option will give provide a way to avoid traps / capture events in an immersion friendly manner, without disabling them all-together.\nDefault:"+ssWarningMessagesDefault)
 	elseIf (option == UseQueueNiNodeOID)
 		SetInfoText("Toggles the use of QueueNiNode after Item Equip/Unequips. The advantage of QueueNiNode is that it will apply changes while you're in your inventory, and won't have an equip/unequip sound. This will work fine for some users, but for others will cause the game to lag briefly after an equip/unequip takes place.\nDefault:"+UseQueueNiNodeDefault)
+	elseIf (option == bootsSlowdownToggleOID)
+		SetInfoText("Toggles the slowdown effect caused by some boots within DDx.\nDefault:"+bootsSlowdownToggleDefault)
 	elseIf (option == numNpcsOID)
 		SetInfoText("Configure the number of nearby belted NPCs (Per Area) that will be processed by event polling. Set to 0 to disable altogether. Higher values will increase script load.\nDefault:"+numNpcsDefault)
 	elseIf (option == ifpOID)
