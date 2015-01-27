@@ -1,5 +1,7 @@
 Scriptname zadPlugScript extends zadEquipScript
 
+Keyword Property zad_DeviousBelt Auto
+
 string strFailEquipBelt =  "Try as you might, the belt you are wearing prevents you from inserting these plugs."
 string strFailEquipHarness =  "Try as you might, the harness you are wearing prevents you from inserting these plugs."
 
