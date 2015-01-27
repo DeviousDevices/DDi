@@ -1891,6 +1891,8 @@ Idle Function AnimSwitchKeyword(actor akActor, string idleName )
 		Else 
 			return DDZazHornyE
 		EndIf
+	ElseIf idleName == "OutOfBreath"
+		; Need animations for this.
 	EndIf
 	Error("Failed to find valid animation for presentation.")
 EndFunction

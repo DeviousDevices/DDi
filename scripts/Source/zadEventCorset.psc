@@ -5,5 +5,11 @@ bool Function HasKeywords(actor akActor)
 EndFunction
 
 Function Execute(actor akActor)
-	libs.Log("FIXME: Finish placeholder corset event.")
+	if (akActor == libs.PlayerRef)
+		libs.NotifyPlayer("You feel light-headed momentarily and are forced to stop and catch your breath.")
+		libs.DisableControls()
+		Utility.Wait(3.5)
+		libs.UpdateControls()
+	EndIf
+	; libs.PlayThirdPersonAnimation(akActor, libs.AnimSwitchKeyword(akActor, "OutOfBreath"), 5, permitRestrictive=True)
 EndFunction
