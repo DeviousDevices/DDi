@@ -68,7 +68,7 @@ Function DeviceMenuPostStruggle()
 		EndIf		
 	Else
 		if StruggleCount >= 3 && (attempt*1.5) <= StruggleCount
-			If libs.PlayerRef.GetItemCount(GetKey()) >= 1
+			If libs.PlayerRef.GetItemCount(GetKey()) >= 1 && !DisableStruggle
 				IsLoose = true
 				zad_YokeStruggleKeyLooseMsg.Show()
 			Else
