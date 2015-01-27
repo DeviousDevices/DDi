@@ -21,5 +21,5 @@ Function Execute(actor akActor)
 		libs.NotifyNPC(akActor.GetLeveledActorBase().GetName() + " squirms uncomfortably as a painful jolt courses through her!")
 	EndIf
 	libs.ShockEffect.RemoteCast(akActor, akActor, akActor)
-	libs.Aroused.SetActorExposure(akActor, Utility.RandomInt(10,20))
+	libs.Aroused.UpdateActorExposure(akActor, (-1 * Utility.RandomInt(10,20)))
 EndFunction
