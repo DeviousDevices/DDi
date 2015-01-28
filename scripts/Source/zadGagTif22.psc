@@ -8,7 +8,7 @@ Actor akSpeaker = akSpeakerRef as Actor
 ;BEGIN CODE
 libs.EdgedSound.Play(PlayerRef)
 QuestScript.DisableStruggling()
-Debug.MessageBox("As I turned around, she start working in the laces of armbinder, pulling with force and taking out any slack. I lost my breath when my elbows touched. Still not satisfied, she rebuckled all the straps as tight as possible. I will never do the armbinder this tight by myself. As my arms are already going numb I feel more helpless than ever.")
+Debug.MessageBox("As I held still, she produced some small ebonite bits from her bag.  She leant over and examined the locks dangling below my yoke.  She affixed the ebonite bits over the locks and snapped them shut.  As long as these covers were on the locks, I wouldn't be able to use any keys I find to escape!  Now I'm at the mercy of others to release me, even with the key in hand.")
 gag.increasePlayerMaso()
 
 int playerexposure = sla.GetActorExposure(PlayerRef)
@@ -22,6 +22,6 @@ EndFunction
 
 zadGagQuestScript property gag Auto
 zadlibs Property libs  Auto
-zadArmbinderQuestScript Property QuestScript Auto
+zadYokeQuestScript Property QuestScript Auto
 slaFrameworkScr property sla Auto
 Actor Property PlayerRef  Auto  
