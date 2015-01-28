@@ -7,8 +7,8 @@ Function Fragment_1(ObjectReference akSpeakerRef)
 Actor akSpeaker = akSpeakerRef as Actor
 ;BEGIN CODE
 libs.EdgedSound.Play(PlayerRef)
-Libs.EquipDevice(Libs.PlayerRef, Libs.harnessCollar, Libs.harnessCollarRendered, Libs.zad_DeviousCollar, false, true)
-Debug.MessageBox("Before I noticed it, my head was pushed down and something was place tightly around my neck. It was some kind of leather collar which somehow connected to the armbinder and made everything appear tighter. If wasn't already hard enough to struggle with the armbinder, now is even more as the merciless straps appear to not have any slack. A click sound tells me I won´t remove my collar any time soon.")
+Libs.EquipDevice(Libs.PlayerRef, Libs.collarPosture, Libs.collarPostureRendered, Libs.zad_DeviousCollar, false, true)
+Debug.MessageBox("Before I noticed it, my head was pushed down and I heard the sound of a lock being released.  The yoke twisted open around my neck and my head was pulled back.  Next, an extremely tall metal collar was locked around my neck, nearly choking me in the process.  With my hands still locked into the yoke, I couldn't resist as I was forced back into the yoke and locked up once more.  With this oppressive collar on under the yoke, I had even less ability to move around and struggle.")
 gag.increasePlayerMaso()
 
 int playerexposure = sla.GetActorExposure(PlayerRef)

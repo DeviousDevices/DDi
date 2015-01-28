@@ -14,6 +14,7 @@ Message Property zad_YokeStruggleMsg Auto ; Base struggle message
 Message Property zad_YokeStruggleLooseMsg Auto ; Realization that struggling is impossible message.
 Message Property zad_YokeStruggleKeyMsg Auto ; Attempt to use key message.
 Message Property zad_YokeStruggleKeyLooseMsg Auto ; Got the locks loose, move to removing the lock.
+Message Property zad_YokeImpossibleStruggleMsg Auto ; Struggling disabled
 
 Perk Property MerchantCurse Auto
 Spell Property MerchantCurseSpell Auto
@@ -72,28 +73,36 @@ Function DeviceMenuPostStruggle()
 			zad_YokeRemoveLooseMsg.Show()
 		EndIf		
 	Else
-		if StruggleCount >= 3 && (attempt*1.5) <= StruggleCount
-			If libs.PlayerRef.GetItemCount(GetKey()) >= 1 && !DisableStruggle
-				IsLoose = true
-				zad_YokeStruggleKeyLooseMsg.Show()
+		if DisableStruggle
+			if CustomStruggleImpossibleMsg != None
+				CustomStruggleImpossibleMsg.Show()
 			Else
-				if CustomStruggleImpossibleMsg != None
-					CustomStruggleImpossibleMsg.Show()
-				Else
-					zad_YokeStruggleLooseMsg.Show()
-				EndIf
+				zad_YokeImpossibleStruggleMsg.Show()
 			EndIf
-		Else
-			if libs.PlayerRef.GetItemCount(GetKey()) >= 1
-				zad_YokeStruggleKeyMsg.Show()
-			Else
-				if CustomStruggleMsg != None
-					CustomStruggleMsg.Show()
+		Else 
+			if StruggleCount >= 3 && (attempt*1.5) <= StruggleCount
+				If libs.PlayerRef.GetItemCount(GetKey()) >= 1
+					IsLoose = true
+					zad_YokeStruggleKeyLooseMsg.Show()
 				Else
-					zad_YokeStruggleMsg.Show()
+					if CustomStruggleImpossibleMsg != None
+						CustomStruggleImpossibleMsg.Show()
+					Else
+						zad_YokeStruggleLooseMsg.Show()
+					EndIf
 				EndIf
-			Endif
-		EndIf			
+			Else
+				if libs.PlayerRef.GetItemCount(GetKey()) >= 1
+					zad_YokeStruggleKeyMsg.Show()
+				Else
+					if CustomStruggleMsg != None
+						CustomStruggleMsg.Show()
+					Else
+						zad_YokeStruggleMsg.Show()
+					EndIf
+				Endif
+			EndIf	
+		EndIf		
 
 	EndIf
 EndFunction
