@@ -18,6 +18,6 @@ EndEvent
 Event OnActorAction(int actionType, Actor akActor, Form source, int slot)
 	if slot == 2
 		;libs.Notify("Player just got staggered!")
-		libs.PlayThirdPersonAnimation(akActor, libs.AnimSwitchKeyword(akActor, "OutOfBreath"), howLong, permitRestrictive=True)		
+		libs.PlayThirdPersonAnimation(akActor, libs.AnimSwitchKeyword(akActor, "OutOfBreath"), 3, permitRestrictive=True)		
 	EndIf
 EndEvent

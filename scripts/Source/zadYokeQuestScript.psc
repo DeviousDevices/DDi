@@ -15,6 +15,10 @@ Message Property zad_YokeStruggleLooseMsg Auto ; Realization that struggling is 
 Message Property zad_YokeStruggleKeyMsg Auto ; Attempt to use key message.
 Message Property zad_YokeStruggleKeyLooseMsg Auto ; Got the locks loose, move to removing the lock.
 
+Perk Property MerchantCurse Auto
+Spell Property MerchantCurseSpell Auto
+
+Int Property MerchantCurseGoldStolen Auto
 
 bool Function AttemptRemoveYoke()
 	if Utility.RandomInt(1,100) <= 25

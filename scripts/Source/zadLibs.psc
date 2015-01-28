@@ -101,6 +101,10 @@ Idle Property YokeHorny01 Auto
 Idle Property YokeHorny02 Auto
 Idle Property YokeHorny03 Auto
 
+Idle Property BleedoutIdle Auto
+Idle Property ZapYokeBleedoutIdle Auto
+Idle Property ZapArmbBleedoutIdle Auto
+
 ; All standard devices, at this time. Shorthand for mods, and to avoid the hassle of re-adding these as properties for other scripts.
 ; If you're using a custom device, you'll need to use EquipDevice, rather than the shorthand ManipulateDevice.
 Armor Property beltPaddedRendered Auto         ; Internal Device
@@ -1892,7 +1896,13 @@ Idle Function AnimSwitchKeyword(actor akActor, string idleName )
 			return DDZazHornyE
 		EndIf
 	ElseIf idleName == "OutOfBreath"
-		; Need animations for this.
+		if akActor.WornHasKeyword(zad_DeviousArmbinder)
+			return ZapArmbBleedoutIdle
+		ElseIf akActor.WornHasKeyword(zad_DeviousYoke)
+			return ZapYokeBleedoutIdle
+		Else 
+			return BleedoutIdle
+		EndIf
 	EndIf
 	Error("Failed to find valid animation for presentation.")
 EndFunction
