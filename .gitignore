@@ -13,3 +13,5 @@
 /SKSE/Plugins/*.lib
 /SKSE/Plugins/*.pdb
 /SKSE/Plugins/*.ilk
+
+meta.ini
