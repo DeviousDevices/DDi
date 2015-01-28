@@ -16,9 +16,16 @@ Message Property zad_YokeStruggleKeyMsg Auto ; Attempt to use key message.
 Message Property zad_YokeStruggleKeyLooseMsg Auto ; Got the locks loose, move to removing the lock.
 Message Property zad_YokeImpossibleStruggleMsg Auto ; Struggling disabled
 
+; Merchant Curse
 Perk Property MerchantCurse Auto
 Spell Property MerchantCurseSpell Auto
 
+; How much gold will the curse steal, per application?
+int Property MerchantCurseGoldThreshold  = 3000 Auto
+
+int Property MerchantCurseGoldOwed  = 0 Auto
+
+; How much gold has been stolen?
 Int Property MerchantCurseGoldStolen Auto
 
 bool Function AttemptRemoveYoke()
@@ -178,8 +185,14 @@ EndEvent
 
 
 Function BlacksmithRemoveHeavyBondage(ObjectReference akSpeaker)
-	; if libs.PlayerRef.GetItemCount(itemGold, 
-	libs.PlayerRef.RemoveItem(ItemGold, 2000)
+	int curGold = libs.PlayerRef.GetItemCount(itemGold)
+	if (curGold >= 2000)
+		libs.PlayerRef.RemoveItem(ItemGold, 2000)
+	Else
+		MerchantCurseGoldOwed += MerchantCurseGoldThreshold
+		MerchantCurseGoldStolen = curGold
+		libs.PlayerRef.RemoveItem(ItemGold, curGold)
+		libs.PlayerRef.AddSpell(MerchantCurseSpell)
+	EndIf
 	RemoveHeavyBondage(libs.zad_DeviousYoke)
-	; Add code to enable debt thing here
 EndFunction
