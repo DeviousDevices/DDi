@@ -55,7 +55,7 @@ Function OnEquippedPost(actor akActor)
 	bool legacyPlugs = false
 	; Slots 48 and 54 Anal and Vaginal plugs      
 	Form analSlot = akActor.GetWornForm(0x00040000)
-	Form vagSlot = akActor.GetWornForm(0x01000000)
+	Form vagSlot = akActor.GetWornForm(0x08000000)
 	if analSlot && vagSlot && analSlot == vagSlot
 		legacyPlugs = true
 	EndIf
