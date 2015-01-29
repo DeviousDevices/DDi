@@ -47,6 +47,16 @@ Function SetDefaultMessages()
 EndFunction
 
 int Function OnEquippedFilter(actor akActor, bool silent=false)
+	if ! akActor.IsEquipped(deviceRendered)
+		if akActor!=libs.PlayerRef && ShouldEquipSilently(akActor)
+			libs.Log("Avoiding FTM duplication bug (Yoke).")
+			return 0
+		EndIf
+		if akActor.WornHasKeyword(libs.zad_DeviousArmbinder)
+			MultipleItemFailMessage("Armbinder")
+			return 2
+		EndIf	
+	EndIf
 	if akActor != libs.PlayerRef || silent
 		return 0 ; Proceed.
 	EndIf
