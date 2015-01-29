@@ -28,6 +28,12 @@ int Property MerchantCurseGoldOwed  = 0 Auto
 ; How much gold has been stolen?
 Int Property MerchantCurseGoldStolen Auto
 
+Bool Property SmithEscapeDialogueEnabled = true Auto Conditional
+
+Function UpdateBlacksmithRemoval(bool EnableDisable=True)
+	 SmithEscapeDialogueEnabled = EnableDisable
+EndFunction
+
 bool Function AttemptRemoveYoke()
 	if Utility.RandomInt(1,100) <= 25
 		RemoveHeavyBondage(libs.zad_DeviousYoke)
