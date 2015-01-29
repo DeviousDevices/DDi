@@ -6,7 +6,7 @@ Scriptname ZadYoke__0605228B Extends TopicInfo Hidden
 Function Fragment_1(ObjectReference akSpeakerRef)
 Actor akSpeaker = akSpeakerRef as Actor
 ;BEGIN CODE
-	questScript.BlacksmithRemoveHeavyBondage(akSpeakerRef)
+questScript.BlacksmithRemoveHeavyBondage(akSpeakerRef)
 ;END CODE
 EndFunction
 ;END FRAGMENT
