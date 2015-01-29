@@ -112,6 +112,16 @@ Event OnUnequipped(Actor akActor)
 	libs.Log("OnUnequipped("+akActor.GetLeveledActorBase().GetName()+": "+deviceInventory.GetName()+")")
 	
 	if StorageUtil.GetIntValue(akActor, "zad_RemovalToken" + deviceInventory, 0) >= 1
+		if OnUnequippedFilter(akActor) >= 1
+			libs.Log("OnUnequipped(): Detected removal token, but OnUnequippedFilter return >= 1. Not removing device.")
+			; Clear removal token
+			StorageUtil.UnsetIntValue(akActor, "zad_RemovalToken"+deviceInventory)
+			; Cleanup
+			unequipMutex = false
+			libs.DeviceMutex = false
+			SyncInventory(akActor)
+			return
+		EndIf
 		libs.Log("Detected removal token. Done.")
 		akActor.RemoveItem(deviceRendered, 1, true) ; This shouldn't be necessary, but ensure that SD+ bug does not reoccur.
 		UnsetStoredDevice(akActor)
