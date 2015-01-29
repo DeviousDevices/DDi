@@ -28,7 +28,7 @@ Event OnItemAdded(Form akBaseItem, int aiItemCount, ObjectReference akItemRefere
 	libs.NotifyPlayer("The gold vanishes from your fingers as you touch it...")
 	if goldDelta <= 0
 		; Player has paid their debt.
-		libs.NotifyPlayer("You feel the Merchant-Curse lift from you.")
+		libs.NotifyPlayer("You feel the curse lift as your debt is repaid...")
 		ybq.MerchantCurseGoldOwed = 0
 		ybq.MerchantCurseGoldStolen = 0
 		libs.PlayerRef.RemoveSpell(ybq.MerchantCurseSpell)
