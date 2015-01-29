@@ -478,7 +478,7 @@ EndFunction
 ; conform to zbfSexLabBaseEntry actor specific tags.
 ; 
 String[] Function GetBlockedTagsFromKeywords(Actor akActor)
-	String[] list = New String[4]
+	String[] list = New String[5]
 	Int i = 0
 	If IsBlockedVaginal(akActor)
 		list[i] = "Vaginal"
@@ -496,6 +496,10 @@ String[] Function GetBlockedTagsFromKeywords(Actor akActor)
 		list[i] = "Breast"
 		i += 1
 	EndIf
+	If zbfSL.IsMale(akActor)
+		list[i] = "Female" ; Males block female slots, females do not block male slots (currently)
+		i += 1
+	EndIf
 
 	libs.Log("Blocked tags on " + akActor.GetActorBase().GetName() + " are " + list)
 	Return list
@@ -507,10 +511,10 @@ EndFunction
 String[] Function GetRequiredTagsFromKeywords(Actor akActor)
 	String[] list = New String[1]
 	If HasArmbinder(akActor)
-		list[0] = zbf.GetSexLabBoundTag(zbf.iBindArmbinder)
+		list[0] = zbfSL.GetBoundTag(zbf.iBindArmbinder)
 	EndIf
 	If HasYoke(akActor)
-		list[0] = zbf.GetSexLabBoundTag(zbf.iBindYoke)
+		list[0] = zbfSL.GetBoundTag(zbf.iBindYoke)
 	EndIf
 	Return list
 EndFunction
@@ -544,25 +548,8 @@ EndFunction
 Function FilterActor(zbfSexLabBaseEntry[] akList, Actor akActor, Int aiActorIndex)
 	String[] required = GetRequiredTagsFromKeywords(akActor)
 	String[] blocked = GetBlockedTagsFromKeywords(akActor)
-	Bool bTagFound
-
-	bTagFound = bTagFound || (required[0] != "")
-	bTagFound = bTagFound || (blocked[0] != "")
 
 	zbfSL.FilterEntries(akList, aiActorIndex, required, blocked)
-EndFunction
-
-
-; Returns a shallow copy of a list of zbfSexLabBaseEntry objects
-; 
-zbfSexLabBaseEntry[] Function CopyList(zbfSexLabBaseEntry[] akList)
-	zbfSexLabBaseEntry[] filtered = New zbfSexLabBaseEntry[15]
-	Int i = akList.Length
-	While i > 0
-		i -= 1
-		filtered[i] = akList[i]
-	EndWhile
-	Return filtered
 EndFunction
 
 
@@ -598,18 +585,24 @@ zbfSexLabBaseEntry Function SelectRandomEntry(zbfSexLabBaseEntry[] akList, Int a
 EndFunction
 
 
+; Opens the panel gag for all actors flagged as Oral. If no zbfSexLabBaseEntry is provided, this function will
+; open the gag for all actors.
+; 
 Function OpenPanelGags(zbfSexLabBaseEntry akEntry, Actor[] akActors)
-	If akEntry != None
-		Actor[] oralActors
-		Int i = akActors.Length
-		While i > 0
-			i -= 1
-			If akEntry.HasTagForActor(i + 1, "Oral")
-				oralActors = sslUtility.PushActor(akActors[i], oralActors)
-			EndIf
-		EndWhile
-		TogglePanelGag(oralActors, insert = False)
-	EndIf
+	Bool bHasOral
+	Actor[] oralActors
+	Int i = akActors.Length
+	While i > 0
+		i -= 1
+		bHasOral = True
+		If akEntry != None
+			bHasOral = akEntry.HasTagForActor(i + 1, "Oral")
+		EndIf
+		If bHasOral
+			oralActors = sslUtility.PushActor(akActors[i], oralActors)
+		EndIf
+	EndWhile
+	TogglePanelGag(oralActors, insert = False)
 EndFunction
 
 
@@ -631,7 +624,6 @@ function Logic(int threadID, bool HasPlayer)
 	Bool bPermitOral = True
 	Bool bPermitVaginal = True
 	Bool bPermitBoobs = True
-	Bool bNoBindings = True
 	int NumExtraTags = 0
 	string[] ExtraTags = new String[12]
 	bool UsingArmbinder = False
@@ -643,26 +635,31 @@ function Logic(int threadID, bool HasPlayer)
 		bPermitVaginal = bPermitVaginal && !IsBlockedVaginal(originalActors[i])
 		bPermitBoobs = bPermitBoobs && !IsBlockedBreast(originalActors[i])
 		bPermitOral = bPermitOral && !IsBlockedOral(originalActors[i])
-		bNoBindings = bNoBindings && (!HasArmbinder(originalActors[i]) && !HasYoke(originalActors[i]))
-		; This step is needed, in order to determine if the prior animation is valid (Prevent replacing valid bound anims).
-		if !UsingArmbinder && HasArmbinder(originalActors[i])
-			ExtraTags[NumExtraTags] = "Armbinder"
-			NumExtraTags+=1
-		EndIf
-		; Yoke support
-		if !UsingYoke && HasYoke(originalActors[i])
-			ExtraTags[NumExtraTags] = "Yoke"
-			NumExtraTags+=1
-		EndIf
+		UsingArmbinder = UsingArmbinder || HasArmbinder(originalActors[i])
+		UsingYoke = UsingYoke || HasYoke(originalActors[i])
 	EndWhile
+	Bool bNoBindings = !UsingArmbinder && !UsingYoke
 	Bool bIsCreatureAnim = previousAnim.HasTag("Creature")
-	
+
+	; This step is needed, in order to determine if the prior animation is valid (Prevent replacing valid bound anims).
+	if UsingArmbinder
+		ExtraTags[NumExtraTags] = "Armbinder"
+		NumExtraTags += 1
+	EndIf
+	if UsingYoke ; Yoke support
+		ExtraTags[NumExtraTags] = "Yoke"
+		NumExtraTags += 1
+	EndIf
+	; Expect solos if both UsingArmbinder and UsingYoke (or just UsingYoke, because ZAP has no registered animation support for Yokes)
+
 	libs.Log("bPermitAnal " + bPermitAnal)
 	libs.Log("bPermitVaginal " + bPermitVaginal)
 	libs.Log("bPermitBoobs " + bPermitBoobs)
 	libs.Log("bPermitOral " + bPermitOral)
 	libs.Log("bNoBindings " + bNoBindings)
 	libs.Log("bIsCreatureAnim " + bIsCreatureAnim)
+	libs.Log("UsingArmbinder " + UsingArmbinder)
+	libs.Log("UsingYoke " + UsingYoke)
 
 	; If no actor was restrained in any way we can detect, then don't change the animation.
 	If bPermitAnal && bPermitVaginal && bPermitOral && bPermitBoobs && bNoBindings
@@ -671,7 +668,7 @@ function Logic(int threadID, bool HasPlayer)
 		OpenPanelGags(zbfSL.GetEntryByVanillaId(previousAnim.Name), originalActors)
 		Return
 	EndIf
-	
+
 	if IsValidAnimation(previousAnim, bPermitOral, bPermitVaginal, bPermitAnal, bPermitBoobs, numExtraTags, ExtraTags)
 		libs.Log("Original animation (" + previousAnim.name + ") does not conflict. Done.")
 		return
@@ -769,23 +766,18 @@ function Logic(int threadID, bool HasPlayer)
 		; Fetch a list of all entries
 		zbfSexLabBaseEntry[] list = GetEntries(asVanillaPriorityId = previousAnim.Name)
 
-		; Global filter on creatures
-		If bIsCreatureAnim
-			String[] tags = zbfSL.StrList("Creature", MiscUtil.GetActorRaceEditorID(originalActors[originalActors.Length - 1]))
-			zbfSL.FilterEntries(list, 0, tags, zbfSL.StrList())
+		zbfSexLabBaseEntry entry
+		i = 0
+
+		; Retain only aggressive animations
+		If libs.config.PreserveAggro && previousAnim.HasTag("Aggressive")
+			zbfSL.FilterEntries(list, 0, zbfUtil.StrList("Aggressive"), zbfUtil.StrList())
 		EndIf
 
 		; Filter tags for each actor in the original animation
-		zbfSexLabBaseEntry entry
-		i = 0
-		int curGender = Sexlab.GetGender(originalActors[i])
-		bool permitGay = True
 		While i < originalActors.Length
-			if curGender != Sexlab.GetGender(originalActors[i+1])
-				permitGay = False ; Only use same sex animations if actors are the same sex.
-			EndIf
 			FilterActor(list, originalActors[i], i + 1)
-			zbfSexLabBaseEntry tempEntry = SelectRandomEntry(list, aiActorCount = (i + 1), permitGay=permitGay)
+			zbfSexLabBaseEntry tempEntry = SelectRandomEntry(list, aiActorCount = (i + 1))
 			If tempEntry != None
 				entry = tempEntry
 				libs.Log("Entry selected, " + entry.Name + ", with " + entry.NumActors + " actors.")
