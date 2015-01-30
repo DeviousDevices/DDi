@@ -655,4 +655,3 @@ Function UnsetStoredDevice(actor akActor)
 	StorageUtil.UnsetFormValue(akActor, "zad_Equipped" + libs.LookupDeviceType(zad_DeviousDevice) + "_Key")
 
 EndFunction
-

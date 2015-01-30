@@ -15,6 +15,9 @@ Function UpdateState(actor akActor)
 	ElseIf currentState == 2
 		deviceRendered = stateBeltedFull
 	EndIf
+	if !akActor.WornHasKeyword(libs.zad_DeviousCorset) ; Don't process further if not wearing a corset.
+		return
+	EndIf
 	if !akActor.IsEquipped(deviceRendered)
 		akActor.RemoveItem(stateDefault, 1, true)
 		akActor.RemoveItem(stateBeltedFull, 1, true)
@@ -23,15 +26,18 @@ Function UpdateState(actor akActor)
 	EndIf
 EndFunction
 
+
 Function StoreCorset(actor akActor)
 	StorageUtil.SetFormValue(akActor, "zad_StoredCorsetInventory", deviceInventory)
 	; StorageUtil.SetFormValue(akActor, "zad_StoredCorsetRendered", deviceRendered)
 EndFunction
 
+
 Function PurgeCorset(actor akActor)
 	StorageUtil.UnSetIntValue(akActor, "zad_StoredCorsetRendered")
 	StorageUtil.UnSetFormValue(akActor, "zad_StoredCorsetInventory")
 EndFunction
+
 
 Function OnEquippedPre(actor akActor, bool silent=false)
 	if !silent
