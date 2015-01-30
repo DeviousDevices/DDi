@@ -1,4 +1,4 @@
-Scriptname zadBodyHarnessScript extends zadRestraintScript
+Scriptname zadBodyHarnessScript extends zadEquipScript
 
 Function OnEquippedPre(actor akActor, bool silent=false)
 	if !silent
