@@ -11,7 +11,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
-	UnregisterForActorAction(4)
+	; UnregisterForActorAction(4) ; This isn't necessary - This is automatically done.
 	libs.Log("OnEffectFinish(ShoutStaggerEffect)")
 EndEvent
 
