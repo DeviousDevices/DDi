@@ -2102,9 +2102,9 @@ Function RegisterDevices()
 	RegisterGenericDevice(piercingVSoul		, "piercing,vaginal,soulgem, DDi")
 
 	RegisterGenericDevice(collarRestrictive, "DDi,koffii,collar,restrictive,metal,black")
-	RegisterGenericDevice(corset, "DDi,koffii,corset,leather,black")
-	RegisterGenericDevice(glovesRestrictive, "DDi,koffii,gloves,leather,black")
-	RegisterGenericDevice(yoke, "DDi,koffii,yoke,metal")
+	RegisterGenericDevice(corset, "DDi,restrictive,corset,leather,black")
+	RegisterGenericDevice(glovesRestrictive, "DDi,restrictive,gloves,leather,black")
+	RegisterGenericDevice(yoke, "DDi,yoke,metal")
 
 	log("Finished registering devices.")
 EndFunction
