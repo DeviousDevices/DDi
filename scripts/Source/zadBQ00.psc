@@ -141,6 +141,7 @@ Function Maintenance()
 		if modVersion < 2.9 
 			; device hider migration
 			libs.config.DevicesUnderneathSlot = 12 ; Slot 41
+			libs.config.DevicesUnderneathSlotDefault = 12 
 		EndIf
 		modVersion = curVersion
 		Debug.Notification("Devious Devices, version " + modVersion + " initialized.")
