@@ -30,6 +30,13 @@ int Function OnEquippedFilter(actor akActor, bool silent=false)
 EndFunction
 
 Function OnEquippedPre(actor akActor, bool silent=false)
+	; Check to see if old (slot 54) plug is being used.
+	int slotMask = deviceRendered.GetSlotMask()
+	if (Math.LogicalAnd(slotMask, 0x01000000)) ; Slot 54
+		libs.Warn("Legacy (Slot 54) plug detected. Updating slotmask...")
+		slotMask = ((slotMask - 0x01000000) + 0x08000000)
+		deviceRendered.SetSlotMask(slotMask)
+	EndIf
 	string msg = ""
 	if akActor == libs.PlayerRef
 		if Aroused.GetActorExposure(akActor) < libs.ArousalThreshold("Desire")
@@ -53,7 +60,7 @@ EndFunction
 Function OnEquippedPost(actor akActor)
 	Utility.Wait(5)
 	bool legacyPlugs = false
-	; Slots 48 and 54 Anal and Vaginal plugs      
+	; Slots 48 and 57 Anal and Vaginal plugs      
 	Form analSlot = akActor.GetWornForm(0x00040000)
 	Form vagSlot = akActor.GetWornForm(0x08000000)
 	if analSlot && vagSlot && analSlot == vagSlot
