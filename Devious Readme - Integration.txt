@@ -189,6 +189,15 @@ LoversLab Forum Members for some great suggestions and putting this mod to good 
 
 
 [ CHANGELOG ]
+[ 2.8.3 ]:
+  	New Key Destruction options (Including the possibility of locks jamming).
+  	Greatly enhanced support for Bound Animations: DDi now utilizes the ZAP system (dynamic bound animation creation) for scenes in which actors are bound. Thanks Xaz!
+  	Actor Orgasms will now properly update Sexlab Aroused's last orgasm time.
+  	Fixed RegisterForUpdate bug in zadNPCQuestScript
+  	Fixed a bug that could cause NPC's mouths to remain open after a gag is removed from them.
+  	Optimizations / bugfixes for SD+.
+  	Other smaller bugfixes...
+
 [ 2.8.2 ]:
   	(Hopefully) Fixed the cause of DD failing to initialize for some users.
 	Zenetx's Gags Overhaul has been adopted as the official behavior for gags, and has been merged in to Integration (Thanks Zenetx!).
