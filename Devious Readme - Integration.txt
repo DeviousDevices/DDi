@@ -189,6 +189,102 @@ LoversLab Forum Members for some great suggestions and putting this mod to good 
 
 
 [ CHANGELOG ]
+[ 2.9.0 ]:
+  	The Devious Devices framework no longer supports UNPB. In it's place, UNP has been officially adopted.
+  	
+  	New items:
+  	Yoke
+  	* This is a new 'heavy bondage' item.  It shares many similarities to the armbinder, but is considerably harsher.
+  	* New Struggle Animations
+  	* New Escape Mechanics
+  	* New Dialogue
+  	* Sexlab Filter Integration
+  	* New Periodic Event(s)
+  	
+  	Restrictive Gloves
+  	* This New item occupies the hands slot, and can be worn with any other set of devices.
+  	* New Periodic Event(s)
+  	
+  	Restrictive Collar
+  	* Think the old posture collar looked uncomfortable? Try this one on for size.
+  	* New Periodic Event(s)
+  	
+  	Restrictive Corset
+  	* This new item is an alternative to the existing Harnesses, and occupies the same slot as them. 
+  	* This item will automatically merge with chastity belts to avoid clipping.
+  	* New Gameplay Effects (Stamina regen, Shouts)
+  	* New Periodic Event(s)
+  	
+  	New Plugs and Effects
+  	* Chaos Plugs - Randomly selects Vibrate, Strong Vibrate, Very Strong Vibrate, or Shock upon periodic activation. New "Chaos" periodic event powers these.
+  	* Shocker Plugs - Vibrates very strongly, and shocks the wearer as the effect ends. Instead of starting a vibration at max arousal, delivers a very powerful shock.
+  	* New Effect (periodic shocks). Will periodically shock it's wearer. Not currently used by any DDi plugs, though used by DDx.
+  	
+  	All new items come with appropriate crafting recipes.
+  	
+  	
+  	Modified items:
+  	Armbinder
+  	* No longer exclusive with gloves, hides gloves and armcuffs
+  	* Slot changed to '46' (Commonly used for Cloaks). Massive clipping otherwise.
+  	
+  	Chastity bra / Nipple piercings
+  	* These two items are no longer mutually exclusive, and can be worn together.
+  	* Bra hides nipple piercings by default.
+  	* Cannot add or remove nipple piercings while wearing a bra.
+  	
+  	Vaginal piercings
+  	* Can no longer be added or removed while a harness is worn.
+  	
+  	Harnesses
+  	* Now holds in plugs like belts do
+  	* Cannot remove or insert plugs while harness is on
+  	
+  	
+  	Other stuff:
+  	MCM
+  	* New MCM menu for DDx allows the player to disable the boots slowing effect
+  	* New MCM option to disable the bound animations filter. If this option is selected, heavy bondage implements (Currently the Yoke and Armbinder) will be temporarily removed for the scene, and reequipped after sex has completed.
+  	
+  	Device hider
+  	* This has been moved to slot 41.
+  	
+  	
+  	Bug fixes
+  	* Fixed an animation filter bug that would cause same-sex animations to be played inappropriately. 
+  	* Fixed a conflict between the blocking harness, and the chastity bra.
+  	* Fixed gender innapropriate animations being played while bound.
+  	* Fixed multiple-activation problem with harnesses.
+  	* Fixed lock jamming issue while removing items from corpses
+  	* Fixed key breaking issue when removing items from followers
+  	* Fixed armbinder afterstruggle camera issue
+  	* Fixed generic device function calls on NPC's.
+  	* Fixed several key-break message bugs when interacting with NPC's.
+  	* Fixed bra/blocking harness interaction. The breast compression system will no longer release while wearing a blocking harness.
+  	* A plethora of other smaller bugfixes/changes that I'm probably forgetting about.
+  	
+  	
+  	Slot Changes:
+  	* Vaginal Piercings: 51->50
+  	* Nipple Piercings: 56->51
+  	* Armbinders/Yokes: 33->46
+  	* Vaginal Plugs: 54->57
+  	
+  	
+  	New Keywords:
+  	* zad_DeviousHeavyBondage - The first of a set of "Device Category Keywords", intended to simplify life for modders. Note, that this will not break existing armbinder behavior.
+  	* zad_DeviousYoke - New device type keyword.
+  	* zad_DeviousYokeQuest - As "zad_DeviousArmbinderQuest", indicate to the system that this device should not be processed by interaction dialogues.
+  	* zad_DeviousGloves - New device type keyword.
+  	* zad_DeviousCorset - New device type keyword.
+  	* zad_EffectChaosPlug - New plug effect keyword.
+  	* zad_EffectShockOnFullArousal - New plug effect keyword.
+  	* zad_EffectShocking - New plug effect keyword.
+  	
+  	For Modders:
+  	* Added new  API function to disable blacksmith yoke mechanic (Intended to be called on game load by your mod, if your mod offers an alternative escape mechanic (eg. Captured Dreams)). 
+  	
+  	
 [ 2.8.3 ]:
   	New Key Destruction options (Including the possibility of locks jamming).
   	Greatly enhanced support for Bound Animations: DDi now utilizes the ZAP system (dynamic bound animation creation) for scenes in which actors are bound. Thanks Xaz!
