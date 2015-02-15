@@ -19,7 +19,11 @@ int Function OnEquippedFilter(actor akActor, bool silent=false)
 			ElseIf  !silent
 				libs.NotifyActor("The harness " + akActor.GetLeveledActorBase().GetName() + " is wearing prevents you from inserting this piercing.", akActor, true)
 			EndIf
-			return 2
+			if !silent
+				return 2
+			Else
+				return 0
+			EndIf
 		Endif
 		if akActor.WornHasKeyword(libs.zad_DeviousBelt)
 			if akActor == libs.PlayerRef && !silent
@@ -27,7 +31,11 @@ int Function OnEquippedFilter(actor akActor, bool silent=false)
 			ElseIf  !silent
 				libs.NotifyActor("The belt " + akActor.GetLeveledActorBase().GetName() + " is wearing prevents you from inserting this piercing.", akActor, true)
 			EndIf
-			return 2
+			if !silent
+				return 2
+			Else
+				return 0
+			EndIf
 		Endif
 
 	Endif
