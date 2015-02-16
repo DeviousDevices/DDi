@@ -697,7 +697,7 @@ Function RegisterGenericDevice(Armor inventoryDevice, String tags)
 	while i > 0
 		i -= 1
 		log("adding tag " + tagArray[i] + " for " + inventoryDevice.GetName())
-		StorageUtil.StringListAdd(inventoryDevice, "zad.deviceTags", tagArray[i])
+		StorageUtil.StringListAdd(inventoryDevice, "zad.deviceTags", tagArray[i], false)
 	endWhile
 EndFunction
 
@@ -944,7 +944,7 @@ EndFunction
 
 
 float Function GetVersion()
-	return 2.90
+	return 2.91
 EndFunction
 
 
