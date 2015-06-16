@@ -357,7 +357,7 @@ Event OnPageReset(string page)
 		breastNodeManagementOID = AddToggleOption("Breast Node Management", breastNodeManagement, flags)
 		AddHeaderOption("Belly Options")
 		int flags = 0
-		if libs.PlayerRef.WornHasKeyword(libs.zad_DeviousCorset)
+		if libs.PlayerRef.WornHasKeyword(libs.zad_DeviousCorset)||libs.PlayerRef.WornHasKeyword(libs.zad_DeviousBelt)
 			flags = OPTION_FLAG_DISABLED
 		EndIf
 		bellyNodeManagementOID = AddToggleOption("Belly Node Management", bellyNodeManagement, flags)
