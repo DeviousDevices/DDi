@@ -91,6 +91,9 @@ Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
 	if libs.PlayerRef.HasMagicEffectWithKeyword(libs.zad_EffectCompressBreasts) && libs.PlayerRef.WornHasKeyword(libs.zad_DeviousBra) && (Math.LogicalAnd(akArmor.GetSlotMask(), 0x00000004) && !akArmor.HasKeyword(libs.zad_DeviousHarness))
 		libs.ShowBreasts(libs.PlayerRef)
 	EndIf
+	if libs.PlayerRef.HasMagicEffectWithKeyword(libs.zad_EffectCompressBelly) && libs.PlayerRef.WornHasKeyword(libs.zad_DeviousCorset) && (Math.LogicalAnd(akArmor.GetSlotMask(), 0x00000004) && !akArmor.HasKeyword(libs.zad_DeviousHarness))
+		libs.ShowBelly(libs.PlayerRef)
+	EndIf
 EndEvent
 
 
@@ -101,5 +104,8 @@ Event OnObjectUnequipped(Form akBaseObject, ObjectReference akReference)
 	EndIf
 	if !akArmor.HasKeyword(libs.zad_DeviousBra) && libs.PlayerRef.HasMagicEffectWithKeyword(libs.zad_EffectCompressBreasts) && libs.PlayerRef.WornHasKeyword(libs.zad_DeviousBra) && Math.LogicalAnd(akArmor.GetSlotMask(), 0x00000004)
 		libs.HideBreasts(libs.PlayerRef)
+	EndIf
+	if !akArmor.HasKeyword(libs.zad_DeviousCorset) && libs.PlayerRef.HasMagicEffectWithKeyword(libs.zad_EffectCompressBreasts) && libs.PlayerRef.WornHasKeyword(libs.zad_DeviousCorset) && Math.LogicalAnd(akArmor.GetSlotMask(), 0x00000004)
+		libs.HideBelly(libs.PlayerRef)
 	EndIf
 EndEvent
