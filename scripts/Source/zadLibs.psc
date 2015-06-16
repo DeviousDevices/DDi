@@ -290,7 +290,7 @@ Keyword Property zad_EffectEdgeRandom Auto    ; Will sometimes let the player cu
 
 Keyword Property zad_EffectsLinked Auto      ; If one effect fires, all effects fire.
 Keyword Property zad_EffectCompressBreasts Auto ; Compress breasts to avoid hdt clipping through bras.
-Keyword Property zad_EffectCompressBelly Auto ; Compress belly to avoid hdt clipping through corsets.
+Keyword Property zad_EffectCompressBelly Auto ; Compress belly to avoid hdt clipping through corsets, belts and harnesses.
 
 ;===============================================================================
 ; Public Interface Functions
@@ -2151,17 +2151,19 @@ Function RemoveFromDisableDialogueFaction(Actor akActor)
 	akActor.RemoveFromFaction(zadDisableDialogueFaction)
 EndFunction
 
-
-
 Function StoreNodes(actor akActor)
 	float tmp = NetImmerse.GetNodeScale(akActor, "NPC L Breast", false)
 	if tmp != 0.0
 		BreastNodeScale = tmp
 		log("Node Scale: "+BreastNodeScale)
 	EndIf
-	float tmb = NetImmerse.GetNodeScale(akActor, "NPC Belly", false)
-	if tmb != 0.0
-		BellyNodeScale = tmb
+EndFunction
+
+
+Function StoreBellyNode(actor akActor)
+	float tmp = NetImmerse.GetNodeScale(akActor, "NPC Belly", false)
+	if tmp != 0.0
+		BellyNodeScale = tmp
 		log("Belly Node Scale: "+BellyNodeScale)
 	EndIf
 EndFunction
@@ -2185,7 +2187,7 @@ EndFunction
 
 
 Function HideBelly(actor akActor)
-	StoreNodes(akActor) ; Handle other mods resizing the Belly nodes.
+	StoreBellyNode(akActor) ; Handle other mods resizing the Belly nodes.
 	if config.BellyNodeManagement
 		NetImmerse.SetNodeScale(akActor, "NPC Belly", 0, false)
 	EndIf
