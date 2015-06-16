@@ -45,6 +45,8 @@ bool Property preserveAggro Auto
 bool preserveAggroDefault = true
 bool Property breastNodeManagement Auto
 bool breastNodeManagementDefault = true
+bool Property bellyNodeManagement Auto
+bool bellyNodeManagementDefault = true
 
 bool Property useBoundAnims =  true Auto
 bool useBoundAnimsDefault = true
@@ -173,6 +175,7 @@ int[] slotMaskOIDs
 int DevicesUnderneathSlotOID
 int UseQueueNiNodeOID
 int breastNodeManagementOID
+int bellyNodeManagementOID
 int useBoundAnimsOID
 int bootsSlowdownToggleOID
 
@@ -348,11 +351,16 @@ Event OnPageReset(string page)
 		blindfoldModeOID = AddMenuOption("BlindfoldMode", blindfoldList[blindfoldMode])
 		blindfoldStrengthOID = AddSliderOption("Blindfold Strength", blindfoldStrength, "{2}")
 		AddHeaderOption("Bra Options")
-		int flags = 0
 		if libs.PlayerRef.WornHasKeyword(libs.zad_DeviousBra)
 			flags = OPTION_FLAG_DISABLED
 		EndIf
 		breastNodeManagementOID = AddToggleOption("Breast Node Management", breastNodeManagement, flags)
+		AddHeaderOption("Belly Options")
+		int flags = 0
+		if libs.PlayerRef.WornHasKeyword(libs.zad_DeviousCorset)
+			flags = OPTION_FLAG_DISABLED
+		EndIf
+		bellyNodeManagementOID = AddToggleOption("Belly Node Management", bellyNodeManagement, flags)
 	ElseIf page == "Sex Animation Filter"
 		SetCursorFillMode(TOP_TO_BOTTOM)
 		SetCursorPosition(0) ; Can be removed because it starts at 0 anyway
@@ -711,6 +719,9 @@ Event OnOptionSelect(int option)
 	elseif option == breastNodeManagementOID
 		breastNodeManagement = !breastNodeManagement
 		SetToggleOptionValue(breastNodeManagementOID, breastNodeManagement)
+	elseif option == bellyNodeManagementOID
+		bellyNodeManagement = !bellyNodeManagement
+		SetToggleOptionValue(bellyNodeManagementOID, bellyNodeManagement)
 	EndIf
 EndEvent
 
@@ -858,6 +869,9 @@ Event OnOptionDefault(int option)
 	elseIf (option == breastNodeManagementOID)
 		breastNodeManagement = breastNodeManagementDefault
 		SetToggleOptionValue(breastNodeManagementOID, breastNodeManagement)
+	elseIf (option == bellyNodeManagementOID)
+		bellyNodeManagement = bellyNodeManagementDefault
+		SetToggleOptionValue(bellyNodeManagementOID, bellyNodeManagement)
 	endIf
 EndEvent
 
@@ -966,6 +980,8 @@ Event OnOptionHighlight(int option)
 		SetInfoText("Configures support for Immersive First Person.\nDefault:"+ifpDefault)
 	elseIf (option == breastNodeManagementOID)
 		SetInfoText("If enabled, breasts will be resized while the chastity bra is worn, to minimized HDT clipping.\nDefault: "+breastNodeManagementDefault)
+	elseIf (option == bellyNodeManagementOID)
+		SetInfoText("If enabled, belly will be resized while the corset is worn, to minimized HDT clipping.\nDefault: "+bellyNodeManagementDefault)
 	endIf
 EndEvent
 

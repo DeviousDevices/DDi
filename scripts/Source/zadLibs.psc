@@ -247,6 +247,7 @@ Soulgem Property SoulgemFilled Auto
 MiscObject Property SoulgemStand Auto
 Perk Property LustgemCrafting Auto
 float Property BreastNodeScale Auto
+float Property BellyNodeScale Auto
 
 ; Nipple Piercings
 Perk Property PiercedNipples Auto
@@ -289,7 +290,7 @@ Keyword Property zad_EffectEdgeRandom Auto    ; Will sometimes let the player cu
 
 Keyword Property zad_EffectsLinked Auto      ; If one effect fires, all effects fire.
 Keyword Property zad_EffectCompressBreasts Auto ; Compress breasts to avoid hdt clipping through bras.
-
+Keyword Property zad_EffectCompressBelly Auto ; Compress belly to avoid hdt clipping through corsets.
 
 ;===============================================================================
 ; Public Interface Functions
@@ -697,7 +698,7 @@ Function RegisterGenericDevice(Armor inventoryDevice, String tags)
 	while i > 0
 		i -= 1
 		log("adding tag " + tagArray[i] + " for " + inventoryDevice.GetName())
-		StorageUtil.StringListAdd(inventoryDevice, "zad.deviceTags", tagArray[i], false)
+		StorageUtil.StringListAdd(inventoryDevice, "zad.deviceTags", tagArray[i])
 	endWhile
 EndFunction
 
@@ -944,7 +945,7 @@ EndFunction
 
 
 float Function GetVersion()
-	return 2.91
+	return 2.90
 EndFunction
 
 
@@ -2158,6 +2159,11 @@ Function StoreNodes(actor akActor)
 		BreastNodeScale = tmp
 		log("Node Scale: "+BreastNodeScale)
 	EndIf
+	float tmb = NetImmerse.GetNodeScale(akActor, "NPC Belly", false)
+	if tmb != 0.0
+		BellyNodeScale = tmb
+		log("Belly Node Scale: "+BellyNodeScale)
+	EndIf
 EndFunction
 
 
@@ -2174,6 +2180,21 @@ Function ShowBreasts(actor akActor)
 	if BreastNodeScale != 0.0 && config.BreastNodeManagement
 		NetImmerse.SetNodeScale(akActor, "NPC L Breast", BreastNodeScale, false)
 		NetImmerse.SetNodeScale(akActor, "NPC R Breast", BreastNodeScale, false)
+	EndIf
+EndFunction
+
+
+Function HideBelly(actor akActor)
+	StoreNodes(akActor) ; Handle other mods resizing the Belly nodes.
+	if config.BellyNodeManagement
+		NetImmerse.SetNodeScale(akActor, "NPC Belly", 0, false)
+	EndIf
+EndFunction
+
+
+Function ShowBelly(actor akActor)
+	if BellyNodeScale != 0.0 && config.BellyNodeManagement
+		NetImmerse.SetNodeScale(akActor, "NPC Belly", BellyNodeScale, false)
 	EndIf
 EndFunction
 
