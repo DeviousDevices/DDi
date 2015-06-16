@@ -1,4 +1,4 @@
-Scriptname zadCorsetEffect extends ActiveMagicEffect  
+Scriptname zadBellyEffect extends ActiveMagicEffect  
 
 zadLibs Property Libs Auto
 
@@ -16,7 +16,7 @@ EndFunction
 
 Event OnUpdate()
 	if !Terminate
-		if (!Target.GetWornForm(0x00000004) || Target.WornHasKeyword(libs.zad_DeviousHarness))
+		if (!Target.GetWornForm(0x00000004) || Target.WornHasKeyword(libs.zad_DeviousHarness)) || Target.WornHasKeyword(libs.zad_DeviousBelt) || Target.WornHasKeyword(libs.zad_DeviousCorset)
 			libs.HideBelly(Target)
 		Endif
 	Else ; Avoid race condition
@@ -30,13 +30,13 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 	; if akTarget != libs.PlayerRef
 	; 	return
 	; EndIf
-	libs.Log("OnEffectStart(): Corset")
+	libs.Log("OnEffectStart(): Belly")
 	Target = akTarget
 	Terminate = False
 
-	libs.StoreNodes(Target)
+	libs.StoreBellyNode(Target)
 	OriginalNodeScale = libs.BellyNodeScale
-	if Target.WornHasKeyword(libs.zad_DeviousCorset) && (!Target.GetWornForm(0x00000004) || Target.WornHasKeyword(libs.zad_DeviousHarness))
+	if (Target.WornHasKeyword(libs.zad_DeviousCorset) || Target.WornHasKeyword(libs.zad_DeviousBelt)) && (!Target.GetWornForm(0x00000004) || Target.WornHasKeyword(libs.zad_DeviousHarness))
 		libs.HideBelly(Target)
 	EndIf
 	RegisterForSingleUpdate(2.0)
@@ -44,7 +44,7 @@ EndEvent
 
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
-	libs.Log("OnEffectFinish(): Corset")
+	libs.Log("OnEffectFinish(): Belly")
 	Terminate = True
 	libs.ShowBelly(Target)
 EndEvent
