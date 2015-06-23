@@ -14,40 +14,43 @@ Function ClearMFG(actor ActorRef)
 EndFunction
 
 Function DoRegister()
-	if Terminate || !target
-		return
+	if !Terminate && target
+		RegisterForSingleUpdate(1.0)
 	EndIf
-	RegisterForSingleUpdate(1.0)
+EndFunction
+
+Function DoUnregister()
+	if !Terminate && target
+		UnregisterForUpdate()
+	EndIf
+EndFunction
+
+Function DoApply()
+	if !Terminate && target
+		ApplyGagEffect()
+		DoRegister()
+	EndIf
 EndFunction
 
 Event OnUpdate()
-	ApplyGagEffect()
-	DoRegister()
+	DoApply()
 EndEvent
 
 Function ApplyGagEffect()
-	if Terminate || !target
-		return
+	if Target.Is3DLoaded() && !Target.IsDead() && !Target.IsDisabled()
+		Shout theShout = Target.GetEquippedShout()
+		If theShout != None
+			Target.UnequipShout(TheShout)
+		EndIf
+		libs.ApplyGagEffect(Target)
 	EndIf
-	if (!Target.Is3DLoaded() || Target.IsDead() || Target.IsDisabled())
-		return
-	EndIf
-	Shout theShout = Target.GetEquippedShout()
-	If theShout != None
-		Target.UnequipShout(TheShout)
-	EndIf
-	libs.ApplyGagEffect(Target)
 EndFunction
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-	if akTarget != libs.PlayerRef
-		return
-	EndIf
 	libs.Log("OnEffectStart(gag)")
 	target = akTarget
 	Terminate = False
-	ApplyGagEffect()
-	DoRegister()
+	DoApply()
 EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
@@ -58,21 +61,22 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 EndEvent
 
 Event OnCellLoad()
-	if target && ! Terminate
-		ApplyGagEffect()
-		DoRegister()
-	EndIf
+	DoApply()
 EndEvent
 
 Event OnCellAttach()
-	OnCellLoad()
+	DoApply()
 EndEvent
 
 Event OnLoad()
-	OnCellLoad()
+	DoApply()
+EndEvent
+
+Event OnCellDetach()
+	DoUnregister()
 EndEvent
 
 Event OnUnload()
-	; UnregisterForUpdate()
+	DoUnregister()
 EndEvent
 

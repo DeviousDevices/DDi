@@ -77,12 +77,12 @@ Function SexScene(ObjectReference akSpeaker, bool aggressive)
 	sslBaseAnimation[] anims = SexLab.GetAnimationsByType(2, aggressive=aggressive)
 	if anims.length <=0
 		libs.Error("No animations available.")
-		return
+	else
+        	actor[] actors = new actor[2]
+	        actors[0] = libs.PlayerRef
+        	actors[1] = otherActor
+	        SexLab.StartSex(actors, anims)	
 	EndIf
-        actor[] actors = new actor[2]
-        actors[0] = libs.PlayerRef
-        actors[1] = otherActor
-        SexLab.StartSex(actors, anims)
 EndFunction
 
 

@@ -26,15 +26,15 @@ EndEvent
 Event OnUpdate()
 	if !IsRunning
 		libs.StopVibrating(TheVictim)
-		return
-	EndIf
-	if TheCaster.GetAV("Magicka") < 25
-		if TheCaster == libs.PlayerRef
-			libs.NotifyPlayer("You can sustain the spell no longer...")
+	else
+		if TheCaster.GetAV("Magicka") < 25
+			if TheCaster == libs.PlayerRef
+				libs.NotifyPlayer("You can sustain the spell no longer...")
+			EndIf
+			TerminateChannel()
 		EndIf
-		TerminateChannel()
+		DoRegister()
 	EndIf
-	DoRegister()
 EndEvent
 
 

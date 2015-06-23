@@ -98,9 +98,9 @@ function DoRegister()
 	libs.Log("Config Interval:" + libs.Config.EventInterval + ". Total number of events: " + ProcessNum +". Next staggered update in " + libs.Config.EventInterval / numEvents)
 	if !libs || !libs.config || !libs.Config.EventInterval
 		debug.Messagebox("A fatal error has occurred with your installation of Devious Devices. Incomplete uninstall attempt perhaps? Aborting update chain.")
-		return
+	else
+		RegisterForSingleUpdateGameTime(libs.Config.EventInterval / numEvents)
 	EndIf
-	RegisterForSingleUpdateGameTime(libs.Config.EventInterval / numEvents)
 EndFunction
 
 
@@ -110,36 +110,43 @@ bool Function ProcessEvents(actor akActor)
 	if ProcessOneEvent(akActor)
 		;DoRegister()
 		return true
+	else
+		ProcessNum = 0
+		return false
 	EndIf
-	ProcessNum = 0
-	return false
 EndFunction
 
-	
+
 
 Event OnUpdateGameTime()
-	actor akActor = libs.PlayerRef
+	UpdateGlobalEvent()
+EndEvent
+
+
+Function UpdateGlobalEvent()
 	if libs.PlayerRef.WornHasKeyword(libs.zad_DeviousPlug)
-		libs.UpdateArousalTimerate(akActor, 1.75)
-		libs.UpdateExposure(akActor, 0.5)
+		libs.UpdateArousalTimerate(libs.PlayerRef, 1.75)
+		libs.UpdateExposure(libs.PlayerRef, 0.5)
 	EndIf
 	if !libs.GlobalEventFlag
 		libs.Log("Event processing is currently disabled.")
 		DoRegister()
-		return
-	EndIf
-	if ProcessNum == 0
-		CheckAllEvents()
-	EndIf
-	if ProcessNum > 0 && !ProcessEvents(akActor) ; If we processed the last event, restart.
+	else
 		if ProcessNum == 0
-			libs.Log("Finished processing events. Re-Polling..")
-			OnUpdateGameTime()
-			return
+			CheckAllEvents()
+		EndIf
+		if ProcessNum > 0 && !ProcessEvents(libs.PlayerRef) ; If we processed the last event, restart.
+			if ProcessNum == 0
+				libs.Log("Finished processing events. Re-Polling..")
+				UpdateGlobalEvent()
+			else
+				DoRegister()
+			EndIf
+		else
+			DoRegister()
 		EndIf
 	EndIf
-	DoRegister()
-EndEvent
+EndFunction
 
 
 Function Maintenance()

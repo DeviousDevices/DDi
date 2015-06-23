@@ -291,29 +291,27 @@ Bool Property BacktalkedMaster Auto
 
 Function StartupSleepCapture()
 	libs.Log("StartupSleepCapture")
-	if !SanityCheck()
-		return
+	if SanityCheck()
+		InitiationStart()
 	EndIf
-	InitiationStart()
 EndFunction
 
 
 Function StartupTrapCapture()
 	libs.Log("StartupTrapCapture")
-	if !SanityCheck()
-		return
+	if SanityCheck()
+		libs.DisableControls()
+		int tmp = 2; Utility.RandomInt(1,2)
+		if tmp == 1
+			TrappedChest01Msg.Show()
+			; TrappedChest01Scene
+		else
+			rm.KeyContainer.GetReference().KnockAreaEffect(1,1500)
+			TrappedChest02Msg.Show()
+			; libs.PlaySceneAndWait(TrappedChest02Scene, true, 120)
+		EndIf
+		InitiationStart()
 	EndIf
-	libs.DisableControls()
-	int tmp = 2; Utility.RandomInt(1,2)
-	if tmp == 1
-		TrappedChest01Msg.Show()
-		; TrappedChest01Scene
-	else
-		rm.KeyContainer.GetReference().KnockAreaEffect(1,1500)
-		TrappedChest02Msg.Show()
-		; libs.PlaySceneAndWait(TrappedChest02Scene, true, 120)
-	EndIf
-	InitiationStart()
 EndFunction
 
 Function InitiationStart()
@@ -415,9 +413,9 @@ EndFunction
 Function QueueHeartbeat(float offset)
 	if !libs || !config || !config.rmHeartbeatInterval || !config.rmSummonHeartbeatInterval
 		debug.Messagebox("A fatal error has occurred with your installation of Devious Devices. Incomplete uninstall attempt perhaps? Aborting update chain.")
-		return
+	else
+		RegisterForSingleUpdateGameTime(offset)
 	EndIf
-	RegisterForSingleUpdateGameTime(offset)
 EndFunction
 
 

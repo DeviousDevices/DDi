@@ -351,16 +351,15 @@ Event OnPageReset(string page)
 		blindfoldModeOID = AddMenuOption("BlindfoldMode", blindfoldList[blindfoldMode])
 		blindfoldStrengthOID = AddSliderOption("Blindfold Strength", blindfoldStrength, "{2}")
 		AddHeaderOption("Bra Options")
+		breastNodeManagementOID = AddToggleOption("Breast Node Management", breastNodeManagement)
 		if libs.PlayerRef.WornHasKeyword(libs.zad_DeviousBra)
-			flags = OPTION_FLAG_DISABLED
+			SetOptionFlags(breastNodeManagementOID, OPTION_FLAG_DISABLED)
 		EndIf
-		breastNodeManagementOID = AddToggleOption("Breast Node Management", breastNodeManagement, flags)
 		AddHeaderOption("Belly Options")
-		int flags = 0
+		bellyNodeManagementOID = AddToggleOption("Belly Node Management", bellyNodeManagement)
 		if libs.PlayerRef.WornHasKeyword(libs.zad_DeviousCorset)||libs.PlayerRef.WornHasKeyword(libs.zad_DeviousBelt)
-			flags = OPTION_FLAG_DISABLED
+			SetOptionFlags(bellyNodeManagementOID, OPTION_FLAG_DISABLED)
 		EndIf
-		bellyNodeManagementOID = AddToggleOption("Belly Node Management", bellyNodeManagement, flags)
 	ElseIf page == "Sex Animation Filter"
 		SetCursorFillMode(TOP_TO_BOTTOM)
 		SetCursorPosition(0) ; Can be removed because it starts at 0 anyway

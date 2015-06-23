@@ -14,32 +14,30 @@ Keyword Property zad_PermitOral Auto
 bool panelGagOpen = false
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-	if akTarget != libs.PlayerRef
-		return
+	if akTarget == libs.PlayerRef
+		libs.Log("OnEffectStart(gag-noFood)")
+		target = akTarget
+		UpdateState()
+		RegisterForModEvent("GagPanelStateChange", "OnGagPanelStateChange")
 	EndIf
-	libs.Log("OnEffectStart(gag-noFood)")
-	target = akTarget
-	UpdateState()
-	RegisterForModEvent("GagPanelStateChange", "OnGagPanelStateChange")
 EndEvent
 
 Event OnGagPanelStateChange(string eventName, string argString, float argNum, form sender)
 	libs.Log("OnGagPanelStateChange("+argString+","+argNum+")")
 	if target != libs.PlayerRef || target.GetLeveledActorBase().GetName() != argString
 		libs.Log("Not player. Done.")
-		return
-	EndIf
-	if argNum == 0 ; Open
-		panelGagOpen = true
-		UpdateState()
-		RemoveFromFridge()
-	ElseIf argNum == 1 ;Closed
-		; StoreInFridge() ; Called in HardcoreMode OnBeginState()
-		panelGagOpen = false
-		UpdateState()
-	Else
-		libs.Error("OnGagPanelStateChange received invalid state:"+argNum)
-		return
+	else
+		if argNum == 0 ; Open
+			panelGagOpen = true
+			UpdateState()
+			RemoveFromFridge()
+		ElseIf argNum == 1 ;Closed
+			; StoreInFridge() ; Called in HardcoreMode OnBeginState()
+			panelGagOpen = false
+			UpdateState()
+		Else
+			libs.Error("OnGagPanelStateChange received invalid state:"+argNum)
+		EndIf
 	EndIf
 EndEvent
 
@@ -83,10 +81,9 @@ EndEvent
 
 state HardcoreMode
 	event OnBeginState()
-		if target != libs.PlayerRef
-			return
+		if target == libs.PlayerRef
+			StoreInFridge()
 		EndIf
-		StoreInFridge()
 	endEvent
 
 	event OnItemAdded(Form akBaseItem, int aiItemCount, ObjectReference akItemReference, ObjectReference akSourceContainer)

@@ -7,11 +7,9 @@ ReferenceAlias Property NPC Auto
 
 
 Event OnSpellCast(Form akSpell)
-	Spell tmp = (akSpell as Spell)
-	if tmp == none
-		return
+	if (akSpell as Spell) != none
+		libs.SpellCastVibrate(NPC.GetActorReference(), akSpell)
 	EndIf
-	libs.SpellCastVibrate(NPC.GetActorReference(), akSpell)
 EndEvent
 
 
