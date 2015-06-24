@@ -351,14 +351,16 @@ Event OnPageReset(string page)
 		blindfoldModeOID = AddMenuOption("BlindfoldMode", blindfoldList[blindfoldMode])
 		blindfoldStrengthOID = AddSliderOption("Blindfold Strength", blindfoldStrength, "{2}")
 		AddHeaderOption("Bra Options")
-		breastNodeManagementOID = AddToggleOption("Breast Node Management", breastNodeManagement)
 		if libs.PlayerRef.WornHasKeyword(libs.zad_DeviousBra)
-			SetOptionFlags(breastNodeManagementOID, OPTION_FLAG_DISABLED)
+			breastNodeManagementOID = AddToggleOption("Breast Node Management", breastNodeManagement,OPTION_FLAG_DISABLED)
+		else
+			breastNodeManagementOID = AddToggleOption("Breast Node Management", breastNodeManagement)
 		EndIf
 		AddHeaderOption("Belly Options")
-		bellyNodeManagementOID = AddToggleOption("Belly Node Management", bellyNodeManagement)
 		if libs.PlayerRef.WornHasKeyword(libs.zad_DeviousCorset)||libs.PlayerRef.WornHasKeyword(libs.zad_DeviousBelt)
-			SetOptionFlags(bellyNodeManagementOID, OPTION_FLAG_DISABLED)
+			bellyNodeManagementOID = AddToggleOption("Belly Node Management", bellyNodeManagement,OPTION_FLAG_DISABLED)
+		else
+			bellyNodeManagementOID = AddToggleOption("Belly Node Management", bellyNodeManagement)
 		EndIf
 	ElseIf page == "Sex Animation Filter"
 		SetCursorFillMode(TOP_TO_BOTTOM)
