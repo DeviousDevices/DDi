@@ -33,14 +33,14 @@ Function DoRandomPunishment(bool eval=false)
 	libs.NotifyPlayer("DoRandomPunishment Placeholder", 1)
 	if eval
 		libs.Log("Eval: End DoRandomPunishment()")
-		return
+	else
+		if !MasterScript.fg.ForceGreet(PostPunishment)
+			libs.Warn("Post-Punishment scene timed out!")
+			libs.NotifyPlayer("Debug: Scene timed out.",1)
+			Post()
+		EndIf
+		libs.Log("End DoRandomPunishment()")
 	EndIf
-	if !MasterScript.fg.ForceGreet(PostPunishment)
-		libs.Warn("Post-Punishment scene timed out!")
-		libs.NotifyPlayer("Debug: Scene timed out.",1)
-		Post()
-	EndIf
-	libs.Log("End DoRandomPunishment()")
 EndFunction
 
 

@@ -13,10 +13,13 @@ Int Property GemSize Auto ; 1: Petty, 2: Leser, 3: Common, 4: Greater, 5: Grand
 ; Think I'll try using storageutil for this.
 ; Int Property CurrentCharge Auto
 
-Function Maintenance()
+Function DoRegisterModEvent()
 	UnregisterForModEvent("DeviceActorOrgasm")
 	RegisterForModEvent("DeviceActorOrgasm", "OnActorOrgasm")
-	DoRegister()
+EndFunction
+
+Function DoUnregisterModEvent()
+	UnregisterForModEvent("DeviceActorOrgasm")
 EndFunction
 
 Event OnActorOrgasm(string eventName, string argString, float argNum, form sender)
@@ -48,57 +51,57 @@ Function ApplyPlugEffects()
 		libs.Log("Charged Soulgem. Current Charge ["+ CurrentCharge+ "]. Gained ["+chargeGain+"] this tick.")
 		if CurrentCharge >= 100
 			libs.VibrateEffect(Target, 4, 120)
-		ElseIf CurrentCharge >= 90
-			libs.NotifyPlayer("The soulgem within you pulses in a way that arouses you greatly.")
-		ElseIf CurrentCharge >= 75
-			libs.NotifyPlayer("The soulgem within you grows uncomfortably warm, and moves slightly.")
-		ElseIf CurrentCharge >= 50
-			libs.NotifyPlayer("The soulgem within you grows uncomfortably warm, before cooling again.")
-		ElseIf CurrentCharge >= 25
-			libs.NotifyPlayer("The soulgem within you grows warm briefly, before cooling again.")
 		Else
-			libs.NotifyPlayer("It may be your imagination, though you think that the soulgem within you moved just now.")
+			if Target == libs.PlayerRef
+				If CurrentCharge >= 90
+					libs.NotifyPlayer("The soulgem within you pulses in a way that arouses you greatly.")
+				ElseIf CurrentCharge >= 75
+					libs.NotifyPlayer("The soulgem within you grows uncomfortably warm, and moves slightly.")
+				ElseIf CurrentCharge >= 50
+					libs.NotifyPlayer("The soulgem within you grows uncomfortably warm, before cooling again.")
+				ElseIf CurrentCharge >= 25
+					libs.NotifyPlayer("The soulgem within you grows warm briefly, before cooling again.")
+				Else
+					libs.NotifyPlayer("It may be your imagination, though you think that the soulgem within you moved just now.")
+				EndIf
+			EndIf
 		EndIf
 	Else
-		libs.Log("Did not charge soulgem. Arousal: "+libs.Aroused.GetActorArousal(Target))
+		libs.Log("Did not charge "+Target.GetLeveledActorBase().GetName()+"' soulgem. Arousal: "+libs.Aroused.GetActorArousal(Target))
 	EndIf
 EndFunction
 
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-	if akTarget != libs.PlayerRef
-		return
-	EndIf
 	libs.Log("OnEffectStart(Chargeable)")
 	Target = akTarget
 	Terminate = False
 	; Set in zadPlugChargeableScript.psc
 	; StorageUtil.SetIntValue(Target, "zad.SoulgemChargeValue", 0)
-	Maintenance()
+	DoRegisterModEvent()
 	DoRegister()
 EndEvent
 
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	Terminate = True
+	DoUnregisterModEvent()
 	libs.StopVibrating(Target)
 	libs.Log("OnEffectFinish(Chargeable)")
 EndEvent
 
+Event OnCellLoad()
+	DoRegisterModEvent()
+	DoRegister()
+EndEvent
 
 Event OnCellAttach()
-	Maintenance()
+	DoRegisterModEvent()
 	DoRegister()
 EndEvent
-
 
 Event OnLoad()
-	Maintenance()
+	DoRegisterModEvent()
 	DoRegister()
 EndEvent
 
-
-Event OnUnload()
-	UnregisterForModEvent("DeviceActorOrgasm")
-	UnregisterForUpdate()
-EndEvent

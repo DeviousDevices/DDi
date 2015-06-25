@@ -15,14 +15,13 @@ Function UpdateState(actor akActor)
 	ElseIf currentState == 2
 		deviceRendered = stateBeltedFull
 	EndIf
-	if !akActor.WornHasKeyword(libs.zad_DeviousCorset) ; Don't process further if not wearing a corset.
-		return
-	EndIf
-	if !akActor.IsEquipped(deviceRendered)
-		akActor.RemoveItem(stateDefault, 1, true)
-		akActor.RemoveItem(stateBeltedFull, 1, true)
-		akActor.RemoveItem(stateBeltedOpen, 1, true)
-		akActor.EquipItem(deviceRendered, true, true)
+	if akActor.WornHasKeyword(libs.zad_DeviousCorset) ; Don't process further if not wearing a corset.
+		if !akActor.IsEquipped(deviceRendered)
+			akActor.RemoveItem(stateDefault, 1, true)
+			akActor.RemoveItem(stateBeltedFull, 1, true)
+			akActor.RemoveItem(stateBeltedOpen, 1, true)
+			akActor.EquipItem(deviceRendered, true, true)
+		EndIf
 	EndIf
 EndFunction
 

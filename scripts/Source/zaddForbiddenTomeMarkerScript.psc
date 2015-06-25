@@ -20,25 +20,23 @@ int Property ObjectiveID Auto
 Event OnCellLoad()
 	libs.Log("OnCellLoad()")
 ;	If akActionRef == Player
-	if questScript.GetStage() <= 10
-		return
-	Endif
-		if questScript.IsObjectiveCompleted(ObjectiveID)
-			return
+	if questScript.GetStage() > 10
+		if !questScript.IsObjectiveCompleted(ObjectiveID)
+			if IsDecoy
+				libs.NotifyPlayer("Zed doesn't seem to be anywhere near here.")
+				questScript.SetObjectiveDisplayed(ObjectiveID, false)
+				questScript.SetObjectiveCompleted(ObjectiveID)
+			Else
+				questScript.SetObjectiveCompleted(20)
+				questScript.SetObjectiveDisplayed(21, false)
+				questScript.SetObjectiveCompleted(21)
+				questScript.SetObjectiveDisplayed(22, false)
+				questScript.SetObjectiveCompleted(22)
+				libs.NotifyPlayer("Aha! I think I see Zed up ahead.")
+				questScript.SetObjectiveDisplayed(23)
+			EndIf
 		EndIf
-		if IsDecoy
-			libs.NotifyPlayer("Zed doesn't seem to be anywhere near here.")
-			questScript.SetObjectiveDisplayed(ObjectiveID, false)
-			questScript.SetObjectiveCompleted(ObjectiveID)
-		Else
-			questScript.SetObjectiveCompleted(20)
-			questScript.SetObjectiveDisplayed(21, false)
-			questScript.SetObjectiveCompleted(21)
-			questScript.SetObjectiveDisplayed(22, false)
-			questScript.SetObjectiveCompleted(22)
-			libs.NotifyPlayer("Aha! I think I see Zed up ahead.")
-			questScript.SetObjectiveDisplayed(23)
-		EndIf
+	EndIf
 ;	EndIf
 EndEvent
 

@@ -7,9 +7,6 @@ SexlabFramework Property Sexlab Auto
 Bool Property Terminate Auto
 actor Property Target Auto
 
-
-
-
 ; Extend this function to set a day passed event.
 Function OnTrainingDayPassed(int daysRemaining)
 	if daysRemaining == 1
@@ -17,14 +14,13 @@ Function OnTrainingDayPassed(int daysRemaining)
 	Else
 		libs.NotifyPlayer("You hear a set of "+daysRemaining+" chimes originating from inside of you.")
 	EndIf
-
 EndFunction
 
 ; Extend this function to set training completed event.
 Function OnTrainingComplete() 
 	libs.Log("The training plug within you lets out a chime, and begins to vibrate!")
 	ModDaysRemaining(7, maxRange=GetTrainingRange())
-	libs.VibrateEffect(libs.PlayerRef, 5, 120, teaseOnly=false)
+	libs.VibrateEffect(Target, 5, 120, teaseOnly=false)
 EndFunction
 
 ; Extend this function to set the maximum training duration.
@@ -42,15 +38,9 @@ Event OnTrainingViolation(string eventName, string argString, float argNum, form
 	EndIf
 EndEvent
 
-
-
-
-
-
-Function Maintenance()
+Function DoRegisterModEvent()
 	UnregisterForModEvent("TrainingViolation")
 	RegisterForModEvent("TrainingViolation", "OnTrainingViolation")
-	DoRegister()
 EndFunction
 
 
@@ -101,44 +91,30 @@ int Function ModDaysRemaining(int changeBy, int maxRange)
 	return newDaysRemaining
 EndFunction
 
-
-
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-	if akTarget != libs.PlayerRef
-		return
-	EndIf
-	if akTarget != libs.PlayerRef
-		libs.Log("OnEffectStart(Training): Not player, doing nothing.")
-		return
-	EndIf
-	libs.Log("OnEffectStart(Training)")
 	Target = akTarget
-	Terminate = False
-	Maintenance()
+	if Target != libs.PlayerRef
+		libs.Log("OnEffectStart(Training): Not player, doing nothing.")
+	else
+		libs.Log("OnEffectStart(Training)")
+		Terminate = False
+		DoRegisterModEvent()
+		DoRegister()
+	EndIf
 EndEvent
-
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	Terminate = True
+	UnregisterForModEvent("TrainingViolation")
+	UnregisterForUpdateGameTime()
 	libs.Log("OnEffectFinish(Training)")
 EndEvent
 
 
-Event OnCellAttach()
-	if Target
-		Maintenance()
-	EndIf
-EndEvent
-
-
 Event OnLoad()
-	if Target
-		Maintenance()
-	EndIf
+	if Target == libs.PlayerRef
+		DoRegisterModEvent()
+		DoRegister()
+	Endif
 EndEvent
 
-
-Event OnUnload()
-	UnregisterForModEvent("TrainingViolation")
-	UnregisterForUpdate()
-EndEvent

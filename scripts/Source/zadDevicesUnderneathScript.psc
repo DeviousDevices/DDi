@@ -67,19 +67,19 @@ EndFunction
 Function HideEquipment(int slot1, int slot2)
 	if slot1 < 30 || slot1 > 61 || slot2 < 30 || slot2 > 61
 		libs.Error("HideEquipment received out of bound slot number.")
-		Return
+	else
+		int index = ((slot1 - 30) * 4)
+		int i = 0
+		while i < 4
+			if SlotMaskFilters[index+i] == 0
+				SlotMaskFilters[index+i] = ShiftCache[slot2 - 30]
+				libs.Log("DevicesUnderneath Registered(" + index+i + ":" + (slot2 - 30)+")")
+				return
+			EndIf
+			i += 1
+		EndWhile
+		libs.Error("Maximum number of equipment slots reached for slot "+ slot1 + " while trying to hide slot "+ slot2)
 	EndIf
-	int index = ((slot1 - 30) * 4)
-	int i = 0
-	while i < 4
-		if SlotMaskFilters[index+i] == 0
-			SlotMaskFilters[index+i] = ShiftCache[slot2 - 30]
-			libs.Log("DevicesUnderneath Registered(" + index+i + ":" + (slot2 - 30)+")")
-			return
-		EndIf
-		i += 1
-	EndWhile
-	libs.Error("Maximum number of equipment slots reached for slot "+ slot1 + " while trying to hide slot "+ slot2)
 EndFunction
 
 
@@ -98,24 +98,22 @@ EndFunction
 
 Function ApplySlotmask()
 	libs.PlayerRef.EquipItem(zad_DeviceHider, true, true)
-	if SlotMask == zad_DeviceHiderAA.GetSlotMask()
-		; No change
-		return
-	EndIf
-	if SlotMask < 0
-		SlotMask = 0
-	EndIf
-	zad_DeviceHiderAA.SetSlotMask(SlotMask)
-	libs.Log("Set slot mask to ["+SlotMask+"]: "+zad_DeviceHiderAA.GetSlotMask())
-	if libs.Config.UseQueueNiNode && !libs.PlayerRef.IsOnMount() ; Warning not to do this if mounted in Actor.psc
-		; libs.Log("Using NiNode to update")
-		libs.PlayerRef.QueueNiNodeUpdate()
-		if libs.PlayerRef.WornHasKeyword(libs.zad_DeviousGag)
-			libs.ApplyGagEffect(libs.PlayerRef)
+	if SlotMask != zad_DeviceHiderAA.GetSlotMask()
+		if SlotMask < 0
+			SlotMask = 0
 		EndIf
-	Else
-		libs.PlayerRef.UnEquipItem(zad_DeviceHider, false, true)
-		libs.PlayerRef.EquipItem(zad_DeviceHider, true, true)
+		zad_DeviceHiderAA.SetSlotMask(SlotMask)
+		libs.Log("Set slot mask to ["+SlotMask+"]: "+zad_DeviceHiderAA.GetSlotMask())
+		if libs.Config.UseQueueNiNode && !libs.PlayerRef.IsOnMount() ; Warning not to do this if mounted in Actor.psc
+			; libs.Log("Using NiNode to update")
+			libs.PlayerRef.QueueNiNodeUpdate()
+			if libs.PlayerRef.WornHasKeyword(libs.zad_DeviousGag)
+				libs.ApplyGagEffect(libs.PlayerRef)
+			EndIf
+		Else
+			libs.PlayerRef.UnEquipItem(zad_DeviceHider, false, true)
+			libs.PlayerRef.EquipItem(zad_DeviceHider, true, true)
+		EndIf
 	EndIf
 EndFunction
 
@@ -125,27 +123,27 @@ Function UpdateSlotmask(int index, int slot, bool equipOrUnequip)
 	index *= 4
 	if index >= 124
 		libs.Error("UpdateSlotmask received out of bound index: "+index)
-		return
-	EndIf
-	int i = 0
-	while i < 4
+	else
+		int i = 0
+		while i < 4
 		; libs.Log("Checking "+SlotMask +" vs "+SlotMaskFilters[index+i])
-		if SlotMaskFilters[index+i] != 0
-			; libs.Log("Match.")
-			if equipOrUnequip
-				SlotMask = Math.LogicalOr(SlotMask, SlotMaskFilters[index+i])
-				SlotMaskUsage[index+i] = SlotMaskUsage[index+i] + 1
-			Else
-				SlotMaskUsage[index+i] = SlotMaskUsage[index+i] - 1
-				; if SlotMaskUsage[index+i] <= 1
-				; 	SlotMaskUsage[index+i] = 0
-				SlotMask = SlotMask - SlotMaskFilters[index+i]
-				; EndIf
+			if SlotMaskFilters[index+i] != 0
+				; libs.Log("Match.")
+				if equipOrUnequip
+					SlotMask = Math.LogicalOr(SlotMask, SlotMaskFilters[index+i])
+					SlotMaskUsage[index+i] = SlotMaskUsage[index+i] + 1
+				Else
+					SlotMaskUsage[index+i] = SlotMaskUsage[index+i] - 1
+					; if SlotMaskUsage[index+i] <= 1
+					; 	SlotMaskUsage[index+i] = 0
+					SlotMask = SlotMask - SlotMaskFilters[index+i]
+					; EndIf
+				EndIf
 			EndIf
-		EndIf
-		i += 1
-	EndWhile
-	; libs.Log("End UpdateSlotMask: "+SlotMask)
+			i += 1
+		EndWhile
+		; libs.Log("End UpdateSlotMask: "+SlotMask)
+	EndIf
 EndFunction
 
 

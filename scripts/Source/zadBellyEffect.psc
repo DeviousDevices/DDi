@@ -5,11 +5,22 @@ zadLibs Property Libs Auto
 Actor Property target Auto
 bool Property Terminate Auto
 
-float Property OriginalNodeScale Auto
-
 Function DoRegister()
 	if !Terminate && target
 		RegisterForSingleUpdate(5.0)
+	EndIf
+EndFunction
+
+Function DoStart()
+	if !Terminate && target
+		RegisterForSingleUpdate(1.0)
+	EndIf
+EndFunction
+
+Function DoUnregister()
+	if !Terminate && target
+		libs.ShowBelly(Target)
+		UnregisterForUpdate()
 	EndIf
 EndFunction
 
@@ -34,12 +45,10 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Target = akTarget
 	Terminate = False
 
-	libs.StoreBellyNode(Target)
-	OriginalNodeScale = libs.BellyNodeScale
 	if (Target.WornHasKeyword(libs.zad_DeviousCorset) || Target.WornHasKeyword(libs.zad_DeviousBelt)) && (!Target.GetWornForm(0x00000004) || Target.WornHasKeyword(libs.zad_DeviousHarness))
 		libs.HideBelly(Target)
 	EndIf
-	RegisterForSingleUpdate(2.0)
+	DoStart()
 EndEvent
 
 
@@ -47,4 +56,12 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	libs.Log("OnEffectFinish(): Belly")
 	Terminate = True
 	libs.ShowBelly(Target)
+EndEvent
+
+Event OnCellAttach()
+	DoStart()
+EndEvent
+
+Event OnCellDetach()
+	DoUnregister()
 EndEvent

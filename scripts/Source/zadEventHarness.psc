@@ -15,8 +15,6 @@ Function Execute(actor akActor)
 	Else
 		if libs.Aroused.GetActorExposure(libs.PlayerRef) >= libs.ArousalThreshold("Horny")
 			libs.NotifyPlayer("You feel the leather around your crotch contracting due to the excessive moisture.")
-		Else
-			;
 		EndIf
 	EndIf
 EndFunction

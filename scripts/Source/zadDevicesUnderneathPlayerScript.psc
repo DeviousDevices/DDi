@@ -13,28 +13,25 @@ EndEvent
 
 Function Logic(armor akArmor, bool equipOrUnequip)
 	; libs.Log("equipOrUnequip = " + equipOrUnequip)
-	if akArmor == None
-		return
-	EndIf
-	if FormHasKeywordString(akArmor as Form, "NoHide")
-		return
-	EndIf
-	; libs.Log("Logic("+equipOrUnequip+")")
-	int slotMask = akArmor.GetSlotMask()
-	if slotmask == 0
-		return
-	EndIf
-	int i = 0
-	While i <= 30
-		int slot = libs.DevicesUnderneath.ShiftCache[i]
-		; libs.Log("Checking slot "+(i+30) +": "+slot)
-		if Math.LogicalAnd(SlotMask, slot)
-			libs.DevicesUnderneath.UpdateSlotmask(i, slot, equipOrUnequip)
+	if akArmor != None
+		if !FormHasKeywordString(akArmor as Form, "NoHide")
+			; libs.Log("Logic("+equipOrUnequip+")")
+			int slotMask = akArmor.GetSlotMask()
+			if slotmask != 0
+				int i = 0
+				While i <= 30
+					int slot = libs.DevicesUnderneath.ShiftCache[i]
+					; libs.Log("Checking slot "+(i+30) +": "+slot)
+					if Math.LogicalAnd(SlotMask, slot)
+						libs.DevicesUnderneath.UpdateSlotmask(i, slot, equipOrUnequip)
+					EndIf
+					i += 1
+				EndWhile
+				libs.DevicesUnderneath.ApplySlotmask()
+				; libs.Log("EndLogic()")
+			EndIf	
 		EndIf
-		i += 1
-	EndWhile
-	libs.DevicesUnderneath.ApplySlotmask()
-	; libs.Log("EndLogic()")
+	EndIf
 EndFunction
 
 Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
@@ -47,10 +44,10 @@ Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
 	armor akArmor = (akBaseObject as Armor)
 	if akArmor == libs.DevicesUnderneath.zad_DeviceHider
 		Working = False
-		return
+	else
+		Logic(akArmor, true)
+		Working = False
 	EndIf
-	Logic(akArmor, true)
-	Working = False
 EndEvent
 
 
@@ -65,8 +62,8 @@ Event OnObjectUnequipped(Form akBaseObject, ObjectReference akReference)
 	if akArmor == libs.DevicesUnderneath.zad_DeviceHider
 		libs.PlayerRef.EquipItem(libs.DevicesUnderneath.zad_DeviceHider, true, true)
 		Working = False
-		return
+	else
+		Logic(akArmor, false)
+		Working = False	
 	EndIf
-	Logic(akArmor, false)
-	Working = False
 EndEvent
