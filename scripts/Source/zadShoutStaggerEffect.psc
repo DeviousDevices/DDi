@@ -3,11 +3,10 @@ ScriptName zadShoutStaggerEffect extends ActiveMagicEffect
 zadlibs Property libs  Auto  
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-	if akTarget != libs.PlayerRef
-		return
+	if akTarget == libs.PlayerRef
+		RegisterForActorAction(4)
+		libs.Log("OnEffectStart(ShoutStaggerEffect)")
 	EndIf
-	RegisterForActorAction(4)
-	libs.Log("OnEffectStart(ShoutStaggerEffect)")
 EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)

@@ -17,7 +17,11 @@ int Function OnEquippedFilter(actor akActor, bool silent=false)
 			ElseIf  !silent
 				libs.NotifyActor("The bra " + akActor.GetLeveledActorBase().GetName() + " is wearing prevents you from inserting these piercings.", akActor, true)
 			EndIf
-			return 2
+			if !silent
+				return 2
+			Else
+				return 0
+			EndIf
 		Endif
 	Endif
 	return 0

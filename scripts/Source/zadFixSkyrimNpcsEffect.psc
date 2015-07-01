@@ -22,19 +22,19 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	Target = akTarget
 	if akTarget == libs.PlayerRef
 		libs.Log("Target is player. Done.")
-		return
-	EndIf
-	Utility.Wait(0.1) ; Wait for menu to close
-	if !Terminate && Target.GetItemCount(DeviceInventory) >= 1
-		libs.Log("Not so fast, Skyrim!")
-		Utility.Wait(0.5)
-		if akTarget.IsEquipped(deviceRendered)
-			akTarget.RemoveItem(DeviceRendered, 1, true) 
+	else
+		Utility.Wait(0.1) ; Wait for menu to close
+		if !Terminate && Target.GetItemCount(DeviceInventory) >= 1
+			libs.Log("Not so fast, Skyrim!")
+			Utility.Wait(0.5)
+			if akTarget.IsEquipped(deviceRendered)
+				akTarget.RemoveItem(DeviceRendered, 1, true) 
+			EndIf
+			Utility.Wait(0.5)
+			akTarget.EquipItem(DeviceRendered, true, true) 
+		Else
+			libs.Log("Legitimate removal, not skyrim derping. Done.")
 		EndIf
-		Utility.Wait(0.5)
-		akTarget.EquipItem(DeviceRendered, true, true) 
-	Else
-		libs.Log("Legitimate removal, not skyrim derping. Done.")
 	EndIf
 EndEvent
 
@@ -44,12 +44,12 @@ Event OnDeviceRemoved(string eventName, string argString, float argNum, form sen
 	libs.Log("Fix-skyrim-npcs: OnDeviceRemoved("+argString+","+argNum+")")
 	if target == libs.PlayerRef
 		libs.Log("Target is player. Done.")
-		return
+	else
+		if target.GetLeveledActorBase().GetName() != argString
+			libs.Log("Not Target. Done.")
+			return
+		EndIf
+		Terminate=True
+		Target.RemoveItem(DeviceRendered, 1, true)
 	EndIf
-	if target.GetLeveledActorBase().GetName() != argString
-		libs.Log("Not Target. Done.")
-		return
-	EndIf
-	Terminate=True
-	Target.RemoveItem(DeviceRendered, 1, true)
 EndEvent

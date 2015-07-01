@@ -120,47 +120,44 @@ Event OnUnequipped(Actor akActor)
 			unequipMutex = false
 			libs.DeviceMutex = false
 			SyncInventory(akActor)
-			return
+		else
+			libs.Log("Detected removal token. Done.")
+			akActor.RemoveItem(deviceRendered, 1, true) ; This shouldn't be necessary, but ensure that SD+ bug does not reoccur.
+			UnsetStoredDevice(akActor)
+			OnRemoveDevice(akActor)
+			StorageUtil.UnsetIntValue(akActor, "zad_RemovalToken"+deviceInventory)
+			unequipMutex = false
+			libs.DeviceMutex = false
 		EndIf
-		libs.Log("Detected removal token. Done.")
-		akActor.RemoveItem(deviceRendered, 1, true) ; This shouldn't be necessary, but ensure that SD+ bug does not reoccur.
-		UnsetStoredDevice(akActor)
-		OnRemoveDevice(akActor)
-		StorageUtil.UnsetIntValue(akActor, "zad_RemovalToken"+deviceInventory)
-		unequipMutex = false
-		libs.DeviceMutex = false
-		return
-	EndIf
-	if akActor==libs.PlayerRef
-		if (menuDisable == false)
-			; Catch removeallitems and similar effects for compatibility with impolite mods.
-			; Not doing this for npc's, since equip state can't be relied upon for them.
-			if akActor.GetItemCount(deviceInventory) <=0
-				libs.Log("Caught remove-all. Re-equipping device.")
-				EquipDevice(akActor, skipMutex=true)
-				return
-			EndIf
-			if !libs.PlayerRef.IsEquipped(deviceRendered) 
-				libs.Log("Rendered device is missing. Sync'ing...")
-				SyncInventory()
-				if !libs.PlayerRef.IsEquipped(deviceRendered)
-				libs.Log("Rendered device is still missing. done.")
-					unequipMutex = false 
-					libs.deviceMutex = false
+	else
+		if akActor==libs.PlayerRef
+			if (menuDisable == false)
+				; Catch removeallitems and similar effects for compatibility with impolite mods.
+				; Not doing this for npc's, since equip state can't be relied upon for them.
+				if akActor.GetItemCount(deviceInventory) <=0
+					libs.Log("Caught remove-all. Re-equipping device.")
+					EquipDevice(akActor, skipMutex=true)
 					return
 				EndIf
-			EndIf
-			; Player had to unequip item to access this. Reequip it immediately, to help avoid spam-unlocks.
-			libs.PlayerRef.EquipItem(deviceInventory, false, true)
-			DeviceMenu()
-		Else
-			menuDisable = false
+				if !libs.PlayerRef.IsEquipped(deviceRendered) 
+					libs.Log("Rendered device is missing. Sync'ing...")
+					SyncInventory()
+					if !libs.PlayerRef.IsEquipped(deviceRendered)
+					libs.Log("Rendered device is still missing. done.")
+						unequipMutex = false 
+						libs.deviceMutex = false
+						return
+					EndIf
+				EndIf
+				; Player had to unequip item to access this. Reequip it immediately, to help avoid spam-unlocks.
+				libs.PlayerRef.EquipItem(deviceInventory, false, true)
+				DeviceMenu()
+			Else
+				menuDisable = false
+			Endif
 		Endif
-	else
-		; Not necessary with new npc system.
-		; SyncInventory(akActor)
-	Endif
-	unequipMutex = false
+		unequipMutex = false
+	EndIf
 EndEvent
 
 
@@ -179,104 +176,103 @@ Event OnContainerChanged(ObjectReference akNewContainer, ObjectReference akOldCo
 	; 		timeoutCount += 1
 	; 	EndWhile
 	; EndIf
-	if OnContainerChangedFilter(akNewContainer, akOldContainer) >= 1
-		return
-	EndIf
-	if akNewContainer && !akOldContainer
-		; PC or NPC picked up belt. No action required.
-		; Actually, this could be a neat way of initiating a belt quest. Loot it from a chest, and bam.
-		; xxx
-		return
-	elseif akOldContainer && !akNewContainer
-		; Item is being dropped.
-		if libs.IsWearingDevice((akOldContainer as actor), DeviceRendered, zad_DeviousDevice) == 1
-			libs.Log(deviceName+" dropped.")
-			self.Delete()
-		Endif
-		return
-	else
-		; Item is changing inventories, or being stored in a container 
-		if akNewContainer != libs.PlayerRef
-			; Avoid giving away last copy of worn item.
-			if (akOldContainer.GetItemCount(deviceInventory) >= 1 && !avoidRaceCondition) || (akOldContainer.GetItemCount(deviceRendered)== 0 && !avoidRaceCondition)
-				libs.Log("Giving item away. Not last copy.")
-				Actor npc = (akNewContainer as Actor)
-				if npc != none && !npc.IsDead(); TODO: Add gender check (User commented about sos futa? Look in to that maybe?)
-					; Differentiate between intentionally giving it away, and having it stolen by (submit/SD/etc). Hmmm.
-					; Inventory, Barter, Container
-					if UI.IsMenuOpen("ContainerMenu")
-						libs.Log("ContainerMenu is open, and container is "+npc.GetLeveledActorBase().GetName()+". Forcing npc to equip device.")
-						; Giving item to an npc, equip it.
-						if libs.WearingConflictingDevice(npc, deviceRendered, zad_DeviousDevice)
-							libs.NotifyPlayer(npc.GetLeveledActorBase().GetName()+" is already wearing a "+deviceName+"!")
-							npc.RemoveItem(deviceInventory, 1, false, libs.PlayerRef)
-						Else
-							libs.EquipDevice(npc, deviceInventory, deviceRendered, zad_DeviousDevice)
+	if OnContainerChangedFilter(akNewContainer, akOldContainer) < 1
+		if akNewContainer && !akOldContainer
+			; PC or NPC picked up belt. No action required.
+			; Actually, this could be a neat way of initiating a belt quest. Loot it from a chest, and bam.
+			; xxx
+			return
+		elseif akOldContainer && !akNewContainer
+			; Item is being dropped.
+			if libs.IsWearingDevice((akOldContainer as actor), DeviceRendered, zad_DeviousDevice) == 1
+				libs.Log(deviceName+" dropped.")
+				self.Delete()
+			Endif
+			return
+		else
+			; Item is changing inventories, or being stored in a container 
+			if akNewContainer != libs.PlayerRef
+				; Avoid giving away last copy of worn item.
+				if (akOldContainer.GetItemCount(deviceInventory) >= 1 && !avoidRaceCondition) || (akOldContainer.GetItemCount(deviceRendered)== 0 && !avoidRaceCondition)
+					libs.Log("Giving item away. Not last copy.")
+					Actor npc = (akNewContainer as Actor)
+					if npc != none && !npc.IsDead(); TODO: Add gender check (User commented about sos futa? Look in to that maybe?)
+						; Differentiate between intentionally giving it away, and having it stolen by (submit/SD/etc). Hmmm.
+						; Inventory, Barter, Container
+						if UI.IsMenuOpen("ContainerMenu")
+							libs.Log("ContainerMenu is open, and container is "+npc.GetLeveledActorBase().GetName()+". Forcing npc to equip device.")
+							; Giving item to an npc, equip it.
+							if libs.WearingConflictingDevice(npc, deviceRendered, zad_DeviousDevice)
+								libs.NotifyPlayer(npc.GetLeveledActorBase().GetName()+" is already wearing a "+deviceName+"!")
+								npc.RemoveItem(deviceInventory, 1, false, libs.PlayerRef)
+							Else
+								libs.EquipDevice(npc, deviceInventory, deviceRendered, zad_DeviousDevice)
+							EndIf
+							; OnEquipped(npc) ; Not sure why this isn't being called for npc's. Temporary work-around.
 						EndIf
-						; OnEquipped(npc) ; Not sure why this isn't being called for npc's. Temporary work-around.
+					EndIf
+					return
+				EndIf
+				libs.Log(deviceName+" is switching containers. Count: " + akOldContainer.GetItemCount(deviceInventory))
+				akNewContainer.RemoveItem(deviceInventory, 1, true)
+				akNewContainer.RemoveItem(deviceRendered, 1, true)
+			else
+				Actor npc = (akOldContainer as Actor)
+				; Is this an npc, or a container?
+				if npc != none && npc.GetItemCount(deviceRendered)!=0
+					if libs.PlayerRef.WornHasKeyword(libs.zad_DeviousArmbinder)
+						libs.Notify("The armbinder you are wearing prevents you from removing the "+deviceName+" from " + npc.GetLeveledActorBase().GetName() + ".")
+						npc.AddItem(deviceInventory, 1, true)
+						npc.EquipItem(deviceInventory, false, true)
+						libs.PlayerRef.RemoveItem(deviceInventory, 1, true)
+						return
+					EndIf
+					if npc.IsDead() 
+						RemoveDevice(npc, skipMutex=true)
+						return
+					EndIf
+					; Does the player have the right key?
+					if deviceKey && libs.PlayerRef.GetItemCount(deviceKey) >= 1
+						; Free npc.
+						libs.Notify("You use the key to unlock the "+deviceName+" from " + npc.GetLeveledActorBase().GetName() + ".")
+						RemoveDevice(npc, skipMutex=true)
+					; Does not have correct key
+					else
+						; Does npc have multiple instances of this device?
+						if npc.GetItemCount(deviceInventory) <= 0 
+							; Does this device not have a key?
+							if deviceKey == none
+								if OnUnequippedFilter(npc) >= 1
+									npc.AddItem(deviceInventory, 1, true)
+									libs.PlayerRef.RemoveItem(deviceInventory, 1, true)
+									NoKeyFailMessage(npc)
+								else
+									libs.Notify("You remove the "+deviceName+" from "+ npc.GetLeveledActorBase().GetName() + ".")
+									RemoveDevice(npc, skipMutex=true)
+								EndIf
+							; Device has a key, player doesn't have it
+							else
+								libs.Notify("You lack the key required to free " + npc.GetLeveledActorBase().GetName() + " from the "+deviceName+".")
+								npc.AddItem(deviceInventory, 1, true)
+								npc.EquipItem(deviceInventory, false, true)
+								libs.PlayerRef.RemoveItem(deviceInventory, 1, true)
+							EndIf
+						EndIf
 					EndIf
 				EndIf
+				libs.Log((akNewContainer as Actor).GetLeveledActorBase().GetName() + " received "+deviceName+".")
 				return
 			EndIf
-			libs.Log(deviceName+" is switching containers. Count: " + akOldContainer.GetItemCount(deviceInventory))
-			akNewContainer.RemoveItem(deviceInventory, 1, true)
-			akNewContainer.RemoveItem(deviceRendered, 1, true)
-		else
-			Actor npc = (akOldContainer as Actor)
-			; Is this an npc, or a container?
-			if npc != none && npc.GetItemCount(deviceRendered)!=0
-				if libs.PlayerRef.WornHasKeyword(libs.zad_DeviousArmbinder)
-					libs.Notify("The armbinder you are wearing prevents you from removing the "+deviceName+" from " + npc.GetLeveledActorBase().GetName() + ".")
-					npc.AddItem(deviceInventory, 1, true)
-					npc.EquipItem(deviceInventory, false, true)
-					libs.PlayerRef.RemoveItem(deviceInventory, 1, true)
-					return
-				EndIf
-				if npc.IsDead() 
-					RemoveDevice(npc, skipMutex=true)
-					return
-				EndIf
-				; Does the player have the right key?
-				if deviceKey && libs.PlayerRef.GetItemCount(deviceKey) >= 1
-					; Free npc.
-					libs.Notify("You use the key to unlock the "+deviceName+" from " + npc.GetLeveledActorBase().GetName() + ".")
-					RemoveDevice(npc, skipMutex=true)
-				; Does not have correct key
-				else
-					; Does npc have multiple instances of this device?
-					if npc.GetItemCount(deviceInventory) <= 0 
-						; Does this device not have a key?
-						if deviceKey == none
-							if OnUnequippedFilter(npc) >= 1
-								npc.AddItem(deviceInventory, 1, true)
-								libs.PlayerRef.RemoveItem(deviceInventory, 1, true)
-								NoKeyFailMessage(npc)
-							else
-								libs.Notify("You remove the "+deviceName+" from "+ npc.GetLeveledActorBase().GetName() + ".")
-								RemoveDevice(npc, skipMutex=true)
-							EndIf
-						; Device has a key, player doesn't have it
-						else
-							libs.Notify("You lack the key required to free " + npc.GetLeveledActorBase().GetName() + " from the "+deviceName+".")
-							npc.AddItem(deviceInventory, 1, true)
-							npc.EquipItem(deviceInventory, false, true)
-							libs.PlayerRef.RemoveItem(deviceInventory, 1, true)
-						EndIf
-					EndIf
-				EndIf
-			EndIf
-			libs.Log((akNewContainer as Actor).GetLeveledActorBase().GetName() + " received "+deviceName+".")
-			return
 		EndIf
+		OnContainerChangedPre(akNewContainer, akOldContainer)
+		Actor npc = (akOldContainer as Actor)
+		if npc != none
+			SyncInventory(npc)
+		else
+			SyncInventory()
+		EndIf
+		OnContainerChangedPost(akNewContainer, akOldContainer)
 	EndIf
-	OnContainerChangedPre(akNewContainer, akOldContainer)
-	Actor npc = (akOldContainer as Actor)
-	if npc != none
-		SyncInventory(npc)
-	else
-		SyncInventory()
-	EndIf
-	OnContainerChangedPost(akNewContainer, akOldContainer)
 endEvent
 
 
@@ -376,11 +372,11 @@ Function SyncInventory(Actor akActor=none)
 EndFunction
 
 string function GetMessageName(actor akActor)
-	string name = "your"
 	if akActor != libs.PlayerRef
-		name = akActor.GetLeveledActorBase().GetName()+"'s"
+		return akActor.GetLeveledActorBase().GetName()+"'s"
+	else
+		return "your"	
 	EndIf
-	return name
 EndFunction
 
 

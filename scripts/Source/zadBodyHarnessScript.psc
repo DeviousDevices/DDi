@@ -17,13 +17,9 @@ int Function OnEquippedFilter(actor akActor, bool silent=false)
 	EndIf
 	if ! akActor.IsEquipped(deviceRendered)
 		if akActor!=libs.PlayerRef && ShouldEquipSilently(akActor)
-			libs.Log("Avoiding FTM duplication bug (Harness + Collar).")
+			libs.Log("Avoiding FTM duplication bug (Harness).")
 			return 0
 		EndIf
-		if akActor.WornHasKeyword(libs.zad_DeviousCollar)
-			MultipleItemFailMessage("Collar")
-			return 2
-		Endif
 		if akActor.WornHasKeyword(libs.zad_DeviousCorset)
 			MultipleItemFailMessage("Corset")
 			return 2

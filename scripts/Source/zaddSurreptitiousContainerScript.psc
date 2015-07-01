@@ -18,24 +18,23 @@ EndEvent
 Function OpenedTrappedContainer(ObjectReference akActionRef)
 	if akActionRef == player.GetActorRef()
 		libs.Log("SS: Player opened trapped container.")
-		if !QuestMonitor.ShouldStartNewQuest() || !libs.Config.SurreptitiousStreets
-			return
-		EndIf
-		if !MyMaster || !MyMarker ; All other parameters are mandatory.
-			libs.Log("Location did not contain all mandatory properties. Aborting.")
-			return
-		EndIf
-		if libs.Config.ssWarningMessages
-			int choice = ssQuest.ChestWarning.Show()
-			if choice == 1
-				libs.Log("User aborted capture scene.")
-				return
+		if QuestMonitor.ShouldStartNewQuest() && libs.Config.SurreptitiousStreets
+			if !MyMaster || !MyMarker ; All other parameters are mandatory.
+				libs.Log("Location did not contain all mandatory properties. Aborting.")
+			else
+				if libs.Config.ssWarningMessages
+					int choice = ssQuest.ChestWarning.Show()
+					if choice == 1
+						libs.Log("User aborted capture scene.")
+						return
+					EndIf
+				EndIf
+			
+				; Randomly select which quest-line to start.
+				; Only one possibility for now.
+				ssQuest.StartRadiantMaster(MyLocation, MyContainer, MyMaster, MyMarker, stage=5)
 			EndIf
 		EndIf
-			
-		; Randomly select which quest-line to start.
-		; Only one possibility for now.
-		ssQuest.StartRadiantMaster(MyLocation, MyContainer, MyMaster, MyMarker, stage=5)
 	else
 		libs.log("SS: Someone (or something) else opened us")
 	endIf

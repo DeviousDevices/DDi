@@ -246,7 +246,6 @@ Soulgem Property SoulgemEmpty Auto
 Soulgem Property SoulgemFilled Auto
 MiscObject Property SoulgemStand Auto
 Perk Property LustgemCrafting Auto
-float Property BreastNodeScale Auto
 
 ; Nipple Piercings
 Perk Property PiercedNipples Auto
@@ -289,7 +288,7 @@ Keyword Property zad_EffectEdgeRandom Auto    ; Will sometimes let the player cu
 
 Keyword Property zad_EffectsLinked Auto      ; If one effect fires, all effects fire.
 Keyword Property zad_EffectCompressBreasts Auto ; Compress breasts to avoid hdt clipping through bras.
-
+Keyword Property zad_EffectCompressBelly Auto ; Compress belly to avoid hdt clipping through corsets, belts and harnesses.
 
 ;===============================================================================
 ; Public Interface Functions
@@ -944,7 +943,7 @@ EndFunction
 
 
 float Function GetVersion()
-	return 2.90
+	return 2.91
 EndFunction
 
 
@@ -2151,32 +2150,47 @@ Function RemoveFromDisableDialogueFaction(Actor akActor)
 EndFunction
 
 
-
-Function StoreNodes(actor akActor)
-	float tmp = NetImmerse.GetNodeScale(akActor, "NPC L Breast", false)
-	if tmp != 0.0
-		BreastNodeScale = tmp
-		log("Node Scale: "+BreastNodeScale)
-	EndIf
-EndFunction
-
-
 Function HideBreasts(actor akActor)
-	StoreNodes(akActor) ; Handle other mods resizing the breast nodes.
 	if config.BreastNodeManagement
-		NetImmerse.SetNodeScale(akActor, "NPC L Breast", 0, false)
-		NetImmerse.SetNodeScale(akActor, "NPC R Breast", 0, false)
+		bool gender = akActor.GetLeveledActorBase().GetSex() == 1
+		SetNodeHidden(akActor, gender, "NPC L Breast", true)
+		SetNodeHidden(akActor, gender, "NPC R Breast", true)
 	EndIf
 EndFunction
 
 
 Function ShowBreasts(actor akActor)
-	if BreastNodeScale != 0.0 && config.BreastNodeManagement
-		NetImmerse.SetNodeScale(akActor, "NPC L Breast", BreastNodeScale, false)
-		NetImmerse.SetNodeScale(akActor, "NPC R Breast", BreastNodeScale, false)
+	; Shown regardless of BreastNodeManagement enabled or not
+	; Visually doesn't change anything on unhide if option is disabled
+	; But user cant keep the nodes hidden by enabling the option equipping a bra
+	; Disabling the option and unequipping the bra
+	bool gender = akActor.GetLeveledActorBase().GetSex() == 1
+	SetNodeHidden(akActor, gender, "NPC L Breast", false)
+	SetNodeHidden(akActor, gender, "NPC R Breast", false)
+EndFunction
+
+
+Function HideBelly(actor akActor)
+	if config.BellyNodeManagement
+		bool gender = akActor.GetLeveledActorBase().GetSex() == 1
+		SetNodeHidden(akActor, gender, "NPC Belly", true)
 	EndIf
 EndFunction
 
+
+Function ShowBelly(actor akActor)
+	; See ShowBreasts()
+	bool gender = akActor.GetLeveledActorBase().GetSex() == 1
+	SetNodeHidden(akActor, gender, "NPC Belly", false)
+EndFunction
+
+Function SetNodeHidden(Actor akActor, bool isFemale, string nodeName, bool value, string modkey = "DDi")
+	if value
+		XPMSELib.SetNodeScale(akActor, isFemale, nodeName, 0.01, modkey)
+	else
+		XPMSELib.SetNodeScale(akActor, isFemale, nodeName, 1.0, modkey)
+	endif
+EndFunction
 
 Function CorsetMagic(actor akActor)
 	Form tmp = StorageUtil.GetFormValue(akActor, "zad_StoredCorsetInventory")

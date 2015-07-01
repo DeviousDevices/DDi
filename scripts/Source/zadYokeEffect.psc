@@ -20,6 +20,14 @@ Idle Property CurrentStandIdle Auto
 Actor Property target Auto
 bool Property Terminate Auto
 
+
+Function DoReLoad()
+	if target && !Terminate
+		PlayBoundIdle(CurrentStandIdle)
+		DoRegister()
+	EndIf
+EndFunction
+
 Function DoRegister()
 	if !Terminate && target
 		RegisterForSingleUpdate(0.75)
@@ -46,14 +54,11 @@ EndEvent
 
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-	if akTarget != libs.PlayerRef
-		return
-	EndIf
-	libs.Log("OnEffectStart(): Yoke")
 	target = akTarget
-	Terminate = False
-	CurrentStandIdle = libs.YokeIdle01
 	if target == libs.PlayerRef
+		libs.Log("OnEffectStart(): Yoke")
+		Terminate = False
+		CurrentStandIdle = libs.YokeIdle01
 		UnregisterForAllKeys()
 		; Register keypresses for more responsive idles
 		TweenMenuKey = Input.GetMappedKey("Tween Menu")
@@ -72,20 +77,18 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 		RegisterForKey(StrafeLeftKey)
 		RegisterForKey(StrafeRightKey)
 		RegisterForKey(SneakKey)
-	EndIf
-	PlayBoundIdle(CurrentStandIdle)
-	DoRegister()
-	if target == libs.PlayerRef
+		PlayBoundIdle(CurrentStandIdle)
+		DoRegister()
 		libs.UpdateControls()
 	Endif
 EndEvent
 
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
-	libs.Log("OnEffectFinish(): Yoke")
 	Terminate = True
-	Debug.SendAnimationEvent(target, "IdleForceDefaultState")
 	if target == libs.PlayerRef
+		libs.Log("OnEffectFinish(): Yoke")
+		Debug.SendAnimationEvent(target, "IdleForceDefaultState")
 		libs.UpdateControls()
 		; UnregisterForAllKeys() ; Not necessary: Automatically unregistered on effect expiration
 	EndIf
@@ -104,12 +107,11 @@ Event OnKeyUp(int KeyCode, float HoldTime) ; Reduce time player slides around du
 	if KeyCode == StrafeLeftKey || KeyCode == StrafeRightKey || KeyCode == ForwardKey || KeyCode == BackKey
 		if KeyCode == SneakKey || target.IsSneaking()
 			PlayBoundIdle(CurrentStandIdle)
-			return
+		else
+			if !(Input.IsKeyPressed(StrafeLeftKey) || Input.IsKeyPressed(StrafeRightKey) || Input.IsKeyPressed(ForwardKey) || Input.IsKeyPressed(BackKey))
+				PlayBoundIdle(CurrentStandIdle)
+			EndIf
 		EndIf
-		if Input.IsKeyPressed(StrafeLeftKey) || Input.IsKeyPressed(StrafeRightKey) || Input.IsKeyPressed(ForwardKey) || Input.IsKeyPressed(BackKey)
-			return
-		EndIf
-		PlayBoundIdle(CurrentStandIdle)
 	EndIf
 EndEvent
 
@@ -120,21 +122,14 @@ Function PlayBoundIdle(idle theIdle)
 EndFunction
 
 Event OnCellLoad()
-	if target && ! Terminate
-		PlayBoundIdle(CurrentStandIdle)
-		DoRegister()
-	EndIf
+	DoReLoad()
 EndEvent
 
 Event OnCellAttach()
-	OnCellLoad()
+	DoReLoad()
 EndEvent
 
 Event OnLoad()
-	OnCellLoad()
-EndEvent
-
-Event OnUnload()
-	; UnregisterForUpdate()
+	DoReLoad()
 EndEvent
 

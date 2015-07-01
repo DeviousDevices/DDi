@@ -24,11 +24,10 @@ EndEvent
 
 state NormalMode
 	event OnBeginState()
-		if target != libs.PlayerRef
-			return
+		if target == libs.PlayerRef
+			int idx = target.GetItemCount(lockpick)
+			target.RemoveItem(lockpick, idx, true, theSafe)
 		EndIf
-		int idx = target.GetItemCount(lockpick)
-		target.RemoveItem(lockpick, idx, true, theSafe)
 	endEvent
 
 	event OnItemAdded(Form akBaseItem, int aiItemCount, ObjectReference akItemReference, ObjectReference akSourceContainer)

@@ -75,48 +75,48 @@ Function DeviceMenuPostStruggle()
 		Else
 			zad_YokeRemoveUnlockedMsg.Show()
 		EndIf
-		return
-	EndIf		
-	int attempt = Utility.RandomInt()
-	libs.UpdateExposure(libs.PlayerRef,0.3)
-	if IsLoose
-		if !AttemptRemoveYoke()
-			zad_YokeRemoveLooseFailMsg.Show()
+	else		
+		int attempt = Utility.RandomInt()
+		libs.UpdateExposure(libs.PlayerRef,0.3)
+		if IsLoose
+			if !AttemptRemoveYoke()
+				zad_YokeRemoveLooseFailMsg.Show()
+			Else
+				zad_YokeRemoveLooseMsg.Show()
+			EndIf		
 		Else
-			zad_YokeRemoveLooseMsg.Show()
-		EndIf		
-	Else
-		if DisableStruggle
-			if CustomStruggleImpossibleMsg != None
-				CustomStruggleImpossibleMsg.Show()
-			Else
-				zad_YokeImpossibleStruggleMsg.Show()
-			EndIf
-		Else 
-			if StruggleCount >= 3 && (attempt*1.5) <= StruggleCount
-				If libs.PlayerRef.GetItemCount(GetKey()) >= 1
-					IsLoose = true
-					zad_YokeStruggleKeyLooseMsg.Show()
+			if DisableStruggle
+				if CustomStruggleImpossibleMsg != None
+					CustomStruggleImpossibleMsg.Show()
 				Else
-					if CustomStruggleImpossibleMsg != None
-						CustomStruggleImpossibleMsg.Show()
-					Else
-						zad_YokeStruggleLooseMsg.Show()
-					EndIf
+					zad_YokeImpossibleStruggleMsg.Show()
 				EndIf
-			Else
-				if libs.PlayerRef.GetItemCount(GetKey()) >= 1
-					zad_YokeStruggleKeyMsg.Show()
-				Else
-					if CustomStruggleMsg != None
-						CustomStruggleMsg.Show()
+			Else 
+				if StruggleCount >= 3 && (attempt*1.5) <= StruggleCount
+					If libs.PlayerRef.GetItemCount(GetKey()) >= 1
+						IsLoose = true
+						zad_YokeStruggleKeyLooseMsg.Show()
 					Else
-						zad_YokeStruggleMsg.Show()
+						if CustomStruggleImpossibleMsg != None
+							CustomStruggleImpossibleMsg.Show()
+						Else
+							zad_YokeStruggleLooseMsg.Show()
+						EndIf
 					EndIf
-				Endif
-			EndIf	
-		EndIf		
+				Else
+					if libs.PlayerRef.GetItemCount(GetKey()) >= 1
+						zad_YokeStruggleKeyMsg.Show()
+					Else
+						if CustomStruggleMsg != None
+							CustomStruggleMsg.Show()
+						Else
+							zad_YokeStruggleMsg.Show()
+						EndIf
+					Endif
+				EndIf	
+			EndIf		
 
+		EndIf
 	EndIf
 EndFunction
 
@@ -144,12 +144,12 @@ Function SexScene(ObjectReference akSpeaker, bool aggressive)
 	sslBaseAnimation[] anims = SexLab.GetAnimationsByType(2, aggressive=aggressive)
 	if anims.length <=0
 		libs.Error("No animations available.")
-		return
+	else
+	        actor[] actors = new actor[2]
+	        actors[0] = libs.PlayerRef
+        	actors[1] = otherActor
+	        SexLab.StartSex(actors, anims)
 	EndIf
-        actor[] actors = new actor[2]
-        actors[0] = libs.PlayerRef
-        actors[1] = otherActor
-        SexLab.StartSex(actors, anims)
 EndFunction
 
 

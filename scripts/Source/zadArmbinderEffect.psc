@@ -29,6 +29,25 @@ Function DoRegister()
 	EndIf
 EndFunction
 
+Function DoUnregister()
+	if !Terminate && target
+		UnregisterForUpdate()
+	EndIf
+EndFunction
+
+Function DoReLoad()
+	if target && ! Terminate
+		PlayBoundIdle(CurrentStandIdle)
+		DoRegister()
+	EndIf
+EndFunction
+
+Function DoUnLoad()
+	if target && ! Terminate
+		DoUnregister()
+	EndIf
+EndFunction
+
 
 Event OnUpdate()
 	if target == libs.PlayerRef && ((Game.IsMenuControlsEnabled() && libs.config.HardcoreEffects) || Game.IsFightingControlsEnabled() )
@@ -123,20 +142,17 @@ Function PlayBoundIdle(idle theIdle)
 EndFunction
 
 Event OnCellLoad()
-	if target && ! Terminate
-		PlayBoundIdle(CurrentStandIdle)
-		DoRegister()
-	EndIf
+	DoReLoad()
 EndEvent
 
 Event OnCellAttach()
-	OnCellLoad()
+	DoReLoad()
 EndEvent
 
 Event OnLoad()
-	OnCellLoad()
+	DoReLoad()
 EndEvent
 
-Event OnUnload()
-	; UnregisterForUpdate()
+Event OnCellDetach()
+	DoUnLoad()
 EndEvent

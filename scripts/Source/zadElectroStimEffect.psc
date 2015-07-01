@@ -30,33 +30,30 @@ EndFunction
 
 Event OnOrgasm(string eventName, string argString, float argNum, form sender)
 	libs.Log("ElectroStim: OnOrgasm("+eventName+","+argString+","+argNum+","+sender+")")
-	if !SanityCheck()
-		return
-	EndIf
-	if IsTarget(argString)
-		libs.Log("Matches target.")
+	if SanityCheck()
+		if IsTarget(argString)
+			libs.Log("Matches target.")
+		EndIf
 	EndIf
 EndEvent
 
 Event OnEdged(string eventName, string argString, float argNum, form sender)
 	libs.Log("ElectroStim: OnEdged("+eventName+","+argString+","+argNum+","+sender+")")
-	if !SanityCheck()
-		return
-	EndIf
-	if IsTarget(argString)
-		libs.Log("Matches target.")
-		if Utility.RandomInt() <= ShockChance
-			libs.ShockActor(libs.playerRef)
+	if SanityCheck()
+		if IsTarget(argString)
+			libs.Log("Matches target.")
+			if Utility.RandomInt() <= ShockChance
+				libs.ShockActor(libs.playerRef)
+			EndIf
 		EndIf
 	EndIf
 EndEvent
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-	if akTarget != libs.PlayerRef
-		return
+	if akTarget == libs.PlayerRef
+		Target = akTarget
+		DoRegister()
 	EndIf
-	Target = akTarget
-	DoRegister()
 EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)

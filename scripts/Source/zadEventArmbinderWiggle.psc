@@ -5,12 +5,10 @@ bool Function HasKeywords(actor akActor)
 EndFunction
 
 Function Execute(actor akActor)
-	if akActor.GetCombatState() != 0
-		; Don't start this particular event in combat.
-		return
-	EndIf
-	libs.abq.StruggleScene(akActor)
-	if !libs.abq.DisableStruggle
-		libs.abq.StruggleCount = libs.abq.StruggleCount + 1
+	if akActor.GetCombatState() == 0
+		libs.abq.StruggleScene(akActor)
+		if !libs.abq.DisableStruggle
+			libs.abq.StruggleCount = libs.abq.StruggleCount + 1
+		EndIf
 	EndIf
 EndFunction

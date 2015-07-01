@@ -65,12 +65,11 @@ EndFunction
 
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-	if akTarget != libs.PlayerRef
-		return
+	if akTarget == libs.PlayerRef
+		libs.Log("OnEffectStart(ribbed)")
+		target = akTarget
+		ApplyEffect()
 	EndIf
-	libs.Log("OnEffectStart(ribbed)")
-	target = akTarget
-	ApplyEffect()
 EndEvent
 
 
@@ -105,38 +104,36 @@ EndFunction
 
 Event OnActorAction(int actionType, Actor akActor, Form source, int slot)
 	libs.Log("OnActorAction("+actionType+","+akActor+","+source+","+slot+")")
-	if akActor != Target
-		return
-	EndIf
-	if actionType == 0 ; Melee Swing
-		OnMeleeSwing()
-	ElseIf actionType == 6 ; Bow Release
-		OnBowRelease()
+	if akActor == Target
+		if actionType == 0 ; Melee Swing
+			OnMeleeSwing()
+		ElseIf actionType == 6 ; Bow Release
+			OnBowRelease()
+		EndIf
 	EndIf
 EndEvent
 
 
 Function ProcessInput(int KeyCode, bool KeyDown, float holdTime=-1.0)
-	if !ShouldProcessInput()
-		return
-	EndIf
-	libs.Log("ProcessInput("+keyCode+","+KeyDown+","+holdTime+")")
-	int i = MovementKeys.Length
-	while i > 0
-		i -= 1
-		if KeyCode == MovementKeys[i]			
+	if ShouldProcessInput()
+		libs.Log("ProcessInput("+keyCode+","+KeyDown+","+holdTime+")")
+		int i = MovementKeys.Length
+		while i > 0
+			i -= 1
+			if KeyCode == MovementKeys[i]			
+			EndIf
+		EndWhile
+		if KeyCode  ==  JumpKey && keyDown  && Target.GetAnimationVariableBool("bInJumpState")
+			OnJump()
 		EndIf
-	EndWhile
-	if KeyCode  ==  JumpKey && keyDown  && Target.GetAnimationVariableBool("bInJumpState")
-		OnJump()
+		if KeyCode  ==  SneakKey && keyDown
+			OnSneak()
+		EndIf
+		if KeyCode  ==  SprintKey
+			ActorIsSprinting = keyDown
+		EndIf
+		UpdateCachedStates()
 	EndIf
-	if KeyCode  ==  SneakKey && keyDown
-		OnSneak()
-	EndIf
-	if KeyCode  ==  SprintKey
-		ActorIsSprinting = keyDown
-	EndIf
-	UpdateCachedStates()
 EndFunction
 
 

@@ -35,10 +35,9 @@ Function Execute(actor akActor)
 		libs.NotifyPlayer("leaving you writhing in pain.")
 		libs.ShockEffect.RemoteCast(akActor, akActor, akActor)
 		libs.Aroused.SetActorExposure(akActor, 1)
-		return
-	EndIf
-	int vibStrength = 0
-	int duration = 0
+	else
+		int vibStrength = 0
+		int duration = 0
 		if libs.ActorHasKeyword(akActor, libs.zad_EffectVibratingRandom)
 			vibStrength = utility.RandomInt(1,5)
 		elseif libs.ActorHasKeyword(akActor, libs.zad_EffectVibratingVeryStrong)
@@ -55,4 +54,5 @@ Function Execute(actor akActor)
 			return
 		EndIf
 		libs.VibrateEffect(akActor, vibStrength, duration, teaseOnly=libs.shouldEdgeActor(akActor))
+	EndIf
 EndFunction
