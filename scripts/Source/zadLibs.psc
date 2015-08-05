@@ -691,7 +691,7 @@ Function RegisterGenericDevice(Armor inventoryDevice, String tags)
 	
 	StorageUtil.FormListAdd(kw, "zad.GenericDevice", inventoryDevice, false)
 	StorageUtil.StringListClear(inventoryDevice, "zad.deviceTags") ; Allow changing tags 
-	String[] tagArray = sslUtility.ArgString(tags, ",")
+	String[] tagArray = PapyrusUtil.StringSplit(tags, ",")
 	int i = tagArray.length
 	while i > 0
 		i -= 1
@@ -724,8 +724,8 @@ EndFunction
 ; If fallback is true, a completely random device with the same keyword is returned if tag search fails
 Armor Function GetDeviceByTags(Keyword kw, String tags, bool requireAll = true, String tagsToSuppress = "", bool fallBack = true)
 	log("GetDeviceByTags("+kw+", "+tags+")")
-	String[] tagArray = sslUtility.ArgString(tags, ",")
-	String[] supArray = sslUtility.ArgString(tagsToSuppress, ",")
+	String[] tagArray = PapyrusUtil.StringSplit(tags, ",")
+	String[] supArray = PapyrusUtil.StringSplit(tagsToSuppress, ",")
 	Form[] resultList = new Form[64]
 	int n = 0
 	
