@@ -288,7 +288,10 @@ Keyword Property zad_EffectEdgeRandom Auto    ; Will sometimes let the player cu
 
 Keyword Property zad_EffectsLinked Auto      ; If one effect fires, all effects fire.
 Keyword Property zad_EffectCompressBreasts Auto ; Compress breasts to avoid hdt clipping through bras.
+Keyword Property zad_NoCompressBreasts Auto ; Disable Compressing of breasts, despite previous keyword
 Keyword Property zad_EffectCompressBelly Auto ; Compress belly to avoid hdt clipping through corsets, belts and harnesses.
+Keyword Property zad_NoCompressBelly Auto ; Disable Compressing of belly, despite previous keyword
+
 
 ;===============================================================================
 ; Public Interface Functions
