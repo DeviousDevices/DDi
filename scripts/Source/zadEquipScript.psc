@@ -119,6 +119,7 @@ Event OnUnequipped(Actor akActor)
 			; Cleanup
 			unequipMutex = false
 			libs.DeviceMutex = false
+			EquipDevice(akActor, skipMutex=true)
 			SyncInventory(akActor)
 		else
 			libs.Log("Detected removal token. Done.")
