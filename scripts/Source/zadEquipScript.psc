@@ -123,7 +123,7 @@ Event OnUnequipped(Actor akActor)
 			SyncInventory(akActor)
 		else
 			libs.Log("Detected removal token. Done.")
-			akActor.RemoveItem(deviceRendered, 1, true) ; This shouldn't be necessary, but ensure that SD+ bug does not reoccur.
+			akActor.RemoveItem(deviceRendered, 1, true) ; This should not be necessary, but ensure that SD+ bug does not reoccur.
 			UnsetStoredDevice(akActor)
 			OnRemoveDevice(akActor)
 			StorageUtil.UnsetIntValue(akActor, "zad_RemovalToken"+deviceInventory)
@@ -251,7 +251,7 @@ Event OnContainerChanged(ObjectReference akNewContainer, ObjectReference akOldCo
 									libs.Notify("You remove the "+deviceName+" from "+ npc.GetLeveledActorBase().GetName() + ".")
 									RemoveDevice(npc, skipMutex=true)
 								EndIf
-							; Device has a key, player doesn't have it
+							; Device has a key, player does not have it
 							else
 								libs.Notify("You lack the key required to free " + npc.GetLeveledActorBase().GetName() + " from the "+deviceName+".")
 								npc.AddItem(deviceInventory, 1, true)
@@ -284,8 +284,8 @@ EndFunction
 
 Function RemoveDevice(actor akActor, bool destroyDevice=false, bool skipMutex=false)
 	if (akActor == libs.PlayerRef) && libs.Config.DestroyKeyProbability > 0.0 && deviceKey != none
-		; At the time of writing this, only the player may unlock themselves / npc's via this function.
-		; I don't really see that changing in the future, so using an explicit reference to the
+		; At the time of writing this, only the player may unlock themselves / NPCs via this function.
+		; I do not really see that changing in the future, so using an explicit reference to the
 		; player here is probably the way to go. Quests will manipulate this via the API anyways,
 		; and this function is only for internal use.
 		if (deviceInventory.HasKeyword(libs.zad_BlockGeneric) || deviceRendered.HasKeyword(libs.zad_BlockGeneric))
@@ -297,6 +297,7 @@ Function RemoveDevice(actor akActor, bool destroyDevice=false, bool skipMutex=fa
 			Else
 				libs.NotifyPlayer("The key breaks while attempting to remove the "+deviceName+"!", true)
 			EndIf
+			libs.SendDeviceEvent("KeyBreak", akActor.GetLeveledActorBase().GetName(), 1)
 			libs.PlayerRef.RemoveItem(deviceKey, 1, true)
 			return
 		EndIf
@@ -350,8 +351,8 @@ Function SyncInventory(Actor akActor=none)
 	EndIf
 	; Npc support
 	if akActor != libs.PlayerRef
-		; I'm not sure why npc's unequip the inventory item. Perhaps their ai package is fighting with me? Just blind equip it. 
-		; This shouldn't cause duplicate equips, because of previous checks.
+		; I am not sure why NPCs unequip the inventory item. Perhaps their ai package is fighting with me? Just blind equip it. 
+		; This should not cause duplicate equips, because of previous checks.
 		libs.Log("Syncing for actor " + akActor.GetLeveledActorBase().GetName()+".")
 		akActor.EquipItem(deviceInventory, false, true)		
 		if deviceKey && akActor.GetItemCount(deviceKey)>=1
