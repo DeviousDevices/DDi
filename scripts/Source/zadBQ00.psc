@@ -157,6 +157,10 @@ Function Maintenance()
 		; Fix duplicate keyword baked in to savegames
 		libs.zad_DeviousBoots = (Game.GetFormFromFile(0x00027f29, "Devious Devices - Assets.esm") as Keyword)
 	EndIf
+	if modVersion <= 2.92
+	   	libs.zad_NoCompressBreasts = (Game.GetFormFromFile(0x0005689c, "Devious Devices - Integration.esm") as Keyword)
+	   	libs.zad_NoCompressBelly = (Game.GetFormFromFile(0x0005689b, "Devious Devices - Integration.esm") as Keyword)
+	EndIf
 	Parent.Maintenance()
 	; I doubt this will actually fix the MCM issue people are reporting, though who knows. Doesn't make sense that the animation failing 
 	; to register with Sexlab would cause zadConfig to not initialize properly. All the same, better to avoid that race condition.
