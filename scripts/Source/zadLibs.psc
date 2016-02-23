@@ -288,7 +288,10 @@ Keyword Property zad_EffectEdgeRandom Auto    ; Will sometimes let the player cu
 
 Keyword Property zad_EffectsLinked Auto      ; If one effect fires, all effects fire.
 Keyword Property zad_EffectCompressBreasts Auto ; Compress breasts to avoid hdt clipping through bras.
+Keyword Property zad_NoCompressBreasts Auto ; Disable Compressing of breasts, despite previous keyword
 Keyword Property zad_EffectCompressBelly Auto ; Compress belly to avoid hdt clipping through corsets, belts and harnesses.
+Keyword Property zad_NoCompressBelly Auto ; Disable Compressing of belly, despite previous keyword
+
 
 ;===============================================================================
 ; Public Interface Functions
@@ -706,7 +709,7 @@ Function RegisterGenericDevice(Armor inventoryDevice, String tags)
 	
 	StorageUtil.FormListAdd(kw, "zad.GenericDevice", inventoryDevice, false)
 	StorageUtil.StringListClear(inventoryDevice, "zad.deviceTags") ; Allow changing tags 
-	String[] tagArray = sslUtility.ArgString(tags, ",")
+	String[] tagArray = PapyrusUtil.StringSplit(tags, ",")
 	int i = tagArray.length
 	while i > 0
 		i -= 1
@@ -739,8 +742,8 @@ EndFunction
 ; If fallback is true, a completely random device with the same keyword is returned if tag search fails
 Armor Function GetDeviceByTags(Keyword kw, String tags, bool requireAll = true, String tagsToSuppress = "", bool fallBack = true)
 	log("GetDeviceByTags("+kw+", "+tags+")")
-	String[] tagArray = sslUtility.ArgString(tags, ",")
-	String[] supArray = sslUtility.ArgString(tagsToSuppress, ",")
+	String[] tagArray = PapyrusUtil.StringSplit(tags, ",")
+	String[] supArray = PapyrusUtil.StringSplit(tagsToSuppress, ",")
 	Form[] resultList = new Form[64]
 	int n = 0
 	
@@ -958,7 +961,7 @@ EndFunction
 
 
 float Function GetVersion()
-	return 2.91
+	return 2.92
 EndFunction
 
 

@@ -27,7 +27,7 @@ EndFunction
 
 Event OnUpdate()
 	if !Terminate
-		if (!Target.GetWornForm(0x00000004) || Target.WornHasKeyword(libs.zad_DeviousHarness))
+		if (!Target.GetWornForm(0x00000004) || Target.WornHasKeyword(libs.zad_DeviousHarness)) && !Target.WornHasKeyword(libs.zad_NoCompressBreasts)
 			libs.HideBreasts(Target)
 		Endif
 	Else ; Avoid race condition
@@ -45,7 +45,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Target = akTarget
 	Terminate = False
 
-	if Target.WornHasKeyword(libs.zad_DeviousBra) && (!Target.GetWornForm(0x00000004) || Target.WornHasKeyword(libs.zad_DeviousHarness))
+	if Target.WornHasKeyword(libs.zad_DeviousBra) && (!Target.GetWornForm(0x00000004) || Target.WornHasKeyword(libs.zad_DeviousHarness)) && !Target.WornHasKeyword(libs.zad_NoCompressBreasts)
 		libs.HideBreasts(Target)
 	EndIf
 	DoStart()
