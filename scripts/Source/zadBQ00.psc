@@ -298,9 +298,23 @@ string Function GetAnimationNames(sslBaseAnimation[] anims)
     return ret
 EndFunction
 
+sslBaseAnimation function GetZAPYokeAnims(actor a, actor b)
+	Actor[] akactors = zbfUtil.ActorList(a, b)
+	zbfSexLabBaseEntry[] akentries = zbfSL.GetEntriesByTags(akactors)
+	zbfSexLabBaseEntry entry = zbfSL.GetRandomEntry(akEntries)
+	sslBaseAnimation anim = None
+	Int iActorCount = zbfUtil.CountActorList(akActors)
+	anim = zbfSL.NewAnimation("ZapStartSex")			
+	Int[] iBindTypes = zbfSL.GetBindTypes(akActors)
+	zbfSL.DefineAnimation(entry, anim, zbfSL.GetSexLabAnimationNames(entry, iBindTypes), abSaveAnim = False)	
+	anim.Save(-1)
+	return anim
+EndFunction
+
 sslBaseAnimation[] function SelectValidAnimations(sslThreadController Controller, int count, sslBaseAnimation previousAnim, bool forceaggressive, bool boundArmbinder, bool boundYoke, bool permitOral, bool permitVaginal, bool permitAnal, bool permitBoobs)
 	bool aggr = false	
 	string includetag = ""
+	sslBaseAnimation[] Sanims
 	If previousAnim != none && previousAnim.HasTag("foreplay") 		
 		includetag = "foreplay"
 		libs.Log("Using only foreplay animations.")					
@@ -310,19 +324,43 @@ sslBaseAnimation[] function SelectValidAnimations(sslThreadController Controller
 	Endif  
 	string tagString = getTagString(aggr, boundArmbinder, boundYoke, includetag)
 	string suppressString = getSuppressString(aggr, boundArmbinder, boundYoke, permitOral, permitVaginal, permitAnal, permitBoobs)	
-	; Special case to prevent picking masturbation animations for the wrong gender because no suppress tag is otherwise going to catch that!
-	if count == 1 
+	; ok, we need to process private animations and masturbation as a special case as the tag system would otherwise be unable to call DDI or ZAP armbinder and yoke animations and also not exclude opposite gender masturbation/
+	if count == 1 		
+		libs.Log("Selecting masturbation animation.")
+		If boundArmbinder ; she is wearing an armbinder
+			Sanims = New sslBaseAnimation[1]
+			Sanims[0] = SexLab.GetAnimationObject("DDArmbinderSolo")
+			return Sanims
+		Endif
+		If boundYoke ; she is wearing a yoke
+			Sanims = New sslBaseAnimation[1]
+			Sanims[0] = SexLab.GetAnimationObject("DDYokeSolo")
+			return Sanims
+		Endif
+		If !permitVaginal ;she is belted
+			Sanims = New sslBaseAnimation[1]
+			Sanims[0] = SexLab.GetAnimationObject("DDBeltedSolo")
+			return Sanims
+		Endif
+		; if she is not wearing chastity, we need to filter the wrong gender
 		tagString = "Solo," + tagString
-		If  Controller.Positions[0].GetLeveledActorBase().GetSex() == 1
-			If !permitVaginal ;she is belted
-				tagString = "Devious Device," + tagString
-			Endif
+		If  Controller.Positions[0].GetLeveledActorBase().GetSex() == 1		
 			suppressString = "M," + suppressString
 		Elseif Controller.Positions[0].GetLeveledActorBase().GetSex() == 0
 			suppressString = "F," + suppressString
 		EndIf
+	EndIf	
+	if count == 2 && boundYoke
+		libs.Log("Actor(s) wear a yoke. Trying to set up ZAP animation.")
+		Sanims = New sslBaseAnimation[1]
+		Sanims[0] = GetZAPYokeAnims(Controller.Positions[0], Controller.Positions[1])
+		If !Sanims[0]
+			libs.Log("Error. Yoke animations could not be found.")
+		Else
+			return Sanims
+		Endif
 	Endif
-	sslBaseAnimation[] Sanims = SexLab.GetAnimationsByTags(count, tagString, suppressString, true)    
+	Sanims = SexLab.GetAnimationsByTags(count, tagString, suppressString, true)
 	libs.log("Selecting SexLab animations with number of actors: " + count)
 	libs.log("Selecting SexLab animations with tag string: " + tagString)
 	libs.log("Selecting SexLab animations with suppress string: " + suppressString)			
@@ -623,7 +661,7 @@ function Logic(int threadID, bool HasPlayer)
 	If previousAnim.HasTag("NoSwap") || previousAnim.HasTag("DeviousDevice")
 		libs.Log("Animation should not be replaced. Done.")
 		Return
-	EndIf
+	EndIf	
 		
 	bool permitOral = True
 	bool permitVaginal = True
@@ -666,7 +704,7 @@ function Logic(int threadID, bool HasPlayer)
 	libs.Log("IsCreatureAnim " + IsCreatureAnim)
 	libs.Log("UsingArmbinder " + UsingArmbinder)
 	libs.Log("UsingYoke " + UsingYoke)
-
+		
 	; If no actor was restrained in any way we can detect, then don't change the animation.
 	If PermitAnal && PermitVaginal && PermitOral && PermitBoobs && NoBindings
 		libs.Log("No sex-act-restricted actors present in this sex scene.")
