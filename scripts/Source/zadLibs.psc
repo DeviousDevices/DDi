@@ -553,16 +553,16 @@ bool Function ManipulateGenericDevice(actor akActor, armor device, bool equipOrU
 	bool manipulated = false
 	if tmpZRef != none
 	   	Keyword kw = tmpZRef.zad_DeviousDevice
-	        ; First, check to see if the actor is already wearing this device. If he is, save processing time.
-	        Form tmpInv = StorageUtil.GetFormValue(akActor, "zad_Equipped" + LookupDeviceType(kw) + "_Inventory")
-	        if !equipOrUnequip && tmpInv
-		    Form tmpRend = StorageUtil.GetFormValue(akActor, "zad_Equipped" + LookupDeviceType(kw) + "_Rendered")
-	     	    RemoveDevice(akActor, tmpInv as Armor, tmpRend as Armor, kw, skipEvents=skipEvents, skipMutex=skipMutex)
-		    return true
-        	EndIf
 		if tmpZref.HasKeyword(zad_BlockGeneric)
 			Warn("ManipulateGenericDevice called on armor with 'Block Generic Removal' keyword: zad_BlockGeneric")
 		Else
+			; First, check to see if the actor is already wearing this device. If he is, save processing time.
+			Form tmpInv = StorageUtil.GetFormValue(akActor, "zad_Equipped" + LookupDeviceType(kw) + "_Inventory")
+			if !equipOrUnequip && tmpInv
+				Form tmpRend = StorageUtil.GetFormValue(akActor, "zad_Equipped" + LookupDeviceType(kw) + "_Rendered")
+	     			RemoveDevice(akActor, tmpInv as Armor, tmpRend as Armor, kw, skipEvents=skipEvents, skipMutex=skipMutex)
+				return true
+        		EndIf
 			if equipOrUnequip
 				EquipDevice(akActor, device, tmpZRef.deviceRendered, tmpZRef.zad_DeviousDevice, skipEvents = skipEvents, skipMutex = skipMutex)
 			else
