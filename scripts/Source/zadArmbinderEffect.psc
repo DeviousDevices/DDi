@@ -68,7 +68,14 @@ EndEvent
 
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
+	ConsoleUtil.ExecuteCommand("set zbfSettingDisableEffects to 1.0")
+	if libs.ActorHasKeyword(akTarget, libs.zad_DeviousArmbinder)
+		libs.BoundCombat.Apply_ABC(akTarget)
+	else
+		return
+	EndIf
 	if akTarget != libs.PlayerRef
+		libs.BoundCombat.Apply_NPC_ABC(akTarget)
 		return
 	EndIf
 	libs.Log("OnEffectStart(): Armbinder")

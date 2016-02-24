@@ -53,6 +53,10 @@ Event OnUpdateGameTime()
 				if MonitoredNpcs[i]
 					akActor = MonitoredNpcs[i].GetActorReference()
 					if akActor && libs.IsValidActor(akActor)
+						if libs.ActorHasKeyword(akActor, libs.zad_DeviousArmbinder) && (akActor.GetActorValue("UnarmedDamage") < 300)
+							libs.BoundCombat.Apply_ABC(akActor)
+							libs.BoundCombat.Apply_NPC_ABC(akActor)
+						EndIf
 						; questScript.ProcessEffects(akActor)
 						if akActor.WornHasKeyword(libs.zad_DeviousBelt)
 							; When I get around to adding more of these, I'll stagger it in the same way I did in zadbq00

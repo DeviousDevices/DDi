@@ -1,0 +1,80 @@
+Version V1.03
+
+
+AAprefix abc
+
+AAset _h2heqp 1
+AAset _h2hidle 1
+AAset _h2hatkpow 1
+AAset _h2hstag 1
+AAset _h2hatk 1
+AAset _jump 1
+AAset _sprint 1
+AAset _sneakmt 1
+AAset _sneakidle 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -116,6 +116,7 @@ EndFunction
 
 Event OnInit()
 	RegisterForModEvent("__DeviousDevicesInit", "OnInitialize")
+	libs.BoundCombat.CONFIG_ABC()
 EndEvent
 
 
@@ -202,6 +203,7 @@ Function Maintenance()
 		EndWhile
 		libs.DevicesUnderneath.Maintenance()
 	EndIf
+	libs.BoundCombat.Maintenance_ABC()
 	If regDevices
 		libs.RegisterDevices() ; Might take a while, do it last
 	EndIf

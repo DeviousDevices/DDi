@@ -48,6 +48,9 @@ bool breastNodeManagementDefault = true
 bool Property bellyNodeManagement Auto
 bool bellyNodeManagementDefault = true
 
+bool Property UseBoundCombat Auto
+bool UseBoundCombatDefault = true
+
 bool Property useBoundAnims =  true Auto
 bool useBoundAnimsDefault = true
 
@@ -178,7 +181,7 @@ int breastNodeManagementOID
 int bellyNodeManagementOID
 int useBoundAnimsOID
 int bootsSlowdownToggleOID
-
+int UseBoundCombatOID 
 
 string[] difficultyList
 string[] blindfoldList
@@ -362,6 +365,10 @@ Event OnPageReset(string page)
 		else
 			bellyNodeManagementOID = AddToggleOption("Belly Node Management", bellyNodeManagement)
 		EndIf
+		SetCursorPosition(1) ; Move cursor to top right position
+		AddHeaderOption("Armbinder Options")
+		UseBoundCombatOID = AddToggleOption("Enable Bound Combat", UseBoundCombat)
+
 	ElseIf page == "Sex Animation Filter"
 		SetCursorFillMode(TOP_TO_BOTTOM)
 		SetCursorPosition(0) ; Can be removed because it starts at 0 anyway
@@ -723,6 +730,9 @@ Event OnOptionSelect(int option)
 	elseif option == bellyNodeManagementOID
 		bellyNodeManagement = !bellyNodeManagement
 		SetToggleOptionValue(bellyNodeManagementOID, bellyNodeManagement)
+	elseif option == UseBoundCombatOID
+		UseBoundCombat = !UseBoundCombat
+		SetToggleOptionValue(UseBoundCombatOID, UseBoundCombat)
 	EndIf
 EndEvent
 
@@ -873,6 +883,9 @@ Event OnOptionDefault(int option)
 	elseIf (option == bellyNodeManagementOID)
 		bellyNodeManagement = bellyNodeManagementDefault
 		SetToggleOptionValue(bellyNodeManagementOID, bellyNodeManagement)
+	elseIf (option == UseBoundCombatOID)
+		UseBoundCombat = UseBoundCombatDefault
+		SetToggleOptionValue(UseBoundCombatOID, UseBoundCombat)
 	endIf
 EndEvent
 
@@ -983,6 +996,8 @@ Event OnOptionHighlight(int option)
 		SetInfoText("If enabled, breasts will be resized while the chastity bra is worn, to minimized HDT clipping.\nDefault: "+breastNodeManagementDefault)
 	elseIf (option == bellyNodeManagementOID)
 		SetInfoText("If enabled, belly will be resized while the corset is worn, to minimized HDT clipping.\nDefault: "+bellyNodeManagementDefault)
+	elseIf (option == UseBoundCombatOID)
+		SetInfoText("If enabled, unarmed combat (Kicking) will be enabled for the player while bound. Currently only works in third person, and only for the armbinder.\nDefault: "+UseBoundCombatDefault)
 	endIf
 EndEvent
 

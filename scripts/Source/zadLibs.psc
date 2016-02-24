@@ -14,6 +14,7 @@ zadYokeQuestScript Property ybq Auto
 zadEventSlots Property EventSlots Auto ; See zadBaseEvent.psc for how to use the new events system.
 zadDevicesUnderneathScript Property DevicesUnderneath Auto
 Quest Property zadNPCSlots Auto
+zadBoundCombatScript Property BoundCombat auto
 
 zbfBondageShell Property zbf Auto
 zbfPlayerControl Property zbfPC Auto
@@ -1789,7 +1790,7 @@ Function UpdateControls()
 		sneaking = false
 	EndIf
 	if IsBound(playerRef)
-		fighting = false
+		fighting = config.UseBoundCombat
 		menu = !config.HardcoreEffects
 	EndIf
 	zbfPC.SetDisabledControls(abMovement = !movement, abFighting = !fighting, abSneaking = !sneaking, abMenu = !menu, abActivate = !activate)
@@ -2075,6 +2076,9 @@ Function ApplyBoundAnim(actor akActor, idle theIdle = None)
 		akActor.UnequipSpell(akActor.GetEquippedSpell(1), 1)
 	EndIf
 	if akActor.IsWeaponDrawn()
+		if config.UseBoundCombat
+			return
+		EndIf
 		akActor.SheatheWeapon()
 	EndIf
 	if akActor.IsOnMount()
