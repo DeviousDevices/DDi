@@ -50,6 +50,7 @@ EndFunction
 
 
 Event OnUpdate()
+	libs.BoundCombat.Apply_ABC(target)
 	if target == libs.PlayerRef && ((Game.IsMenuControlsEnabled() && libs.config.HardcoreEffects) || Game.IsFightingControlsEnabled() )
 		if !libs.IsAnimating(target)
 			libs.UpdateControls()
@@ -68,7 +69,7 @@ EndEvent
 
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-	ConsoleUtil.ExecuteCommand("set zbfSettingDisableEffects to 1.0")
+	; ConsoleUtil.ExecuteCommand("set zbfSettingDisableEffects to 1.0")
 	if libs.ActorHasKeyword(akTarget, libs.zad_DeviousArmbinder)
 		libs.BoundCombat.Apply_ABC(akTarget)
 	else
@@ -117,13 +118,18 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	if target == libs.PlayerRef
 		libs.UpdateControls()
 		; UnregisterForAllKeys() ; Not necessary: Automatically unregistered on effect expiration
+	else
+		libs.BoundCombat.Remove_NPC_ABC(akTarget)
 	EndIf
+	libs.BoundCombat.Remove_ABC(akTarget)
 EndEvent
 
 
 Event OnKeyDown(Int KeyCode) 
 	PlayBoundIdle(idles[0]); Work around pose issue from skyrim limitations by reapplying on sprint.
 	if !Game.IsMenuControlsEnabled() && KeyCode == TweenMenuKey && !UI.IsMenuOpen("Dialogue Menu") && !UI.IsMenuOpen("BarterMenu") && !UI.IsMenuOpen("ContainerMenu") && !UI.IsMenuOpen("Sleep/Wait Menu")
+		libs.playerRef.SheatheWeapon()
+		Utility.Wait(0.1)
 		abq.ShowDeviceMenu()
 	EndIf
 EndEvent

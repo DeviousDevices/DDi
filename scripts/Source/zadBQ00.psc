@@ -203,7 +203,13 @@ Function Maintenance()
 		EndWhile
 		libs.DevicesUnderneath.Maintenance()
 	EndIf
+	; Bound Combat Maintenance and Cleanup 
 	libs.BoundCombat.Maintenance_ABC()
+	if !libs.playerRef.WornHasKeyword(libs.zad_DeviousArmbinder)
+		libs.BoundCombat.Remove_ABC(libs.playerRef)
+	EndIf
+	libs.BoundCombat.CleanupNPCs()
+	; Generic Devices
 	If regDevices
 		libs.RegisterDevices() ; Might take a while, do it last
 	EndIf
