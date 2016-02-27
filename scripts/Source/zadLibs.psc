@@ -582,9 +582,13 @@ bool Function ManipulateGenericDeviceByKeyword(Actor akActor, Keyword kw, bool e
         ; First, check to see if the actor is already wearing this device. If he is, save processing time.
         Form tmpInv = StorageUtil.GetFormValue(akActor, "zad_Equipped" + LookupDeviceType(kw) + "_Inventory")
         if !equipOrUnequip && tmpInv
-	    Form tmpRend = StorageUtil.GetFormValue(akActor, "zad_Equipped" + LookupDeviceType(kw) + "_Rendered")
-     	    RemoveDevice(akActor, tmpInv as Armor, tmpRend as Armor, kw, skipEvents=skipEvents, skipMutex=skipMutex)
-	    return true
+		Form tmpRend = StorageUtil.GetFormValue(akActor, "zad_Equipped" + LookupDeviceType(kw) + "_Rendered")
+		if tmpInv.HasKeyword(zad_BlockGeneric) || tmpRend.HasKeyword(zad_BlockGeneric)
+			warn("ManipulateGenericDeviceByKeyword called on non-generic device!")
+			return false
+		EndIf
+     		RemoveDevice(akActor, tmpInv as Armor, tmpRend as Armor, kw, skipEvents=skipEvents, skipMutex=skipMutex)
+		return true
         EndIf
 	Int iFormIndex = akActor.GetNumItems()
 	bool breakFlag = false
