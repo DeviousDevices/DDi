@@ -44,3 +44,4 @@ AAset _shout 1
 AAset _mtx 1
 AAset _mt 1
 AAset _mtturn 1
+AAset _mtidle 1
