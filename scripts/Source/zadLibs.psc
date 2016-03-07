@@ -2057,6 +2057,7 @@ EndFunction
 
 
 Function ApplyBoundAnim(actor akActor, idle theIdle = None)
+	Log("ApplyBoundAnim()")
 	if theIdle == None
 		if akActor.WornHasKeyword(zad_DeviousYoke)
 			theIdle = YokeIdle01
@@ -2088,6 +2089,8 @@ Function ApplyBoundAnim(actor akActor, idle theIdle = None)
 	if akActor.IsOnMount()
 		akActor.Dismount()
 	EndIf
+	;
+	; Verify that the actor is available for animation, and is not wearing a device that supports a more advanced animation schema
 	if IsValidActor(akActor) && !IsAnimating(akActor)
 		akActor.PlayIdle(theIdle)
 	EndIf

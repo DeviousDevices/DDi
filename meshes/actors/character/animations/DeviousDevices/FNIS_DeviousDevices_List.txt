@@ -40,3 +40,7 @@ AAset _jump 1
 AAset _sprint 1
 AAset _sneakmt 1
 AAset _sneakidle 1
+AAset _shout 1
+AAset _mtx 1
+AAset _mt 1
+AAset _mtturn 1
