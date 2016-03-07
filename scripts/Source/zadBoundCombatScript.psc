@@ -30,6 +30,7 @@ int Property ABC_shout Auto
 int Property ABC_mtx Auto
 int Property ABC_mt Auto
 int Property ABC_mtturn Auto
+int Property ABC_mtidle Auto
 
 Function UpdateValues() 
 	ABC_ModID = FNIS_aa.GetAAModID("abc", "DeviousDevices", Config.LogMessages) 
@@ -46,6 +47,7 @@ Function UpdateValues()
 	ABC_mtx = FNIS_aa.GetGroupBaseValue(ABC_ModID, FNIS_aa._mtx(), "DeviousDevices",Config.LogMessages)
 	ABC_mt = FNIS_aa.GetGroupBaseValue(ABC_ModID, FNIS_aa._mt(), "DeviousDevices",Config.LogMessages)
 	ABC_mtturn = FNIS_aa.GetGroupBaseValue(ABC_ModID, FNIS_aa._mtturn(), "DeviousDevices",Config.LogMessages)
+	ABC_mtidle = FNIS_aa.GetGroupBaseValue(ABC_ModID, FNIS_aa._mtidle(), "DeviousDevices",Config.LogMessages)
 EndFunction
 
 
@@ -110,6 +112,7 @@ Function Apply_ABC(actor akActor)
 	FNIS_aa.SetAnimGroup(akActor, "_mtx", ABC_mtx, animSet, "DeviousDevices", Config.LogMessages)
 	FNIS_aa.SetAnimGroup(akActor, "_mt", ABC_mt, animSet, "DeviousDevices", Config.LogMessages)
 	FNIS_aa.SetAnimGroup(akActor, "_mtturn", ABC_mtturn, animSet, "DeviousDevices", Config.LogMessages)
+	FNIS_aa.SetAnimGroup(akActor, "_mtidle", ABC_mtidle, animSet, "DeviousDevices", Config.LogMessages)
 EndFunction
 
 Function Remove_ABC(actor akActor)
@@ -134,6 +137,7 @@ Function Remove_ABC(actor akActor)
 	FNIS_aa.SetAnimGroup(akActor, "_mtx", 0, animSet, "DeviousDevices", Config.LogMessages)
 	FNIS_aa.SetAnimGroup(akActor, "_mt", 0, animSet, "DeviousDevices", Config.LogMessages)
 	FNIS_aa.SetAnimGroup(akActor, "_mtturn", 0, animSet, "DeviousDevices", Config.LogMessages)
+	FNIS_aa.SetAnimGroup(akActor, "_mtidle", 0, animSet, "DeviousDevices", Config.LogMessages)
 EndFunction
 
 
