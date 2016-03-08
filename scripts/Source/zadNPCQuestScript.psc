@@ -53,7 +53,7 @@ Event OnUpdateGameTime()
 				if MonitoredNpcs[i]
 					akActor = MonitoredNpcs[i].GetActorReference()
 					if akActor && libs.IsValidActor(akActor)
-						if libs.ActorHasKeyword(akActor, libs.zad_DeviousArmbinder) && (akActor.GetActorValue("UnarmedDamage") < 300)
+						if libs.boundCombat.HasCompatibleDevice(akActor) && (akActor.GetActorValue("UnarmedDamage") < 300)
 							libs.BoundCombat.Apply_ABC(akActor)
 							libs.BoundCombat.Apply_NPC_ABC(akActor)
 						EndIf

@@ -32,6 +32,7 @@ int Property ABC_mt Auto
 int Property ABC_mtturn Auto
 int Property ABC_mtidle Auto
 
+
 Function UpdateValues() 
 	ABC_ModID = FNIS_aa.GetAAModID("abc", "DeviousDevices", Config.LogMessages) 
 	ABC_h2heqp = FNIS_aa.GetGroupBaseValue(ABC_ModID, FNIS_aa._h2heqp(), "DeviousDevices",Config.LogMessages)
@@ -54,9 +55,9 @@ EndFunction
 Int Function SelectAnimationSet(actor akActor)
         int animSet;
 	if akActor.WornHasKeyword(libs.zad_DeviousArmBinder)
-		animSet = 0 ; Use armbinder animation
+		animSet = 0 ; Armbinder animation
 	ElseIf akActor.WornHasKeyword(libs.zad_DeviousYoke)
-		animSet = 1;
+		animSet = 1 ; Yoke animations
 	Else
 		; Unsupported device type.
 		animSet = 0
@@ -167,4 +168,8 @@ Function CleanupNPCs()
 			Remove_NPC_ABC(akActor)
 		EndIf
 	EndWhile
+EndFunction
+
+bool Function HasCompatibleDevice(actor akActor)
+	return (akActor.WornHasKeyword(libs.zad_DeviousArmbinder) && akActor.WornHasKeyword(libs.zad_DeviousYoke))
 EndFunction

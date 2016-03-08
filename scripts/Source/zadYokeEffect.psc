@@ -6,31 +6,23 @@ zadLibs Property Libs Auto
 
 ; Cache keystroke ID's
 Int Property TweenMenuKey Auto
-Int Property SprintKey Auto
-Int Property JumpKey Auto
-Int Property ForwardKey Auto
-Int Property BackKey Auto
-Int Property StrafeLeftKey Auto
-Int Property StrafeRightKey Auto
-Int Property SneakKey Auto
 
 ; Internal Variables
 Keyword Property zad_DeviousDevice Auto
-Idle Property CurrentStandIdle Auto
 Actor Property target Auto
 bool Property Terminate Auto
 
 
 Function DoReLoad()
 	if target && !Terminate
-		PlayBoundIdle(CurrentStandIdle)
+		PlayBoundIdle()
 		DoRegister()
 	EndIf
 EndFunction
 
 Function DoRegister()
 	if !Terminate && target
-		RegisterForSingleUpdate(0.75)
+		RegisterForSingleUpdate(8.0)
 	EndIf
 EndFunction
 
@@ -41,14 +33,6 @@ Event OnUpdate()
 			libs.UpdateControls()
 		EndIf
 	EndIf
-	; if target.GetAnimationVariableFloat("Speed") == 0 && !target.IsSneaking()
-	;  	PlayBoundIdle(CurrentStandIdle)
-	; ElseIf target == libs.PlayerRef || target.GetAnimationVariableFloat("Speed") != 0
-	; 	PlayBoundIdle(CurrentStandIdle)
-	; EndIf
-	If (StorageUtil.GetIntValue(Game.GetPlayer(), "_SD_iEnslaved") != 1) ; SD+ compatibility
-		PlayBoundIdle(CurrentStandIdle)
-	EndIf
 	DoRegister()
 EndEvent
 
@@ -58,29 +42,17 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 	if target == libs.PlayerRef
 		libs.Log("OnEffectStart(): Yoke")
 		Terminate = False
-		CurrentStandIdle = libs.YokeIdle01
 		UnregisterForAllKeys()
 		; Register keypresses for more responsive idles
 		TweenMenuKey = Input.GetMappedKey("Tween Menu")
-		SprintKey = Input.GetMappedKey("Sprint")
-		JumpKey = Input.GetMappedKey("Jump")
-		ForwardKey = Input.GetMappedKey("Forward")
-		BackKey = Input.GetMappedKey("Back")
-		StrafeLeftKey = Input.GetMappedKey("Strafe Left")
-		StrafeRightKey = Input.GetMappedKey("Strafe Right")
-		SneakKey = Input.GetMappedKey("Sneak")
-		RegisterForKey(SprintKey)
-		RegisterForKey(JumpKey)
 		RegisterForKey(TweenMenuKey)
-		RegisterForKey(ForwardKey)
-		RegisterForKey(BackKey)
-		RegisterForKey(StrafeLeftKey)
-		RegisterForKey(StrafeRightKey)
-		RegisterForKey(SneakKey)
-		PlayBoundIdle(CurrentStandIdle)
+		PlayBoundIdle()
 		DoRegister()
 		libs.UpdateControls()
-	Endif
+	Else 
+		libs.BoundCombat.Apply_NPC_ABC(akTarget)
+		return
+	EndIf
 EndEvent
 
 
@@ -90,34 +62,26 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 		libs.Log("OnEffectFinish(): Yoke")
 		Debug.SendAnimationEvent(target, "IdleForceDefaultState")
 		libs.UpdateControls()
-		; UnregisterForAllKeys() ; Not necessary: Automatically unregistered on effect expiration
+	else
+		libs.BoundCombat.Remove_NPC_ABC(akTarget)
 	EndIf
+	libs.BoundCombat.Remove_ABC(akTarget)
 EndEvent
 
 
 Event OnKeyDown(Int KeyCode) 
-	PlayBoundIdle(CurrentStandIdle); Work around pose issue from skyrim limitations by reapplying on sprint.
 	if !Game.IsMenuControlsEnabled() && KeyCode == TweenMenuKey && !UI.IsMenuOpen("Dialogue Menu") && !UI.IsMenuOpen("BarterMenu") && !UI.IsMenuOpen("ContainerMenu") && !UI.IsMenuOpen("Sleep/Wait Menu")
+		libs.playerRef.SheatheWeapon()
+		Utility.Wait(0.1)
 		ybq.ShowDeviceMenu()
 	EndIf
 EndEvent
 
 
-Event OnKeyUp(int KeyCode, float HoldTime) ; Reduce time player slides around during transition from other animation's  by quickly beginning offset animation
-	if KeyCode == StrafeLeftKey || KeyCode == StrafeRightKey || KeyCode == ForwardKey || KeyCode == BackKey
-		if KeyCode == SneakKey || target.IsSneaking()
-			PlayBoundIdle(CurrentStandIdle)
-		else
-			if !(Input.IsKeyPressed(StrafeLeftKey) || Input.IsKeyPressed(StrafeRightKey) || Input.IsKeyPressed(ForwardKey) || Input.IsKeyPressed(BackKey))
-				PlayBoundIdle(CurrentStandIdle)
-			EndIf
-		EndIf
-	EndIf
-EndEvent
-
-Function PlayBoundIdle(idle theIdle)
+Function PlayBoundIdle()
+	libs.BoundCombat.Apply_ABC(target)
 	if !Terminate && libs.IsValidActor(target) && !libs.IsAnimating(target) && !target.IsInFaction(libs.SexLabAnimatingFaction) 
-		libs.ApplyBoundAnim(target, theIdle)
+		libs.ApplyBoundAnim(target)
 	EndIf
 EndFunction
 
