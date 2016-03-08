@@ -27,7 +27,7 @@ String Property deviceName Auto
 bool menuDisable = false
 int mutexTimeout = 10
 bool unequipMutex
-
+Bool RemovedWithSuccess = True
 
 Function MultipleItemFailMessage(string offendingItem)
 	offendingItem = libs.MakeSingularIfPlural(offendingItem)
@@ -283,6 +283,9 @@ EndFunction
 
 
 Function RemoveDevice(actor akActor, bool destroyDevice=false, bool skipMutex=false)
+	; RemovedWithSuccess is set to false when the key breaks, so we don't display the "You succesfully removed device" message later, when you actually didn't.
+	; Most OOP instructors are likely to faint seeing this cringeworthy implementation, but the alternative is changing the function header and making everyone recompile everything. Nah!
+	RemovedWithSuccess = True
 	if (akActor == libs.PlayerRef) && libs.Config.DestroyKeyProbability > 0.0 && deviceKey != none
 		; At the time of writing this, only the player may unlock themselves / NPCs via this function.
 		; I do not really see that changing in the future, so using an explicit reference to the
@@ -299,6 +302,7 @@ Function RemoveDevice(actor akActor, bool destroyDevice=false, bool skipMutex=fa
 			EndIf
 			libs.SendDeviceEvent("KeyBreak", akActor.GetLeveledActorBase().GetName(), 1)
 			libs.PlayerRef.RemoveItem(deviceKey, 1, true)
+			RemovedWithSuccess = False
 			return
 		EndIf
 	Endif
@@ -419,7 +423,7 @@ EndFunction
 
 
 function DeviceMenuRemoveWithKey()
-    if RemoveDeviceWithKey()
+    if RemoveDeviceWithKey() && RemovedWithSuccess
 	    libs.NotifyPlayer("You succesfully unlock the " + deviceName+".")
     Endif
 EndFunction

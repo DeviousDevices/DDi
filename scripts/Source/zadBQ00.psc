@@ -267,6 +267,12 @@ function Rehook()
 	RegisterForModEvent("HookLeadInEnd", "OnLeadInEnd")
 	RegisterForModEvent("HookOrgasmStart", "OnOrgasmStart")
 	RegisterForModEvent("HookAnimationChange", "OnAnimationChange")
+	; No-Dependency ModEvents for people who want to casually use DDI without linking to it.
+	RegisterForModEvent("DDI_EquipDevice", "OnDDIEquipDevice")
+	RegisterForModEvent("DDI_RemoveDevice", "OnDDIRemoveDevice")
+	RegisterForModEvent("DDI_CreateRestraintsKey", "OnDDICreateRestraintsKey")
+	RegisterForModEvent("DDI_CreateChastityKey", "OnDDICreateChastityKey")
+	RegisterForModEvent("DDI_CreatePiercingKey", "OnDDICreatePiercingKey")
 	; Papyrus mod events
 	UnregisterForSleep()
 	RegisterForSleep()
@@ -1060,3 +1066,143 @@ Event OnSleepStop(bool abInterrupted)
 	tmp.Show()
 	libs.PlayThirdPersonAnimation(akActor, libs.AnimSwitchKeyword(akActor, "Horny01"), utility.RandomInt(5,9))
 EndEvent
+
+; helper function to translate strings passed to the ModEvent() item equip feature
+KeyWord Function GetKeywordByString(String s)
+	If s == "Hood"
+		Return libs.zad_DeviousHood
+	ElseIf s == "Suit"
+		Return libs.zad_DeviousSuit
+	ElseIf s == "Gloves"
+		Return libs.zad_DeviousGloves
+	ElseIf s == "Boots"
+		Return libs.zad_DeviousBoots
+	ElseIf s == "Gag"
+		Return libs.zad_DeviousGag
+	; We are generous and allow variations in spelling, because people are going to do that anyway.
+	ElseIf s == "BallGag" || s == "Ball Gag"
+		Return libs.zad_DeviousGag
+	ElseIf s == "PanelGag" || s == "Panel Gag"
+		Return libs.zad_DeviousGag
+	ElseIf s == "RingGag" || s == "Ring Gag"
+		Return libs.zad_DeviousGag
+	ElseIf s == "Collar"
+		Return libs.zad_DeviousCollar	
+	ElseIf s == "Armbinder"
+		Return libs.zad_DeviousArmbinder
+	ElseIf s == "Yoke"
+		Return libs.zad_DeviousYoke
+	ElseIf s == "Blindfold"
+		Return libs.zad_DeviousBlindfold
+	ElseIf s == "Harness"
+		Return libs.zad_DeviousHarness
+	ElseIf s == "Corset"
+		Return libs.zad_DeviousCorset
+	ElseIf s == "ArmCuffs" || s == "Arm Cuffs"
+		Return libs.zad_DeviousArmCuffs
+	ElseIf s == "LegCuffs" || s == "Leg Cuffs"
+		Return libs.zad_DeviousLegCuffs
+	ElseIf s == "Belt" || s == "Chastity Belt" || s == "ChastityBelt"
+		Return libs.zad_DeviousBelt
+	ElseIf s == "Bra" || s == "Chastity Bra" || s == "ChastityBra"
+		Return libs.zad_DeviousBra
+	ElseIf s == "NipplePiercings" || s == "Nipple Piercings"
+		Return libs.zad_DeviousPiercingsNipple
+	ElseIf s == "VaginalPiercings" || s == "Vaginal Piercings"
+		Return libs.zad_DeviousPiercingsVaginal
+	ElseIf s == "VaginalPlug" || s == "Vaginal Plug"
+		Return libs.zad_DeviousPlugVaginal
+	ElseIf s == "AnalPlug" || s == "Anal Plug"
+		Return libs.zad_DeviousPlugAnal
+	Endif
+	Return None
+EndFunction
+
+Event OnDDIEquipDevice(Form akActor, String DeviceType)
+	Actor a = akActor As Actor
+	libs.log("DDI ModEvent equip request received. Trying to equip device: " + DeviceType + " on " + a.GetLeveledActorBase().GetName())
+	KeyWord kw = GetKeywordByString(DeviceType)	
+	; check for invalid return values and bail out if no valid davice was passed.
+	If !kw || !a
+		libs.log("DDI ModEvent failed. No valid device string or no valid actor received.")
+		return
+	Endif
+	String tags = ""
+	Bool reqall = false
+	; special cases
+	if DeviceType == "BallGag" || DeviceType == "Ball Gag"
+		tags = "ball"
+		reqall = true
+	Endif
+	if DeviceType == "RingGag" || DeviceType == "Ring Gag"
+		tags = "ring"
+		reqall = true
+	Endif
+	if DeviceType == "PanelGag" || DeviceType == "Panel Gag"
+		tags = "panel"
+		reqall = true
+	Endif
+	armor iDevice 
+	If tags == ""
+		iDevice = libs.GetGenericDeviceByKeyword(Kw)
+	Else
+		iDevice = libs.GetDeviceByTags(Kw, tags, reqall, tagsToSuppress = "", fallBack = true)
+	Endif
+	if !iDevice
+		libs.log("DDI ModEvent failed. No matching device found.")
+		return
+	Endif
+	armor rDevice = libs.GetRenderedDevice(iDevice)
+	libs.equipDevice(a, iDevice, rDevice, Kw, skipEvents = false, skipMutex = true)
+EndEvent
+
+Event OnDDIRemoveDevice(Form akActor, String DeviceType)
+	Actor a = akActor As Actor
+	libs.log("DDI ModEvent device remove request received. Trying to remove device: " + DeviceType + " from " + a.GetLeveledActorBase().GetName())
+	KeyWord kw = GetKeywordByString(DeviceType)	
+	; check for invalid return values and bail out if no valid davice was passed.
+	If !kw || !a
+		libs.log("DDI ModEvent failed. No valid device string or no valid actor received.")
+		return
+	Endif
+	Armor iDevice = libs.GetWornDevice(a, kw)
+	If !iDevice
+		libs.log("DDI ModEvent device removal failed: " + a.GetLeveledActorBase().GetName() + " is not wearing the requested device type.")
+		return
+	Endif
+	if libs.ManipulateGenericDeviceByKeyword(a, Kw, false, skipEvents = false, skipMutex = true)
+		libs.log("DDI ModEvent:. Successfully removed device.")
+	Else
+		libs.log("DDI ModEvent device removal failed on " + a.GetLeveledActorBase().GetName() + ". Likely cause: Worn item is a non generic device.")
+	Endif
+EndEvent
+
+Event OnDDICreateRestraintsKey(Form akActor)
+	Actor a = akActor As Actor
+	If !a
+		libs.log("DDI ModEvent failed. No valid actor received.")
+		return
+	Endif
+	libs.log("DDI ModEvent create key request received. Trying to give a restraints key to: " + a.GetLeveledActorBase().GetName())	
+	a.Additem(libs.RestraintsKey, 1)
+EndEvent
+	
+Event OnDDICreateChastityKey(Form akActor)
+	Actor a = akActor As Actor
+	If !a
+		libs.log("DDI ModEvent failed. No valid actor received.")
+		return
+	Endif
+	libs.log("DDI ModEvent create key request received. Trying to give a chastity key to: " + a.GetLeveledActorBase().GetName())	
+	a.Additem(libs.ChastityKey, 1)
+EndEvent
+
+Event OnDDICreatePiercingKey(Form akActor)
+	Actor a = akActor As Actor
+	If !a
+		libs.log("DDI ModEvent failed. No valid actor received.")
+		return
+	Endif
+	libs.log("DDI ModEvent create key request received. Trying to give a piercing key to: " + a.GetLeveledActorBase().GetName())	
+	a.Additem(libs.PiercingKey, 1)
+EndEvent	
