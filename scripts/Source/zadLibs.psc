@@ -940,13 +940,9 @@ EndFunction
 Function EndThirdPersonAnimation(actor akActor, bool[] cameraState, bool permitRestrictive=false)
 	Log("EndThirdPersonAnimation("+akActor.GetLeveledActorBase().GetName()+","+cameraState+")")
 	SetAnimating(akActor, false)
-	bool isBound = akActor.WornHasKeyword(zad_DeviousArmBinder) || akActor.WornHasKeyword(zad_DeviousYoke)
 	if (!akActor.Is3DLoaded() ||  akActor.IsDead() || akActor.IsDisabled())
 		Log("Actor is not loaded (Or is otherwise invalid). Aborting.")
 		return
-	EndIf
-	if !IsBound
-		Debug.SendAnimationEvent(akActor, "IdleForceDefaultState")
 	EndIf
 	if akActor == PlayerRef
 		UpdateControls()
