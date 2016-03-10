@@ -944,6 +944,8 @@ Function EndThirdPersonAnimation(actor akActor, bool[] cameraState, bool permitR
 		Log("Actor is not loaded (Or is otherwise invalid). Aborting.")
 		return
 	EndIf
+	; Reset idle 
+	Debug.SendAnimationEvent(akActor, "IdleForceDefaultState")
 	if akActor == PlayerRef
 		UpdateControls()
 		if cameraState[0]
