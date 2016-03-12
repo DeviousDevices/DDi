@@ -540,6 +540,33 @@ int Function IsWearingDevice(actor akActor, armor deviceRendered, keyword zad_De
 	return 0
 EndFunction
 
+; checks if the lock for a given device slot is jammed, works only on the player for now. Will return 1 if the lock is jammed, 0 if it isn't and -1 if an error occured.
+Int Function IsLockJammed(actor akActor, keyword zad_DeviousDevice)
+	If akActor != playerRef || !akActor.WornHasKeyword(zad_DeviousDevice)
+		return -1
+	Endif
+	If StorageUtil.GetIntValue(akActor, "zad_Equipped" + LookupDeviceType(zad_DeviousDevice) + "_LockJammedStatus") == 1
+		return 1
+	Endif
+	return 0
+EndFunction
+
+; I am sure this function will be cruel fun for some modders *cough*
+Bool Function JamLock(actor akActor, keyword zad_DeviousDevice)
+	If akActor != playerRef || !akActor.WornHasKeyword(zad_DeviousDevice)
+		return False
+	Endif
+	StorageUtil.SetIntValue(akActor, "zad_Equipped" + LookupDeviceType(zad_DeviousDevice) + "_LockJammedStatus", 1)
+	return True
+EndFunction
+
+Bool Function UnJamLock(actor akActor, keyword zad_DeviousDevice)
+	If akActor != playerRef || !akActor.WornHasKeyword(zad_DeviousDevice)
+		return False
+	Endif
+	StorageUtil.SetIntValue(akActor, "zad_Equipped" + LookupDeviceType(zad_DeviousDevice) + "_LockJammedStatus", 0)
+	return True
+EndFunction
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Begin Generic Functions
@@ -1462,6 +1489,11 @@ EndFunction
 ; This function has suffered from feature creep pretty hard since it's inception, and is in need of refactoring. Still works, but very messy.
 ; Will split this up to a small library in the future. Will document this properly at that point.
 int Function VibrateEffect(actor akActor, int vibStrength, int duration, bool teaseOnly=false, bool silent = false)
+	; don't execute this function if the character is in combat. Nobody in their right mind starts playing with herself if there are people trying to kill her.
+	; Events that otherwise would call this function are responsible for providing alternatives as desired.
+	if playerref.IsInCombat() 
+		return -2
+	Endif
 	AcquireAndSpinlock()
 	If duration == 0
 		duration = Utility.RandomInt(5,20)
@@ -1723,10 +1755,16 @@ Function SpellCastVibrate(Actor akActor, Form tmp)
 	if (akActor.WornHasKeyword(zad_DeviousBelt) || akActor.WornHasKeyword(zad_EffectPossessed)) && akActor.WornHasKeyword(zad_DeviousPlug) && ActorHasKeyword(akActor, zad_EffectVibrateOnSpellCast)
 		SendModEvent("EventOnCast")
 		Log("OnSpellCast()")
-		if !Config.HardcoreEffects && akActor == PlayerRef && akActor.GetCombatState() >= 1
-			Log("Player is in combat, and HardCoreEffects == false. Done.")
-			return
-		EndIf
+		If akActor == PlayerRef && akActor.GetCombatState() >= 1
+			if !Config.HardcoreEffects 
+				Log("Player is in combat, and HardCoreEffects == false. Done.")
+				return
+			Else
+				; shock her if she's in combat.
+				ShockActor(akActor)
+				return
+			EndIf
+		Endif
 		Shout isShout = (tmp as Shout)
 		; Log("isShout: "+isShout)
 		int cost = theSpell.GetEffectiveMagickaCost(akActor)

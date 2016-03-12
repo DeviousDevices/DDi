@@ -13,7 +13,7 @@ Message Property zad_DeviceRemoveMsg auto  ; Device removal message
 Armor Property deviceRendered Auto         ; Internal Device
 Armor Property deviceInventory Auto        ; Inventory Device
 Key Property deviceKey  Auto               ; Key type to unlock this device
-Bool Property JammedLock = False Auto      ; Is the lock currently jammed?
+Bool Property JammedLock = False Auto      ; Is the lock currently jammed? (Deprecated, do NOT use!)
 MiscObject Property Lockpick Auto
 
 ; Keywords
@@ -66,7 +66,7 @@ Event OnEquipped(Actor akActor)
 			akActor.UnequipItem(deviceInventory, false, true)
 		EndIf
 		libs.DeviceMutex = false
-                return
+        return
 	EndIf
 	; Check to see if item state is broken
 	libs.ReEquipExistingDevice(akActor, zad_DeviousDevice)
@@ -87,11 +87,11 @@ Event OnEquipped(Actor akActor)
 		return
 	EndIf
         libs.CleanupDevices(akActor, zad_DeviousDevice, deviceRendered)
-	JammedLock = False
 	; I would extend this to NPC's, but I am concerned about potential bloating.
 	; ( NPC's going out of cell, resetting inventories, etc. without OnRemoveDevice() being called )
 	if akActor == libs.PlayerRef ; Store equipped devices for faster generic calls.
 		StoreEquippedDevice(akActor)
+		StorageUtil.SetIntValue(akActor, "zad_Equipped" + libs.LookupDeviceType(zad_DeviousDevice) + "_LockJammedStatus", 0)
 	EndIf
 	OnEquippedPre(akActor, silent=silently)
 	libs.SendDeviceEquippedEvent(deviceName, akActor)
@@ -129,6 +129,9 @@ Event OnUnequipped(Actor akActor)
 			StorageUtil.UnsetIntValue(akActor, "zad_RemovalToken"+deviceInventory)
 			unequipMutex = false
 			libs.DeviceMutex = false
+			If akActor == libs.playerref
+				StorageUtil.UnSetIntValue(akActor, "zad_Equipped" + libs.LookupDeviceType(zad_DeviousDevice) + "_LockJammedStatus")
+			Endif
 		EndIf
 	else
 		if akActor==libs.PlayerRef
@@ -158,7 +161,7 @@ Event OnUnequipped(Actor akActor)
 			Endif
 		Endif
 		unequipMutex = false
-	EndIf
+	EndIf	
 EndEvent
 
 
@@ -295,8 +298,8 @@ Function RemoveDevice(actor akActor, bool destroyDevice=false, bool skipMutex=fa
 			Libs.Log("Not breaking key for non-generic device.")
 		Elseif Utility.RandomInt(1, 100) <= libs.Config.DestroyKeyProbability
 			if (Utility.RandomInt(1, 100) <= libs.Config.DestroyKeyJamChance)
-				libs.NotifyPlayer("The key breaks while attempting to remove the "+deviceName+", and the broken key becomes stuck in the lock!", true)
-				JammedLock = True
+				libs.NotifyPlayer("The key breaks while attempting to remove the "+deviceName+", and the broken key becomes stuck in the lock!", true)				
+				StorageUtil.SetIntValue(akActor, "zad_Equipped" + libs.LookupDeviceType(zad_DeviousDevice) + "_LockJammedStatus", 1)
 			Else
 				libs.NotifyPlayer("The key breaks while attempting to remove the "+deviceName+"!", true)
 			EndIf
@@ -322,7 +325,7 @@ bool Function RemoveDeviceWithKey(actor akActor = none, bool destroyDevice=false
 	if akActor == none
 		akActor = libs.PlayerRef
 	EndIf
-	if JammedLock
+	if (akActor == libs.PlayerRef) && StorageUtil.GetIntValue(akActor, "zad_Equipped" + libs.LookupDeviceType(zad_DeviousDevice) + "_LockJammedStatus") == 1
 		libs.Log("RemoveDeviceWithKey called, but lock is jammed.")
 		libs.Notify("You attempt to unlock the "+deviceName+", but the lock is jammed!", true)
 		return false
@@ -330,7 +333,7 @@ bool Function RemoveDeviceWithKey(actor akActor = none, bool destroyDevice=false
 	if akActor.GetItemCount(deviceKey)>=1
 		libs.Log("RemoveDeviceWithKey called, actor has correct key. Removing "+ deviceName +".")
 		RemoveDevice(akActor)
-		return !JammedLock
+		return true
 	else
 		libs.Log("RemoveDeviceWithKey called for a "+deviceName+" while actor does not possess key.")
 		libs.Notify("You do not posess the correct key to manipulate this " + deviceName + ".")
@@ -621,7 +624,7 @@ Function OnUnequippedPre(Actor akActor)
 EndFunction
 
 Function OnUnequippedPost(Actor akActor)
-
+	
 EndFunction
 ; ===============
 ; Event OnContainerChanged
