@@ -1,6 +1,9 @@
 scriptName zadEventHorny extends zadBaseEvent
 
 Bool Function Filter(actor akActor, int chanceMod=0)
+	if akActor.GetCombatState() >= 1
+		return False
+	Endif
 	int arousal = libs.Aroused.GetActorExposure(akActor)
 	float CombatModifier = 1
 	if akActor.GetCombatState() == 1

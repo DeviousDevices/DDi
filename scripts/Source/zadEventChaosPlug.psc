@@ -7,7 +7,7 @@ EndFunction
 Function Execute(actor akActor)
 	;libs.Log("VibrateEffect("+chance+")")
 	int selection = utility.RandomInt(1,4)
-	if selection == 1
+	if selection == 1 || akActor.GetCombatState() >= 1
 		libs.ShockActor(akActor)
 	Else
 		libs.VibrateEffect(akActor, (selection+1), 0, teaseOnly=libs.shouldEdgeActor(akActor))

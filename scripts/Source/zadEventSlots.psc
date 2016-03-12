@@ -128,7 +128,7 @@ Function UpdateGlobalEvent()
 		libs.UpdateArousalTimerate(libs.PlayerRef, 1.75)
 		libs.UpdateExposure(libs.PlayerRef, 0.5)
 	EndIf
-	if !libs.GlobalEventFlag || libs.PlayerRef.IsInCombat()
+	if !libs.GlobalEventFlag
 		libs.Log("Event processing is currently disabled.")
 		DoRegister()
 	else

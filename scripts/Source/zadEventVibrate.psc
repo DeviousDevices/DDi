@@ -13,8 +13,9 @@ Int Function GetChanceModified(actor akActor, int chanceMod)
 EndFunction
 
 Bool Function Filter(actor akActor, int chanceMod=0)
-	if !libs.Config.HardcoreEffects && akActor == libs.PlayerRef && akActor.GetCombatState() >= 1
-		libs.Log("Player is in combat, and HardCoreEffects == false. Not starting new vibration effect.")
+	if akActor == libs.PlayerRef && akActor.GetCombatState() >= 1
+		libs.Log("Player is in combat. Not starting new vibration effect, just shocking her.")
+		libs.ShockEffect.RemoteCast(akActor, akActor, akActor)
 		return false	
 	EndIf
 	if akActor.IsInFaction(libs.Sexlab.ActorLib.AnimatingFaction)
