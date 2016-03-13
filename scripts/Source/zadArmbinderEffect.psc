@@ -53,6 +53,7 @@ EndEvent
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	if akTarget != libs.PlayerRef
+		libs.BoundCombat.Apply_ABC(akTarget)
 		libs.BoundCombat.Apply_NPC_ABC(akTarget)
 		return
 	EndIf

@@ -49,7 +49,8 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 		PlayBoundIdle()
 		DoRegister()
 		libs.UpdateControls()
-	Else 
+	Else
+		libs.BoundCombat.Apply_ABC(akTarget)	
 		libs.BoundCombat.Apply_NPC_ABC(akTarget)
 		return
 	EndIf
