@@ -55,12 +55,12 @@ EndFunction
 Int Function SelectAnimationSet(actor akActor)
         int animSet;
 	if akActor.WornHasKeyword(libs.zad_DeviousArmBinder)
-		animSet = 0 ; Armbinder animation
+		animSet = 1 ; Armbinder animation
 	ElseIf akActor.WornHasKeyword(libs.zad_DeviousYoke)
-		animSet = 1 ; Yoke animations
+		animSet = 2 ; Yoke animations
 	Else
 		; Unsupported device type.
-		animSet = 0
+		animSet = 1
 		libs.Warn("Equipped binding is incompatible with bound combat. Could not determine appropriate animation set. Defaulting to Armbinder Animations.")
 	EndIf
 	return animSet
