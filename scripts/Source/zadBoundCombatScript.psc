@@ -55,12 +55,12 @@ EndFunction
 Int Function SelectAnimationSet(actor akActor)
         int animSet;
 	if akActor.WornHasKeyword(libs.zad_DeviousArmBinder)
-		animSet = 1 ; Armbinder animation
+		animSet = 0 ; Armbinder animation
 	ElseIf akActor.WornHasKeyword(libs.zad_DeviousYoke)
-		animSet = 2 ; Yoke animations
+		animSet = 1 ; Yoke animations
 	Else
 		; Unsupported device type.
-		animSet = 1
+		animSet = 0
 		libs.Warn("Equipped binding is incompatible with bound combat. Could not determine appropriate animation set. Defaulting to Armbinder Animations.")
 	EndIf
 	return animSet
@@ -114,6 +114,7 @@ Function Apply_ABC(actor akActor)
 	FNIS_aa.SetAnimGroup(akActor, "_mt", ABC_mt, animSet, "DeviousDevices", Config.LogMessages)
 	FNIS_aa.SetAnimGroup(akActor, "_mtturn", ABC_mtturn, animSet, "DeviousDevices", Config.LogMessages)
 	FNIS_aa.SetAnimGroup(akActor, "_mtidle", ABC_mtidle, animSet, "DeviousDevices", Config.LogMessages)
+	akActor.SetAnimationVariableInt("FNIS_abc_h2h_LocomotionPose", animSet + 1)
 EndFunction
 
 Function Remove_ABC(actor akActor)
@@ -138,6 +139,7 @@ Function Remove_ABC(actor akActor)
 	FNIS_aa.SetAnimGroup(akActor, "_mt", 0, 0, "DeviousDevices", Config.LogMessages)
 	FNIS_aa.SetAnimGroup(akActor, "_mtturn", 0, 0, "DeviousDevices", Config.LogMessages)
 	FNIS_aa.SetAnimGroup(akActor, "_mtidle", 0, 0, "DeviousDevices", Config.LogMessages)
+	akActor.SetAnimationVariableInt("FNIS_abc_h2h_LocomotionPose", 0)
 EndFunction
 
 

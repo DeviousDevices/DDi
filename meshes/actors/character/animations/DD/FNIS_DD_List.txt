@@ -31,17 +31,17 @@ b DDZazHornyE ZazHornyE.hkx
 
 AAprefix abc
 
-AAset _h2heqp 3
-AAset _h2hidle 3
-AAset _h2hatkpow 3
-AAset _h2hstag 3
-AAset _h2hatk 3
-AAset _jump 3
-AAset _sprint 3
-AAset _sneakmt 3
-AAset _sneakidle 3
-AAset _shout 3
-AAset _mtx 3
-AAset _mt 3
-AAset _mtturn 3
-AAset _mtidle 3
+AAset _h2heqp 2
+AAset _h2hidle 2
+AAset _h2hatkpow 2
+AAset _h2hstag 2
+AAset _h2hatk 2
+AAset _jump 2
+AAset _sprint 2
+AAset _sneakmt 2
+AAset _sneakidle 2
+AAset _shout 2
+AAset _mtx 2
+AAset _mt 2
+AAset _mtturn 2
+AAset _mtidle 2
