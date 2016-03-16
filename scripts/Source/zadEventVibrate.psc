@@ -13,16 +13,12 @@ Int Function GetChanceModified(actor akActor, int chanceMod)
 EndFunction
 
 Bool Function Filter(actor akActor, int chanceMod=0)
-	if akActor == libs.PlayerRef && akActor.GetCombatState() >= 1
-		libs.Log("Player is in combat. Not starting new vibration effect, just shocking her.")
-		libs.ShockEffect.RemoteCast(akActor, akActor, akActor)
-		return false	
-	EndIf
 	if akActor.IsInFaction(libs.Sexlab.ActorLib.AnimatingFaction)
 		libs.Log("Player is in a sexlab scene. Not starting new vibration effect.")
 		return false
 	EndIf
-	return (HasKeywords(akActor) && (akActor.WornHasKeyword(libs.zad_DeviousPlug) || akActor.WornHasKeyword(libs.zad_DeviousPiercingsNipple) || akActor.WornHasKeyword(libs.zad_DeviousPiercingsVaginal)) && Parent.Filter(akActor, GetChanceModified(akActor, chanceMod)))
+	bool inCombat = (akActor == libs.PlayerRef &&  akActor.GetCombatState() >= 1)
+	return (HasKeywords(akActor) && (akActor.WornHasKeyword(libs.zad_DeviousPlug) || akActor.WornHasKeyword(libs.zad_DeviousPiercingsNipple) || akActor.WornHasKeyword(libs.zad_DeviousPiercingsVaginal)) && Parent.Filter(akActor, GetChanceModified(akActor, chanceMod))) && !inCombat
 EndFunction
 
 bool Function HasKeywords(actor akActor)
