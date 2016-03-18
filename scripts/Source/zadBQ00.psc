@@ -134,34 +134,12 @@ Function Maintenance()
 		Libs.Error("zad_DeviousDevice == none in Maintenance()")
 	Endif
 	bool regDevices = false 
-	if modVersion != curVersion
-		if modVersion <= 2.65 && modVersion >= 2.0
-			Debug.Messagebox("It seems that you're upgrading Devious Devices from a version prior to 2.6.6. Please note, that upgrading from version 2.6.5 to 2.6.6+ is unsupported. Do so at your own risk.")
-			Tainted=True
-		EndIf
-		if modVersion < 2.9 
-			; device hider migration
-			libs.config.DevicesUnderneathSlot = 12 ; Slot 41
-			libs.config.DevicesUnderneathSlotDefault = 12 
-		EndIf
+	if modVersion != curVersion		
 		modVersion = curVersion
-		Debug.Notification("Devious Devices, version " + modVersion + " initialized.")
+		Debug.Notification("Devious Devices, version " + libs.GetVersionString() + " initialized.")
 		libs.Log("Initializing.")
 		regDevices = true
-	EndIf
-	if modVersion < 2.8
-		; Temporarily disable SS for curious users that enabled it.
-		libs.config.SurreptitiousStreets = false
-		libs.config.RadiantMaster = false
-	EndIf
-	if modVersion <= 2.9
-		; Fix duplicate keyword baked in to savegames
-		libs.zad_DeviousBoots = (Game.GetFormFromFile(0x00027f29, "Devious Devices - Assets.esm") as Keyword)
-	EndIf
-	if modVersion <= 2.92
-	   	libs.zad_NoCompressBreasts = (Game.GetFormFromFile(0x0005689c, "Devious Devices - Integration.esm") as Keyword)
-	   	libs.zad_NoCompressBelly = (Game.GetFormFromFile(0x0005689b, "Devious Devices - Integration.esm") as Keyword)
-	EndIf
+	EndIf	
 	Parent.Maintenance()
 	; I doubt this will actually fix the MCM issue people are reporting, though who knows. Doesn't make sense that the animation failing 
 	; to register with Sexlab would cause zadConfig to not initialize properly. All the same, better to avoid that race condition.
@@ -248,13 +226,7 @@ Function VersionChecks()
 		status="FAIL"
 	EndIf
 	libs.Log("Verifying that installation is untainted by an unsupported upgrade: "+status)
-	status="OK"
-	bool obsoleteEspInstalled = !(Game.GetModByName("Devious Devices - Integration.esp") > 0)
-	if obsoleteEspInstalled
-		status = "FAIL"
-		libs.Error("Obsolete file Devious Devices - Integration.esp detected. Note, that upgrading from 2.6.5 to 2.6.6+ is not supported. Please delete Devious Devices - Integration.esp (Using Devious Devices - Integration.esm instead), and try again.")
-	EndIf
-	libs.Log("Verifying that old DDi esp is not present: "+status)
+	status="OK"	
 	libs.Log("==========End Compatibility Checks==========")
 EndFunction
 

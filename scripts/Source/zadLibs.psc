@@ -991,8 +991,13 @@ EndFunction
 
 
 float Function GetVersion()
-	return 2.92
+	return 3 ; increment to determine the newest version
 EndFunction
+
+String Function GetVersionString()
+	return "2.10" ; string to be displayed in MCM etc.
+EndFunction
+
 
 
 ;===============================================================================
