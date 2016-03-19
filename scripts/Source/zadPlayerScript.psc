@@ -9,6 +9,7 @@ Formlist Property SitBlockKeywords Auto
  
  
 Event OnPlayerLoadGame()
+		libs.SpellCastVibrateCooldown = 0.0
 		questScript.Maintenance()
 		cameraState.Maintenance()
 		libs.ResetDialogue()

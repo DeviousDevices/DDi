@@ -240,6 +240,8 @@ Float Property lastRepopulateTime Auto ; Avoid 2.6.3 bug
 Actor Property PlayerRef Auto
 Faction Property SexLabAnimatingFaction Auto
 Spell Property ShockEffect Auto
+Float Property SpellCastVibrateCooldown Auto
+Spell Property zad_splMagickaPenalty Auto
 bool Property BoundAnimsAvailable = True Auto ; Obsolete. Bound anims are now always available, post zap 6
 
 ; Rechargeable Soulgem Stuff
@@ -1755,6 +1757,12 @@ Bool Function ActorHasKeyword(actor akActor, keyword kwd)
 	return (akActor.HasMagicEffectWithKeyword(kwd) || akActor.WornHasKeyword(kwd))
 EndFunction
 
+Function ApplyMagickaPenalty(actor akActor)
+	zad_splMagickaPenalty.RemoteCast(akActor, akActor, akActor)
+	float currentMag = akActor.GetActorValue("Magicka")
+	akActor.DamageActorValue("Magicka", currentMag * 0.25)	
+EndFunction
+	
 Function SpellCastVibrate(Actor akActor, Form tmp)
 	Spell theSpell = (tmp as Spell)
 	if (akActor.WornHasKeyword(zad_DeviousBelt) || akActor.WornHasKeyword(zad_EffectPossessed)) && akActor.WornHasKeyword(zad_DeviousPlug) && ActorHasKeyword(akActor, zad_EffectVibrateOnSpellCast)
@@ -1765,8 +1773,15 @@ Function SpellCastVibrate(Actor akActor, Form tmp)
 				Log("Player is in combat, and HardCoreEffects == false. Done.")
 				return
 			Else
-				; shock her if she's in combat.
-				ShockActor(akActor)
+				; punish her only every so often
+				if (Utility.GetCurrentRealTime() > SpellCastVibrateCooldown)					
+					SpellCastVibrateCooldown = Utility.GetCurrentRealTime() + 60 ; 60 seconds cooldown
+				else
+					return
+				endif		
+				Log("Player is in combat while trying to cast spell: Applying magicka penalty.")
+				; Hit Magicka and Mag Rate
+				ApplyMagickaPenalty(akActor)
 				return
 			EndIf
 		Endif
