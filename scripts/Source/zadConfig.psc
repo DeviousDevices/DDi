@@ -253,10 +253,10 @@ Function SetupSlotMasks()
 	SlotMasks[22] = "Nipple Piercings (51)"
 	SlotMasks[23] = "SoS (52)"
 	SlotMasks[24] = "Cuffs (Legs) (53)"
-	SlotMasks[25] = "Plug Vaginal (54)"
+
 	SlotMasks[26] = "Blindfold (55)"
 	SlotMasks[27] = "Chastity Bra (56)"
-
+	SlotMasks[28] = "Plug Vaginal (57)"
 	SlotMasks[29] = "Harnesses / Corsets (58)"
 	SlotMasks[30] = "Cuffs (Arms) / Armbinder (59)"
 
