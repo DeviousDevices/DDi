@@ -215,7 +215,7 @@ Function VersionChecks()
 		libs.Error("Assets is undefined: You're probably running an out of date version of it. Please update Devious Devices - Assets to the latest version.")
 	EndIf
 	CheckCompatibility("Assets", 2.90, assets.GetVersion())
-	CheckCompatibility("Zaz Animation Pack", 602, zbfUtil.GetVersion())
+	CheckCompatibility("Zaz Animation Pack", 610, zbfUtil.GetVersion())
 	CheckCompatibility("Aroused", 20140124, Aroused.GetVersion())
 	CheckCompatibility("Sexlab", 15900, SexlabUtil.GetVersion())
 	libs.Log("[ Third Party Mod Compatibility Checks ]")

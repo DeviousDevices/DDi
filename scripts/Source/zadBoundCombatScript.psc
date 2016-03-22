@@ -80,7 +80,7 @@ EndFunction
 Function Maintenance_ABC()
 	libs.Log("Maintenance_ABC()")
 	if (!zbfc)
-		zbfc = zbfUtil.GetConfig()
+		zbfc = zbfConfig.GetApi()
 	EndIf
 	int current_crc = FNIS_aa.GetInstallationCRC()
 	if ( current_crc != ABC_CRC || libs.GetVersion() <= 2.92 )
