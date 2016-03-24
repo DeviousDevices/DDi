@@ -1256,6 +1256,46 @@ Function SendDeviceEvent(string eventName, string actorName, int isPlayer)
 	SendModEvent(eventName, actorName, isPlayer)
 EndFunction
 
+; these events will communicate the exact item that was manipulated, so 3rd party mods don't have to register 15+ different events to catch every conceivable DD item type.
+Function SendDeviceEquippedEventVerbose(armor inventoryDevice, keyword deviceKeyword, actor akActor)	
+	Int Handle = ModEvent.Create("DDI_DeviceEquipped")
+	If (Handle)		
+		ModEvent.PushForm(Handle, inventoryDevice)
+		ModEvent.PushForm(Handle, deviceKeyword)
+		ModEvent.PushForm(Handle, akActor)		
+		ModEvent.Send(Handle)
+	Endif	
+EndFunction
+
+Function SendDeviceRemovedEventVerbose(armor inventoryDevice, keyword deviceKeyword, actor akActor)
+	Int Handle = ModEvent.Create("DDI_DeviceRemoved")
+	If (Handle)		
+		ModEvent.PushForm(Handle, inventoryDevice)
+		ModEvent.PushForm(Handle, deviceKeyword)
+		ModEvent.PushForm(Handle, akActor)		
+		ModEvent.Send(Handle)
+	Endif
+EndFunction
+
+Function SendDeviceKeyBreakEventVerbose(armor inventoryDevice, keyword deviceKeyword, actor akActor)	
+	Int Handle = ModEvent.Create("DDI_KeyBreak")
+	If (Handle)		
+		ModEvent.PushForm(Handle, inventoryDevice)
+		ModEvent.PushForm(Handle, deviceKeyword)
+		ModEvent.PushForm(Handle, akActor)		
+		ModEvent.Send(Handle)
+	Endif	
+EndFunction
+
+Function SendDeviceJamLockEventVerbose(armor inventoryDevice, keyword deviceKeyword, actor akActor)	
+	Int Handle = ModEvent.Create("DDI_JamLock")
+	If (Handle)		
+		ModEvent.PushForm(Handle, inventoryDevice)
+		ModEvent.PushForm(Handle, deviceKeyword)
+		ModEvent.PushForm(Handle, akActor)		
+		ModEvent.Send(Handle)
+	Endif	
+EndFunction
 
 ;==================================================
 ; Effects

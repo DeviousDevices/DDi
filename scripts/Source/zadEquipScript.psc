@@ -95,6 +95,7 @@ Event OnEquipped(Actor akActor)
 	EndIf
 	OnEquippedPre(akActor, silent=silently)
 	libs.SendDeviceEquippedEvent(deviceName, akActor)
+	libs.SendDeviceEquippedEventVerbose(deviceInventory, zad_DeviousDevice, akActor)
 	; akActor.SetOutfit(libs.zadEmptyOutfit, True)
 	akActor.EquipItem(DeviceInventory, false, true)
 	akActor.EquipItem(DeviceRendered, true, true)
@@ -299,17 +300,19 @@ Function RemoveDevice(actor akActor, bool destroyDevice=false, bool skipMutex=fa
 		Elseif Utility.RandomInt(1, 100) <= libs.Config.DestroyKeyProbability
 			if (Utility.RandomInt(1, 100) <= libs.Config.DestroyKeyJamChance)
 				libs.NotifyPlayer("The key breaks while attempting to remove the "+deviceName+", and the broken key becomes stuck in the lock!", true)				
+				libs.SendDeviceJamLockEventVerbose(deviceInventory, zad_DeviousDevice, akActor)
 				StorageUtil.SetIntValue(akActor, "zad_Equipped" + libs.LookupDeviceType(zad_DeviousDevice) + "_LockJammedStatus", 1)
 			Else
 				libs.NotifyPlayer("The key breaks while attempting to remove the "+deviceName+"!", true)
-			EndIf
-			libs.SendDeviceEvent("KeyBreak", akActor.GetLeveledActorBase().GetName(), 1)
+			EndIf			
+			libs.SendDeviceKeyBreakEventVerbose(deviceInventory, zad_DeviousDevice, akActor)
 			libs.PlayerRef.RemoveItem(deviceKey, 1, true)
 			RemovedWithSuccess = False
 			return
 		EndIf
 	Endif
 	libs.SendDeviceRemovalEvent(deviceName, akActor)
+	libs.SendDeviceRemovedEventVerbose(deviceInventory, zad_DeviousDevice, akActor)
 	libs.RemoveDevice(akActor, deviceInventory, deviceRendered, zad_DeviousDevice, destroyDevice, skipMutex=skipMutex)
 	if deviceKey != none && akActor.GetItemCount(deviceKey) < 1 && libs.config.thresholdModifier > 0
 		libs.Log("Player escaped device without having the key. Modifying unlock threshold.")
