@@ -129,6 +129,15 @@ EndEvent
 Function Maintenance()
 	; benchmark.SetupBenchmarks()
 	float curVersion = libs.GetVersion()
+
+	if (libs.PlayerRef.WornHasKeyword(libs.zad_DeviousBlindfold) && libs.config.BlindfoldMode == 3);dark fog
+		if Weather.GetSkyMode() != 0
+		  ConsoleUtil.ExecuteCommand("ts")
+		  Utility.Wait(0.5)
+		endif
+		ConsoleUtil.ExecuteCommand("setfog 350 500")
+	EndIf
+		
 	if zad_DeviousDevice == None
 		Debug.MessageBox("Devious Devices has not been correctly upgraded from its previous version. Please Clean Save, as per the instructions in the support thread.")
 		Libs.Error("zad_DeviousDevice == none in Maintenance()")

@@ -190,10 +190,13 @@ int[] SlotMaskValues
 
 
 Function SetupBlindfolds()
-	blindfoldList = new String[3]
+	blindfoldList = new String[4]
+;zxc
 	blindfoldList[0] = "DD blindfold"
 	blindfoldList[1] = "DD blindfold w/ Leeches Effect"
 	blindfoldList[2] = "Leeches Mode"
+	blindfoldList[3] = "Dark Fog" ; if you change this entry, please alter the ConsoleUtil check in OnOptionMenuAccept() as well
+;zxc
 EndFunction
 
 Function SetupDifficulties()
@@ -510,7 +513,20 @@ Event OnOptionMenuAccept(int option, int index)
 		KeyCrafting = index
 		SetMenuOptionValue(keyCraftingOID, difficultyList[KeyCrafting])
 	ElseIf option == blindfoldModeOID
-		BlindfoldMode = index
+		If BlindfoldMode == 3 && index != 3 ; Old mode was Dark Fog, remove it
+			if Weather.GetSkyMode() == 0
+				ConsoleUtil.ExecuteCommand("ts")
+			endif
+			ConsoleUtil.ExecuteCommand("setfog 0 0") 
+		EndIf
+		If (index == 3) 
+			int cotest = ConsoleUtil.GetVersion()
+			if !cotest
+				ShowMessage("This mode requires ConsoleUtil which doesn't seem to be installed.")
+				return
+			endif			
+		Endif
+		BlindfoldMode = index		
 		SetMenuOptionValue(BlindfoldModeOID, blindfoldList[blindfoldMode])
 		game.ForceFirstPerson()
 		game.ForceThirdPerson()
@@ -917,7 +933,7 @@ Event OnOptionHighlight(int option)
 	elseIf (option == keyCraftingOID)
 		SetInfoText("Key crafting difficulty.\nEasy: 1 iron ingot. Medium: 1 malachite ingot. Hard: 1 ebony ingot + 1 flawless diamond.")
 	elseIf (option == blindfoldModeOID)
-		SetInfoText("Switch between the three provided blindfold modes. DD's mode is intended for First Person play. While in first person, you will be able to move freely, and one of two effects will be applied to your screen. While in third person, you will be unable to move, but will be able to see clearly. The advantage of this mode is that you will be able to clearly see yourself in scenes (Sex, animations, etc), while still being forced to endure the blindfold to advance gameplay.\nLeeche's mode applies a dof-based blindfold effect constantly, and is intended for third person play.\nDefault:"+blindfoldList[blindfoldModeDefault])
+		SetInfoText("Switch between the four provided blindfold modes. DD's mode is intended for First Person play. While in first person, you will be able to move freely, and one of two effects will be applied to your screen. While in third person, you will be unable to move, but will be able to see clearly. The advantage of this mode is that you will be able to clearly see yourself in scenes (Sex, animations, etc), while still being forced to endure the blindfold to advance gameplay.\nLeeche's mode applies a dof-based blindfold effect constantly, and is intended for third person play. The last mode is dark fog (requires ConsoleUtil mod to work).  Default:"+blindfoldList[blindfoldModeDefault])
 	elseIf (option == DevicesUnderneathSlotOID)
 		SetInfoText("Configure which slot the hidden (Device / Equipment) Hider operates on. It doesn't matter what slot is set, though a slot must be set. If you set this to the same slot as a slot that is being used by a device, bad things will happen. Don't touch this unless you know what you're doing.\nDefault: "+SlotMasks[DevicesUnderneathSlotDefault])
 	elseIf (option == animsRegisterOID)

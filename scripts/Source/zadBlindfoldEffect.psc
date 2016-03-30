@@ -16,6 +16,13 @@ int lastBlindfoldMode = -1
 Function ApplyBlindfold()
 	if !(blinded && libs.config.BlindfoldMode == lastBlindfoldMode && libs.config.BlindfoldStrength == lastBlindfoldStrength)
 		lastBlindfoldMode = libs.config.BlindfoldMode
+		if libs.config.BlindfoldMode == 3 ;dark fog
+			if Weather.GetSkyMode() != 0
+			  ConsoleUtil.ExecuteCommand("ts")
+			  Utility.Wait(0.5)
+			endif
+			ConsoleUtil.ExecuteCommand("setfog 350 500")
+		EndIf		
 		if libs.config.BlindfoldStrength != lastBlindfoldStrength
 			zad_BlindfoldLeeches.Remove()
 			zad_BlindfoldModifier.Remove()
@@ -35,7 +42,7 @@ EndFunction
 
 Event OnPlayerCameraState(int oldState, int newState)
 	if newState != -1 ; Do not process map state changes
-		if libs.config.blindfoldMode == 2 ; Leeches Mode
+		if libs.config.blindfoldMode == 2 || libs.config.blindfoldMode == 3 ; Leeches or Dark fog Mode	
 			ApplyBlindfold()
 			libs.UpdateControls()
 		Else
@@ -78,7 +85,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 		if libs.config.BlindfoldMode == 0 || libs.config.BlindfoldMode == 1 ; Both DD modes.
 			if !libs.config.BlindfoldTooltip
 				libs.config.BlindfoldTooltip = True
-				libs.NotifyPlayer("The Devious Devices Blindfold effect is now active. While in third person, you will be able to see, but unable to move. Switch back to first person at any time to act normally. If you dislike this mode, there are two other modes available in the MCM configuration.", 1)
+				libs.NotifyPlayer("The Devious Devices Blindfold effect is now active. While in third person, you will be able to see, but unable to move. Switch back to first person at any time to act normally. If you dislike this mode, there are other modes available in the MCM configuration.", 1)
 			EndIf
 		EndIf
 		blinded = false
@@ -96,6 +103,12 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	libs.Log("OnEffectFinish(blindfold)")
 	Terminate = True
 	if target == libs.PlayerRef
+		if (libs.config.BlindfoldMode == 3) ;dark fog
+			if Weather.GetSkyMode() == 0
+			ConsoleUtil.ExecuteCommand("ts")
+			endif
+			ConsoleUtil.ExecuteCommand("setfog 0 0") 
+		EndIf
 		zad_BlindfoldModifier.Remove()
 		zad_BlindfoldLeeches.Remove()
 		libs.ToggleCompass(true)
