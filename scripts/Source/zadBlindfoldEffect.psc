@@ -19,7 +19,7 @@ Function ApplyBlindfold()
 		if libs.config.BlindfoldMode == 3 ;dark fog
 			if Weather.GetSkyMode() != 0
 			  ConsoleUtil.ExecuteCommand("ts")
-			  Utility.Wait(0.5)
+			  Utility.Wait(0.1)
 			endif
 			ConsoleUtil.ExecuteCommand("setfog 350 500")
 		EndIf		

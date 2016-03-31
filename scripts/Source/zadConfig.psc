@@ -274,7 +274,7 @@ Event OnConfigInit()
 EndEvent
 
 int Function GetVersion()
-	return 16 ; mcm menu version
+	return 17 ; mcm menu version
 EndFunction
 
 Event OnVersionUpdate(int newVersion)

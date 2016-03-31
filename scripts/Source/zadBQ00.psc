@@ -130,12 +130,18 @@ Function Maintenance()
 	; benchmark.SetupBenchmarks()
 	float curVersion = libs.GetVersion()
 
-	if (libs.PlayerRef.WornHasKeyword(libs.zad_DeviousBlindfold) && libs.config.BlindfoldMode == 3);dark fog
+	if (libs.PlayerRef.WornHasKeyword(libs.zad_DeviousBlindfold) && libs.config.BlindfoldMode == 3) ;dark fog
 		if Weather.GetSkyMode() != 0
 		  ConsoleUtil.ExecuteCommand("ts")
-		  Utility.Wait(0.5)
+		  Utility.Wait(0.1)
 		endif
 		ConsoleUtil.ExecuteCommand("setfog 350 500")
+	Else
+		; needs to be reset because that command is apparently persistant across save games. If this ever causes compatibility issues, we need to revamp this, but it's unlikely.
+		if Weather.GetSkyMode() == 0
+			ConsoleUtil.ExecuteCommand("ts")
+		endif
+		ConsoleUtil.ExecuteCommand("setfog 0 0")
 	EndIf
 		
 	if zad_DeviousDevice == None
