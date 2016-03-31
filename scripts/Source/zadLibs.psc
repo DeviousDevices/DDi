@@ -58,6 +58,8 @@ Keyword Property zad_BlockGeneric Auto ; Block generic removal of this device.
 Keyword Property zbfAnimMouth001 Auto 
 Keyword Property zbfEffectOpenMouth Auto
 
+Keyword Property zad_BoundCombatDisableKick Auto
+
 ;Idles
 Idle Property DDZazHornyA Auto
 Idle Property DDZazHornyB Auto
@@ -1890,7 +1892,11 @@ Function UpdateControls()
 		sneaking = false
 	EndIf
 	if IsBound(playerRef)
-		fighting = config.UseBoundCombat
+		If playerRef.WornHasKeyword(zad_BoundCombatDisableKick)
+			fighting = false
+		Else
+			fighting = config.UseBoundCombat
+		Endif
 		menu = !config.HardcoreEffects
 	EndIf
 	zbfPC.SetDisabledControls(abMovement = !movement, abFighting = !fighting, abSneaking = !sneaking, abMenu = !menu, abActivate = !activate)
