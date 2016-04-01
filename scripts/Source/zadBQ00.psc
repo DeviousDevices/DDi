@@ -135,7 +135,7 @@ Function Maintenance()
 		  ConsoleUtil.ExecuteCommand("ts")
 		  Utility.Wait(0.1)
 		endif
-		ConsoleUtil.ExecuteCommand("setfog 350 500")
+		ConsoleUtil.ExecuteCommand("setfog " + libs.config.darkfogStrength + " " + libs.config.darkfogStrength2)
 	Else
 		; needs to be reset because that command is apparently persistant across save games. If this ever causes compatibility issues, we need to revamp this, but it's unlikely.
 		if Weather.GetSkyMode() == 0

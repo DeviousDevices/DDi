@@ -59,6 +59,9 @@ int Property blindfoldMode Auto ; 0 == DD's mode, 1 == DD's mode w/ leeches, 2 =
 int blindfoldModeDefault = 0
 float Property blindfoldStrength Auto
 float blindfoldStrengthDefault = 1.0
+int Property darkfogStrength Auto
+int Property darkfogStrength2 Auto
+int darkfogStrengthDefault = 300
 
 ; Tooltips
 bool Property BlindfoldTooltip Auto
@@ -173,6 +176,7 @@ int ifpOID
 int preserveAggroOID
 int blindfoldModeOID
 int blindfoldStrengthOID
+int darkfogStrengthOID
 int[] eventOIDs
 int[] slotMaskOIDs
 int DevicesUnderneathSlotOID
@@ -191,12 +195,10 @@ int[] SlotMaskValues
 
 Function SetupBlindfolds()
 	blindfoldList = new String[4]
-;zxc
 	blindfoldList[0] = "DD blindfold"
 	blindfoldList[1] = "DD blindfold w/ Leeches Effect"
 	blindfoldList[2] = "Leeches Mode"
 	blindfoldList[3] = "Dark Fog" ; if you change this entry, please alter the ConsoleUtil check in OnOptionMenuAccept() as well
-;zxc
 EndFunction
 
 Function SetupDifficulties()
@@ -288,6 +290,10 @@ Event OnVersionUpdate(int newVersion)
 		if KeyCrafting == keyCraftingDefault && !libs.PlayerRef.HasPerk(zad_keyCraftingEasy) && !libs.PlayerRef.HasPerk(zad_keyCraftingHard)
 			libs.PlayerRef.AddPerk(zad_keyCraftingHard)
 		EndIf
+		if !darkfogStrength
+			darkfogStrength = darkfogStrengthDefault
+			darkfogStrength2 = (darkfogStrength * 2) - 50
+		EndIf
 	EndIf
 	; if CurrentVersion == 0 ; New Game
 	; 	SexlabFramework SexLab = SexLabUtil.GetAPI()
@@ -356,6 +362,7 @@ Event OnPageReset(string page)
 		AddHeaderOption("Blindfold Options")
 		blindfoldModeOID = AddMenuOption("BlindfoldMode", blindfoldList[blindfoldMode])
 		blindfoldStrengthOID = AddSliderOption("Blindfold Strength", blindfoldStrength, "{2}")
+		darkfogStrengthOID = AddSliderOption("Dark Fog Strength", darkfogStrength, "{0}")
 		AddHeaderOption("Bra Options")
 		if libs.PlayerRef.WornHasKeyword(libs.zad_DeviousBra)
 			breastNodeManagementOID = AddToggleOption("Breast Node Management", breastNodeManagement,OPTION_FLAG_DISABLED)
@@ -524,7 +531,7 @@ Event OnOptionMenuAccept(int option, int index)
 			if !cotest
 				ShowMessage("This mode requires ConsoleUtil which doesn't seem to be installed.")
 				return
-			endif			
+			endif
 		Endif
 		BlindfoldMode = index		
 		SetMenuOptionValue(BlindfoldModeOID, blindfoldList[blindfoldMode])
@@ -581,6 +588,11 @@ Event OnOptionSliderOpen(int option)
 		SetSliderDialogDefaultValue(blindfoldStrengthDefault)
 		SetSliderDialogRange(0.2,1.0)
 		SetSliderDialogInterval(0.01)
+	elseif option == darkfogStrengthOID
+		SetSliderDialogStartValue(darkfogStrength)
+		SetSliderDialogDefaultValue(darkfogStrengthDefault)
+		SetSliderDialogRange(200,500)
+		SetSliderDialogInterval(1)
 	elseif option == beltRateOID
 		SetSliderDialogStartValue(BeltRateMult)
 		SetSliderDialogDefaultValue(beltRateDefault)
@@ -685,7 +697,7 @@ Event OnOptionSliderOpen(int option)
 EndEvent
 
 Event OnOptionSelect(int option)
-	Libs.Log("OnOptionSelect("+option+")")	
+	;Libs.Log("OnOptionSelect("+option+")")	
 	if option == animsRegisterOID
 		beltedAnims.LoadAnimations()
 		SetTextOptionValue(animsRegisterOID, "Done.")
@@ -753,7 +765,7 @@ Event OnOptionSelect(int option)
 EndEvent
 
 Event OnOptionDefault(int option)
-	;Libs.Log("OnOptionDefault("+option+")")	
+	Libs.Log("OnOptionDefault("+option+")")	
 	int i = 0
 	while i < libs.EventSlots.Slotted
 		if option == eventOIDs[i]
@@ -772,6 +784,10 @@ Event OnOptionDefault(int option)
 	elseif (option == blindfoldStrengthOID)
 		blindfoldStrength = blindfoldStrengthDefault
 		SetSliderOptionValue(blindfoldStrengthOID, blindfoldStrengthDefault, "{2}")
+	elseif (option == darkfogStrengthOID)
+		darkfogStrength = darkfogStrengthDefault
+		darkfogStrength2 = (darkfogStrength * 2) - 50
+		SetSliderOptionValue(darkfogStrengthOID, darkfogStrengthDefault, "{0}")
 	elseIf (option == beltRateOID)
 		BeltRateMult = beltRateDefault
 		SetSliderOptionValue(beltRateOID, beltRateDefault, "{1}")
@@ -926,6 +942,8 @@ Event OnOptionHighlight(int option)
 		SetInfoText("The Unlock Threshold will be increased by this much every time the player successfully escapes a device.\nDefault:"+thresholdModifierDefault)
 	elseif (option == blindfoldStrengthOID)
 		SetInfoText("Controls the strength of the blindfold effect.\nDefault:"+blindfoldStrengthDefault)
+	elseif (option == darkfogStrengthOID)
+		SetInfoText("Controls the strength of the dark fog effect (requires ConsoleUtil mod to work).\nDefault:"+darkfogStrengthDefault)
 	elseIf (option == beltRateOID)
 		SetInfoText("Arousal exposure multiplier while belted.\nDefault: "+beltRateDefault)
 	elseIf (option == plugRateOID)
@@ -1040,6 +1058,10 @@ Event OnOptionSliderAccept(int option, float value)
 		SetSliderOptionValue(option, value, "{2}")
 		Game.ForceFirstPerson()
 		Game.ForceThirdPerson()
+	elseif (option == darkfogStrengthOID)
+		darkfogStrength = value as int
+		darkfogStrength2 = ((darkfogStrength * 2) - 50)
+		SetSliderOptionValue(option, value, "{0}")
 	elseIf (option == beltRateOID)
 		BeltRateMult = value
 		SetSliderOptionValue(option, value, "{1}")

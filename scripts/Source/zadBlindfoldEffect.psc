@@ -10,18 +10,21 @@ Bool Property Terminate Auto
 Bool Property blinded Auto
 
 float lastBlindfoldStrength = 0.0
+int lastdarkfogStrength = 0
 int lastBlindfoldMode = -1
 
 
+
 Function ApplyBlindfold()
-	if !(blinded && libs.config.BlindfoldMode == lastBlindfoldMode && libs.config.BlindfoldStrength == lastBlindfoldStrength)
+	if !(blinded && libs.config.BlindfoldMode == lastBlindfoldMode && libs.config.BlindfoldStrength == lastBlindfoldStrength && libs.config.darkfogStrength == lastdarkfogStrength)
 		lastBlindfoldMode = libs.config.BlindfoldMode
 		if libs.config.BlindfoldMode == 3 ;dark fog
 			if Weather.GetSkyMode() != 0
 			  ConsoleUtil.ExecuteCommand("ts")
 			  Utility.Wait(0.1)
 			endif
-			ConsoleUtil.ExecuteCommand("setfog 350 500")
+			ConsoleUtil.ExecuteCommand("setfog " + libs.config.darkfogStrength + " " + libs.config.darkfogStrength2)
+			lastdarkfogStrength = libs.config.darkfogStrength
 		EndIf		
 		if libs.config.BlindfoldStrength != lastBlindfoldStrength
 			zad_BlindfoldLeeches.Remove()
@@ -52,7 +55,7 @@ Event OnPlayerCameraState(int oldState, int newState)
 				zad_BlindfoldModifier.Remove()
 				zad_BlindfoldLeeches.Remove()
 			Else
-				ApplyBlindfold()			
+				ApplyBlindfold()
 			EndIf
 			libs.UpdateControls()
 		EndIf
