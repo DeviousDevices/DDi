@@ -80,6 +80,7 @@ EndEvent
  
  
 Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
+		actor akActor = libs.PlayerRef
 		if akBaseObject as Armor
 				armor akArmor = (akBaseObject as Armor)
 				if Math.LogicalAnd(akArmor.GetSlotMask(), 0x00000004) && !akArmor.HasKeyword(libs.zad_DeviousHarness)
@@ -91,6 +92,14 @@ Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
 						EndIf
 				EndIf
 		EndIf
+		if akActor.WornHasKeyword(libs.zad_DeviousHeavyBondage) && ((akBaseObject as Weapon) || (akBaseObject as Spell) || (akBaseObject as Light) || (akBaseObject as Armor).HasKeywordString("ArmorShield"))
+			akActor.UnequipItem((akActor.GetEquippedObject(0) as Weapon), abSilent = true)
+			akActor.UnequipItem((akActor.GetEquippedObject(1) as Weapon), abSilent = true)
+			akActor.UnequipItem((akActor.GetEquippedObject(0) as Armor), abSilent = true)
+			akActor.UnequipItem((akActor.GetEquippedObject(0) as Light), abSilent = true)
+			akActor.UnequipSpell((akActor.GetEquippedObject(0) as Spell), 0)
+			akActor.UnequipSpell((akActor.GetEquippedObject(1) as Spell), 1)
+		endif
 EndEvent
  
  
