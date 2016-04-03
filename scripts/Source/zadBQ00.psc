@@ -296,7 +296,7 @@ string Function GetAnimationNames(sslBaseAnimation[] anims)
     return ret
 EndFunction
 
-sslBaseAnimation function GetZAPYokeAnims(actor a, actor b)
+sslBaseAnimation function GetZAPBoundAnims(actor a, actor b)
 	Actor[] akactors = zbfUtil.ActorList(a, b)
 	zbfSexLabBaseEntry[] akentries = zbfSL.GetEntriesByTags(akactors)
 	zbfSexLabBaseEntry entry = zbfSL.GetRandomEntry(akEntries)
@@ -320,6 +320,17 @@ sslBaseAnimation[] function SelectValidAnimations(sslThreadController Controller
 		libs.Log("Using only aggressive animations.")					
 		aggr = true		
 	Endif  
+	; use ZAP for bound animation filtering to allow using its dynamic animation creation system.
+	if count == 2 && (boundYoke || boundArmbinder)
+		libs.Log("Actor(s) are bound. Trying to set up ZAP animation.")
+		Sanims = New sslBaseAnimation[1]
+		Sanims[0] = GetZAPBoundAnims(Controller.Positions[0], Controller.Positions[1])
+		If !Sanims[0]
+			libs.Log("Error: ZAP bound animations could not be found.")
+		Else
+			return Sanims
+		Endif
+	Endif
 	string tagString = getTagString(aggr, boundArmbinder, boundYoke, includetag)
 	string suppressString = getSuppressString(aggr, boundArmbinder, boundYoke, permitOral, permitVaginal, permitAnal, permitBoobs)	
 	; ok, we need to process private animations and masturbation as a special case as the tag system would otherwise be unable to call DDI or ZAP armbinder and yoke animations and also not exclude opposite gender masturbation/
@@ -347,17 +358,7 @@ sslBaseAnimation[] function SelectValidAnimations(sslThreadController Controller
 		Elseif Controller.Positions[0].GetLeveledActorBase().GetSex() == 0
 			suppressString = "F," + suppressString
 		EndIf
-	EndIf	
-	if count == 2 && boundYoke
-		libs.Log("Actor(s) wear a yoke. Trying to set up ZAP animation.")
-		Sanims = New sslBaseAnimation[1]
-		Sanims[0] = GetZAPYokeAnims(Controller.Positions[0], Controller.Positions[1])
-		If !Sanims[0]
-			libs.Log("Error. Yoke animations could not be found.")
-		Else
-			return Sanims
-		Endif
-	Endif
+	EndIf		
 	Sanims = SexLab.GetAnimationsByTags(count, tagString, suppressString, true)
 	libs.log("Selecting SexLab animations with number of actors: " + count)
 	libs.log("Selecting SexLab animations with tag string: " + tagString)
