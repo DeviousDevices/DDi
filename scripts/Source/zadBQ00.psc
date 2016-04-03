@@ -296,8 +296,8 @@ string Function GetAnimationNames(sslBaseAnimation[] anims)
     return ret
 EndFunction
 
-sslBaseAnimation function GetZAPBoundAnims(actor a, actor b)
-	Actor[] akactors = zbfUtil.ActorList(a, b)
+sslBaseAnimation function GetZAPBoundAnims(actor a, actor b, actor c = None, actor d = None)
+	Actor[] akactors = zbfUtil.ActorList(a, b, c, d)
 	zbfSexLabBaseEntry[] akentries = zbfSL.GetEntriesByTags(akactors)
 	zbfSexLabBaseEntry entry = zbfSL.GetRandomEntry(akEntries)
 	sslBaseAnimation anim = None
@@ -321,10 +321,16 @@ sslBaseAnimation[] function SelectValidAnimations(sslThreadController Controller
 		aggr = true		
 	Endif  
 	; use ZAP for bound animation filtering to allow using its dynamic animation creation system.
-	if count == 2 && (boundYoke || boundArmbinder)
+	if count > 1 && (boundYoke || boundArmbinder)
 		libs.Log("Actor(s) are bound. Trying to set up ZAP animation.")
 		Sanims = New sslBaseAnimation[1]
-		Sanims[0] = GetZAPBoundAnims(Controller.Positions[0], Controller.Positions[1])
+		If count == 2
+			Sanims[0] = GetZAPBoundAnims(Controller.Positions[0], Controller.Positions[1])
+		elseif count == 3
+			Sanims[0] = GetZAPBoundAnims(Controller.Positions[0], Controller.Positions[1], Controller.Positions[2])
+		elseif count == 4
+			Sanims[0] = GetZAPBoundAnims(Controller.Positions[0], Controller.Positions[1], Controller.Positions[2], Controller.Positions[3])
+		Endif
 		If !Sanims[0]
 			libs.Log("Error: ZAP bound animations could not be found.")
 		Else
