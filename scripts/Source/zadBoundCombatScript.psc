@@ -83,7 +83,7 @@ Function Maintenance_ABC()
 		zbfc = zbfConfig.GetApi()
 	EndIf
 	int current_crc = FNIS_aa.GetInstallationCRC()
-	if ( current_crc != ABC_CRC || libs.GetVersion() <= 2.92 )
+	if ( current_crc != ABC_CRC || libs.GetVersion() < 3 || ABC_h2heqp == 0)
 		libs.log("Refreshing ABC values...")
 		UpdateValues()
 		ABC_CRC = current_crc
