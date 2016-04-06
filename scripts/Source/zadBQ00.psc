@@ -117,6 +117,7 @@ EndFunction
 Event OnInit()
 	RegisterForModEvent("__DeviousDevicesInit", "OnInitialize")
 	libs.BoundCombat.CONFIG_ABC()
+	checkBlindfoldDarkFog()
 EndEvent
 
 
@@ -126,10 +127,7 @@ Event OnInitialize(string eventName, string strArg, float numArg, Form sender)
 EndEvent
 
 
-Function Maintenance()
-	; benchmark.SetupBenchmarks()
-	float curVersion = libs.GetVersion()
-
+Function checkBlindfoldDarkFog()
 	if (libs.PlayerRef.WornHasKeyword(libs.zad_DeviousBlindfold) && libs.config.BlindfoldMode == 3) ;dark fog
 		if Weather.GetSkyMode() != 0
 		  ConsoleUtil.ExecuteCommand("ts")
@@ -143,7 +141,12 @@ Function Maintenance()
 		endif
 		ConsoleUtil.ExecuteCommand("setfog 0 0")
 	EndIf
-		
+EndFunction
+
+Function Maintenance()
+	; benchmark.SetupBenchmarks()
+	float curVersion = libs.GetVersion()
+	checkBlindfoldDarkFog()		
 	if zad_DeviousDevice == None
 		Debug.MessageBox("Devious Devices has not been correctly upgraded from its previous version. Please Clean Save, as per the instructions in the support thread.")
 		Libs.Error("zad_DeviousDevice == none in Maintenance()")
