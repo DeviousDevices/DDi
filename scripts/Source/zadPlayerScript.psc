@@ -93,12 +93,16 @@ Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
 				EndIf
 		EndIf
 		if akActor.WornHasKeyword(libs.zad_DeviousHeavyBondage) && ((akBaseObject as Weapon) || (akBaseObject as Spell) || (akBaseObject as Light) || (akBaseObject as Armor).HasKeywordString("ArmorShield"))
-			akActor.UnequipItem((akActor.GetEquippedObject(0) as Weapon), abSilent = true)
-			akActor.UnequipItem((akActor.GetEquippedObject(1) as Weapon), abSilent = true)
-			akActor.UnequipItem((akActor.GetEquippedObject(0) as Armor), abSilent = true)
-			akActor.UnequipItem((akActor.GetEquippedObject(0) as Light), abSilent = true)
-			akActor.UnequipSpell((akActor.GetEquippedObject(0) as Spell), 0)
-			akActor.UnequipSpell((akActor.GetEquippedObject(1) as Spell), 1)
+			if akActor.GetEquippedItemType(0) > 0
+				akActor.UnequipItem((akActor.GetEquippedObject(0) as Weapon), abSilent = true)
+				akActor.UnequipItem((akActor.GetEquippedObject(0) as Armor), abSilent = true)
+				akActor.UnequipItem((akActor.GetEquippedObject(0) as Light), abSilent = true)
+				akActor.UnequipSpell((akActor.GetEquippedObject(0) as Spell), 0)
+			endif
+			if akActor.GetEquippedItemType(1) > 0
+				akActor.UnequipItem((akActor.GetEquippedObject(1) as Weapon), abSilent = true)
+				akActor.UnequipSpell((akActor.GetEquippedObject(1) as Spell), 1)
+			endif
 		endif
 EndEvent
  
