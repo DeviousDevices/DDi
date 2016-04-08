@@ -2193,7 +2193,7 @@ Function ApplyBoundAnim(actor akActor, idle theIdle = None)
 	EndIf
 	;
 	; Verify that the actor is available for animation, and is not wearing a device that supports a more advanced animation schema
-	if IsValidActor(akActor) && !IsAnimating(akActor)
+	if ( IsValidActor(akActor) && !IsAnimating(akActor) && !BoundCombat.HasCompatibleDevice(akActor) )
 		akActor.PlayIdle(theIdle)
 	EndIf
 EndFunction

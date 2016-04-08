@@ -172,5 +172,5 @@ Function CleanupNPCs()
 EndFunction
 
 bool Function HasCompatibleDevice(actor akActor)
-	return (akActor.WornHasKeyword(libs.zad_DeviousArmbinder) && akActor.WornHasKeyword(libs.zad_DeviousYoke))
+	return (akActor.WornHasKeyword(libs.zad_DeviousArmbinder) || akActor.WornHasKeyword(libs.zad_DeviousYoke))
 EndFunction
