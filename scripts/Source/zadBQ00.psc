@@ -202,6 +202,9 @@ Function Maintenance()
 	; Bound Combat Maintenance and Cleanup 
 	libs.BoundCombat.Maintenance_ABC()
 	libs.BoundCombat.CleanupNPCs()
+	if libs.BoundCombat.HasCompatibleDevice(libs.playerRef)
+		libs.BoundCombat.Apply_ABC(libs.PlayerRef)
+	EndIf
 	; Generic Devices
 	If regDevices
 		libs.RegisterDevices() ; Might take a while, do it last
