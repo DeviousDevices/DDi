@@ -1,5 +1,13 @@
-Devious Devices: Integration
-by Min
+Devious Devices Integration V3.0
+
+By The DD Team:
+
+- Min (Founder)
+- Kimy (Lead Maintainer)
+- Princessity
+- Cedec0
+
+Past Contributors: Zadil, Coopervane, Koffii, Aelie, zenetx, Srende, Lordescobar666, xaz
 
 [ DEVIOUS INTENT ]
 Forbidden knowledge is usually forbidden for a reason...but that wouldn't stop a brave, and might I add, beautiful, adventurer like yourself, would it? What is it that you seek, then? Daedra summoning rituals, maybe? Dark magic to siphon the very souls from your enemies? Lost Dwemer artifacts, one of those gargantuan machines of theirs, perhaps? The most secret of histories from Tamriel's past? Sheogorath's favorite sweet roll recipe?
