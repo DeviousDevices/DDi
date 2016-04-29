@@ -65,16 +65,16 @@ The Devious Deviants.esp contains all quest related content. This file must be l
 
 5 - Make sure to uncheck any slots under your sexlab strip configuration that you do not want unequipped during sex. The following slots need to be unchecked:
 
-Blindfold: 55
-Body Harness: 49, 45(Included Collar)
-Chastity Belts: 49
-Chastity Bra: 56
-Collars: 45
-Cuffs (Arms): 59
-Cuffs (Legs): 53
-Gags Mouthpieces: 44, 50
-Plugs (Anal): 48
-Plugs (Vaginal): 54
+44 - Gag Mouthpieces
+45 - Collars, Body Harness
+48 - Plugs (Anal)
+49 - Chastity Belts, Body Harness
+50 - Gag Mouthpieces
+53 - Cuffs (Legs)
+54 - Plugs (Vaginal)
+55 - Blindfold
+56 - Chastity Bra
+59 - Cuffs (Arms)
 
 6 - Enjoy!
 
@@ -163,7 +163,7 @@ The Order of Immaculate Chastity (added flavor):
 http://www.mediafire.com/view/e4d3qcryx7ucyki/The%20Order%20of%20Immaculate%20Chastity.pdf
 
 Chinese Translation by xiaomiza:
-[ÊÚÈ¨ºº»¯]½Ú²ÙËéÒ»µØ£¬Ë½ÃÜ×°ÖÃDevious Devices - Integration v2.5.1ºº»¯°æ¡£¡£¡£¡£
+[æˆæƒæ±‰åŒ–]èŠ‚æ“ç¢ä¸€åœ°ï¼Œç§å¯†è£…ç½®Devious Devices - Integration v2.5.1æ±‰åŒ–ç‰ˆã€‚ã€‚ã€‚ã€‚
 http://bbs.3dmgame.com/thread-4114931-1-1.html
 
 French Translation by aravis7:
