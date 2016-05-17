@@ -28,8 +28,12 @@ EndFunction
 Function Execute(actor akActor)
 	;libs.Log("VibrateEffect("+chance+")")
 	if libs.ActorHasKeyword(akActor, libs.zad_EffectShockOnFullArousal) && libs.Aroused.GetActorArousal(akActor) >= 99
-		libs.NotifyPlayer("A devestating jolt of electricity rocks through you,")
-		libs.NotifyPlayer("leaving you writhing in pain.")
+		if (akActor == libs.PlayerRef)
+			libs.NotifyPlayer("A devestating jolt of electricity rocks through you,")
+			libs.NotifyPlayer("leaving you writhing in pain.")
+		Else
+			libs.NotifyNPC(akActor.GetLeveledActorBase().GetName()+" squirms uncomfortably as electricity runs through her.")
+		EndIf
 		libs.ShockEffect.RemoteCast(akActor, akActor, akActor)
 		libs.Aroused.SetActorExposure(akActor, 1)
 	else
