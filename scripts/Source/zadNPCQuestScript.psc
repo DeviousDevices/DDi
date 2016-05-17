@@ -104,6 +104,8 @@ EndFunction
 Function ProcessArmbinderEffect(actor akActor)
 	if libs.ActorHasKeyword(akActor, libs.zad_DeviousArmbinder) || libs.ActorHasKeyword(akActor, libs.zad_DeviousYoke)
 		if !StorageUtil.FormListHas(libs.zadNPCQuest, "BoundCombatActors", akActor)
+			; Does this need to be disabled now that we've reverted to using the offset animation on actors?
+			; Requires testing - a hybrid approach could give us the best of both worlds...
 			libs.BoundCombat.Apply_ABC(akActor)
 			libs.BoundCombat.Apply_NPC_ABC(akActor)
 		EndIf
