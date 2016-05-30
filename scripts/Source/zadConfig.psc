@@ -35,6 +35,15 @@ int destroyKeyProbabilityDefault = 0
 int Property DestroyKeyJamChance Auto 
 int destroyKeyJamChanceDefault = 0
 
+Bool Property UseDeviceDifficultyEscape = True Auto
+Bool UseDeviceDifficultyEscapeDefault = True
+Float Property DeviceDifficultyCooldown = 4.0 Auto
+Float DeviceDifficultyCooldownDefault = 4.0
+Float Property DeviceDifficultyModifer = 0.0 Auto
+Float DeviceDifficultyModiferDefault = 0.0
+Float Property DeviceDifficultyCatastrophicFailChance = 10.0 Auto
+Float DeviceDifficultyCatastrophicFailChanceDefault = 10.0
+
 bool Property SkyRe Auto
 bool skyreDefault = true
 bool Property LogMessages Auto
@@ -186,6 +195,10 @@ int bellyNodeManagementOID
 int useBoundAnimsOID
 int bootsSlowdownToggleOID
 int UseBoundCombatOID 
+Int UseDeviceDifficultyEscapeOID
+Int DeviceDifficultyCooldownOID
+Int DeviceDifficultyModiferOID
+Int DeviceDifficultyCatastrophicFailChanceOID
 
 string[] difficultyList
 string[] blindfoldList
@@ -324,24 +337,34 @@ Event OnPageReset(string page)
 	If page == "General"
 		SetCursorFillMode(TOP_TO_BOTTOM)
 		SetCursorPosition(0) ; Can be removed because it starts at 0 anyway
-		if libs.PlayerRef.WornHasKeyword(libs.zad_DeviousBelt)
+		if libs.PlayerRef.WornHasKeyword(libs.zad_Lockable)
 			AddHeaderOption("Device Escape Options are unavailable")
-			AddHeaderOption(" while wearing a belt.")
+			AddHeaderOption(" while being restrained.")
 			thresholdOID = -1
 			thresholdModifierOID = -1
 			keyCraftingOID = -1
 			destroyKeyProbabilityOID = -1
 			destroyKeyJamChanceOID = -1
 			skyreOID = -1
+			UseDeviceDifficultyEscapeOID = -1
+			DeviceDifficultyCooldownOID = -1
+			DeviceDifficultyModiferOID = -1
+			DeviceDifficultyCatastrophicFailChanceOID = -1
 		else
 			AddHeaderOption("Device Escape Options")
-			thresholdOID = AddSliderOption("Unlock Threshold", UnlockThreshold)
-			thresholdModifierOID = AddSliderOption("Unlock Threshold Modifier", ThresholdModifier)
+			UseDeviceDifficultyEscapeOID = AddToggleOption("Use Device Difficulty Escape", UseDeviceDifficultyEscape)
+			DeviceDifficultyCooldownOID = AddSliderOption("Escape Attempt Cooldown", DeviceDifficultyCooldown, "{1} Hours")
+			DeviceDifficultyModiferOID = AddSliderOption("Difficulty Modifier", DeviceDifficultyModifer, "{1}")
+			DeviceDifficultyCatastrophicFailChanceOID = AddSliderOption("Catastrophic Fail Chance", DeviceDifficultyCatastrophicFailChance, "{1}%")
 			keyCraftingOID = AddMenuOption("Key Creation Difficulty", difficultyList[KeyCrafting])
 			destroyKeyOID = AddToggleOption("Destroy Key", destroyKey)
 			destroyKeyProbabilityOID = AddSliderOption("Key Break Chance", destroyKeyProbability, "{1}")
 			destroyKeyJamChanceOID = AddSliderOption("Jam LockChance", destroyKeyJamChance, "{1}")
 			skyreOID = AddToggleOption("Using SkyRe", SkyRe)
+			AddEmptyOption()
+			AddHeaderOption("Legacy Device Escape System")
+			thresholdOID = AddSliderOption("Unlock Threshold", UnlockThreshold)
+			thresholdModifierOID = AddSliderOption("Unlock Threshold Modifier", ThresholdModifier)			
 		EndIf
 		AddHeaderOption("Camera Configuration")
 		ifpOID = AddToggleOption("Immersive First Person", ifp)
@@ -693,6 +716,21 @@ Event OnOptionSliderOpen(int option)
 		SetSliderDialogDefaultValue(destroyKeyJamChanceDefault)
 		SetSliderDialogRange(0, 100)
 		SetSliderDialogInterval(1)
+	elseIf option == DeviceDifficultyCooldownOID
+		SetSliderDialogStartValue(DeviceDifficultyCooldown)
+		SetSliderDialogDefaultValue(DeviceDifficultyCooldownDefault)
+		SetSliderDialogRange(0.0, 100.0)
+		SetSliderDialogInterval(0.5)
+	elseIf option == DeviceDifficultyModiferOID
+		SetSliderDialogStartValue(DeviceDifficultyModifer)
+		SetSliderDialogDefaultValue(DeviceDifficultyModiferDefault)
+		SetSliderDialogRange(-50.0, 50.0)
+		SetSliderDialogInterval(0.5)
+	elseIf option == DeviceDifficultyCatastrophicFailChanceOID
+		SetSliderDialogStartValue(DeviceDifficultyCatastrophicFailChance)
+		SetSliderDialogDefaultValue(DeviceDifficultyCatastrophicFailChanceDefault)
+		SetSliderDialogRange(0.0, 100.0)
+		SetSliderDialogInterval(0.5)
 	Endif
 EndEvent
 
@@ -761,6 +799,9 @@ Event OnOptionSelect(int option)
 	elseif option == UseBoundCombatOID
 		UseBoundCombat = !UseBoundCombat
 		SetToggleOptionValue(UseBoundCombatOID, UseBoundCombat)
+	elseif option == UseDeviceDifficultyEscapeOID
+		UseDeviceDifficultyEscape = !UseDeviceDifficultyEscape
+		SetToggleOptionValue(UseDeviceDifficultyEscapeOID, UseDeviceDifficultyEscape)
 	EndIf
 EndEvent
 
@@ -918,6 +959,18 @@ Event OnOptionDefault(int option)
 	elseIf (option == UseBoundCombatOID)
 		UseBoundCombat = UseBoundCombatDefault
 		SetToggleOptionValue(UseBoundCombatOID, UseBoundCombat)
+	elseIf (option == UseDeviceDifficultyEscapeOID)
+		UseDeviceDifficultyEscape = UseDeviceDifficultyEscapeDefault
+		SetToggleOptionValue(UseDeviceDifficultyEscapeOID, UseDeviceDifficultyEscape)
+	elseIf (option == DeviceDifficultyCooldownOID)
+		DeviceDifficultyCooldown = DeviceDifficultyCooldownDefault
+		SetSliderOptionValue(DeviceDifficultyCooldownOID, DeviceDifficultyCooldown)
+	elseIf (option == DeviceDifficultyModiferOID)
+		DeviceDifficultyModifer = DeviceDifficultyModiferDefault
+		SetSliderOptionValue(DeviceDifficultyModiferOID, DeviceDifficultyModifer)
+	elseIf (option == DeviceDifficultyCatastrophicFailChanceOID)
+		DeviceDifficultyCatastrophicFailChance = DeviceDifficultyCatastrophicFailChanceDefault
+		SetSliderOptionValue(DeviceDifficultyCatastrophicFailChanceOID, DeviceDifficultyCatastrophicFailChance)
 	endIf
 EndEvent
 
@@ -1032,6 +1085,14 @@ Event OnOptionHighlight(int option)
 		SetInfoText("If enabled, belly will be resized while the corset is worn, to minimized HDT clipping.\nDefault: "+bellyNodeManagementDefault)
 	elseIf (option == UseBoundCombatOID)
 		SetInfoText("If enabled, unarmed combat (Kicking) will be enabled for the player while bound. Currently only works in third person, and only for the armbinder.\nDefault: "+UseBoundCombatDefault)
+	elseIf (option == UseDeviceDifficultyEscapeOID)
+		SetInfoText("If enabled, trying to escape a device will depend it the difficulty of the device itself and some modifiers, such as\na character's experience in lockpicking, relevant magic school, and how many\nrestraints they managed to escape in the past.\nDefault: "+UseDeviceDifficultyEscapeDefault)
+	elseIf (option == DeviceDifficultyCooldownOID)
+		SetInfoText("Time in hours that has to pass before a character to try escaping a restraint again.\nDefault: "+DeviceDifficultyCooldownDefault)
+	elseIf (option == DeviceDifficultyModiferOID)
+		SetInfoText("Modifier applied to the device difficulty. A value greater than zero means that the character is good at escaping devices.\nA value of +10 means that the character has twice the base chance to escape a device with default difficulty.\nDefault: "+DeviceDifficultyModiferDefault)
+	elseIf (option == DeviceDifficultyCatastrophicFailChanceOID)
+		SetInfoText("Chance for an escape attempt to fail in a catastrophic fashion, preventing any further escape attempts.\nDefault: "+DeviceDifficultyCatastrophicFailChanceDefault)
 	endIf
 EndEvent
 
@@ -1122,6 +1183,15 @@ Event OnOptionSliderAccept(int option, float value)
 	elseIf option == numNpcsOID
 		numNpcs = (value as Int)
 		SetSliderOptionValue(option, value, "{1}")
+	elseIf option == DeviceDifficultyCooldownOID
+		DeviceDifficultyCooldown = (value as Float)
+		SetSliderOptionValue(option, value, "{1} Hours")
+	elseIf option == DeviceDifficultyModiferOID
+		DeviceDifficultyModifer = (value as Float)
+		SetSliderOptionValue(option, value, "{1}")
+	elseIf option == DeviceDifficultyCatastrophicFailChanceOID
+		DeviceDifficultyCatastrophicFailChance = (value as Float)
+		SetSliderOptionValue(option, value, "{1}%")
 	EndIf
 EndEvent
 

@@ -231,6 +231,9 @@ Faction Property zadDisableDialogueFaction Auto
 MiscObject Property zad_gagPanelPlug Auto
 Outfit Property zadEmptyOutfit Auto
 
+;Default Message for the new escape system to use as a fallback in case a legacy device doesn't have one defined.
+Message Property zad_DeviceEscapeMsg Auto	; Device escape message
+GlobalVariable Property zadDeviceEscapeSuccessCount Auto ; counter for succesful escape attempts
 
 ; Internal Variables
 Armor Property deviceRemovalToken Auto         ; Internal token for removal events
@@ -995,11 +998,11 @@ EndFunction
 
 
 float Function GetVersion()
-	return 3 ; build number increment to determine the newest version - does NOT correspond with the offical version name. Returns a float not to mess with existing implementations of this function.
+	return 4 ; build number increment to determine the newest version - does NOT correspond with the offical version name. Returns a float not to mess with existing implementations of this function.
 EndFunction
 
 String Function GetVersionString()
-	return "3.0" ; string to be displayed in MCM etc.
+	return "3.1 Beta" ; string to be displayed in MCM etc.
 EndFunction
 
 
