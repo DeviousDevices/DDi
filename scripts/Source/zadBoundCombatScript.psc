@@ -122,7 +122,7 @@ Function Remove_ABC(actor akActor)
 	if (akActor == libs.playerRef)
 		; This is bad, and should be removed.
 		; I need to figure out why zbf is preventing attacks with fighting=true first, though.
-		zbfc.zbfSettingDisableEffects.SetValue(0.0)
+		zbfc.zbfSettingDisableEffects.SetValue(0.0)		
 	EndIf
 	FNIS_aa.SetAnimGroup(akActor, "_h2heqp", 0, 0, "DeviousDevices", Config.LogMessages)
 	FNIS_aa.SetAnimGroup(akActor, "_h2hidle", 0, 0, "DeviousDevices", Config.LogMessages)
@@ -140,6 +140,25 @@ Function Remove_ABC(actor akActor)
 	FNIS_aa.SetAnimGroup(akActor, "_mtturn", 0, 0, "DeviousDevices", Config.LogMessages)
 	FNIS_aa.SetAnimGroup(akActor, "_mtidle", 0, 0, "DeviousDevices", Config.LogMessages)
 	akActor.SetAnimationVariableInt("FNIS_abc_h2h_LocomotionPose", 0)
+	if (akActor == libs.playerRef)		
+		; try to reset FNIS mods if they are installed, as the AA will not get reset back to using the ones picked in FNIS otherwise.
+		if Game.GetModByName("FNIS_PCEA2.esp") != 255
+			SendModEvent("PCEA2Task", "refresh")
+		Endif
+		if Game.GetModByName("FNISSexyMove.esp") != 255
+			; nothing to do for guy characters
+			If libs.playerref.GetLeveledActorBase().GetSex() != 1
+				return
+			Endif
+			FNISSMConfigMenu FNISSM = Game.GetFormFromFile(0x000012C7, "FNISSexyMove.esp") As FNISSMConfigMenu			
+			int SM = FNISSM.FNISSMquest.iSMplayer 						
+			if SM == 0
+				FNIS_aa.SetAnimGroup(Game.GetPlayer(), "_mt", 0, 0, "FNIS Sexy Move", true)
+			else
+				FNIS_aa.SetAnimGroup(Game.GetPlayer(), "_mt", FNISSM.FNISSMQuest.FNISsmMtBase, SM - 1, "FNIS Sexy Move", true)
+			endif					
+		Endif
+	EndIf
 EndFunction
 
 
