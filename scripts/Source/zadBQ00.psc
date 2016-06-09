@@ -302,14 +302,38 @@ string Function GetAnimationNames(sslBaseAnimation[] anims)
     return ret
 EndFunction
 
+; Moved this ZAP function here and fixed it, because it's breaking with SL 1.62 and nobody knows if it ever get fixed. It can be rolled back in case it does.
+sslBaseAnimation Function NewAnimation(String asModName)	
+	sslBaseAnimation anim = None
+	Int i = zbfsl.BorrowModNames.Find("")
+	If i != -1
+		libs.Log("NewAnimation: Found free slot " + i + " for " + asModName)
+		zbfsl.BorrowModNames[i] = asModName
+		anim = zbfsl.BorrowSlots[i]
+		anim.Initialize()
+	EndIf
+	Return anim
+EndFunction
+
+; Moved this ZAP function here and fixed it, because it's breaking with SL 1.62 and nobody knows if it ever get fixed. It can be rolled back in case it does.
+Int[] Function GetBindTypes(Actor[] akList)
+	Int[] bindTypes = New Int[4]
+	Int akListPos = akList.Length
+	While akListPos > 0
+		akListPos -=1
+		bindTypes[akListPos] = zbfSL.zbf.GetBindTypeFromWornKeywords(akList[akListPos])
+	EndWhile
+	Return bindTypes
+EndFunction
+
 sslBaseAnimation function GetZAPBoundAnims(actor a, actor b, actor c = None, actor d = None)
 	Actor[] akactors = zbfUtil.ActorList(a, b, c, d)
 	zbfSexLabBaseEntry[] akentries = zbfSL.GetEntriesByTags(akactors)
 	zbfSexLabBaseEntry entry = zbfSL.GetRandomEntry(akEntries)
 	sslBaseAnimation anim = None
 	Int iActorCount = zbfUtil.CountActorList(akActors)
-	anim = zbfSL.NewAnimation("ZapStartSex")			
-	Int[] iBindTypes = zbfSL.GetBindTypes(akActors)
+	anim = NewAnimation("ZapStartSex")			
+	Int[] iBindTypes = GetBindTypes(akActors)
 	zbfSL.DefineAnimation(entry, anim, zbfSL.GetSexLabAnimationNames(entry, iBindTypes), abSaveAnim = False)	
 	anim.Save(-1)
 	return anim
