@@ -12,7 +12,34 @@
 #include "skse/HashUtil.h"
 #include "skse/PapyrusForm.h"
 
+// Directx text drawing
+#include <d3dx9core.h>
+
 namespace DeviousDevices {
+
+  inline void DrawTextString( int x, int y, DWORD color, const char *
+			      str )
+  {
+    HRESULT r=0;
+    // Get a handle for the font to use
+    HFONT hFont = (HFONT)GetStockObject( SYSTEM_FONT );
+    LPD3DXFONT pFont = 0;
+    // Create the D3DX Font
+    r = D3DXCreateFont( g_pd3dDevice, hFont, &pFont );
+    // Rectangle where the text will be located
+    RECT TextRect={x,y,0,0};
+    // Inform font it is about to be used
+    pFont->Begin();
+    // Calculate the rectangle the text will occupy
+    pFont->DrawText( str, -1, &TextRect, DT_CALCRECT, 0 );
+    // Output the text, left aligned
+    pFont->DrawText( str, -1, &TextRect, DT_LEFT, color );
+    // Finish up drawing
+    pFont->End();
+    // Release the font
+    pFont->Release();
+  }
+
   BSFixedString GetName(TESForm* thisForm)  {
     if (!thisForm)
       return NULL;
@@ -54,10 +81,17 @@ namespace DeviousDevices {
       p1 = keywords->keywords[i]->keyword.Get();
       p2 = kwd->keyword.Get();
       if ((p1[0] == p2[0]) && // Compare first byte
-	  (keywords->keywords[i]->keyword.GetLen() == kwd->keyword.GetLen()) && // Compare length
 	  (strcmp(p1, p2) == 0)) // Compare whole string.
 	  return true;
     }
+    return false;
+  }
+
+  // return true if text draw succeeds; false otherwise.
+  bool Print(StaticFunctionTag* base, BSFixedString msg){
+    // For now, log text 
+    _MESSAGE("Received string: %s", msg.data);
+    // DrawText
     return false;
   }
 
@@ -67,7 +101,7 @@ namespace DeviousDevices {
       return NULL;
     }
     ExtraContainerChanges* containerChanges = static_cast<ExtraContainerChanges*>(obj->extraData.GetByType(kExtraData_ContainerChanges));
-    tList<ExtraContainerChanges::EntryData>* inventory = containerChanges->data->objList;
+    tList<InventoryEntryData>* inventory = containerChanges->data->objList;
     if (!containerChanges || !inventory) {
       _MESSAGE("ExtraContainerChanges failed.");
       return NULL;
@@ -94,10 +128,10 @@ namespace DeviousDevices {
     //    registry->RegisterFunction(new NativeFunction1<StaticFunctionTag, float, float>("TestCos", "zadNativeFunctions", DeviousDevices::TestCos, registry));
     registry->RegisterFunction(new NativeFunction2<StaticFunctionTag, TESForm*, Actor*, BGSKeyword*>("FindMatchingDevice", "zadNativeFunctions", DeviousDevices::FindMatchingDevice, registry));
     registry->RegisterFunction(new NativeFunction2<StaticFunctionTag, bool, TESForm*, BSFixedString>("FormHasKeywordString", "zadNativeFunctions", DeviousDevices::FormHasKeywordString, registry));
-
+    registry->RegisterFunction(new NativeFunction1<StaticFunctionTag, bool, BSFixedString>("Print", "zadNativeFunctions", DeviousDevices::Print, registry));
     //    registry->SetFunctionFlags("zadNativeFunctions", "TestCos", VMClassRegistry::kFunctionFlag_NoWait);
     registry->SetFunctionFlags("zadNativeFunctions", "FindMatchingDevice", VMClassRegistry::kFunctionFlag_NoWait);
-
+    registry->SetFunctionFlags("zadNativeFunctions", "Print", VMClassRegistry::kFunctionFlag_NoWait);
     return true;
   }
 } 

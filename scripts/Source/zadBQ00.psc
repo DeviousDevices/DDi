@@ -2,6 +2,7 @@
 ;NEXT FRAGMENT INDEX 5
 Scriptname zadBQ00 Extends zadBaseDeviceQuest Hidden
 
+import zadNativeFunctions
 ;BEGIN ALIAS PROPERTY ArmBinderRescuer
 ;ALIAS PROPERTY TYPE ReferenceAlias
 ReferenceAlias Property Alias_ArmBinderRescuer Auto
@@ -209,6 +210,13 @@ Function Maintenance()
 	If regDevices
 		libs.RegisterDevices() ; Might take a while, do it last
 	EndIf
+	; REMOVEME Testing skse print
+	libs.Log("Begin skse print test.")
+	Print("This is a test.")
+	Print("Testing 1232.")
+	Print("End test.");
+	libs.Log("End skse print test.")
+	; ENDREMOVEME
 EndFunction
 
 

@@ -189,6 +189,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\skse\GameBSExtraData.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\skse\GameBSExtraData.h"
 				>
 			</File>
