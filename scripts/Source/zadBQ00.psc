@@ -275,7 +275,7 @@ EndFunction
 bool Function IsValidAnimation(sslBaseAnimation anim, bool permitOral, bool permitVaginal, bool permitAnal, bool permitBoobjob, int numExtraTags, string[] ExtraTags)
 	if anim.HasTag("DeviousDevice")
 		return true
-	elseif (permitBoobjob || !anim.HasTag("Boobjob")) &&(permitVaginal || (!anim.HasTag("Vaginal") && !anim.HasTag("Fisting") && !anim.HasTag("Masturbation"))) && (permitAnal || !anim.HasTag("Anal")) && (permitOral || !anim.HasTag("Oral")) && !anim.HasTag("Estrus") ; Estrus Chaurus compatibility
+	elseif (permitBoobjob || !anim.HasTag("Boobjob")) &&(permitVaginal || (!anim.HasTag("Vaginal") && !anim.HasTag("Fisting") && !anim.HasTag("Masturbation"))) && (permitAnal || !anim.HasTag("Anal")) && (permitOral || !anim.HasTag("Oral"))
 		int i = 0
 		while i < NumExtraTags
 			if !anim.HasTag(ExtraTags[i])
@@ -693,7 +693,7 @@ function Logic(int threadID, bool HasPlayer)
 		TogglePanelGag(originalActors, false)
 	EndIf
 	
-	If previousAnim.HasTag("NoSwap") || previousAnim.HasTag("DeviousDevice")
+	If previousAnim.HasTag("NoSwap") || previousAnim.HasTag("DeviousDevice") || previousAnim.HasTag("Estrus") ; Estrus Chaurus compatibility
 		libs.Log("Animation should not be replaced. Done.")
 		Return
 	EndIf	
