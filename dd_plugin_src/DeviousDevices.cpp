@@ -12,33 +12,8 @@
 #include "skse/HashUtil.h"
 #include "skse/PapyrusForm.h"
 
-// Directx text drawing
-#include <d3dx9core.h>
 
 namespace DeviousDevices {
-
-  inline void DrawTextString( int x, int y, DWORD color, const char *
-			      str )
-  {
-    HRESULT r=0;
-    // Get a handle for the font to use
-    HFONT hFont = (HFONT)GetStockObject( SYSTEM_FONT );
-    LPD3DXFONT pFont = 0;
-    // Create the D3DX Font
-    r = D3DXCreateFont( g_pd3dDevice, hFont, &pFont );
-    // Rectangle where the text will be located
-    RECT TextRect={x,y,0,0};
-    // Inform font it is about to be used
-    pFont->Begin();
-    // Calculate the rectangle the text will occupy
-    pFont->DrawText( str, -1, &TextRect, DT_CALCRECT, 0 );
-    // Output the text, left aligned
-    pFont->DrawText( str, -1, &TextRect, DT_LEFT, color );
-    // Finish up drawing
-    pFont->End();
-    // Release the font
-    pFont->Release();
-  }
 
   BSFixedString GetName(TESForm* thisForm)  {
     if (!thisForm)
