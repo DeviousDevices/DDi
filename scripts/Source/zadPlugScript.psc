@@ -87,16 +87,16 @@ Function OnEquippedPost(actor akActor)
 	EndIf
 EndFunction
 
-
-int Function OnUnequippedFilter(actor akActor)
-	if akActor.WornHasKeyword(libs.zad_DeviousBelt)
-		return 1
-	EndIf
-	if akActor.WornHasKeyword(libs.zad_DeviousHarness)
-		return 1
-	EndIf
-	return 0
-EndFunction
+; removed this to allow scripts to unquip these items. The dialogue will catch in-game attempts anyway, so it's not really needed.
+; int Function OnUnequippedFilter(actor akActor)
+	; if akActor.WornHasKeyword(libs.zad_DeviousBelt)
+		; return 1
+	; EndIf
+	; if akActor.WornHasKeyword(libs.zad_DeviousHarness)
+		; return 1
+	; EndIf
+	; return 0
+; EndFunction
 
 
 Function DeviceMenu(Int msgChoice = 0)
