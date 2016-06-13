@@ -1,7 +1,7 @@
 scriptName zadEventHorny extends zadBaseEvent
 
 Bool Function Filter(actor akActor, int chanceMod=0)
-	if akActor.GetCombatState() >= 1
+	if akActor == libs.playerref && libs.playerref.IsInCombat() 
 		return False
 	Endif
 	int arousal = libs.Aroused.GetActorExposure(akActor)
@@ -25,6 +25,10 @@ Function Execute(actor akActor)
 	if akActor == libs.PlayerRef
 		libs.NotifyPlayer("You absent-mindedly allow your hands to wander...")
 	EndIf
+	; don't play the animation in combat
+	if akActor == libs.playerref && libs.playerref.IsInCombat() 
+		return 
+	Endif
 	; want to buy table
 	int i = Utility.RandomInt(1,3)
 	Idle anim
