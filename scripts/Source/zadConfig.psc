@@ -28,10 +28,8 @@ bool playerMessagesDefault = true
 
 bool Property DestroyKey Auto
 bool destroyKeyDefault = False
-
 int Property DestroyKeyProbability Auto
 int destroyKeyProbabilityDefault = 0
-
 int Property DestroyKeyJamChance Auto 
 int destroyKeyJamChanceDefault = 0
 
@@ -43,6 +41,13 @@ Float Property DeviceDifficultyModifer = 0.0 Auto
 Float DeviceDifficultyModiferDefault = 0.0
 Float Property DeviceDifficultyCatastrophicFailChance = 10.0 Auto
 Float DeviceDifficultyCatastrophicFailChanceDefault = 10.0
+
+Float Property ArmbinderStruggleBaseChance = 5.0 Auto
+Float ArmbinderStruggleBaseChanceDefault = 5.0
+Int Property ArmbinderMinStruggle = 5 Auto
+Int ArmbinderMinStruggleDefault = 5
+Int Property YokeRemovalCostPerLevel = 200 Auto
+Int YokeRemovalCostPerLevelDefault = 200
 
 bool Property SkyRe Auto
 bool skyreDefault = true
@@ -199,6 +204,9 @@ Int UseDeviceDifficultyEscapeOID
 Int DeviceDifficultyCooldownOID
 Int DeviceDifficultyModiferOID
 Int DeviceDifficultyCatastrophicFailChanceOID
+Int ArmbinderMinStruggleOID
+Int ArmbinderStruggleBaseChanceOID
+Int YokeRemovalCostPerLevelOID
 
 string[] difficultyList
 string[] blindfoldList
@@ -350,6 +358,9 @@ Event OnPageReset(string page)
 			DeviceDifficultyCooldownOID = -1
 			DeviceDifficultyModiferOID = -1
 			DeviceDifficultyCatastrophicFailChanceOID = -1
+			ArmbinderMinStruggleOID = -1
+			ArmbinderStruggleBaseChanceOID = -1
+			YokeRemovalCostPerLevelOID =- 1
 		else
 			AddHeaderOption("Device Escape Options")
 			UseDeviceDifficultyEscapeOID = AddToggleOption("Use Device Difficulty Escape", UseDeviceDifficultyEscape)
@@ -360,6 +371,9 @@ Event OnPageReset(string page)
 			destroyKeyOID = AddToggleOption("Destroy Key", destroyKey)
 			destroyKeyProbabilityOID = AddSliderOption("Key Break Chance", destroyKeyProbability, "{1}")
 			destroyKeyJamChanceOID = AddSliderOption("Jam LockChance", destroyKeyJamChance, "{1}")
+			ArmbinderStruggleBaseChanceOID = AddSliderOption("Armbinder Escape Base Chance", ArmbinderStruggleBaseChance, "{1}%")
+			ArmbinderMinStruggleOID = AddSliderOption("Armbinder Minimum Struggles", ArmbinderMinStruggle, "{0}")
+			YokeRemovalCostPerLevelOID = AddSliderOption("Yoke Removal Cost Per Level", YokeRemovalCostPerLevel, "{0}/Level")
 			skyreOID = AddToggleOption("Using SkyRe", SkyRe)
 			AddEmptyOption()
 			AddHeaderOption("Legacy Device Escape System")
@@ -731,6 +745,21 @@ Event OnOptionSliderOpen(int option)
 		SetSliderDialogDefaultValue(DeviceDifficultyCatastrophicFailChanceDefault)
 		SetSliderDialogRange(0.0, 100.0)
 		SetSliderDialogInterval(0.5)
+	elseIf option == ArmbinderStruggleBaseChanceOID
+		SetSliderDialogStartValue(ArmbinderStruggleBaseChance)
+		SetSliderDialogDefaultValue(ArmbinderStruggleBaseChanceDefault)
+		SetSliderDialogRange(0.0, 100.0)
+		SetSliderDialogInterval(0.5)
+	elseIf option == ArmbinderMinStruggleOID
+		SetSliderDialogStartValue(ArmbinderMinStruggle)
+		SetSliderDialogDefaultValue(ArmbinderMinStruggleDefault)
+		SetSliderDialogRange(0, 50)
+		SetSliderDialogInterval(1)
+	elseIf option == YokeRemovalCostPerLevelOID
+		SetSliderDialogStartValue(YokeRemovalCostPerLevel)
+		SetSliderDialogDefaultValue(YokeRemovalCostPerLevelDefault)
+		SetSliderDialogRange(0, 5000)
+		SetSliderDialogInterval(50)
 	Endif
 EndEvent
 
@@ -970,7 +999,16 @@ Event OnOptionDefault(int option)
 		SetSliderOptionValue(DeviceDifficultyModiferOID, DeviceDifficultyModifer)
 	elseIf (option == DeviceDifficultyCatastrophicFailChanceOID)
 		DeviceDifficultyCatastrophicFailChance = DeviceDifficultyCatastrophicFailChanceDefault
-		SetSliderOptionValue(DeviceDifficultyCatastrophicFailChanceOID, DeviceDifficultyCatastrophicFailChance)
+		SetSliderOptionValue(DeviceDifficultyCatastrophicFailChanceOID, DeviceDifficultyCatastrophicFailChance)	
+	elseIf (option == ArmbinderStruggleBaseChanceOID)
+		ArmbinderStruggleBaseChance = ArmbinderStruggleBaseChanceDefault
+		SetSliderOptionValue(ArmbinderStruggleBaseChanceOID, ArmbinderStruggleBaseChance)	
+	elseIf (option == ArmbinderMinStruggleOID)
+		ArmbinderMinStruggle = ArmbinderMinStruggleDefault
+		SetSliderOptionValue(ArmbinderMinStruggleOID, ArmbinderMinStruggle)	
+	elseIf (option == YokeRemovalCostPerLevelOID)
+		YokeRemovalCostPerLevel = YokeRemovalCostPerLevelDefault
+		SetSliderOptionValue(YokeRemovalCostPerLevelOID, YokeRemovalCostPerLevel)	
 	endIf
 EndEvent
 
@@ -1093,6 +1131,12 @@ Event OnOptionHighlight(int option)
 		SetInfoText("Modifier applied to the device difficulty. A value greater than zero means that the character is good at escaping devices.\nA value of +10 means that the character has twice the base chance to escape a device with default difficulty.\nDefault: "+DeviceDifficultyModiferDefault)
 	elseIf (option == DeviceDifficultyCatastrophicFailChanceOID)
 		SetInfoText("Chance for an escape attempt to fail in a catastrophic fashion, preventing any further escape attempts.\nDefault: "+DeviceDifficultyCatastrophicFailChanceDefault)
+	elseIf (option == ArmbinderMinStruggleOID)
+		SetInfoText("Minimum amount of times you have to struggle against your armbinder to have a chance to escape it.\nDefault: "+ArmbinderMinStruggleDefault)
+	elseIf (option == ArmbinderStruggleBaseChanceOID)
+		SetInfoText("Base chance to escape your armbinder after the minimum required attemts. 1% will be added to this value for every failed attemt.\nDefault: "+ArmbinderStruggleBaseChanceDefault)
+	elseIf (option == YokeRemovalCostPerLevelOID)
+		SetInfoText("Merchants will charge you this much gold per level for helping you out of a yoke.\nDefault: "+YokeRemovalCostPerLevelDefault)
 	endIf
 EndEvent
 
@@ -1192,6 +1236,15 @@ Event OnOptionSliderAccept(int option, float value)
 	elseIf option == DeviceDifficultyCatastrophicFailChanceOID
 		DeviceDifficultyCatastrophicFailChance = (value as Float)
 		SetSliderOptionValue(option, value, "{1}%")
+	elseIf option == ArmbinderStruggleBaseChanceOID
+		ArmbinderStruggleBaseChance = (value as Float)
+		SetSliderOptionValue(option, value, "{1}%")
+	elseIf option == ArmbinderMinStruggleOID
+		ArmbinderMinStruggle = (value as Int)
+		SetSliderOptionValue(option, value, "{0}")
+	elseIf option == YokeRemovalCostPerLevelOID
+		YokeRemovalCostPerLevel = (value as Int)
+		SetSliderOptionValue(option, value, "{0}/Level")	
 	EndIf
 EndEvent
 

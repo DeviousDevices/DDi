@@ -21,7 +21,7 @@ Perk Property MerchantCurse Auto
 Spell Property MerchantCurseSpell Auto
 
 ; How much gold will the curse steal, per application?
-int Property MerchantCurseGoldThreshold  = 3000 Auto
+int Property MerchantCurseGoldThreshold = 0 Auto
 
 int Property MerchantCurseGoldOwed  = 0 Auto
 
@@ -181,19 +181,18 @@ Function PostRape(ObjectReference akSpeaker)
 	IsLocked = true
 EndFunction
 
-
 Event StartPostRape(string eventName, string argString, float argNum, form sender)
 	libs.Log("Yoke: OnAnimationEnd()")
 	fg.ForceGreet(PostRapeScene)
 	UnregisterForModEvent("AnimationEnd")
 EndEvent
 
-
-
 Function BlacksmithRemoveHeavyBondage(ObjectReference akSpeaker)
+	Int Price = libs.config.YokeRemovalCostPerLevel * libs.playerRef.GetLevel()
+	MerchantCurseGoldThreshold = Math.Ceiling(Price * 1.5)
 	int curGold = libs.PlayerRef.GetItemCount(itemGold)
-	if (curGold >= 2000)
-		libs.PlayerRef.RemoveItem(ItemGold, 2000)
+	if (curGold >= Price)
+		libs.PlayerRef.RemoveItem(ItemGold, Price)
 	Else
 		MerchantCurseGoldOwed += MerchantCurseGoldThreshold
 		MerchantCurseGoldStolen = curGold

@@ -32,9 +32,9 @@ Function DeviceMenuRemove()
 EndFunction
 
 Function DeviceMenuPostStruggle()
-	if IsLoose || StruggleCount >= 5 && Utility.RandomInt() <= StruggleCount
+	if IsLoose || (StruggleCount >= Libs.Config.ArmbinderMinStruggle) && (Utility.RandomFloat(0.0, 99.9) < Libs.Config.ArmbinderStruggleBaseChance + StruggleCount)
 		zad_ArmBinderStruggleLooseMsg.Show()
-		libs.UpdateExposure(libs.PlayerRef,0.3)
+		libs.Aroused.UpdateActorExposure(libs.PlayerRef, 1)
 		IsLoose = true
 	Else
 		if DisableStruggle
