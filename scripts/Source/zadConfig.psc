@@ -50,11 +50,11 @@ Int Property YokeRemovalCostPerLevel = 200 Auto
 Int YokeRemovalCostPerLevelDefault = 200
 
 bool Property SkyRe Auto
-bool skyreDefault = true
+bool skyreDefault = false
 bool Property LogMessages Auto
 bool logMessagesDefault = true
 bool Property ifp Auto
-bool ifpDefault = true
+bool ifpDefault = false
 bool Property preserveAggro Auto
 bool preserveAggroDefault = true
 bool Property breastNodeManagement Auto
@@ -213,6 +213,7 @@ string[] blindfoldList
 string[] slotMasks
 int[] SlotMaskValues
 
+GlobalVariable Property zadDebugMode Auto
 
 Function SetupBlindfolds()
 	blindfoldList = new String[4]
@@ -345,15 +346,14 @@ Event OnPageReset(string page)
 	If page == "General"
 		SetCursorFillMode(TOP_TO_BOTTOM)
 		SetCursorPosition(0) ; Can be removed because it starts at 0 anyway
-		if libs.PlayerRef.WornHasKeyword(libs.zad_Lockable)
+		if libs.PlayerRef.WornHasKeyword(libs.zad_Lockable) && zadDebugMode.GetValueInt() != 1
 			AddHeaderOption("Device Escape Options are unavailable")
 			AddHeaderOption(" while being restrained.")
 			thresholdOID = -1
 			thresholdModifierOID = -1
 			keyCraftingOID = -1
 			destroyKeyProbabilityOID = -1
-			destroyKeyJamChanceOID = -1
-			skyreOID = -1
+			destroyKeyJamChanceOID = -1			
 			UseDeviceDifficultyEscapeOID = -1
 			DeviceDifficultyCooldownOID = -1
 			DeviceDifficultyModiferOID = -1
@@ -373,13 +373,14 @@ Event OnPageReset(string page)
 			destroyKeyJamChanceOID = AddSliderOption("Jam LockChance", destroyKeyJamChance, "{1}")
 			ArmbinderStruggleBaseChanceOID = AddSliderOption("Armbinder Escape Base Chance", ArmbinderStruggleBaseChance, "{1}%")
 			ArmbinderMinStruggleOID = AddSliderOption("Armbinder Minimum Struggles", ArmbinderMinStruggle, "{0}")
-			YokeRemovalCostPerLevelOID = AddSliderOption("Yoke Removal Cost Per Level", YokeRemovalCostPerLevel, "{0}/Level")
-			skyreOID = AddToggleOption("Using SkyRe", SkyRe)
+			YokeRemovalCostPerLevelOID = AddSliderOption("Yoke Removal Cost Per Level", YokeRemovalCostPerLevel, "{0}/Level")			
 			AddEmptyOption()
 			AddHeaderOption("Legacy Device Escape System")
 			thresholdOID = AddSliderOption("Unlock Threshold", UnlockThreshold)
 			thresholdModifierOID = AddSliderOption("Unlock Threshold Modifier", ThresholdModifier)			
 		EndIf
+		AddEmptyOption()
+		skyreOID = AddToggleOption("Using SkyRe", SkyRe)
 		AddHeaderOption("Camera Configuration")
 		ifpOID = AddToggleOption("Immersive First Person", ifp)
 		SetCursorPosition(1) ; Move cursor to top right position
