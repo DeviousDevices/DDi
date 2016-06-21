@@ -53,6 +53,7 @@ Keyword Property zad_PermitVaginal Auto
 
 Keyword Property zad_InventoryDevice Auto
 Keyword Property zad_BlockGeneric Auto ; Block generic removal of this device.
+Keyword Property zad_QuestItem Auto ; Quest item tag. This item can not be removed conventionally.
 
 ; Don't apply gag expression for devices with these keywords (Zaz gags).
 Keyword Property zbfAnimMouth001 Auto 
@@ -248,6 +249,7 @@ Spell Property ShockEffect Auto
 Float Property SpellCastVibrateCooldown Auto
 Spell Property zad_splMagickaPenalty Auto
 bool Property BoundAnimsAvailable = True Auto ; Obsolete. Bound anims are now always available, post zap 6
+FormList Property zadStandardKeywords Auto
 
 ; Rechargeable Soulgem Stuff
 Soulgem Property SoulgemEmpty Auto
@@ -497,14 +499,15 @@ Function EquipDevice(actor akActor, armor deviceInventory, armor deviceRendered,
 	Endif
 EndFunction
 
-
-
-
 ; Remove device from actor.
 Function RemoveDevice(actor akActor, armor deviceInventory, armor deviceRendered, keyword zad_DeviousDevice, bool destroyDevice=false, bool skipEvents=false, bool skipMutex=false)
 	Log("RemoveDevice called for " + deviceInventory.GetName())
 	if !akActor.IsEquipped(deviceInventory) && !akActor.IsEquipped(deviceRendered)
 		Warn("RemoveDevice called for " + deviceInventory +", but this device is not currently worn.")
+		return
+	EndIf
+	If deviceInventory.HasKeyword(zad_QuestItem) || deviceRendered.HasKeyword(zad_QuestItem)
+		Log("RemoveDevice denied for " + deviceInventory.GetName() + " because it's a quest item. Use RemoveQuestItem() instead.")
 		return
 	EndIf
 	if !skipMutex
@@ -524,10 +527,41 @@ Function RemoveDevice(actor akActor, armor deviceInventory, armor deviceRendered
 		akActor.UnequipItemEx(deviceInventory, 0, false)
 		akActor.RemoveItem(deviceRendered, 1, true) 
 	Endif
-        CleanupDevices(akActor, zad_DeviousDevice)
-        if destroyDevice
+	CleanupDevices(akActor, zad_DeviousDevice)
+    if destroyDevice
 		akActor.RemoveItem(deviceInventory, 1, true)
-        EndIf
+    EndIf
+	; DeviceMutex is unlocked in zadEquipScript
+EndFunction
+
+; Remove quest device from actor. To make sure the removal is legit this will work only if the keyword passed to the function in the RemovalToken parameter is present on the item. Standard DD and ZAP keywords will not be accepted. SkipEvents is disallowed for quest items, so further checks can be done in OnUnequipFilter() if needed.
+Function RemoveQuestDevice(actor akActor, armor deviceInventory, armor deviceRendered, keyword zad_DeviousDevice, keyword RemovalToken, bool destroyDevice=false, bool skipMutex=false)
+	Log("RemoveQuestDevice called for " + deviceInventory.GetName())
+	if !akActor.IsEquipped(deviceInventory) && !akActor.IsEquipped(deviceRendered)
+		Warn("RemoveQuestDevice called for " + deviceInventory +", but this device is not currently worn.")
+		return
+	EndIf	
+	If !deviceInventory.HasKeyword(zad_QuestItem) &&  !deviceRendered.HasKeyword(zad_QuestItem)
+		Log("RemoveQuestDevice aborted for " + deviceInventory.GetName() + " because it's not a quest item.")
+		return
+	EndIf
+	If !RemovalToken || zadStandardKeywords.HasForm(RemovalToken) || !(deviceInventory.HasKeyword(RemovalToken) || deviceRendered.HasKeyword(RemovalToken))
+		Log("RemoveQuestDevice called for " + deviceInventory.GetName() + " with invalid removal token. Aborted.")
+		return
+	EndIf
+	if !skipMutex
+		AcquireAndSpinlock()
+	EndIf
+	Log("Acquired mutex, removing " + deviceInventory.GetName())
+	; Work around more native papyrus limitations by using skse functions.
+	; This does present me with an easy way to swap devices without calling events though, if I want to use it. Neat.	
+	StorageUtil.SetIntValue(akActor, "zad_RemovalToken" + deviceInventory, 1)
+	akActor.UnequipItemEx(deviceInventory, 0, false)
+	akActor.RemoveItem(deviceRendered, 1, true) 	
+	CleanupDevices(akActor, zad_DeviousDevice)
+    if destroyDevice
+		akActor.RemoveItem(deviceInventory, 1, true)
+    EndIf
 	; DeviceMutex is unlocked in zadEquipScript
 EndFunction
 

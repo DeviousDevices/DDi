@@ -319,7 +319,21 @@ Function RemoveDevice(actor akActor, bool destroyDevice=false, bool skipMutex=fa
 	Endif
 	libs.SendDeviceRemovalEvent(deviceName, akActor)
 	libs.SendDeviceRemovedEventVerbose(deviceInventory, zad_DeviousDevice, akActor)
-	libs.RemoveDevice(akActor, deviceInventory, deviceRendered, zad_DeviousDevice, destroyDevice, skipMutex=skipMutex)
+	if deviceInventory.HasKeyword(libs.zad_QuestItem) || deviceRendered.HasKeyword(libs.zad_QuestItem)
+		if !skipMutex
+			libs.AcquireAndSpinlock()
+		EndIf
+		libs.Log("Acquired mutex, removing " + deviceInventory.GetName())		
+		StorageUtil.SetIntValue(akActor, "zad_RemovalToken" + deviceInventory, 1)
+		akActor.UnequipItemEx(deviceInventory, 0, false)
+		akActor.RemoveItem(deviceRendered, 1, true) 
+		libs.CleanupDevices(akActor, zad_DeviousDevice)
+		if destroyDevice
+			akActor.RemoveItem(deviceInventory, 1, true)
+		EndIf
+	Else
+		libs.RemoveDevice(akActor, deviceInventory, deviceRendered, zad_DeviousDevice, destroyDevice, skipMutex=skipMutex)
+	Endif
 	if deviceKey != none && akActor.GetItemCount(deviceKey) < 1 && libs.config.thresholdModifier > 0
 		libs.Log("Player escaped device without having the key. Modifying unlock threshold.")
 		libs.Config.UnlockThreshold = (libs.Config.UnlockThreshold + libs.Config.thresholdModifier) ; += giving syntax errors? 
