@@ -110,6 +110,30 @@ Event OnEquipped(Actor akActor)
 	if akActor != libs.PlayerRef
 		libs.RepopulateNpcs()
 	EndIf
+
+    ; Store the time the device can be removed, but only for the PC, and 
+    ; only if it's a generic item.  Honestly, we're still probably going to be
+    ; storing times for devices that will never be checked (piercings?), but
+    ; I'm unsure of the cost-benefit of having a large list of keywords to
+    ; accept/reject.  Plus the maintenance overhead may not make it worth the
+    ; coder's time.
+    ; Also, though it would be nice to toggle different devices off and on in
+    ; MCM, it would be hell to maintain, especially as some devices have their
+    ; own manual add/removal code, which bypasses the lock shield removal
+    ; check, which breaks the Rule Of Least Surprise...
+    if (akActor == libs.PlayerRef) \
+            && (libs.config.lockShieldActive) \
+            && !( deviceRendered.HasKeyword(libs.zad_BlockGeneric) || deviceInventory.HasKeyword(libs.zad_BlockGeneric) ) \
+            && ( !(deviceRendered.HasKeyword(libs.zad_DeviousBlindfold) || deviceRendered.HasKeyword(libs.zad_DeviousGag)) \
+                    || libs.config.lockShieldDebilitating \
+               )
+        StorageUtil.SetFloatValue( \
+                akActor, \
+                "zad_LockShieldTime" + deviceRendered, \
+                utility.GetCurrentGameTime() + (utility.RandomInt(libs.config.lockShieldMinTime, libs.Config.lockShieldMaxTime) as Float / 24.0) \
+        )
+    endif
+
 	OnEquippedPost(akActor)
 EndEvent
 
@@ -138,6 +162,9 @@ Event OnUnequipped(Actor akActor)
 			libs.DeviceMutex = false
 			If akActor == libs.playerref
 				StorageUtil.UnSetIntValue(akActor, "zad_Equipped" + libs.LookupDeviceType(zad_DeviousDevice) + "_LockJammedStatus")
+                ; Always unset zad_LockShieldTime even if not enabled, as it may
+                ; have been disabled after the device was equipped.
+                StorageUtil.UnsetFloatValue(akActor, "zad_LockShieldTime" + deviceRendered)
 			Endif
 		EndIf
 	else
@@ -292,6 +319,33 @@ Function EquipDevice(actor akActor, bool skipMutex=false)
 EndFunction
 
 
+bool Function CheckLockShield(actor akActor)
+    ; Check device timer
+    if akActor != none && akActor == libs.PlayerRef && libs.config.lockShieldActive
+        ; zad_LockShieldTime is set when the device is worn and unset when it is removed.
+        float lockShieldTime = StorageUtil.GetFloatValue(akActor, "zad_LockShieldTime" + deviceRendered, 0.0)
+        float hoursRemaining = (lockShieldTime - utility.GetCurrentGameTime() ) * 24
+
+        ; Have a device time > 0.0 and have worn it for the appropriate period
+        ; (0.01 equals zero, for sufficiently large values of zero)
+        if (lockShieldTime > 0.01) && (hoursRemaining > 0)
+            string msg = "The lock is covered with a magical shield that "
+
+            if hoursRemaining < 6
+                msg += "has almost faded completely."
+            elseif hoursRemaining < 24
+                msg += "is showing signs of weakening.  You're not sure how much longer you will have to wait, but at least the end is in sight."
+            else
+                msg += "makes it completely inaccessible.  You will have to wait and hope that it disappears in time."
+            endif
+
+            libs.Notify(msg, true)
+            return false
+        endif
+    endif
+    return true
+endFunction
+
 Function RemoveDevice(actor akActor, bool destroyDevice=false, bool skipMutex=false)
 	; RemovedWithSuccess is set to false when the key breaks, so we don't display the "You succesfully removed device" message later, when you actually didn't.
 	; Most OOP instructors are likely to faint seeing this cringeworthy implementation, but the alternative is changing the function header and making everyone recompile everything. Nah!
@@ -348,6 +402,11 @@ bool Function RemoveDeviceWithKey(actor akActor = none, bool destroyDevice=false
 	if akActor == none
 		akActor = libs.PlayerRef
 	EndIf
+
+    if ! CheckLockShield(akActor)
+        return false
+    endif
+
 	if (akActor == libs.PlayerRef) && StorageUtil.GetIntValue(akActor, "zad_Equipped" + libs.LookupDeviceType(zad_DeviousDevice) + "_LockJammedStatus") == 1
 		libs.Log("RemoveDeviceWithKey called, but lock is jammed.")
 		libs.Notify("You attempt to unlock the "+deviceName+", but the lock is jammed!", true)
@@ -678,6 +737,9 @@ Function DeviceMenuRemoveWithoutKey()
 	If !useDeviceDifficultyEscape || !BaseEscapeChance
 		int deviceRemoveOption = zad_DeviceRemoveMsg.show()
 		if deviceRemoveOption == 0 ; Lockpicking
+            if !CheckLockShield(libs.PlayerRef)
+                return
+            endif
 			DeviceMenuPickLock()
 		elseif deviceRemoveOption == 1 ; Magicking
 			DeviceMenuMagic()
