@@ -1,0 +1,56 @@
+﻿<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://qconsulting.ca/fo3/ModConfig5.0.xsd">
+  <moduleName>Devious Devices: Integration</moduleName>
+  <moduleImage path="fomod\images\header.png"/>
+  <installSteps order="Explicit">
+
+    <installStep name="Animation Style">
+      <optionalFileGroups>
+        <group name="Which style of armbinder and yoke animations do you prefer?" type="SelectExactlyOne">
+          <plugins order="Explicit">
+            <plugin name="Cedec0 (default)">
+              <description>
+                Animations by cedec0. Abundant upper body movement, omnidirectional running and walking.
+              </description>
+              <image path="fomod\images\01_cedec0.png"/>
+              <files>
+                <folder source="00 Core" destination="" priority="1"/>
+              </files>
+              <conditionFlags>
+                <flag name="ABC_default">On</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Optional"/></typeDescriptor>
+            </plugin>
+            <plugin name="MaikCG">
+              <description>
+                Animations by MaikCG. More upright posture, omnidirectional running, walking and sneaking.
+              </description>
+              <image path="fomod\images\01_maikcg.png"/>
+              <files>
+                <folder source="00 Core" destination="" priority="1"/>
+                <folder source="01 MaikCG" destination="" priority="2"/>
+              </files>
+              <conditionFlags>
+                <flag name="ABC_maik">On</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Optional"/></typeDescriptor>
+            </plugin>
+            <plugin name="FeuerTin">
+              <description>
+                Animations by FeuerTin. Feminine but subtle, suitable for both genders, foward-facing running and walking.
+              </description>
+              <image path="fomod\images\01_feuertin.png"/>
+              <files>
+                <folder source="00 Core" destination="" priority="1"/>
+                <folder source="01 Feuertin" destination="" priority="2"/>
+              </files>
+              <conditionFlags>
+                <flag name="ABC_feuertin">On</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Optional"/></typeDescriptor>
+            </plugin>
+  	      </plugins>
+        </group>
+      </optionalFileGroups>
+    </installStep>
+  </installSteps>
+</config>

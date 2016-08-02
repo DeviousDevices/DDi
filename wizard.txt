@@ -1,0 +1,37 @@
+; -----Devious Devices: Integration by Min (v3.0.0)-----
+; http://www.loverslab.com/files/file/371-devious-devices-integration/
+
+RequireVersions "", "", "", "303"
+
+
+; -----ANIMATIONS-----
+
+abcDefault = False
+abcMaikCG = False
+abcFeuertin = False
+
+SelectOne "Which style of armbinder and yoke animations do you prefer?", \
+	"Cedec0 (default)", "Animations by cedec0. Abundant upper body movement, omnidirectional running and walking.", "fomod/images/01_cedec0.png", \
+	"MaikCG", "Animations by MaikCG. More upright posture, omnidirectional running, walking and sneaking.", "fomod/images/01_maikcg.png", \
+	"Feuertin", "Animations by Feuertin. Feminine but subtle, suitable for both genders, foward-facing running and walking.", "fomod/images/01_feuertin.png"
+
+	Case "Cede0 (default)"
+		abcDefault = True
+		Break
+	Case "MaikCG"
+		abcMaikCG = True
+		Break
+	Case "Feuertin"
+		abcFeuertin = True
+		Break
+EndSelect
+
+; -----INSTALL-----
+
+DeSelectAll
+SelectSubPackage "00 Core"
+If abcMaikCG
+	SelectSubPackage "01 MaikCG"
+Elif abcFeuertin
+	SelectSubPackage "01 Feuertin"
+EndIf
