@@ -145,6 +145,10 @@ Function checkBlindfoldDarkFog()
 EndFunction
 
 Function Maintenance()
+	; snipe the ZAP filter to make sure they don't both execute. This would suck.
+	if libs.Config.useAnimFilter && zbfSL.bOverrideSexLabAnimation && libs.Config.snipeZAZFilter
+		zbfSL.bOverrideSexLabAnimation = False
+	EndIf
 	; benchmark.SetupBenchmarks()
 	float curVersion = libs.GetVersion()
 	checkBlindfoldDarkFog()		
@@ -692,7 +696,7 @@ int function CountBoundActors(actor[] actors)
 	return ret
 EndFunction
 
-function Logic(int threadID, bool HasPlayer)
+function Logic(int threadID, bool HasPlayer)	
 	int i
 	sslThreadController Controller = Sexlab.ThreadSlots.GetController(threadID)
 	actor[] originalActors = Controller.Positions
@@ -701,7 +705,7 @@ function Logic(int threadID, bool HasPlayer)
 		TogglePanelGag(originalActors, false)
 	EndIf
 	
-	If previousAnim.HasTag("NoSwap") || previousAnim.HasTag("DeviousDevice") || previousAnim.HasTag("Estrus") ; Estrus Chaurus compatibility
+	If !libs.config.useAnimFilter || previousAnim.HasTag("NoSwap") || previousAnim.HasTag("DeviousDevice") || previousAnim.HasTag("Estrus") ; Estrus Chaurus compatibility
 		libs.Log("Animation should not be replaced. Done.")
 		Return
 	EndIf	

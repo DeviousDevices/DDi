@@ -67,6 +67,10 @@ bool UseBoundCombatDefault = true
 
 bool Property useBoundAnims =  true Auto
 bool useBoundAnimsDefault = true
+bool Property useAnimFilter =  true Auto
+bool useAnimFilterDefault = true
+; this will make DDI disable the ZAP animation filter when DDI's filter is active, as they are incompatible. Disable this flag to stop this behaviour.
+bool Property snipeZAZFilter = true Auto
 
 ; Timed Lock Shield Config
 bool property lockShieldActive Auto
@@ -208,6 +212,7 @@ int UseQueueNiNodeOID
 int breastNodeManagementOID
 int bellyNodeManagementOID
 int useBoundAnimsOID
+int useAnimFilterOID
 int bootsSlowdownToggleOID
 int UseBoundCombatOID 
 Int UseDeviceDifficultyEscapeOID
@@ -456,6 +461,7 @@ Event OnPageReset(string page)
 		SetCursorFillMode(TOP_TO_BOTTOM)
 		SetCursorPosition(0) ; Can be removed because it starts at 0 anyway
 		AddHeaderOption("Animation Options")
+		useAnimFilterOID = AddToggleOption("Use Animation Filter", useAnimFilter)
 		preserveAggroOID = AddToggleOption("Preserve Scene Aggressiveness", preserveAggro)
 		useBoundAnimsOID = AddToggleOption("Use Bound Animations", useBoundAnims)
 	ElseIf page == "Events and Effects"
@@ -829,6 +835,13 @@ Event OnOptionSelect(int option)
 	elseif option == useBoundAnimsOID
 		useBoundAnims = !useBoundAnims
 		SetToggleOptionValue(useBoundAnimsOID, useBoundAnims)
+	elseif option == useAnimFilterOID
+		useAnimFilter = !useAnimFilter
+		SetToggleOptionValue(useAnimFilterOID, useAnimFilter)
+		; snipe the ZAP filter to make sure they don't both execute. This would suck.
+		if useAnimFilter && beltedAnims.filterquest.zbfSL.bOverrideSexLabAnimation && snipeZAZFilter
+			beltedAnims.filterquest.zbfSL.bOverrideSexLabAnimation = False
+		EndIf
 	elseif option == skyreOID
 		SkyRe = !SkyRe
 		SetToggleOptionValue(skyreOID, SkyRe)
@@ -948,6 +961,9 @@ Event OnOptionDefault(int option)
 	elseIf (option == useBoundAnimsOID)
 		useBoundAnims = useBoundAnimsDefault
 		SetToggleOptionValue(useBoundAnimsOID, useBoundAnimsDefault)
+	elseIf (option == useAnimFilterOID)
+		useAnimFilter = useAnimFilterDefault
+		SetToggleOptionValue(useAnimFilterOID, useAnimFilterDefault)
 	elseIf (option == skyreOID)
 		SkyRe = skyreDefault
 		SetToggleOptionValue(skyreOID, skyreDefault)
@@ -1120,6 +1136,8 @@ Event OnOptionHighlight(int option)
 		SetInfoText("Toggle the preservation of a scene's aggressiveness. Disable this for more variety in animations (At the cost of seeing consensual animations in rape-scenes, etc).\nDefault:"+preserveAggroDefault)
 	elseIf (option == useBoundAnimsOID)
 		SetInfoText("Toggle the use of bound animations within scenes. Without this option, Yokes / Armbinders / etc will be removed until the sex act has concluded.\nDefault:"+useBoundAnimsDefault)
+	elseIf (option == useAnimFilterOID)
+		SetInfoText("Toggle the use of the animation filter.\nIf enabled, DD will make sure that only animations compatible with worn devices are played.\nE.g. if the character is belted, she can't have vaginal sex.\nThis feature is incompatible with the filter included in ZAZ Animation Pack, which will get automatically disabled if used.\nDefault:" + useAnimFilterDefault)
 	elseIf (option == destroyKeyOID)
 		SetInfoText("Toggle whether or not the key should be destroyed after device removal.")
 	elseIf (option == destroyKeyProbabilityOID)
