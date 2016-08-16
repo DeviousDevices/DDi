@@ -621,8 +621,8 @@ bool Function ManipulateGenericDevice(actor akActor, armor device, bool equipOrU
 	bool manipulated = false
 	if tmpZRef != none
 	   	Keyword kw = tmpZRef.zad_DeviousDevice
-		if tmpZref.HasKeyword(zad_BlockGeneric)
-			Warn("ManipulateGenericDevice called on armor with 'Block Generic Removal' keyword: zad_BlockGeneric")
+		if tmpZref.HasKeyword(zad_BlockGeneric) || tmpZref.HasKeyword(zad_QuestItem)
+			Warn("ManipulateGenericDevice called on non-generic device.")
 		Else
 			; First, check to see if the actor is already wearing this device. If he is, save processing time.
 			Form tmpInv = StorageUtil.GetFormValue(akActor, "zad_Equipped" + LookupDeviceType(kw) + "_Inventory")
@@ -651,7 +651,7 @@ bool Function ManipulateGenericDeviceByKeyword(Actor akActor, Keyword kw, bool e
         Form tmpInv = StorageUtil.GetFormValue(akActor, "zad_Equipped" + LookupDeviceType(kw) + "_Inventory")
         if !equipOrUnequip && tmpInv
 		Form tmpRend = StorageUtil.GetFormValue(akActor, "zad_Equipped" + LookupDeviceType(kw) + "_Rendered")
-		if tmpInv.HasKeyword(zad_BlockGeneric) || tmpRend.HasKeyword(zad_BlockGeneric)
+		if tmpInv.HasKeyword(zad_BlockGeneric) || tmpRend.HasKeyword(zad_BlockGeneric) || tmpInv.HasKeyword(zad_QuestItem) || tmpRend.HasKeyword(zad_QuestItem)
 			warn("ManipulateGenericDeviceByKeyword called on non-generic device!")
 			return false
 		EndIf
@@ -667,7 +667,7 @@ bool Function ManipulateGenericDeviceByKeyword(Actor akActor, Keyword kw, bool e
 			ObjectReference tmpORef = akActor.placeAtMe(kForm, abInitiallyDisabled = true)
 			zadEquipScript tmpZRef = tmpORef as zadEquipScript
 			if tmpZRef != none && tmpZRef.zad_DeviousDevice == kw && ((akActor.GetItemCount(tmpZRef.deviceRendered) > 0 && !equipOrUnequip) || equipOrUnequip)
-				if !tmpZref.HasKeyword(zad_BlockGeneric)
+				if !tmpZref.HasKeyword(zad_BlockGeneric) && !tmpZref.HasKeyword(zad_QuestItem)
 					breakFlag = True
 					if equipOrUnequip
 						EquipDevice(akActor, kForm as Armor, tmpZRef.deviceRendered, tmpZRef.zad_DeviousDevice, skipEvents = skipEvents, skipMutex = skipMutex)
@@ -771,7 +771,7 @@ EndFunction
 
 ; Register a device to be used by GetGenericDeviceByKeyword()
 Function RegisterGenericDevice(Armor inventoryDevice, String tags)
-	if inventoryDevice == none || inventoryDevice.HasKeyword(zad_BlockGeneric) || !inventoryDevice.hasKeyword(zad_InventoryDevice)
+	if inventoryDevice == none || inventoryDevice.HasKeyword(zad_BlockGeneric) || inventoryDevice.HasKeyword(zad_QuestItem) || !inventoryDevice.hasKeyword(zad_InventoryDevice)
 		return
 	endIf
 	

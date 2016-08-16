@@ -124,6 +124,7 @@ Event OnEquipped(Actor akActor)
     if (akActor == libs.PlayerRef) \
             && (libs.config.lockShieldActive) \
             && !( deviceRendered.HasKeyword(libs.zad_BlockGeneric) || deviceInventory.HasKeyword(libs.zad_BlockGeneric) ) \
+			&& !( deviceRendered.HasKeyword(libs.zad_QuestItem) || deviceInventory.HasKeyword(libs.zad_QuestItem) ) \
             && ( !(deviceRendered.HasKeyword(libs.zad_DeviousBlindfold) || deviceRendered.HasKeyword(libs.zad_DeviousGag)) \
                     || libs.config.lockShieldDebilitating \
                )
