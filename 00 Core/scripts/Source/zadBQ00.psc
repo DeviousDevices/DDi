@@ -351,6 +351,25 @@ sslBaseAnimation function GetZAPBoundAnims(actor a, actor b, actor c = None, act
 	return anim
 EndFunction
 
+String Function GetCreatureType(sslBaseAnimation previousAnim)
+	; support some humanoid creatures properly by getting the tag used for the previous animation, so we can append it to the tag string.
+	If previousAnim.HasTag("Falmer") 
+		Return "Falmer"
+	EndIf
+	If previousAnim.HasTag("Skeleton") 
+		Return "Skeleton"
+	EndIf
+	If previousAnim.HasTag("Troll") 
+		Return "Troll"
+	EndIf
+	If previousAnim.HasTag("Spriggan") 
+		Return "Spriggan"
+	EndIf
+	If previousAnim.HasTag("Draugr") 
+		Return "Draugr"
+	EndIf
+EndFunction
+
 sslBaseAnimation[] function SelectValidAnimations(sslThreadController Controller, int count, sslBaseAnimation previousAnim, bool forceaggressive, bool boundArmbinder, bool boundYoke, bool permitOral, bool permitVaginal, bool permitAnal, bool permitBoobs)
 	bool aggr = false	
 	string includetag = ""
@@ -362,6 +381,11 @@ sslBaseAnimation[] function SelectValidAnimations(sslThreadController Controller
 		libs.Log("Using only aggressive animations.")					
 		aggr = true		
 	Endif  
+	Bool IsCreatureAnim = previousAnim.HasTag("Creature")
+	If IsCreatureAnim && (boundYoke || boundArmbinder)
+		; it's a creature anim and some participants are bound, we can abort here, as there are no bound animations for creatures.
+		return None
+	Endif
 	; use ZAP for bound animation filtering to allow using its dynamic animation creation system.
 	if count > 1 && (boundYoke || boundArmbinder)
 		libs.Log("Actor(s) are bound. Trying to set up ZAP animation.")
@@ -407,6 +431,16 @@ sslBaseAnimation[] function SelectValidAnimations(sslThreadController Controller
 			suppressString = "F," + suppressString
 		EndIf
 	EndIf		
+	If IsCreatureAnim
+		; determine what creature it was and append its tag to the selection if it was a humanoid one, otherwise return an empty array.
+		string crString = GetCreatureType(previousAnim)
+		if crString != ""
+			tagString += "," + crString
+		Else
+			libs.log("Creature animation with non-humanoid creatures in use. Cannot replace. Filtering aborted.")
+			return None
+		Endif
+	Endif
 	Sanims = SexLab.GetAnimationsByTags(count, tagString, suppressString, true)
 	libs.log("Selecting SexLab animations with number of actors: " + count)
 	libs.log("Selecting SexLab animations with tag string: " + tagString)
@@ -770,6 +804,28 @@ function Logic(int threadID, bool HasPlayer)
 		libs.Log("One or more actors were bound, but there are no bound animations available. Removing bindings.")
 		StoreHeavyBondage(originalActors)
 		NoBindings = True
+	EndIf
+	
+	; handle creatures as far as possible.
+	if IsCreatureAnim		
+		Bool isInvalidAnim = False		
+		Bool AllowRemoveBindings = True ; can temporarily remove wrist restraints. There are no bound anims for creatures. Goes into MCM one day.
+		; we ignore minor incompatibilities, but belts and gags are a potential dealbreaker.
+		If !PermitVaginal && previousAnim.HasTag("Vaginal")		
+			isInvalidAnim = True			
+		Endif
+		if !PermitOral && previousAnim.HasTag("Oral")					
+			isInvalidAnim = True
+		Endif		
+		; Actors are bound, but animation is otherwise ok - remove bindings and proceed
+		if !NoBindings && !isInvalidAnim
+			if AllowRemoveBindings		
+				libs.Log("Animation involves creatures. Removing bindings.")
+				StoreHeavyBondage(originalActors)
+				NoBindings = True			
+				return			
+			Endif
+		Endif		
 	EndIf
 	
 	actor[] actors
