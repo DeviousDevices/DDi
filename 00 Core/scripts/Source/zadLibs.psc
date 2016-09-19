@@ -1032,11 +1032,11 @@ EndFunction
 
 
 float Function GetVersion()
-	return 4 ; build number increment to determine the newest version - does NOT correspond with the offical version name. Returns a float not to mess with existing implementations of this function.
+	return 5 ; build number increment to determine the newest version - does NOT correspond with the offical version name. Returns a float not to mess with existing implementations of this function.
 EndFunction
 
 String Function GetVersionString()
-	return "3.1" ; string to be displayed in MCM etc.
+	return "3.2" ; string to be displayed in MCM etc.
 EndFunction
 
 
