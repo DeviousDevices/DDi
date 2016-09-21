@@ -803,6 +803,8 @@ function Logic(int threadID, bool HasPlayer)
 	if !NoBindings && !libs.config.useBoundAnims ; Actor is bound, config specifies to not use bound anims.
 		libs.Log("One or more actors were bound, but there are no bound animations available. Removing bindings.")
 		StoreHeavyBondage(originalActors)
+		UsingArmbinder = False
+		UsingYoke = False
 		NoBindings = True
 	EndIf
 	
@@ -877,6 +879,8 @@ function Logic(int threadID, bool HasPlayer)
 			;;Still no animations, after resizing actors. Drop armbinders, and try again.
 			libs.Log("Removing armbinders, Trying to resize actors...")
 			StoreHeavyBondage(originalActors)			
+			 UsingArmbinder = False
+			 UsingYoke = False
 			NoBindings = True		
 			anims = SelectValidAnimations(Controller, actors.length, previousAnim, false, false, false, PermitOral, PermitVaginal, PermitAnal, permitBoobs)
 		 EndIf
