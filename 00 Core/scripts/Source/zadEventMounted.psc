@@ -1,7 +1,7 @@
 scriptName zadEventMounted extends zadBaseEvent
 
 bool Function HasKeywords(actor akActor)
-	 return (akActor.WornHasKeyword(libs.zad_DeviousBelt) && akActor.IsOnMount() )
+	 return (akActor.WornHasKeyword(libs.zad_DeviousPlug) && akActor.IsOnMount() )
 EndFunction
 
 Function Execute(actor akActor)

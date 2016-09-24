@@ -1844,7 +1844,7 @@ EndFunction
 	
 Function SpellCastVibrate(Actor akActor, Form tmp)
 	Spell theSpell = (tmp as Spell)
-	if (akActor.WornHasKeyword(zad_DeviousBelt) || akActor.WornHasKeyword(zad_EffectPossessed)) && akActor.WornHasKeyword(zad_DeviousPlug) && ActorHasKeyword(akActor, zad_EffectVibrateOnSpellCast)
+	if akActor.WornHasKeyword(zad_DeviousPlug) && ActorHasKeyword(akActor, zad_EffectVibrateOnSpellCast)
 		SendModEvent("EventOnCast")
 		Log("OnSpellCast()")
 		If akActor == PlayerRef && akActor.GetCombatState() >= 1

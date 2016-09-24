@@ -74,17 +74,20 @@ Function OnEquippedPost(actor akActor)
 	if analSlot && vagSlot && analSlot == vagSlot
 		legacyPlugs = true
 	EndIf
-	if ((!akActor.WornHasKeyword(libs.zad_DeviousBelt) && !akActor.WornHasKeyword(libs.zad_DeviousHarness))  || ((akActor.WornHasKeyword(libs.zad_DeviousBelt) || akActor.WornHasKeyword(libs.zad_DeviousHarness)) && akActor.WornHasKeyword(libs.zad_PermitAnal) && !legacyPlugs && deviceRendered.HasKeyword(libs.zad_DeviousPlugAnal))) && akActor.WornHasKeyword(zad_DeviousDevice) && !akActor.WornHasKeyword(libs.zad_EffectPossessed) && akActor == libs.PlayerRef && akActor.GetActorBase().GetSex() != 0
-		libs.Log("Belt not worn: Removing plugs.")
-		RemoveDevice(akActor)
-		if akActor == libs.PlayerRef
-			libs.NotifyPlayer("Lacking a belt to hold them in, the plugs slide out of you.")
-		else
-			libs.NotifyNPC("Lacking a belt to hold them in, the plugs slide out of "+akActor.GetLeveledActorBase().GetName()+".")
-			akActor.RemoveItem(deviceInventory, 1, true)
-			libs.PlayerRef.AddItem(deviceInventory, 1, true)
-		EndIf
-	EndIf
+
+; Depreciated as of 3.3, plugs are no longer supposed to slide out on their own
+
+;	if ((!akActor.WornHasKeyword(libs.zad_DeviousBelt) && !akActor.WornHasKeyword(libs.zad_DeviousHarness))  || ((akActor.WornHasKeyword(libs.zad_DeviousBelt) || akActor.WornHasKeyword(libs.zad_DeviousHarness)) && akActor.WornHasKeyword(libs.zad_PermitAnal) && !legacyPlugs && deviceRendered.HasKeyword(libs.zad_DeviousPlugAnal))) && akActor.WornHasKeyword(zad_DeviousDevice) && !akActor.WornHasKeyword(libs.zad_EffectPossessed) && akActor == libs.PlayerRef && akActor.GetActorBase().GetSex() != 0
+;		libs.Log("Belt not worn: Removing plugs.")
+;		RemoveDevice(akActor)
+;		if akActor == libs.PlayerRef
+;			libs.NotifyPlayer("Lacking a belt to hold them in, the plugs slide out of you.")
+;		else
+;			libs.NotifyNPC("Lacking a belt to hold them in, the plugs slide out of "+akActor.GetLeveledActorBase().GetName()+".")
+;			akActor.RemoveItem(deviceInventory, 1, true)
+;			libs.PlayerRef.AddItem(deviceInventory, 1, true)
+;		EndIf
+;	EndIf
 EndFunction
 
 ; removed this to allow scripts to unquip these items. The dialogue will catch in-game attempts anyway, so it's not really needed.
