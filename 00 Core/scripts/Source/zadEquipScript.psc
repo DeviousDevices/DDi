@@ -417,7 +417,8 @@ bool Function RemoveDeviceWithKey(actor akActor = none, bool destroyDevice=false
 		libs.Log("RemoveDeviceWithKey called, actor has correct key. Removing "+ deviceName +".")
 		RemovedViaEscape = False
 		RemoveDevice(akActor)
-		return true
+		;return true
+		return RemovedWithSuccess
 	else
 		libs.Log("RemoveDeviceWithKey called for a "+deviceName+" while actor does not possess key.")
 		libs.Notify("You do not posess the correct key to manipulate this " + deviceName + ".")
@@ -510,7 +511,7 @@ EndFunction
 
 
 function DeviceMenuRemoveWithKey()
-    if RemoveDeviceWithKey() && RemovedWithSuccess
+    if RemoveDeviceWithKey()
 	    libs.NotifyPlayer("You succesfully unlock the " + deviceName+".")
     Endif
 EndFunction

@@ -1,4 +1,4 @@
-Scriptname zadPlugScript extends zadEquipScript
+Scriptname zadPlugLockingScript extends zadEquipScript
 
 Keyword Property zad_DeviousBelt Auto
 
@@ -48,16 +48,16 @@ Function OnEquippedPre(actor akActor, bool silent=false)
 	string msg = ""
 	if akActor == libs.PlayerRef
 		if Aroused.GetActorExposure(akActor) < libs.ArousalThreshold("Desire")
-			msg = "Your hole is now filled, as is your desire for pleasure."
+			msg = "As you gently slide the plug in, you hear a sharp click and suddenly feel very full."
 		elseif Aroused.GetActorExposure(akActor) < libs.ArousalThreshold("Horny")
-			msg = "You slowly insert the plug inside your opening, your lust growing with every inch it slides in."
+			msg = "You slowly push the plug into your hole and let out a quiet gasp when it expands, locking itself securely in place."
 		elseif Aroused.GetActorExposure(akActor) < libs.ArousalThreshold("Desperate")
-			msg = "You insert the plug inside your opening and take great delight in the resulting feelings of pleasure."
+			msg = "You insert the plug inside your sensitive opening and it clicks, suddenly growing in volume and filling you with delight."
 		else
-			msg = "Barely in control of control your own body you thrust the plug almost forcefully into the appropriate opening."
+			msg = "You impatiently thrust the plug deep into yourself and its rapid expansion makes your legs clench together instinctively."
 		endif
 	else
-		msg = akActor.GetLeveledActorBase().GetName() + " shudders as you push the plugs in to her."
+		msg = akActor.GetLeveledActorBase().GetName() + " shudders as you push the plug into her."
 	EndIf
 	if !silent
 		libs.NotifyActor(msg, akActor, true)
@@ -74,32 +74,7 @@ Function OnEquippedPost(actor akActor)
 	if analSlot && vagSlot && analSlot == vagSlot
 		legacyPlugs = true
 	EndIf
-
-; Depreciated as of 3.3, plugs are no longer supposed to slide out on their own
-
-;	if ((!akActor.WornHasKeyword(libs.zad_DeviousBelt) && !akActor.WornHasKeyword(libs.zad_DeviousHarness))  || ((akActor.WornHasKeyword(libs.zad_DeviousBelt) || akActor.WornHasKeyword(libs.zad_DeviousHarness)) && akActor.WornHasKeyword(libs.zad_PermitAnal) && !legacyPlugs && deviceRendered.HasKeyword(libs.zad_DeviousPlugAnal))) && akActor.WornHasKeyword(zad_DeviousDevice) && !akActor.WornHasKeyword(libs.zad_EffectPossessed) && akActor == libs.PlayerRef && akActor.GetActorBase().GetSex() != 0
-;		libs.Log("Belt not worn: Removing plugs.")
-;		RemoveDevice(akActor)
-;		if akActor == libs.PlayerRef
-;			libs.NotifyPlayer("Lacking a belt to hold them in, the plugs slide out of you.")
-;		else
-;			libs.NotifyNPC("Lacking a belt to hold them in, the plugs slide out of "+akActor.GetLeveledActorBase().GetName()+".")
-;			akActor.RemoveItem(deviceInventory, 1, true)
-;			libs.PlayerRef.AddItem(deviceInventory, 1, true)
-;		EndIf
-;	EndIf
 EndFunction
-
-; removed this to allow scripts to unquip these items. The dialogue will catch in-game attempts anyway, so it's not really needed.
-; int Function OnUnequippedFilter(actor akActor)
-	; if akActor.WornHasKeyword(libs.zad_DeviousBelt)
-		; return 1
-	; EndIf
-	; if akActor.WornHasKeyword(libs.zad_DeviousHarness)
-		; return 1
-	; EndIf
-	; return 0
-; EndFunction
 
 
 Function DeviceMenu(Int msgChoice = 0)
@@ -113,21 +88,31 @@ Function DeviceMenu(Int msgChoice = 0)
 		Debug.MessageBox(strFailEquipBelt)
 	elseif msgChoice==3 ; Not wearing a belt/harness, plugs
 		string msg = ""
-		if Aroused.GetActorExposure(libs.PlayerRef) < libs.ArousalThreshold("Desire")
-			msg = "You easily slide the plug out of your hole and feel no regret."
-		elseif Aroused.GetActorExposure(libs.PlayerRef) < libs.ArousalThreshold("Horny")
-			msg = "Despite the pleasure it provides, you remove the plug from your hole."
-		elseif Aroused.GetActorExposure(libs.PlayerRef) < libs.ArousalThreshold("Desperate")
-			msg = "Despite your body telling you otherwise, you reluctantly pull the plug from your now well lubricated opening."
-		else
-			msg = "It takes all the willpower that you can muster to relax your muscles enough to let the plug slide out."
+		;DeviceMenuRemoveWithKey()
+		if RemoveDeviceWithKey() ;Using this instead of DeviceMenuRemoveWithKey() to show a custom success message
+			if Aroused.GetActorExposure(libs.PlayerRef) < libs.ArousalThreshold("Desire")
+				msg = "You unlock the plug and it contracts, allowing you to remove it without much hassle."
+			elseif Aroused.GetActorExposure(libs.PlayerRef) < libs.ArousalThreshold("Horny")
+				msg = "The mechanism rumbles as it reduces the plug to a more manageable size and you slowly pull it out."
+			elseif Aroused.GetActorExposure(libs.PlayerRef) < libs.ArousalThreshold("Desperate")
+				msg = "You turn the key very slowly to ease your body into letting the plug go and feel a tinge of regret as you slide it out."
+			else
+				msg = "It takes all the focus you can muster to properly disengage the plug's locking mechanism, but once you do it practically falls out of your lubricated opening."
+			endif
+			libs.NotifyPlayer(msg, true)
 		endif
-		libs.NotifyPlayer(msg, true)
-		RemoveDevice(libs.PlayerRef)
 	elseif msgChoice==4 ; Wearing a harness, plugs
 		NoKeyFailMessageHarness(libs.PlayerRef)
 	elseif msgChoice==5 ; Wearing a belt, plugs
 		NoKeyFailMessageBelt(libs.PlayerRef)
+	elseif msgChoice==7 ; Force it out
+		if libs.playerRef.WornhasKeyword(libs.zad_DeviousBelt)
+			NoKeyFailMessageBelt(libs.playerRef)
+		ElseIf libs.playerRef.WornhasKeyword(libs.zad_DeviousHarness)
+			NoKeyFailMessageHarness(libs.playerRef)
+		Else
+			DeviceMenuRemoveWithoutKey()
+		EndIf
 	Endif
 	DeviceMenuExt(msgChoice)
 	SyncInventory()
@@ -136,7 +121,7 @@ EndFunction
 
 Function NoKeyFailMessageBelt(Actor akActor)
 	if akActor == libs.PlayerRef
-		libs.NotifyPlayer("Try as you might, the belt you are wearing prevents you from removing this plug.", true)
+		libs.NotifyPlayer("Try as you might, the belt you are wearing prevents you from removing these plugs.", true)
 	Else
 		libs.NotifyNPC("The belt that "+akActor.GetLeveledActorBase().GetName() + " is wearing is securely locking this plug in place. You must remove it prior to removing the plug.", true)
 	EndIf
@@ -144,7 +129,7 @@ EndFunction
 
 Function NoKeyFailMessageHarness(Actor akActor)
 	if akActor == libs.PlayerRef
-		libs.NotifyPlayer("Try as you might, the harness you are wearing prevents you from removing this plug.", true)
+		libs.NotifyPlayer("Try as you might, the harness you are wearing prevents you from removing these plugs.", true)
 	Else
 		libs.NotifyNPC("The harness that "+akActor.GetLeveledActorBase().GetName() + " is wearing is securely locking this plug in place. You must remove it prior to removing the plug.", true)
 	EndIf
