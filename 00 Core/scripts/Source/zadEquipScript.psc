@@ -26,6 +26,13 @@ String Property deviceName Auto
 
 Float Property BaseEscapeChance = 10.0 Auto	; Device escape difficulty: This is the base chance to make a succesful escape attempt in %. E.g. a value of 10 means that 1 in 10 escape attempts are succesful.
 
+Keyword[] Property EquipConflictingDevices Auto ; These item keywords, if present on the character, will prevent the item from getting equipped, unless a script does it.
+Keyword[] Property EquipRequiredDevices Auto ; These item keywords, if NOT present on the character, will prevent the item from getting equipped, unless a script does it.
+Keyword[] Property UnEquipConflictingDevices Auto ; These item keywords, if present on the character, will prevent the item from getting unequipped, unless a script does it.
+Message Property zad_EquipConflictFailMsg auto ; This message will get displayed if an item fails to equip due to present keyword conflicts. Make sure to explain the conflicts, so the player knows what's going on!
+Message Property zad_EquipRequiredFailMsg auto ; This message will get displayed if an item fails to equip due to missing keyword conflicts. Make sure to explain the conflicts, so the player knows what's going on!
+Message Property zad_UnEquipFailMsg auto ; This message will get displayed if an item fails to unequip due to keyword conflicts. Make sure to explain the conflicts, so the player knows what's going on!
+
 ; Local Variables
 bool menuDisable = false
 int mutexTimeout = 10
@@ -92,7 +99,14 @@ Event OnEquipped(Actor akActor)
 		libs.DeviceMutex = false
 		return
 	EndIf
-        libs.CleanupDevices(akActor, zad_DeviousDevice, deviceRendered)
+	; check for device conflicts
+	If !silently && (IsEquipDeviceConflict(akActor) || IsEquipRequiredDeviceConflict(akActor))
+		menuDisable = true
+		akActor.UnequipItem(deviceInventory, false, true)
+		libs.DeviceMutex = false
+		return
+    EndIf
+	libs.CleanupDevices(akActor, zad_DeviousDevice, deviceRendered)
 	; I would extend this to NPC's, but I am concerned about potential bloating.
 	; ( NPC's going out of cell, resetting inventories, etc. without OnRemoveDevice() being called )
 	if akActor == libs.PlayerRef ; Store equipped devices for faster generic calls.
@@ -245,7 +259,9 @@ Event OnContainerChanged(ObjectReference akNewContainer, ObjectReference akOldCo
 								libs.NotifyPlayer(npc.GetLeveledActorBase().GetName()+" is already wearing a "+deviceName+"!")
 								npc.RemoveItem(deviceInventory, 1, false, libs.PlayerRef)
 							Else
-								libs.EquipDevice(npc, deviceInventory, deviceRendered, zad_DeviousDevice)
+								If !IsEquipDeviceConflict(npc) && !IsEquipRequiredDeviceConflict(npc)
+									libs.EquipDevice(npc, deviceInventory, deviceRendered, zad_DeviousDevice)
+								Endif
 							EndIf
 							; OnEquipped(npc) ; Not sure why this isn't being called for npc's. Temporary work-around.
 						EndIf
@@ -273,8 +289,10 @@ Event OnContainerChanged(ObjectReference akNewContainer, ObjectReference akOldCo
 					; Does the player have the right key?
 					if deviceKey && libs.PlayerRef.GetItemCount(deviceKey) >= 1
 						; Free npc.
-						libs.Notify("You use the key to unlock the "+deviceName+" from " + npc.GetLeveledActorBase().GetName() + ".")
-						RemoveDevice(npc, skipMutex=true)
+						If !IsUnEquipDeviceConflict(npc)
+							libs.Notify("You use the key to unlock the "+deviceName+" from " + npc.GetLeveledActorBase().GetName() + ".")
+							RemoveDevice(npc, skipMutex=true)
+						EndIf
 					; Does not have correct key
 					else
 						; Does npc have multiple instances of this device?
@@ -398,13 +416,12 @@ Function RemoveDevice(actor akActor, bool destroyDevice=false, bool skipMutex=fa
 	EndIf
 EndFunction
 
-
 bool Function RemoveDeviceWithKey(actor akActor = none, bool destroyDevice=false)
 	if akActor == none
 		akActor = libs.PlayerRef
 	EndIf
 
-    if ! CheckLockShield(akActor)
+    if !CheckLockShield(akActor)
         return false
     endif
 
@@ -473,6 +490,72 @@ string function GetMessageName(actor akActor)
 	EndIf
 EndFunction
 
+Bool Function IsEquipDeviceConflict(Actor akActor)
+	If EquipConflictingDevices.Length > 0
+		int i = EquipConflictingDevices.Length
+		Keyword kw
+		bool break = false
+		While i > 0 && !break
+			i -= 1
+			kw = EquipConflictingDevices[i]
+			if kw && akActor.WornHasKeyword(kw)
+				break = true
+			EndIf
+		EndWhile
+		If break
+			If zad_EquipConflictFailMsg
+				zad_EquipConflictFailMsg.Show()
+			EndIf
+			Return True
+		Endif
+	Endif
+	return false
+EndFunction
+
+Bool Function IsEquipRequiredDeviceConflict(Actor akActor)
+	If EquipRequiredDevices.Length > 0
+		int i = EquipRequiredDevices.Length
+		Keyword kw
+		bool ok = true
+		While i > 0 && ok
+			i -= 1
+			kw = EquipRequiredDevices[i]
+			if kw && !akActor.WornHasKeyword(kw)
+				ok = false
+			EndIf
+		EndWhile
+		If !ok
+			If zad_EquipRequiredFailMsg
+				zad_EquipRequiredFailMsg.Show()
+			EndIf
+			Return True
+		Endif
+	Endif
+	return false
+EndFunction
+
+Bool Function IsUnEquipDeviceConflict(Actor akActor)
+	If UnEquipConflictingDevices.Length > 0
+		int i = UnEquipConflictingDevices.Length
+		Keyword kw
+		bool break = false
+		While i > 0 && !break
+			i -= 1
+			kw = UnEquipConflictingDevices[i]
+			if kw && akActor.WornHasKeyword(kw)
+				break = true
+			EndIf
+		EndWhile
+		If break
+			If zad_UnEquipFailMsg
+				zad_UnEquipFailMsg.Show()
+			EndIf
+			Return True
+		Endif
+	Endif
+	return false
+EndFunction
+
 
 ; ================================================================
 ; Functions for Inheritance 
@@ -503,17 +586,17 @@ Function DeviceMenuExt(Int msgChoice)
 
 EndFunction
 
-
 Function DeviceMenuEquip()
     EquipDevice(libs.PlayerRef)
-    libs.NotifyPlayer("You choose to put the " + deviceName + " on.")
+	libs.NotifyPlayer("You choose to put the " + deviceName + " on.")	
 EndFunction
 
-
 function DeviceMenuRemoveWithKey()
-    if RemoveDeviceWithKey()
-	    libs.NotifyPlayer("You succesfully unlock the " + deviceName+".")
-    Endif
+    If !IsUnEquipDeviceConflict(libs.playerref)
+		if RemoveDeviceWithKey()
+			libs.NotifyPlayer("You succesfully unlock the " + deviceName+".")
+		Endif
+	Endif
 EndFunction
 
 
@@ -735,6 +818,9 @@ Function DisplayDifficultyMsg(Float EscapeChance)
 EndFunction
 
 Function DeviceMenuRemoveWithoutKey()
+	If IsUnEquipDeviceConflict(libs.playerref)
+		return
+	Endif
 	Bool useDeviceDifficultyEscape = Libs.Config.UseDeviceDifficultyEscape
 	If !useDeviceDifficultyEscape || !BaseEscapeChance
 		int deviceRemoveOption = zad_DeviceRemoveMsg.show()
