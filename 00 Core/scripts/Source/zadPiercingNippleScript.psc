@@ -53,21 +53,25 @@ EndFunction
 ; EndFunction
 
 Function DeviceMenu(Int msgChoice = 0)
-        msgChoice = zad_DeviceMsg.Show() ; display menu
-	if msgChoice==0 ; Not wearing a bra, no piercings
-		Debug.Notification("You choose to put the piercings in.")
-		libs.EquipDevice(libs.PlayerRef, deviceInventory, deviceRendered, zad_DeviousDevice)
-	elseif msgChoice==1 ; Wearing a bra, no piercings
-		Debug.MessageBox(strFailEquip)
-	elseif msgChoice==2 ; Not wearing a bra, Remove piercings with tool
-		DeviceMenuRemoveWithKey()
-	elseif msgChoice==3 ; Wearing a bra, piercings
-		NoKeyFailMessage(libs.PlayerRef)
-	elseif msgChoice==4 ; Force them out
-		if libs.playerRef.WornhasKeyword(libs.zad_DeviousBra)
-			NoKeyFailMessage(libs.playerRef)
+    msgChoice = zad_DeviceMsg.Show() ; display menu
+	if msgChoice==0 ; put them in
+		if !libs.playerRef.WornhasKeyword(libs.zad_DeviousBra) || libs.playerRef.WornhasKeyword(libs.zad_BraNoBlockPiercings)
+			Debug.Notification("You choose to put in the nipple piercings.")
+			libs.EquipDevice(libs.PlayerRef, deviceInventory, deviceRendered, zad_DeviousDevice)
 		Else
+			Debug.MessageBox(strFailEquip)
+		Endif			
+	elseif msgChoice==1 ; Unlock
+		if !libs.playerRef.WornhasKeyword(libs.zad_DeviousBra) || libs.playerRef.WornhasKeyword(libs.zad_BraNoBlockPiercings)
+			DeviceMenuRemoveWithKey()
+		Else
+			NoKeyFailMessage(libs.playerRef)
+		EndIf
+	elseif msgChoice== 2; Force them out
+		if !libs.playerRef.WornhasKeyword(libs.zad_DeviousBra) || libs.playerRef.WornhasKeyword(libs.zad_BraNoBlockPiercings)
 			DeviceMenuRemoveWithoutKey()
+		Else
+			NoKeyFailMessage(libs.PlayerRef)
 		EndIf
 	Endif
 	DeviceMenuExt(msgChoice)

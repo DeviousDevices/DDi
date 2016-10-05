@@ -55,6 +55,8 @@ Keyword Property zad_InventoryDevice Auto
 Keyword Property zad_BlockGeneric Auto ; Block generic removal of this device.
 Keyword Property zad_QuestItem Auto ; Quest item tag. This item can not be removed conventionally.
 
+Keyword Property zad_BraNoBlockPiercings Auto
+
 ; Don't apply gag expression for devices with these keywords (Zaz gags).
 Keyword Property zbfAnimMouth001 Auto 
 Keyword Property zbfEffectOpenMouth Auto
