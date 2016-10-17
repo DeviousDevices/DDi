@@ -24,6 +24,16 @@ int Function OnEquippedFilter(actor akActor, bool silent=false)
 			MultipleItemFailMessage("Corset")
 			return 2
 		Endif
+		; make sure collar harnesses don't do on if the target is already wearing one.
+		if akActor.WornHasKeyword(libs.zad_DeviousCollar) && deviceRendered.HasKeyword(libs.zad_DeviousCollar)
+			MultipleItemFailMessage("Collar")
+			return 2
+		Endif
+		; make sure belt harnesses don't do on if the target is already wearing one.
+		if akActor.WornHasKeyword(libs.zad_DeviousBelt) && deviceRendered.HasKeyword(libs.zad_DeviousBelt)
+			MultipleItemFailMessage("Belt")
+			return 2
+		Endif
 	Endif
 	return 0
 EndFunction
