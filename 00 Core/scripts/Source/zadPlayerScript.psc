@@ -52,10 +52,8 @@ Event OnSit(ObjectReference akFurniture)
 				SendModEvent("EventOnSit")
 				if akActor.WornHasKeyword(libs.zad_DeviousPlug)
 						if akActor.WornHasKeyword(libs.zad_HasPumps) && Utility.RandomInt() <= libs.Config.BaseBumpPumpChance * 2
-								libs.NotifyPlayer("You mistakenly sit down on one of the pumps dangling from your groin.")
-								libs.NotifyPlayer("You immediately regret this as the plugs inflate painfully inside of you.")
-								questScript.Libs.Moan(akActor)
-								questScript.Libs.UpdateExposure(akActor, 1)
+								libs.NotifyPlayer("You mistakenly sit down on one of the pumps dangling from your groin.")								
+								libs.InflateRandomPlug(akActor, 1)	
 						else
 								libs.UpdateExposure(akActor, 0.15)
 								libs.NotifyPlayer("You awkwardly sit down, doing your best to avoid disturbing the plugs inside of you.")

@@ -1131,6 +1131,13 @@ function RelieveSelf()
     SetStage(100)
 EndFunction
 
+Event OnSleepStart(float afSleepStartTime, float afDesiredSleepEndTime)	
+	libs.Log("OnSleepStart()")
+	; add sleep time to some timed functions to prevent players from just sleeping it out...
+	float naplength = afDesiredSleepEndTime - afSleepStartTime
+	libs.LastInflationAdjustmentVaginal += naplength
+	libs.LastInflationAdjustmentAnal += naplength
+EndEvent
 
 Event OnSleepStop(bool abInterrupted)
 	libs.Log("OnSleepStop()")

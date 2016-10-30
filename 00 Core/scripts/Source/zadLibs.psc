@@ -259,6 +259,14 @@ Soulgem Property SoulgemFilled Auto
 MiscObject Property SoulgemStand Auto
 Perk Property LustgemCrafting Auto
 
+; Inflatable Plugs
+Keyword Property zad_kw_InflatablePlugAnal Auto
+Keyword Property zad_kw_InflatablePlugVaginal Auto
+GlobalVariable Property zadInflatablePlugStateAnal Auto
+GlobalVariable Property zadInflatablePlugStateVaginal Auto
+Float Property LastInflationAdjustmentVaginal = 0.0 Auto
+Float Property LastInflationAdjustmentAnal = 0.0 Auto
+
 ; Nipple Piercings
 Perk Property PiercedNipples Auto
 Perk Property PiercedClit Auto
@@ -268,6 +276,19 @@ Spell Property PiercedClitSpell Auto
 
 ;;;;Effects
 Keyword Property zad_HasPumps Auto
+
+; stuff for NPC interaction
+
+Keyword Property ActorTypeNPC Auto
+Keyword Property ActorTypeAnimal Auto
+Keyword Property ActorTypeCreature Auto
+Race Property ManakinRace Auto
+Faction Property currentfollowerfaction Auto
+Keyword Property ActorTypeDwarven Auto
+Faction Property dunPrisonerFaction Auto
+Faction Property isGuardFaction Auto
+Race Property ElderRace Auto
+Keyword Property isBeastRace Auto
 
 ; Keywords for Device Effects
 Keyword Property zad_EffectVibratingVeryStrong Auto
@@ -883,10 +904,187 @@ bool Function HasTags(Armor item, String[] tags, bool requireAll = true)
 	return n == tags.length
 EndFunction
 
+Function PlayHornyAnimation(actor akActor)	
+	; don't play the animation in combat
+	if akActor == playerref && playerref.IsInCombat() 
+		return 
+	Endif	
+	int i = Utility.RandomInt(1,3)
+	Idle anim
+	if i == 1
+		anim = AnimSwitchKeyword(akActor, "Horny01")
+	ElseIf i == 2
+		anim = AnimSwitchKeyword(akActor, "Horny02")
+	Else
+		anim = AnimSwitchKeyword(akActor, "Horny03")
+	EndIf
+	PlayThirdPersonAnimation(akActor, anim, Utility.RandomInt(10,15), permitRestrictive=true)
+EndFunction
+
+; simpler function without shaky cam stuff and tie-in to vibration effects.
+Function Orgasm(actor akActor)			
+	int sID = OrgasmSound.Play(akActor)
+	Sound.SetInstanceVolume(sid, Config.VolumeOrgasm)
+	Aroused.SetActorExposure(akActor, 10)
+	Aroused.UpdateActorOrgasmDate(akActor)
+	if !IsAnimating(akActor)
+		bool[] cameraState = StartThirdPersonAnimation(akActor, AnimSwitchKeyword(akActor, "Orgasm"), true)
+		int i = 0
+		while i < 20			
+			i += 1		
+			Utility.Wait(1)
+		EndWhile
+	    EndThirdPersonAnimation(akActor, cameraState, true)
+	Else		
+	EndIf
+EndFunction
+
+Function InflateAnalPlug(actor akActor, int amount = 1)	
+	If !akActor.WornHasKeyword(zad_kw_InflatablePlugAnal)
+		; nothing to do
+		return
+	EndIf
+	If akActor == PlayerRef
+		int currentVal = zadInflatablePlugStateAnal.GetValueInt()
+		; only increase the value up to 5, but make it count as an inflation event even if it's maximum inflated
+		if currentVal < 5			
+			log("Setting anal plug inflation to " + (currentVal + 1))
+			zadInflatablePlugStateAnal.SetValueInt(currentVal + 1)
+		EndIf	
+		LastInflationAdjustmentAnal = Utility.GetCurrentGameTime()
+	EndIf
+	Aroused.UpdateActorExposure(akActor, 15)
+	; this should delay any anims if there is a menu open
+	Utility.Wait(0.1)
+	; don't play anims if the actor is already in one.
+	If IsAnimating(akActor)
+		return
+	EndIf	
+	; don't play the animation in combat if it's the player
+	if akActor == playerref && playerref.IsInCombat() 
+		return 
+	Endif	
+	If aroused.GetActorExposure(akActor) < 90 || zadInflatablePlugStateAnal.GetValueInt() < 3
+		notify("Your plug makes you more horny...")
+		SexlabMoan(akActor)	
+		PlayHornyAnimation(akActor)	
+	Else
+		PlayHornyAnimation(akActor)	
+		notify("Your plug sends you over the edge...")
+		Orgasm(akActor)
+	EndIf
+EndFunction
+
+Function InflateVaginalPlug(actor akActor, int amount = 1)	
+	If !akActor.WornHasKeyword(zad_kw_InflatablePlugVaginal)
+		; nothing to do
+		return
+	EndIf
+	If akActor == PlayerRef
+		int currentVal = zadInflatablePlugStateVaginal.GetValueInt()
+		; only increase the value up to 5, but make it count as an inflation event even if it's maximum inflated
+		if currentVal < 5			
+			log("Setting vaginal plug inflation to " + (currentVal + 1))
+			zadInflatablePlugStateVaginal.SetValueInt(currentVal + 1)
+		EndIf	
+		LastInflationAdjustmentVaginal = Utility.GetCurrentGameTime()
+	EndIf
+	Aroused.UpdateActorExposure(akActor, 15)
+	; this should delay any anims if there is a menu open
+	Utility.Wait(0.1)
+	; don't play anims if the actor is already in one.
+	If IsAnimating(akActor)
+		return
+	EndIf	
+	; don't play the animation in combat if it's the player
+	if akActor == playerref && playerref.IsInCombat() 
+		return 
+	Endif	
+	If aroused.GetActorExposure(akActor) < 90 || zadInflatablePlugStateVaginal.GetValueInt() < 3
+		notify("Your plug makes you more horny...")
+		SexlabMoan(akActor)	
+		PlayHornyAnimation(akActor)	
+	Else
+		PlayHornyAnimation(akActor)
+		notify("Your plug sends you over the edge...")
+		Orgasm(akActor)
+	EndIf
+EndFunction
+
+Function InflateRandomPlug(actor akActor, int amount = 1)
+	; pick one randomly if both are worn:
+	If akActor.WornHasKeyword(zad_kw_InflatablePlugVaginal) && akActor.WornHasKeyword(zad_kw_InflatablePlugAnal)
+		If Utility.RandomInt(1,2) == 1
+			InflateVaginalPlug(akActor, amount)
+		Else
+			InflateAnalPlug(akActor, amount)
+		EndIf
+		return
+	EndIf
+	If akActor.WornHasKeyword(zad_kw_InflatablePlugVaginal)
+		InflateVaginalPlug(akActor, amount)
+		return
+	EndIf
+	If akActor.WornHasKeyword(zad_kw_InflatablePlugAnal)
+		InflateAnalPlug(akActor, amount)
+		return
+	EndIf
+EndFunction
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; End Generic Functions
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+; Function to test an NPC using certain criteria,
+bool Function ValidForInteraction(actor currenttest, int genderreq = -1, bool creatureok = false, bool animalok = false, bool beastreaceok = false, bool elderok = false, bool guardok = true)
+	log("Checking actor validity for interaction")
+	If currenttest.HasKeyword(ActorTypeNPC)		
+		log("Processing: " + currenttest.GetLeveledActorBase().GetName() + ". Is NPC.")		
+	elseIf currenttest.HasKeyword(ActorTypeCreature) && !currenttest.HasKeyword(ActorTypeAnimal)
+		log("Processing: " + currenttest.GetLeveledActorBase().GetName() + ". Is Creature.")		
+	elseIf currenttest.HasKeyword(ActorTypeAnimal)		
+		log("Processing: " + currenttest.GetLeveledActorBase().GetName() + ". Is Animal.")		
+	else		
+		log("Processing: " + currenttest.GetLeveledActorBase().GetName() + ". WARNING: Type cannot be determined. Rejected!")
+		return false
+	endif	
+	If IsAnimating(currenttest) || currenttest.GetCurrentScene() != none 		
+		log("Rejected: " + currenttest.GetLeveledActorBase().GetName() + ". Reason: Actor is already having sex or is involved in a scene.")		
+		return false	
+	Endif
+	If (currenttest == playerref) || currenttest.IsDisabled() || currenttest.IsDead() || currenttest.isChild() || currenttest.IsGhost() || currenttest.GetActorBase().GetRace() == ManakinRace || currenttest.IsInFaction(currentfollowerfaction) || currenttest.IsPlayerTeammate() || currenttest.HasKeyWord(ActorTypeDwarven) || currenttest.IsInFaction(dunPrisonerFaction)		
+		log("Rejected: " + currenttest.GetLeveledActorBase().GetName() + ". Reason: Actor is player character, follower, disabled, child, dwarven construct, a prisoner, or dead.")		
+		return false
+	endif		
+	; if it's an NPC, make sure it's correct gender
+	If genderreq > 0
+		If currenttest.HasKeyword(ActorTypeNPC) && (currenttest.GetLeveledActorBase().GetSex() != genderreq)
+			log("Rejected: " + currenttest.GetLeveledActorBase().GetName() + ". Reason: Actor is wrong gender.")				
+			return false			
+		EndIf
+	EndIf
+	; make sure it is not guard, an elder or beast race if they are disallowed
+	if currenttest.HasKeyword(ActorTypeNPC) && ((!elderok && currenttest.GetLeveledActorBase().GetRace() == ElderRace) || (!beastreaceok && currenttest.HasKeyword(isBeastRace)) || (!guardok && currenttest.IsInFaction(isGuardFaction)))		
+		log("Rejected: " + currenttest.GetLeveledActorBase().GetName() + ". Reason: Actor is disallowed guard/elder/beast race (MCM settings).")		
+		return false			
+	endif		
+	; if it's a creature, make sure they are allowed
+	if currenttest.HasKeyword(ActorTypeCreature) 
+		; if it's an animal, make sure it's allowed
+		if currenttest.HasKeyword(ActorTypeAnimal) && !animalok
+			log("Rejected: " + currenttest.GetLeveledActorBase().GetName() + ". Reason: Actor is animal.")			
+			return false
+		elseif !currenttest.HasKeyword(ActorTypeAnimal) && !creatureok			
+			log("Rejected: " + currenttest.GetLeveledActorBase().GetName() + ". Reason: Actor is humanoid creature.")			
+			Return false
+		EndIf		
+	endif	
+	if currenttest.GetWorldSpace() != playerRef.GetWorldSpace()		
+		log("Rejected: " + currenttest.GetLeveledActorBase().GetName() + ". Reason: Actor is in different world space than player.")		
+		Return false
+	endif		
+	return true
+EndFunction
 
 ; This function is for mod consistency mostly
 int Function ArousalThreshold(string index)
@@ -1034,11 +1232,11 @@ EndFunction
 
 
 float Function GetVersion()
-	return 5 ; build number increment to determine the newest version - does NOT correspond with the offical version name. Returns a float not to mess with existing implementations of this function.
+	return 6 ; build number increment to determine the newest version - does NOT correspond with the offical version name. Returns a float not to mess with existing implementations of this function.
 EndFunction
 
 String Function GetVersionString()
-	return "3.2" ; string to be displayed in MCM etc.
+	return "3.3" ; string to be displayed in MCM etc.
 EndFunction
 
 
