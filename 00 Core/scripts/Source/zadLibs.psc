@@ -266,6 +266,8 @@ GlobalVariable Property zadInflatablePlugStateAnal Auto
 GlobalVariable Property zadInflatablePlugStateVaginal Auto
 Float Property LastInflationAdjustmentVaginal = 0.0 Auto
 Float Property LastInflationAdjustmentAnal = 0.0 Auto
+Message Property zad_PlugsConfirmMSG Auto
+Message Property zad_PlugsDeflatePumpsFail Auto
 
 ; Nipple Piercings
 Perk Property PiercedNipples Auto
@@ -948,8 +950,12 @@ Function InflateAnalPlug(actor akActor, int amount = 1)
 		int currentVal = zadInflatablePlugStateAnal.GetValueInt()
 		; only increase the value up to 5, but make it count as an inflation event even if it's maximum inflated
 		if currentVal < 5			
-			log("Setting anal plug inflation to " + (currentVal + 1))
-			zadInflatablePlugStateAnal.SetValueInt(currentVal + 1)
+			currentVal += amount
+			if currentVal > 5
+				currentVal = 5
+			EndIf
+			log("Setting anal plug inflation to " + (currentVal))
+			zadInflatablePlugStateAnal.SetValueInt(currentVal)
 		EndIf	
 		LastInflationAdjustmentAnal = Utility.GetCurrentGameTime()
 	EndIf
@@ -983,9 +989,13 @@ Function InflateVaginalPlug(actor akActor, int amount = 1)
 	If akActor == PlayerRef
 		int currentVal = zadInflatablePlugStateVaginal.GetValueInt()
 		; only increase the value up to 5, but make it count as an inflation event even if it's maximum inflated
-		if currentVal < 5			
-			log("Setting vaginal plug inflation to " + (currentVal + 1))
-			zadInflatablePlugStateVaginal.SetValueInt(currentVal + 1)
+		if currentVal < 5						
+			currentVal += amount
+			if currentVal > 5
+				currentVal = 5
+			EndIf
+			log("Setting vaginal plug inflation to " + (currentVal))
+			zadInflatablePlugStateVaginal.SetValueInt(currentVal)
 		EndIf	
 		LastInflationAdjustmentVaginal = Utility.GetCurrentGameTime()
 	EndIf
@@ -1028,6 +1038,44 @@ Function InflateRandomPlug(actor akActor, int amount = 1)
 	If akActor.WornHasKeyword(zad_kw_InflatablePlugAnal)
 		InflateAnalPlug(akActor, amount)
 		return
+	EndIf
+EndFunction
+
+Function DeflateVaginalPlug(actor akActor, int amount = 1)	
+	If !akActor.WornHasKeyword(zad_kw_InflatablePlugVaginal)
+		; nothing to do
+		return
+	EndIf	
+	If akActor == PlayerRef
+		int currentVal = zadInflatablePlugStateVaginal.GetValueInt()		
+		if currentVal > 0
+			currentVal -= amount
+			if currentVal < 0
+				currentVal = 0
+			EndIf
+			log("Setting vaginal plug inflation to " + (currentVal))
+			zadInflatablePlugStateVaginal.SetValueInt(currentVal)
+		EndIf	
+		LastInflationAdjustmentVaginal = Utility.GetCurrentGameTime()	
+	EndIf
+EndFunction
+
+Function DeflateAnalPlug(actor akActor, int amount = 1)	
+	If !akActor.WornHasKeyword(zad_kw_InflatablePlugAnal)
+		; nothing to do
+		return
+	EndIf	
+	If akActor == PlayerRef
+		int currentVal = zadInflatablePlugStateAnal.GetValueInt()		
+		if currentVal > 0
+			currentVal -= amount
+			if currentVal < 0
+				currentVal = 0
+			EndIf
+			log("Setting anal plug inflation to " + (currentVal))
+			zadInflatablePlugStateAnal.SetValueInt(currentVal)
+		EndIf	
+		LastInflationAdjustmentAnal = Utility.GetCurrentGameTime()	
 	EndIf
 EndFunction
 

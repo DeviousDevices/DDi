@@ -67,12 +67,13 @@ bool Function isInHold()
     return false
 endfunction
 
-Event OnUpdate()
+Event OnUpdate()	
 	if !Terminate
 		If (Utility.GetCurrentGameTime() - libs.LastInflationAdjustmentVaginal) * 24.0 > 5.0 && (libs.zadInflatablePlugStateVaginal.GetValueInt() > 0)
 			libs.zadInflatablePlugStateVaginal.SetValueInt(libs.zadInflatablePlugStateVaginal.GetValueInt() - 1)
 			libs.notify("Your inflatable plugs lose some pressure...")
 			libs.LastInflationAdjustmentVaginal = Utility.GetCurrentGameTime()
+			DoRegister()
 			return
 		EndIf
 		if !libs.playerRef.IsInCombat() && !libs.IsAnimating(libs.playerRef) && !libs.playerref.IsOnMount() && !libs.playerref.IsSwimming() && !isInHomeorJail() && (isInCity() || isInHold()) && !UI.IsMenuOpen("Dialogue Menu")
@@ -92,8 +93,7 @@ Event OnUpdate()
 		EndIf
 		libs.Aroused.UpdateActorExposure(libs.PlayerRef, 2)
 	Else ; Avoid race condition
-		
-	EndIf
+	EndIf	
 	DoRegister()
 EndEvent
 

@@ -67,12 +67,13 @@ bool Function isInHold()
     return false
 endfunction
 
-Event OnUpdate()
+Event OnUpdate()	
 	if !Terminate
 		If (Utility.GetCurrentGameTime() - libs.LastInflationAdjustmentAnal) * 24.0 > 5.0 && (libs.zadInflatablePlugStateAnal.GetValueInt() > 0)
 			libs.zadInflatablePlugStateAnal.SetValueInt(libs.zadInflatablePlugStateAnal.GetValueInt() - 1)
 			libs.notify("Your inflatable plugs lose some pressure...")
 			libs.LastInflationAdjustmentAnal = Utility.GetCurrentGameTime()
+			DoRegister()
 			return
 		EndIf
 		if !libs.playerRef.IsInCombat() && !libs.IsAnimating(libs.playerRef) && !libs.playerref.IsOnMount() && !libs.playerref.IsSwimming() && !isInHomeorJail() && (isInCity() || isInHold()) && !UI.IsMenuOpen("Dialogue Menu")
@@ -91,9 +92,8 @@ Event OnUpdate()
 			EndIf
 		EndIf
 		libs.Aroused.UpdateActorExposure(libs.PlayerRef, 2)
-	Else ; Avoid race condition
-		
-	EndIf
+	Else ; Avoid race condition		
+	EndIf	
 	DoRegister()
 EndEvent
 

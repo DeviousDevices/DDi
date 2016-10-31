@@ -9,6 +9,12 @@ int Function OnEquippedFilter(actor akActor, bool silent=false)
 	; FTM optimization
 	if silent && akActor != libs.PlayerRef
 		return 0
+	EndIf	
+	if akActor == libs.PlayerRef && !silent
+		int i = libs.zad_PlugsConfirmMSG.Show()
+		If i != 0
+			return 2
+		EndIf
 	EndIf
 	if akActor.WornHasKeyword(libs.zad_DeviousBelt)
 		if akActor == libs.PlayerRef && !silent
@@ -22,19 +28,6 @@ int Function OnEquippedFilter(actor akActor, bool silent=false)
 			return 0
 		EndIf
 	Endif
-	; as of 3.3. all harnesses functioning as chastity harnesses are marked with the belt keyword. This code is redundant:
-	; if akActor.WornHasKeyword(libs.zad_DeviousHarness)
-		; if akActor == libs.PlayerRef && !silent
-			; libs.NotifyActor(strFailEquipHarness, akActor, true)
-		; ElseIf  !silent
-			; libs.NotifyActor("The harness " + akActor.GetLeveledActorBase().GetName() + " is wearing prevents you from inserting this plug.", akActor, true)
-		; EndIf
-		; if !silent
-			; return 2
-		; Else
-			; return 0
-		; EndIf
-	; Endif
 	return 0
 EndFunction
 
@@ -91,32 +84,7 @@ Function OnEquippedPost(actor akActor)
 	if analSlot && vagSlot && analSlot == vagSlot
 		legacyPlugs = true
 	EndIf
-
-; Depreciated as of 3.3, plugs are no longer supposed to slide out on their own
-
-;	if ((!akActor.WornHasKeyword(libs.zad_DeviousBelt) && !akActor.WornHasKeyword(libs.zad_DeviousHarness))  || ((akActor.WornHasKeyword(libs.zad_DeviousBelt) || akActor.WornHasKeyword(libs.zad_DeviousHarness)) && akActor.WornHasKeyword(libs.zad_PermitAnal) && !legacyPlugs && deviceRendered.HasKeyword(libs.zad_DeviousPlugAnal))) && akActor.WornHasKeyword(zad_DeviousDevice) && !akActor.WornHasKeyword(libs.zad_EffectPossessed) && akActor == libs.PlayerRef && akActor.GetActorBase().GetSex() != 0
-;		libs.Log("Belt not worn: Removing plugs.")
-;		RemoveDevice(akActor)
-;		if akActor == libs.PlayerRef
-;			libs.NotifyPlayer("Lacking a belt to hold them in, the plugs slide out of you.")
-;		else
-;			libs.NotifyNPC("Lacking a belt to hold them in, the plugs slide out of "+akActor.GetLeveledActorBase().GetName()+".")
-;			akActor.RemoveItem(deviceInventory, 1, true)
-;			libs.PlayerRef.AddItem(deviceInventory, 1, true)
-;		EndIf
-;	EndIf
 EndFunction
-
-; removed this to allow scripts to unquip these items. The dialogue will catch in-game attempts anyway, so it's not really needed.
-; int Function OnUnequippedFilter(actor akActor)
-	; if akActor.WornHasKeyword(libs.zad_DeviousBelt)
-		; return 1
-	; EndIf
-	; if akActor.WornHasKeyword(libs.zad_DeviousHarness)
-		; return 1
-	; EndIf
-	; return 0
-; EndFunction
 
 Function RemovePlugNoLock()
 	If libs.Playerref.WornHasKeyword(libs.zad_DeviousBelt)
@@ -208,8 +176,8 @@ Function DeviceMenu(Int msgChoice = 0)
 			RemovePlugNoLock()
 		Else
 			RemovePlugLock()
-		EndIf
-	elseif msgChoice==4 && deviceKey ; Force it out
+		EndIf		
+	elseif msgChoice==5 && deviceKey ; Force it out
 		if libs.playerRef.WornhasKeyword(libs.zad_DeviousBelt)
 			NoKeyFailMessageBelt(libs.playerRef)		
 		Else
