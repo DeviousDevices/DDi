@@ -1,4 +1,4 @@
-Version V3.0.beta1
+Version V3.3.0
 ' Format:	<type> -<option,option,...> <AnimEvent> <Animation File> [<AnimObject CK>]
 '		type: 	b (basic)
 '				o (animated objects) 	
@@ -29,19 +29,22 @@ b DDZazHornyC ZazHornyC.hkx
 b DDZazHornyD ZazHornyD.hkx
 b DDZazHornyE ZazHornyE.hkx
 
+' Note to self:
+' the index of the h2h_locomotionpose animation always has to be 1 higher than the index of its corresponding AA set
+
 AAprefix abc
 
-AAset _h2heqp 2
-AAset _h2hidle 2
-AAset _h2hatkpow 2
-AAset _h2hstag 2
-AAset _h2hatk 2
-AAset _jump 2
-AAset _sprint 2
-AAset _sneakmt 2
-AAset _sneakidle 2
-AAset _shout 2
-AAset _mtx 2
-AAset _mt 2
-AAset _mtturn 2
-AAset _mtidle 2
+AAset _h2heqp 5
+AAset _h2hidle 5
+AAset _h2hatkpow 5
+AAset _h2hstag 5
+AAset _h2hatk 5
+AAset _jump 5
+AAset _sprint 5
+AAset _sneakmt 5
+AAset _sneakidle 5
+AAset _shout 5
+AAset _mtx 5
+AAset _mt 5
+AAset _mtturn 5
+AAset _mtidle 5
