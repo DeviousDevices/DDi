@@ -78,7 +78,7 @@ Int Function SelectAnimationSet(actor akActor)
 	int animSet;
 	int AAStateA = GetPrimaryAAState(akActor)
 	int AAStateB = GetSecondaryAAState(akActor)
-	If AAStateB == 1
+	If AAStateB == 1 ; Hobble subset
 		if AAStateA == 1
 			animSet = 3 ; Armbinder animation
 		elseIf AAStateA == 2
@@ -136,23 +136,7 @@ Function Apply_ABC(actor akActor)
 		; I need to figure out why zbf is preventing attacks with fighting=true first, though.
 		zbfc.zbfSettingDisableEffects.SetValue(1.0)
 	EndIf
-	int animSet = SelectAnimationSet(akActor)
-	FNIS_aa.SetAnimGroup(akActor, "_h2heqp", ABC_h2heqp, animSet, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_h2hidle", ABC_h2hidle, animSet, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_h2hatkpow", ABC_h2hatkpow, animSet, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_h2hatk", ABC_h2hatk, animSet, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_h2hstag", ABC_h2hstag, animSet, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_jump", ABC_jump, animSet, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_sneakmt", ABC_sneakmt, animSet, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_sneakidle", ABC_sneakidle, animSet, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_sprint", ABC_sprint, animSet, "DeviousDevices", Config.LogMessages)
-
-	FNIS_aa.SetAnimGroup(akActor, "_shout", ABC_shout, animSet, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_mtx", ABC_mtx, animSet, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_mt", ABC_mt, animSet, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_mtturn", ABC_mtturn, animSet, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_mtidle", ABC_mtidle, animSet, "DeviousDevices", Config.LogMessages)
-	akActor.SetAnimationVariableInt("FNIS_abc_h2h_LocomotionPose", animSet + 1)
+	SetAA(akActor, True)
 EndFunction
 
 
@@ -163,24 +147,9 @@ Function Remove_ABC(actor akActor)
 		; I need to figure out why zbf is preventing attacks with fighting=true first, though.
 		zbfc.zbfSettingDisableEffects.SetValue(0.0)		
 	EndIf
-	FNIS_aa.SetAnimGroup(akActor, "_h2heqp", 0, 0, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_h2hidle", 0, 0, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_h2hatkpow", 0, 0, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_h2hatk", 0, 0, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_h2hstag", 0, 0, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_jump", 0, 0, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_sneakmt", 0, 0, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_sneakidle", 0, 0, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_sprint", 0, 0, "DeviousDevices", Config.LogMessages)
+	SetAA(akActor, False)
 
-	FNIS_aa.SetAnimGroup(akActor, "_shout", 0, 0, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_mtx", 0, 0, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_mt", 0, 0, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_mtturn", 0, 0, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_mtidle", 0, 0, "DeviousDevices", Config.LogMessages)
-	akActor.SetAnimationVariableInt("FNIS_abc_h2h_LocomotionPose", 0)
-
-	Utility.Wait(0.5)
+	;Utility.Wait(0.5)
 	If GetSecondaryAAState(akActor) != 0
 		Apply_HBC(akActor)
 	Else
@@ -191,46 +160,15 @@ EndFunction
 
 Function Apply_HBC(actor akActor)
 	libs.log("Apply_HBC()")
-	int animSet = SelectAnimationSet(akActor)
-	FNIS_aa.SetAnimGroup(akActor, "_h2heqp", ABC_h2heqp, animSet, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_h2hidle", ABC_h2hidle, animSet, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_h2hatkpow", ABC_h2hatkpow, animSet, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_h2hatk", ABC_h2hatk, animSet, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_h2hstag", ABC_h2hstag, animSet, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_jump", ABC_jump, animSet, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_sneakmt", ABC_sneakmt, animSet, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_sneakidle", ABC_sneakidle, animSet, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_sprint", ABC_sprint, animSet, "DeviousDevices", Config.LogMessages)
-
-	FNIS_aa.SetAnimGroup(akActor, "_shout", ABC_shout, animSet, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_mtx", ABC_mtx, animSet, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_mt", ABC_mt, animSet, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_mtturn", ABC_mtturn, animSet, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_mtidle", ABC_mtidle, animSet, "DeviousDevices", Config.LogMessages)
-	akActor.SetAnimationVariableInt("FNIS_abc_h2h_LocomotionPose", animSet + 1)
+	SetAA(akActor, True)
 EndFunction
 
 
 Function Remove_HBC(actor akActor)
 	libs.log("Remove_HBC()")
-	FNIS_aa.SetAnimGroup(akActor, "_h2heqp", 0, 0, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_h2hidle", 0, 0, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_h2hatkpow", 0, 0, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_h2hatk", 0, 0, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_h2hstag", 0, 0, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_jump", 0, 0, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_sneakmt", 0, 0, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_sneakidle", 0, 0, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_sprint", 0, 0, "DeviousDevices", Config.LogMessages)
+	SetAA(akActor, False)
 
-	FNIS_aa.SetAnimGroup(akActor, "_shout", 0, 0, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_mtx", 0, 0, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_mt", 0, 0, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_mtturn", 0, 0, "DeviousDevices", Config.LogMessages)
-	FNIS_aa.SetAnimGroup(akActor, "_mtidle", 0, 0, "DeviousDevices", Config.LogMessages)
-	akActor.SetAnimationVariableInt("FNIS_abc_h2h_LocomotionPose", 0)
-
-	Utility.Wait(0.5)
+	;Utility.Wait(0.5)
 	If GetPrimaryAAState(akActor) != 0
 		Apply_ABC(akActor)
 	Else
@@ -239,7 +177,51 @@ Function Remove_HBC(actor akActor)
 EndFunction
 
 
+Function SetAA(actor akActor, bool bApply = True)
+;This function executes the application and removal of FNIS Alternate Animations
+;Set bApply = True to apply animations, False to revert to vanilla state
+	If bApply == True
+		int animSet = SelectAnimationSet(akActor)
+		FNIS_aa.SetAnimGroup(akActor, "_h2heqp", ABC_h2heqp, animSet, "DeviousDevices", Config.LogMessages)
+		FNIS_aa.SetAnimGroup(akActor, "_h2hidle", ABC_h2hidle, animSet, "DeviousDevices", Config.LogMessages)
+		FNIS_aa.SetAnimGroup(akActor, "_h2hatkpow", ABC_h2hatkpow, animSet, "DeviousDevices", Config.LogMessages)
+		FNIS_aa.SetAnimGroup(akActor, "_h2hatk", ABC_h2hatk, animSet, "DeviousDevices", Config.LogMessages)
+		FNIS_aa.SetAnimGroup(akActor, "_h2hstag", ABC_h2hstag, animSet, "DeviousDevices", Config.LogMessages)
+		FNIS_aa.SetAnimGroup(akActor, "_jump", ABC_jump, animSet, "DeviousDevices", Config.LogMessages)
+		FNIS_aa.SetAnimGroup(akActor, "_sneakmt", ABC_sneakmt, animSet, "DeviousDevices", Config.LogMessages)
+		FNIS_aa.SetAnimGroup(akActor, "_sneakidle", ABC_sneakidle, animSet, "DeviousDevices", Config.LogMessages)
+		FNIS_aa.SetAnimGroup(akActor, "_sprint", ABC_sprint, animSet, "DeviousDevices", Config.LogMessages)
+
+		FNIS_aa.SetAnimGroup(akActor, "_shout", ABC_shout, animSet, "DeviousDevices", Config.LogMessages)
+		FNIS_aa.SetAnimGroup(akActor, "_mtx", ABC_mtx, animSet, "DeviousDevices", Config.LogMessages)
+		FNIS_aa.SetAnimGroup(akActor, "_mt", ABC_mt, animSet, "DeviousDevices", Config.LogMessages)
+		FNIS_aa.SetAnimGroup(akActor, "_mtturn", ABC_mtturn, animSet, "DeviousDevices", Config.LogMessages)
+		FNIS_aa.SetAnimGroup(akActor, "_mtidle", ABC_mtidle, animSet, "DeviousDevices", Config.LogMessages)
+		akActor.SetAnimationVariableInt("FNIS_abc_h2h_LocomotionPose", animSet + 1)
+	Else
+		FNIS_aa.SetAnimGroup(akActor, "_h2heqp", 0, 0, "DeviousDevices", Config.LogMessages)
+		FNIS_aa.SetAnimGroup(akActor, "_h2hidle", 0, 0, "DeviousDevices", Config.LogMessages)
+		FNIS_aa.SetAnimGroup(akActor, "_h2hatkpow", 0, 0, "DeviousDevices", Config.LogMessages)
+		FNIS_aa.SetAnimGroup(akActor, "_h2hatk", 0, 0, "DeviousDevices", Config.LogMessages)
+		FNIS_aa.SetAnimGroup(akActor, "_h2hstag", 0, 0, "DeviousDevices", Config.LogMessages)
+		FNIS_aa.SetAnimGroup(akActor, "_jump", 0, 0, "DeviousDevices", Config.LogMessages)
+		FNIS_aa.SetAnimGroup(akActor, "_sneakmt", 0, 0, "DeviousDevices", Config.LogMessages)
+		FNIS_aa.SetAnimGroup(akActor, "_sneakidle", 0, 0, "DeviousDevices", Config.LogMessages)
+		FNIS_aa.SetAnimGroup(akActor, "_sprint", 0, 0, "DeviousDevices", Config.LogMessages)
+
+		FNIS_aa.SetAnimGroup(akActor, "_shout", 0, 0, "DeviousDevices", Config.LogMessages)
+		FNIS_aa.SetAnimGroup(akActor, "_mtx", 0, 0, "DeviousDevices", Config.LogMessages)
+		FNIS_aa.SetAnimGroup(akActor, "_mt", 0, 0, "DeviousDevices", Config.LogMessages)
+		FNIS_aa.SetAnimGroup(akActor, "_mtturn", 0, 0, "DeviousDevices", Config.LogMessages)
+		FNIS_aa.SetAnimGroup(akActor, "_mtidle", 0, 0, "DeviousDevices", Config.LogMessages)
+		akActor.SetAnimationVariableInt("FNIS_abc_h2h_LocomotionPose", 0)
+	EndIf
+EndFunction
+
+
 Function ResetExternalAA(actor akActor)
+;This function handles compatibility with other mods utilising AA
+;In lieu of a centralised framework these have to be added on a case by case basis
 	if (akActor == libs.playerRef)		
 		; try to reset FNIS mods if they are installed, as the AA will not get reset back to using the ones picked in FNIS otherwise.
 		if Game.GetModByName("FNIS_PCEA2.esp") != 255
