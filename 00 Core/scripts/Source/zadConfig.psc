@@ -161,6 +161,8 @@ bool UseQueueNiNodeDefault = False
 ; Devious Expansion Configuration
 bool Property bootsSlowdownToggle = True Auto Conditional
 bool bootsSlowdownToggleDefault = True 
+Int Property HobbleSkirtSpeedDebuff = 88 Auto
+Int HobbleSkirtSpeedDebuffDefault = 88
 
 ; OID's
 int thresholdOID
@@ -214,6 +216,7 @@ int bellyNodeManagementOID
 int useBoundAnimsOID
 int useAnimFilterOID
 int bootsSlowdownToggleOID
+int HobbleSkirtSpeedDebuffOID
 int UseBoundCombatOID 
 Int UseDeviceDifficultyEscapeOID
 Int DeviceDifficultyCooldownOID
@@ -541,6 +544,7 @@ Event OnPageReset(string page)
 		; Check for DDx
 		if (Game.GetModByName("Devious Devices - Expansion.esm") > 0) ; DDx is present
 			bootsSlowdownToggleOID = AddToggleOption("Boots Slowdown Effect", bootsSlowdownToggle)
+			HobbleSkirtSpeedDebuffOID = AddSliderOption("Hobble Skirt Debuff Strength", HobbleSkirtSpeedDebuff, "{0}")
 		Else
 			AddTextOption("Devious Devices - Expansion is not loaded.", "", OPTION_FLAG_DISABLED)
 			AddTextOption("This menu is disabled.", "", OPTION_FLAG_DISABLED)
@@ -811,6 +815,11 @@ Event OnOptionSliderOpen(int option)
         SetSliderDialogStartValue(lockShieldMaxTime)
         SetSliderDialogDefaultValue(lockShieldMaxTimeDefault)
         SetSliderDialogRange(lockShieldMinTime, 168)
+        SetSliderDialogInterval(1)
+	elseIf option == HobbleSkirtSpeedDebuffOID
+        SetSliderDialogStartValue(HobbleSkirtSpeedDebuff)
+        SetSliderDialogDefaultValue(HobbleSkirtSpeedDebuffDefault)
+        SetSliderDialogRange(75, 90)
         SetSliderDialogInterval(1)
 	Endif
 EndEvent
@@ -1228,6 +1237,8 @@ Event OnOptionHighlight(int option)
         SetInfoText("Sets the minimum number of hours on the lock shield\nDefault: " + lockShieldMinTime)
     elseIf (option == lockShieldMaxTimeOID)
         SetInfoText("Sets the maximum number of hours on the lock shield\nDefault: " + lockShieldMaxTime)
+	elseIf (option == HobbleSkirtSpeedDebuffOID)
+        SetInfoText("Sets the strength of the speed debuff caused by wearing a hobble skirt.\nThe higher the number, the slower characters wearing a hobble skirt can walk.\nNote: The animations are meant for the default value and will look off at lower values, but some people might find this speed too slow.\nDefault: " + HobbleSkirtSpeedDebuffDefault)
 	endIf
 EndEvent
 
@@ -1341,6 +1352,9 @@ Event OnOptionSliderAccept(int option, float value)
         SetSliderOptionValue(option, value, "{0}")
 	elseIf (option == lockShieldMaxTimeOID)
         lockShieldMaxTime = value as Int
+        SetSliderOptionValue(option, value, "{0}")
+	elseIf (option == HobbleSkirtSpeedDebuffOID)
+        HobbleSkirtSpeedDebuff = value as Int
         SetSliderOptionValue(option, value, "{0}")
 	EndIf
 EndEvent
