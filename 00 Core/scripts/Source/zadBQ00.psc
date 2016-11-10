@@ -563,19 +563,19 @@ EndFunction
 ; Returns true if anal sex on this actor is blocked.
 ; 
 Bool Function IsBlockedAnal(Actor akActor)
-	Return akActor.WornHasKeyword(libs.zad_DeviousBelt) && !akActor.WornHasKeyword(libs.zad_PermitAnal)
+	Return (akActor.WornHasKeyword(libs.zad_DeviousBelt) || akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirt)) && !akActor.WornHasKeyword(libs.zad_PermitAnal)
 EndFunction
 
 ; Returns true if vaginal sex on/by this actor is blocked.
 ; 
 Bool Function IsBlockedVaginal(Actor akActor)
-	Return akActor.WornHasKeyword(libs.zad_DeviousBelt) && !akActor.WornHasKeyword(libs.zad_PermitVaginal)
+	Return (akActor.WornHasKeyword(libs.zad_DeviousBelt) || akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirt)) && !akActor.WornHasKeyword(libs.zad_PermitVaginal)
 EndFunction
 
 ; Returns true if "breast sex" on this actor is blocked.
 ; 
 Bool Function IsBlockedBreast(Actor akActor)
-	Return akActor.WornHasKeyword(libs.zad_DeviousBra)
+	Return akActor.WornHasKeyword(libs.zad_DeviousBra) || akActor.WornHasKeyword(libs.zad_DeviousSuit)
 EndFunction
 
 ; Returns true if oral sex by this actor is blocked.
