@@ -26,6 +26,21 @@ SelectOne "Which style of armbinder and yoke animations do you prefer?", \
 		Break
 EndSelect
 
+hbcDefault = False
+hbcBunny = False
+
+SelectOne "Which style of hobble skirt animations do you prefer?", \
+	"Walking (default)", "Animations by Feuertin. Slowly pushing feet forward one at a time. Optimised for low movement speed.", "fomod/images/02_walk.png", \
+	"Bunnyhopping", "Animations by Feuertin. Hop, hop, hop! Optimised for high movement speed.", "fomod/images/02_bunny.png", \
+
+	Case "Walking (default)"
+		hbcDefault = True
+		Break
+	Case "Bunnyhopping"
+		hbcBunny = True
+		Break
+EndSelect
+
 ; -----INSTALL-----
 
 DeSelectAll
@@ -34,4 +49,7 @@ If abcMaikCG
 	SelectSubPackage "01 MaikCG"
 Elif abcFeuertin
 	SelectSubPackage "01 Feuertin"
+EndIf
+If hbcBunny
+	SelectSubPackage "02 Bunnyhop"
 EndIf

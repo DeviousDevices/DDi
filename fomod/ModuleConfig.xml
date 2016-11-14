@@ -52,5 +52,38 @@
         </group>
       </optionalFileGroups>
     </installStep>
+	
+    <installStep name="Hobble Skirt Animations">
+      <optionalFileGroups>
+        <group name="Which style of hobble skirt animations do you prefer?" type="SelectExactlyOne">
+          <plugins order="Explicit">
+            <plugin name="Walking (default)">
+              <description>
+                Animations by Feuertin. Slowly pushing feet forward one at a time. Optimised for low movement speed.
+              </description>
+              <image path="fomod\images\02_walk.png"/>
+              <conditionFlags>
+                <flag name="HBC_default">On</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Optional"/></typeDescriptor>
+            </plugin>
+            <plugin name="Bunnyhopping">
+              <description>
+                Animations by Feuertin. Hop, hop, hop! Optimised for high movement speed.
+              </description>
+              <image path="fomod\images\02_bunny.png"/>
+              <files>
+                <folder source="02 BunnyHop" destination="" priority="3"/>
+              </files>
+              <conditionFlags>
+                <flag name="HBC_bunny">On</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Optional"/></typeDescriptor>
+            </plugin>
+  	      </plugins>
+        </group>
+      </optionalFileGroups>
+    </installStep>
+
   </installSteps>
 </config>
