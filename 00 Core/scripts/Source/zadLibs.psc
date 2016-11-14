@@ -48,6 +48,7 @@ Keyword Property zad_DeviousBoots Auto
 Keyword Property zad_Lockable Auto
 Keyword Property zad_DeviousPiercingsNipple Auto
 Keyword Property zad_DeviousPiercingsVaginal Auto
+Keyword Property zad_DeviousBondageMittens Auto
 
 Keyword Property zad_PermitOral Auto
 Keyword Property zad_PermitAnal Auto

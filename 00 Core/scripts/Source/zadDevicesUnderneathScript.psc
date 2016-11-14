@@ -61,6 +61,7 @@ Function SetDefaultSlotMasks()
 	HideEquipment(32, 51) ; When slot 32 is equipped, hide slot 51 (Nipple Piercings).
 	HideEquipment(32, 56) ; When slot 32 is equipped, hide slot 56 (Chastity Bra's).
 	HideEquipment(32, 58) ; When slot 32 is equipped, hide slot 58 (Corsets).
+	HideEquipment(32, 49) ; When slot 32 is equipped, hide slot 49 (Belts).
 EndFunction
 
 
@@ -163,8 +164,8 @@ Function RebuildSlotmask(actor akActor)
 			int j = 0
 			While j <= 30
 				int slot = ShiftCache[j]
-				if Math.LogicalAnd(sm, slot)
-					UpdateSlotmask(j, slot, true)
+				if Math.LogicalAnd(sm, slot)										
+					UpdateSlotmask(j, slot, true)					
 				EndIf
 				j += 1
 			EndWhile
