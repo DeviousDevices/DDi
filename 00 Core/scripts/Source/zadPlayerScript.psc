@@ -17,6 +17,7 @@ Event OnPlayerLoadGame()
 		AddInventoryEventFilter(libs.SoulgemFilled)
 		If akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirt) && !akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirtRelaxed)
 			libs.MuteOverEncumberedMSG()
+			Utility.SetINIBool("bDampenPlayerControls:Controls", false)
 		Endif
 EndEvent
  

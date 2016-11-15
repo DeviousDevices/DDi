@@ -819,7 +819,7 @@ Event OnOptionSliderOpen(int option)
 	elseIf option == HobbleSkirtSpeedDebuffOID
         SetSliderDialogStartValue(HobbleSkirtSpeedDebuff)
         SetSliderDialogDefaultValue(HobbleSkirtSpeedDebuffDefault)
-        SetSliderDialogRange(25, 50)
+        SetSliderDialogRange(25, 70)
         SetSliderDialogInterval(1)
 	Endif
 EndEvent
