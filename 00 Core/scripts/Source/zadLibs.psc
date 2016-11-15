@@ -29,6 +29,7 @@ Keyword Property zad_DeviousLegCuffs Auto
 Keyword Property zad_DeviousArmbinder Auto
 Keyword Property zad_DeviousHeavyBondage Auto
 Keyword Property zad_DeviousHobbleSkirt Auto
+Keyword Property zad_DeviousHobbleSkirtRelaxed Auto
 Keyword Property zad_DeviousAnkleShackles Auto
 
 Keyword Property zad_DeviousYoke Auto
@@ -2693,4 +2694,15 @@ string Function LookupDeviceType(keyword kwd)
 		return "PiercingsVaginal" 
 	EndIf
 	Error("LookupDeviceType received invalid keyword " + kwd)
+EndFunction
+
+;===============================================================================
+; GameSettings Manipulation
+;===============================================================================
+; These need to be refreshed OnPlayerLoadGame (zadPlayerScript)
+; Otherwise they revert to their default state.
+
+Function MuteOverEncumberedMSG()
+	Game.SetGameSettingString("sOverEncumbered", "")
+	Game.SetGameSettingString("sNoFastTravelOverencumbered", "You cannot fast travel in these restraints.")
 EndFunction

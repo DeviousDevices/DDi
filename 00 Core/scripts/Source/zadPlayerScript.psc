@@ -9,11 +9,15 @@ Formlist Property SitBlockKeywords Auto
  
  
 Event OnPlayerLoadGame()
+		actor akActor = libs.PlayerRef
 		libs.SpellCastVibrateCooldown = 0.0
 		questScript.Maintenance()
 		cameraState.Maintenance()
 		libs.ResetDialogue()
 		AddInventoryEventFilter(libs.SoulgemFilled)
+		If akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirt) && !akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirtRelaxed)
+			libs.MuteOverEncumberedMSG()
+		Endif
 EndEvent
  
  

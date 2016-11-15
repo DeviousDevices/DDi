@@ -161,8 +161,8 @@ bool UseQueueNiNodeDefault = False
 ; Devious Expansion Configuration
 bool Property bootsSlowdownToggle = True Auto Conditional
 bool bootsSlowdownToggleDefault = True 
-Int Property HobbleSkirtSpeedDebuff = 60 Auto
-Int HobbleSkirtSpeedDebuffDefault = 60
+Int Property HobbleSkirtSpeedDebuff = 50 Auto
+Int HobbleSkirtSpeedDebuffDefault = 50
 
 ; OID's
 int thresholdOID
@@ -819,7 +819,7 @@ Event OnOptionSliderOpen(int option)
 	elseIf option == HobbleSkirtSpeedDebuffOID
         SetSliderDialogStartValue(HobbleSkirtSpeedDebuff)
         SetSliderDialogDefaultValue(HobbleSkirtSpeedDebuffDefault)
-        SetSliderDialogRange(50, 70)
+        SetSliderDialogRange(40, 60)
         SetSliderDialogInterval(1)
 	Endif
 EndEvent
