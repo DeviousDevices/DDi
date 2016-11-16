@@ -66,7 +66,7 @@ EndFunction
 
 
 Int Function GetSecondaryAAState(actor akActor)
-	If akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirt)
+	If akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirt) && !akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirtRelaxed)
 		return 1	; Wearing hobble skirt
 	Else
 		return 0	; No secondary AA modifiers
