@@ -161,6 +161,8 @@ bool UseQueueNiNodeDefault = False
 ; Devious Expansion Configuration
 bool Property bootsSlowdownToggle = True Auto Conditional
 bool bootsSlowdownToggleDefault = True 
+bool Property mittensDropToggle = True Auto Conditional
+bool mittensDropToggleDefault = True 
 Int Property HobbleSkirtSpeedDebuff = 50 Auto
 Int HobbleSkirtSpeedDebuffDefault = 50
 
@@ -217,6 +219,7 @@ int useBoundAnimsOID
 int useAnimFilterOID
 int bootsSlowdownToggleOID
 int HobbleSkirtSpeedDebuffOID
+int mittensDropToggleOID
 int UseBoundCombatOID 
 Int UseDeviceDifficultyEscapeOID
 Int DeviceDifficultyCooldownOID
@@ -544,6 +547,7 @@ Event OnPageReset(string page)
 		; Check for DDx
 		if (Game.GetModByName("Devious Devices - Expansion.esm") > 0) ; DDx is present
 			bootsSlowdownToggleOID = AddToggleOption("Boots Slowdown Effect", bootsSlowdownToggle)
+			mittensDropToggleOID = AddToggleOption("Hardcore Bondage Mittens", mittensDropToggle)
 			HobbleSkirtSpeedDebuffOID = AddSliderOption("Hobble Skirt Debuff Strength", HobbleSkirtSpeedDebuff, "{0}")
 		Else
 			AddTextOption("Devious Devices - Expansion is not loaded.", "", OPTION_FLAG_DISABLED)
@@ -884,6 +888,9 @@ Event OnOptionSelect(int option)
 	elseif option == bootsSlowdownToggleOID
 		 bootsSlowdownToggle = !bootsSlowdownToggle
 		SetToggleOptionValue(bootsSlowdownToggleOID, bootsSlowdownToggle)
+	elseif option == mittensDropToggleOID
+		 mittensDropToggle = !mittensDropToggle
+		SetToggleOptionValue(mittensDropToggleOID, mittensDropToggle)
 	elseif option == ifpOID
 		ifp = !ifp
 		SetToggleOptionValue(ifpOID, ifp)
@@ -1051,6 +1058,9 @@ Event OnOptionDefault(int option)
 	elseIf (option == bootsSlowdownToggleOID)
 		bootsSlowdownToggle = bootsSlowdownToggleDefault
 		SetToggleOptionValue(bootsSlowdownToggleOID, bootsSlowdownToggleDefault)
+	elseIf (option == mittensDropToggleOID)
+		mittensDropToggle = mittensDropToggleDefault
+		SetToggleOptionValue(mittensDropToggleOID, mittensDropToggleDefault)
 	elseIf (option == numNpcsOID)
 		numNpcs = numNpcsDefault
 		SetSliderOptionValue(numNpcsOID, numNpcs, "{1}")
@@ -1205,6 +1215,8 @@ Event OnOptionHighlight(int option)
 		SetInfoText("Toggles the use of QueueNiNode after Item Equip/Unequips. The advantage of QueueNiNode is that it will apply changes while you're in your inventory, and won't have an equip/unequip sound. This will work fine for some users, but for others will cause the game to lag briefly after an equip/unequip takes place.\nDefault:"+UseQueueNiNodeDefault)
 	elseIf (option == bootsSlowdownToggleOID)
 		SetInfoText("Toggles the slowdown effect caused by some boots within DDx.\nDefault:"+bootsSlowdownToggleDefault)
+	elseIf (option == mittensDropToggleOID)
+		SetInfoText("If this option is enabled, it is hard to pick up items when wearing bondage mittens.\nYou will instead drop the items to the ground (you can try to pick them up again.)\nDefault:"+mittensDropToggleDefault)
 	elseIf (option == numNpcsOID)
 		SetInfoText("Configure the number of nearby belted NPCs (Per Area) that will be processed by event polling. Set to 0 to disable altogether. Higher values will increase script load.\nDefault:"+numNpcsDefault)
 	elseIf (option == ifpOID)
