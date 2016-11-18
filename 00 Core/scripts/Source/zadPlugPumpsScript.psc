@@ -28,7 +28,7 @@ Function DeviceMenuExt(Int msgChoice)
 			libs.notify("Your fairly inflated plug is impossible to ignore as it moves around inside of you, constantly pleasing you and making you more horny as you already are.", messagebox = true)
 		elseif currentVal == 4
 			libs.notify("Your plug is almost inflated to capacity. You cannot move at all without shifting it around inside of you, making you squeal in an odd sensation of pleasurable pain.", messagebox = true)
-		elseif currentVal == 4
+		elseif currentVal == 5
 			libs.notify("Your plug is fully inflated and almost bursting inside you. It's causing you more discomfort than anything. But no matter what - you won't be able to remove it from your body anytime soon.", messagebox = true)		
 		EndIf				
 	EndIf	
