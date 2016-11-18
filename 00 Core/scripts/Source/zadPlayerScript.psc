@@ -15,8 +15,10 @@ Event OnPlayerLoadGame()
 		cameraState.Maintenance()
 		libs.ResetDialogue()
 		AddInventoryEventFilter(libs.SoulgemFilled)
-		If akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirt) && !akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirtRelaxed)
-			libs.MuteOverEncumberedMSG()
+		If akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirt)
+			if !akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirtRelaxed)
+				libs.MuteOverEncumberedMSG()
+			endif
 			Utility.SetINIBool("bDampenPlayerControls:Controls", false)
 		Endif
 EndEvent
