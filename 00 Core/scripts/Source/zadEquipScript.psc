@@ -370,6 +370,7 @@ Function RemoveDevice(actor akActor, bool destroyDevice=false, bool skipMutex=fa
 	; armbinders and yokes do NOT use this function to get removed, hence this works.
 	if (akActor.WornHasKeyword(libs.zad_DeviousBondageMittens) && !deviceRendered.HasKeyword(libs.zad_DeviousBondageMittens))
 		libs.NotifyPlayer("You cannot remove the " + deviceName + " while wearing bondage mittens!", true)
+		return
 	EndIf	
 	; RemovedWithSuccess is set to false when the key breaks, so we don't display the "You succesfully removed device" message later, when you actually didn't.
 	; Most OOP instructors are likely to faint seeing this cringeworthy implementation, but the alternative is changing the function header and making everyone recompile everything. Nah!
