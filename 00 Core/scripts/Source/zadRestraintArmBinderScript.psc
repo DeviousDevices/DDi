@@ -7,6 +7,8 @@ Message Property zad_ArmBinderPreEquipMsg Auto
 Message Property zad_ArmBinderEquipPostMsg Auto
 Message Property zad_ArmBinderDisableLocksMsg Auto
 Message Property zad_ArmBinderEnableLocksMsg Auto
+Message Property CustomStruggleImpossibleMsg = None Auto
+Message Property CustomStruggleMsg = None Auto
 
 Bool Property Locked = true Auto
 
@@ -28,7 +30,17 @@ Function OnEquippedPost(actor akActor)
 		libs.UpdateControls()
 		abq.IsLoose = False
 		abq.StruggleCount = 0
-		abq.EnableStruggling()
+		If BaseEscapeChance > 0
+			abq.EnableStruggling()
+		Else
+			abq.DisableStruggling()			
+		EndIf
+		if CustomStruggleImpossibleMsg
+			abq.CustomStruggleImpossibleMsg = CustomStruggleImpossibleMsg
+		EndIf
+		if CustomStruggleMsg
+			abq.CustomStruggleMsg = CustomStruggleMsg
+		EndIf
 		abq.EnableDialogue()
 		SetCustomMessage()
 	EndIf

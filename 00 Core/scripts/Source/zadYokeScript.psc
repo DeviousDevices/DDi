@@ -7,6 +7,8 @@ Message Property zad_YokePreEquipMsg Auto
 Message Property zad_YokeEquipPostMsg Auto
 Message Property zad_YokeDisableLocksMsg Auto
 Message Property zad_YokeEnableLocksMsg Auto
+Message Property CustomStruggleImpossibleMsg = None Auto
+Message Property CustomStruggleMsg = None Auto
 
 Bool Property Locked = true Auto
 
@@ -28,7 +30,17 @@ Function OnEquippedPost(actor akActor)
 		libs.UpdateControls()
 		ybq.IsLoose = False
 		ybq.StruggleCount = 0
-		ybq.EnableStruggling()
+		If BaseEscapeChance > 0
+			ybq.EnableStruggling()
+		Else
+			ybq.DisableStruggling()			
+		EndIf
+		if CustomStruggleImpossibleMsg
+			ybq.CustomStruggleImpossibleMsg = CustomStruggleImpossibleMsg
+		EndIf
+		if CustomStruggleMsg
+			ybq.CustomStruggleMsg = CustomStruggleMsg
+		EndIf
 		ybq.EnableDialogue()
 		SetCustomMessage()
 	EndIf
