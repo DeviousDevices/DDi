@@ -31,6 +31,7 @@ Keyword Property zad_DeviousHeavyBondage Auto
 Keyword Property zad_DeviousHobbleSkirt Auto
 Keyword Property zad_DeviousHobbleSkirtRelaxed Auto
 Keyword Property zad_DeviousAnkleShackles Auto
+Keyword Property zad_DeviousStraitJacket Auto
 
 Keyword Property zad_DeviousYoke Auto
 Keyword Property zad_DeviousCorset Auto
@@ -2387,7 +2388,7 @@ EndFunction
 
 
 bool Function IsBound(actor akActor)
-	return akActor.WornHasKeyword(zad_DeviousArmbinder) || akActor.WornHasKeyword(zad_deviousYoke)
+	return akActor.WornHasKeyword(zad_DeviousArmbinder) || akActor.WornHasKeyword(zad_deviousYoke) || akActor.WornHasKeyword(zad_DeviousStraitJacket)
 EndFunction
 
 
@@ -2434,7 +2435,10 @@ Form Function GetWornHeavyBondageInstance(actor akActor)
 	; 0x00010000 is slot 46, the new "Heavy Bondage" slot.
 	form armb = GetRenderedDeviceInstance(akActor, 0x00010000, zad_DeviousArmbinder)
 	if !armb ; Check for yokes
-		GetRenderedDeviceInstance(akActor, 0x00010000, zad_DeviousYoke)
+		armb = GetRenderedDeviceInstance(akActor, 0x00010000, zad_DeviousYoke)
+	EndIf
+	if !armb ; Check for straitjackets
+		armb = GetRenderedDeviceInstance(akActor, 0x00010000, zad_DeviousStraitJacket)
 	EndIf
 	return armb
 EndFunction
