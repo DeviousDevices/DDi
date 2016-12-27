@@ -20,6 +20,7 @@ Armor Property lastRenderedDevice Auto ; last equipped rendered device removed v
 
 Message Property zad_DeviceMsg Auto
 
+Key Property devicekey Auto Hidden
 
 Function DisableDialogue()
 	DisableDial = true
@@ -35,6 +36,10 @@ EndFunction
 
 Function EnableStruggling()
 	DisableStruggle = false
+EndFunction
+
+Function SetDeviceKey(key k)
+	devicekey = k
 EndFunction
 
 Function StruggleScene(actor akActor)

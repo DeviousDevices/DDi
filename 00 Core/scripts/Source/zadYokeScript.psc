@@ -67,7 +67,11 @@ int Function OnEquippedFilter(actor akActor, bool silent=false)
 		if akActor.WornHasKeyword(libs.zad_DeviousArmbinder)
 			MultipleItemFailMessage("Armbinder")
 			return 2
-		EndIf	
+		EndIf
+		if akActor.WornHasKeyword(libs.zad_DeviousStraitjacket)
+			MultipleItemFailMessage("Straitjacket")
+			return 2
+		EndIf
 	EndIf
 	if akActor != libs.PlayerRef || silent
 		return 0 ; Proceed.

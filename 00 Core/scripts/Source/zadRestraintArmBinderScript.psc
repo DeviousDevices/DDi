@@ -68,6 +68,10 @@ int Function OnEquippedFilter(actor akActor, bool silent=false)
 			MultipleItemFailMessage("Yoke")
 			return 2
 		EndIf	
+		if akActor.WornHasKeyword(libs.zad_DeviousStraitjacket)
+			MultipleItemFailMessage("Straitjacket")
+			return 2
+		EndIf
 	EndIf
 	if akActor != libs.PlayerRef || silent
 		return 0 ; Proceed.
