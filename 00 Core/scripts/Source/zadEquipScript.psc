@@ -395,7 +395,7 @@ Function RemoveDevice(actor akActor, bool destroyDevice=false, bool skipMutex=fa
 		; I do not really see that changing in the future, so using an explicit reference to the
 		; player here is probably the way to go. Quests will manipulate this via the API anyways,
 		; and this function is only for internal use.
-		if (deviceInventory.HasKeyword(libs.zad_BlockGeneric) || deviceRendered.HasKeyword(libs.zad_BlockGeneric))
+		if deviceInventory.HasKeyword(libs.zad_BlockGeneric) || deviceRendered.HasKeyword(libs.zad_BlockGeneric) || deviceInventory.HasKeyword(libs.zad_QuestItem) || deviceRendered.HasKeyword(libs.zad_QuestItem)
 			Libs.Log("Not breaking key for non-generic device.")
 		Elseif Utility.RandomInt(1, 100) <= libs.Config.DestroyKeyProbability
 			if (Utility.RandomInt(1, 100) <= libs.Config.DestroyKeyJamChance)
@@ -433,7 +433,11 @@ Function RemoveDevice(actor akActor, bool destroyDevice=false, bool skipMutex=fa
 		libs.Config.UnlockThreshold = (libs.Config.UnlockThreshold + libs.Config.thresholdModifier) ; += giving syntax errors? 
 	EndIf
 	If libs.Config.destroyKey
-		libs.PlayerRef.RemoveItem(deviceKey, 1, true)
+		if deviceInventory.HasKeyword(libs.zad_BlockGeneric) || deviceRendered.HasKeyword(libs.zad_BlockGeneric) || deviceInventory.HasKeyword(libs.zad_QuestItem) || deviceRendered.HasKeyword(libs.zad_QuestItem)
+			Libs.Log("Not breaking key for non-generic device.")
+		Else
+			libs.PlayerRef.RemoveItem(deviceKey, 1, true)
+		EndIf
 	EndIf
 EndFunction
 
