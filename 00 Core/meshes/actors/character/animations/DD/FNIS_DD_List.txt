@@ -29,6 +29,12 @@ b DDZazHornyC ZazHornyC.hkx
 b DDZazHornyD ZazHornyD.hkx
 b DDZazHornyE ZazHornyE.hkx
 
+' Struggle
+b DDHobArmbStruggle01 DDHobArmbStruggle01.hkx
+b DDHobArmbStruggle02 DDHobArmbStruggle02.hkx
+b DDHobYokeStruggle01 DDHobYokeStruggle01.hkx
+b DDHobYokeStruggle02 DDHobYokeStruggle02.hkx
+
 ' Note to self:
 ' the index of the h2h_locomotionpose animation always has to be 1 higher than the index of its corresponding AA set
 
