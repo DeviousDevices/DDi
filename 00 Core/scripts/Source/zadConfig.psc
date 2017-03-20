@@ -58,9 +58,9 @@ bool ifpDefault = false
 bool Property preserveAggro Auto
 bool preserveAggroDefault = true
 bool Property breastNodeManagement Auto
-bool breastNodeManagementDefault = true
+bool breastNodeManagementDefault = false
 bool Property bellyNodeManagement Auto
-bool bellyNodeManagementDefault = true
+bool bellyNodeManagementDefault = false
 
 bool Property UseBoundCombat Auto
 bool UseBoundCombatDefault = true
@@ -117,7 +117,7 @@ bool hardcoreEffectsDefault = true
 bool Property MasturbateOnBeltRemoval Auto
 bool masturbateOnBeltRemovalDefault = False 
 int Property numNpcs Auto Conditional
-int numNpcsDefault = 0
+int numNpcsDefault = 5
 
 ; Sounds
 float Property VolumeOrgasm Auto

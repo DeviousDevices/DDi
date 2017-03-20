@@ -6,4 +6,6 @@ EndFunction
 
 Function Execute(actor akActor)
 	libs.NotifyPlayer("You clench your legs together, achingly empty.")
+	Utility.Wait(1)
+	libs.ChastityBeltStruggle(akActor)
 EndFunction

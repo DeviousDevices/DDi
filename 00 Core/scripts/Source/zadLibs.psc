@@ -117,6 +117,9 @@ Idle Property BleedoutIdle Auto
 Idle Property ZapYokeBleedoutIdle Auto
 Idle Property ZapArmbBleedoutIdle Auto
 
+Idle Property DDChastityBeltStruggle01 Auto
+Idle Property DDChastityBeltStruggle02 Auto
+
 ; All standard devices, at this time. Shorthand for mods, and to avoid the hassle of re-adding these as properties for other scripts.
 ; If you're using a custom device, you'll need to use EquipDevice, rather than the shorthand ManipulateDevice.
 Armor Property beltPaddedRendered Auto         ; Internal Device
@@ -2450,6 +2453,38 @@ Function UpdateArousalTimerate(actor akActor, float val)
 	EndIf
 EndFunction
 
+Function ChastityBeltStruggle(actor akActor)
+	; sanity check
+	If !akActor.WornHasKeyword(zad_DeviousBelt) || akActor.WornHasKeyword(zad_DeviousHeavyBondage)
+		Return
+	EndIf
+	; this should delay any anims if there is a menu open
+	Utility.Wait(0.1)
+	; don't play anims if the actor is already in one.
+	If IsAnimating(akActor)
+		return
+	EndIf	
+	; don't play the animation in combat if it's the player
+	if akActor == playerref && playerref.IsInCombat() 
+		return 
+	Endif		
+	If Utility.RandomInt(1,2) == 1
+		akActor.PlayIdle(DDChastityBeltStruggle01)
+	Else
+		akActor.PlayIdle(DDChastityBeltStruggle02)
+	EndIf	
+	Aroused.UpdateActorExposure(akActor, 5)
+	If akActor == PlayerRef
+		notify("You tuck at your chastity belt, but it won't come off!")
+	EndIf
+	SexlabMoan(akActor)		
+	If aroused.GetActorExposure(akActor) > 75
+		PlayHornyAnimation(akActor)	
+		If akActor == PlayerRef
+			notify("You are incredibly horny and try to force a finger inside your belt.")
+		EndIf
+	EndIf
+EndFunction
 
 Function ApplyBoundAnim(actor akActor, idle theIdle = None)
 	Log("ApplyBoundAnim()")

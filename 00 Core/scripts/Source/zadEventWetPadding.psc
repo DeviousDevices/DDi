@@ -7,5 +7,7 @@ EndFunction
 
 Function Execute(actor akActor)
 	libs.NotifyPlayer("The belt-padding between your legs is slick and swollen from your lubrication.")
+	Utility.Wait(1)
+	libs.ChastityBeltStruggle(akActor)
 EndFunction
 

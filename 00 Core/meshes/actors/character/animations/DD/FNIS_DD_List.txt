@@ -35,6 +35,9 @@ b DDHobArmbStruggle02 DDHobArmbStruggle02.hkx
 b DDHobYokeStruggle01 DDHobYokeStruggle01.hkx
 b DDHobYokeStruggle02 DDHobYokeStruggle02.hkx
 
+b DDChastityBeltStruggle01 FT_DD_Chastity_Struggle_1.hkx
+b DDChastityBeltStruggle02 FT_DD_Chastity_Struggle_2.hkx
+
 ' Note to self:
 ' the index of the h2h_locomotionpose animation always has to be 1 higher than the index of its corresponding AA set
 
