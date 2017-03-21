@@ -21,6 +21,7 @@ Event OnPlayerLoadGame()
 			endif
 			Utility.SetINIBool("bDampenPlayerControls:Controls", false)
 		Endif
+		Game.UpdateHairColor()
 EndEvent
  
  
