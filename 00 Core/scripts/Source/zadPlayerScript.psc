@@ -10,7 +10,7 @@ Formlist Property SitBlockKeywords Auto
 bool savedINIDampen
 
 Function setINIDampen(actor akActor)
-	If akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirt) || akActor.WornHasKeyword(libs.zad_DeviousAnkleShackles) || akActor.WornHasKeyword(libs.zad_DeviousBoots)
+	If akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirt) || akActor.WornHasKeyword(libs.zad_DeviousAnkleShackles)
 		Utility.SetINIBool("bDampenPlayerControls:Controls", false)
 	Else
 		Utility.SetINIBool("bDampenPlayerControls:Controls", savedINIDampen)
