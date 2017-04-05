@@ -7,16 +7,6 @@ zadCameraState Property cameraState Auto
 zadLibs Property libs Auto
 Formlist Property SitBlockKeywords Auto
 
-bool savedINIDampen
-
-Function setINIDampen(actor akActor)
-	If akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirt) || akActor.WornHasKeyword(libs.zad_DeviousAnkleShackles)
-		Utility.SetINIBool("bDampenPlayerControls:Controls", false)
-	Else
-		Utility.SetINIBool("bDampenPlayerControls:Controls", savedINIDampen)
-	Endif
-EndFunction
-
 Event OnPlayerLoadGame()
 	actor akActor = libs.PlayerRef
 	libs.SpellCastVibrateCooldown = 0.0
@@ -27,8 +17,6 @@ Event OnPlayerLoadGame()
 	if akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirt) && !akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirtRelaxed)
 		libs.MuteOverEncumberedMSG()
 	endif
-	savedINIDampen = Utility.GetINIBool("bDampenPlayerControls:Controls")
-	setINIDampen(akActor)
 	Game.UpdateHairColor()
 EndEvent
  
@@ -105,7 +93,6 @@ Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
 				libs.ShowBelly(libs.PlayerRef)
 			EndIf
 		EndIf
-		setINIDampen(akActor)
 	EndIf
 	if akActor.WornHasKeyword(libs.zad_DeviousHeavyBondage) && ((akBaseObject as Weapon) || (akBaseObject as Spell) || (akBaseObject as Light) || (akBaseObject as Armor).HasKeywordString("ArmorShield"))
 		if akActor.GetEquippedItemType(0) > 0
@@ -134,6 +121,5 @@ Event OnObjectUnequipped(Form akBaseObject, ObjectReference akReference)
 				libs.HideBelly(libs.PlayerRef)
 			EndIf
 		EndIf
-		setINIDampen(akActor)
 	EndIf
 EndEvent
