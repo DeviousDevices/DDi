@@ -334,6 +334,7 @@ Keyword Property zad_EffectCompressBreasts Auto ; Compress breasts to avoid hdt 
 Keyword Property zad_NoCompressBreasts Auto ; Disable Compressing of breasts, despite previous keyword
 Keyword Property zad_EffectCompressBelly Auto ; Compress belly to avoid hdt clipping through corsets, belts and harnesses.
 Keyword Property zad_NoCompressBelly Auto ; Disable Compressing of belly, despite previous keyword
+Keyword Property zad_EffectForcedWalk Auto ; Responsible for muting encumberance messages on reload, related to the zadx_ForcedWalk magiceffect
 
 
 ;===============================================================================

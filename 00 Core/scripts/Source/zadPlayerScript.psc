@@ -15,11 +15,11 @@ Event OnPlayerLoadGame()
 	libs.ResetDialogue()
 	AddInventoryEventFilter(libs.SoulgemFilled)
 	If akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirt)
-		if !akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirtRelaxed)
-			libs.MuteOverEncumberedMSG()
-		endif
 		Utility.SetINIBool("bDampenPlayerControls:Controls", false)
 	Endif
+	if akActor.WornHasKeyword(libs.zad_EffectForcedWalk)
+		libs.MuteOverEncumberedMSG()
+	endif
 	Game.UpdateHairColor()
 EndEvent
  
