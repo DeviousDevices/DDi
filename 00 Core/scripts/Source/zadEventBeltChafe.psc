@@ -1,7 +1,7 @@
 scriptName zadEventBeltChafe extends zadBaseEvent
 
 bool Function HasKeywords(actor akActor)
-	 return (akActor.WornHasKeyword(libs.zad_DeviousBelt) )
+	 return (akActor.WornHasKeyword(libs.zad_DeviousBelt) && !akActor.WornHasKeyword(libs.zad_DeviousHeavyBondage))
 EndFunction
 
 Function Execute(actor akActor)
