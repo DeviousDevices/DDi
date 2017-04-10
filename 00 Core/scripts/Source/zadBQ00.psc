@@ -1223,6 +1223,18 @@ EndFunction
 
 Event OnDDIEquipDevice(Form akActor, String DeviceType)
 	Actor a = akActor As Actor
+	String tags = ""
+	; Adding support for optional tags separated from device string by a '|' - ex: 'Collar:metal,black'
+	Int iTagsIndex 
+	String sDevice = ""
+	String sTags = ""
+	; Split _args between Device and Tags (separated by '|')
+	iTagsIndex = StringUtil.Find(DeviceType, "|")
+	if (iTagsIndex!=-1)
+		sDevice = StringUtil.Substring(DeviceType, 0, iTagsIndex )
+		sTags = StringUtil.Substring(DeviceType, iTagsIndex +1 )
+		DeviceType = sDevice
+	endIf
 	libs.log("DDI ModEvent equip request received. Trying to equip device: " + DeviceType + " on " + a.GetLeveledActorBase().GetName())
 	KeyWord kw = GetKeywordByString(DeviceType)	
 	; check for invalid return values and bail out if no valid davice was passed.
@@ -1230,7 +1242,6 @@ Event OnDDIEquipDevice(Form akActor, String DeviceType)
 		libs.log("DDI ModEvent failed. No valid device string or no valid actor received.")
 		return
 	Endif
-	String tags = ""
 	Bool reqall = false
 	; special cases
 	if DeviceType == "BallGag" || DeviceType == "Ball Gag"
@@ -1246,6 +1257,13 @@ Event OnDDIEquipDevice(Form akActor, String DeviceType)
 		reqall = true
 	Endif
 	armor iDevice 
+
+	if (tags!="")
+		tags = tags + "," + sTags
+	else
+		tags = sTags
+	endif
+
 	If tags == ""
 		iDevice = libs.GetGenericDeviceByKeyword(Kw)
 	Else
