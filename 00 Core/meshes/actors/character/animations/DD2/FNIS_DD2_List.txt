@@ -1,0 +1,40 @@
+Version V3.4.0
+' Format:	<type> -<option,option,...> <AnimEvent> <Animation File> [<AnimObject CK>]
+'		type: 	b (basic)
+'				o (animated objects) 	
+'		option: a (acyclic) 				default: cyclic
+'				h (headtracking remains) 	default: headtracking off
+'               Tn (clip transition "00Next Clip": used if another idle will follow immediately)
+'               Ts (clip transition "IdleStop": (should be "regular idle end", but in FNIS similar to Next Clip)
+'          					default "IdleForceDefaultState": everything set to default)
+'				B<n.m>						Blend time into Animation
+'
+'		<Animation File> without path (files expected in Animations\<mod name>)
+'
+' Example:
+' b -a,h,Tn,B1.2 MyAnimEvent1 MyAnimFile1.hkx
+'	
+' Comment:	' in column 1 / empty lines possible
+'
+' AnimEvents and Animation File names have to be unique through all mods (even for files in different folders)
+' so it's a good idea use mod specific abbrevioations for all our names
+
+' Note to self:
+' the index of the h2h_locomotionpose animation always has to be 1 higher than the index of its corresponding AA set
+
+AAprefix hbc
+
+AAset _h2heqp 5
+AAset _h2hidle 5
+AAset _h2hatkpow 5
+AAset _h2hstag 5
+AAset _h2hatk 5
+AAset _jump 5
+AAset _sprint 5
+AAset _sneakmt 5
+AAset _sneakidle 5
+AAset _shout 5
+AAset _mtx 5
+AAset _mt 5
+AAset _mtturn 5
+AAset _mtidle 5

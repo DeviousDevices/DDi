@@ -5,13 +5,13 @@
 
     <installStep name="Animation Style">
       <optionalFileGroups>
-        <group name="Which style of armbinder and yoke animations do you prefer?" type="SelectExactlyOne">
+        <group name="Which style of bound animations do you prefer?" type="SelectExactlyOne">
           <plugins order="Explicit">
-            <plugin name="Cedec0 (default)">
+			<plugin name="FeuerTin (default)">
               <description>
-                Animations by cedec0. Abundant upper body movement, omnidirectional running and walking.
+                Animations by FeuerTin. Feminine but not exaggerated, upright posture. Choose this for maximum consistency.
               </description>
-              <image path="fomod\images\01_cedec0.png"/>
+              <image path="fomod\images\01_feuertin.png"/>
               <files>
                 <folder source="00 Core" destination="" priority="1"/>
               </files>
@@ -20,9 +20,37 @@
               </conditionFlags>
               <typeDescriptor><type name="Optional"/></typeDescriptor>
             </plugin>
+			<plugin name="FeuerTin (alternative)">
+              <description>
+                Animations by FeuerTin. Similar to default but changes directional animations (left, right, back) to forward-facing.
+              </description>
+              <image path="fomod\images\01_feuertin.png"/>
+              <files>
+                <folder source="00 Core" destination="" priority="1"/>
+				<folder source="01 Feuertin Alt" destination="" priority="2"/>
+              </files>
+              <conditionFlags>
+                <flag name="ABC_feuertinalt">On</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Optional"/></typeDescriptor>
+            </plugin>
+            <plugin name="Cedec0">
+              <description>
+                Animations by cedec0. Copious upper body movement. Overrides: armbinder, yoke.
+              </description>
+              <image path="fomod\images\01_cedec0.png"/>
+              <files>
+                <folder source="00 Core" destination="" priority="1"/>
+				<folder source="01 Cedec0" destination="" priority="2"/>
+              </files>
+              <conditionFlags>
+                <flag name="ABC_cedec0">On</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Optional"/></typeDescriptor>
+            </plugin>
             <plugin name="MaikCG">
               <description>
-                Animations by MaikCG. More upright posture, omnidirectional running, walking and sneaking.
+                Animations by MaikCG. More emphasised hip movement. Overrides: armbinder, yoke.
               </description>
               <image path="fomod\images\01_maikcg.png"/>
               <files>
@@ -31,20 +59,6 @@
               </files>
               <conditionFlags>
                 <flag name="ABC_maik">On</flag>
-              </conditionFlags>
-              <typeDescriptor><type name="Optional"/></typeDescriptor>
-            </plugin>
-            <plugin name="FeuerTin">
-              <description>
-                Animations by FeuerTin. Feminine but subtle, suitable for both genders, foward-facing running and walking.
-              </description>
-              <image path="fomod\images\01_feuertin.png"/>
-              <files>
-                <folder source="00 Core" destination="" priority="1"/>
-                <folder source="01 Feuertin" destination="" priority="2"/>
-              </files>
-              <conditionFlags>
-                <flag name="ABC_feuertin">On</flag>
               </conditionFlags>
               <typeDescriptor><type name="Optional"/></typeDescriptor>
             </plugin>

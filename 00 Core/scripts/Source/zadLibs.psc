@@ -27,6 +27,7 @@ Keyword Property zad_DeviousCollar Auto
 Keyword Property zad_DeviousArmCuffs Auto
 Keyword Property zad_DeviousLegCuffs Auto
 Keyword Property zad_DeviousArmbinder Auto
+Keyword Property zad_DeviousArmbinderElbow Auto
 Keyword Property zad_DeviousHeavyBondage Auto
 Keyword Property zad_DeviousHobbleSkirt Auto
 Keyword Property zad_DeviousHobbleSkirtRelaxed Auto
@@ -34,6 +35,7 @@ Keyword Property zad_DeviousAnkleShackles Auto
 Keyword Property zad_DeviousStraitJacket Auto
 
 Keyword Property zad_DeviousYoke Auto
+Keyword Property zad_DeviousYokeBB Auto
 Keyword Property zad_DeviousCorset Auto
 Keyword Property zad_DeviousClamps Auto
 Keyword Property zad_DeviousGloves Auto

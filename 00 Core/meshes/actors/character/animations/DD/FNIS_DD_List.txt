@@ -1,4 +1,4 @@
-Version V3.3.0
+Version V3.4.0
 ' Format:	<type> -<option,option,...> <AnimEvent> <Animation File> [<AnimObject CK>]
 '		type: 	b (basic)
 '				o (animated objects) 	
@@ -34,6 +34,10 @@ b DDHobArmbStruggle01 DDHobArmbStruggle01.hkx
 b DDHobArmbStruggle02 DDHobArmbStruggle02.hkx
 b DDHobYokeStruggle01 DDHobYokeStruggle01.hkx
 b DDHobYokeStruggle02 DDHobYokeStruggle02.hkx
+b DDHobElbStruggle01 DDHobElbStruggle01.hkx
+b DDHobElbStruggle02 DDHobElbStruggle02.hkx
+b DDHobBBYokeStruggle01 DDHobBBYokeStruggle01.hkx
+b DDHobBBYokeStruggle02 DDHobBBYokeStruggle02.hkx
 
 b DDChastityBeltStruggle01 FT_DD_Chastity_Struggle_1.hkx
 b DDChastityBeltStruggle02 FT_DD_Chastity_Struggle_2.hkx
@@ -43,17 +47,17 @@ b DDChastityBeltStruggle02 FT_DD_Chastity_Struggle_2.hkx
 
 AAprefix abc
 
-AAset _h2heqp 5
-AAset _h2hidle 5
-AAset _h2hatkpow 5
-AAset _h2hstag 5
-AAset _h2hatk 5
-AAset _jump 5
-AAset _sprint 5
-AAset _sneakmt 5
-AAset _sneakidle 5
-AAset _shout 5
-AAset _mtx 5
-AAset _mt 5
-AAset _mtturn 5
-AAset _mtidle 5
+AAset _h2heqp 4
+AAset _h2hidle 4
+AAset _h2hatkpow 4
+AAset _h2hstag 4
+AAset _h2hatk 4
+AAset _jump 4
+AAset _sprint 4
+AAset _sneakmt 4
+AAset _sneakidle 4
+AAset _shout 4
+AAset _mtx 4
+AAset _mt 4
+AAset _mtturn 4
+AAset _mtidle 4
