@@ -24,7 +24,10 @@ Keyword Property zad_DeviousDevice Auto
 Quest Property deviceQuest Auto
 String Property deviceName Auto
 
-Float Property BaseEscapeChance = 10.0 Auto	; Device escape difficulty: This is the base chance to make a succesful escape attempt in %. E.g. a value of 10 means that 1 in 10 escape attempts are succesful.
+; Escape system
+Float Property BaseEscapeChance = 10.0 Auto				; Device escape difficulty: This is the base chance to make a succesful escape attempt in %. E.g. a value of 10 means that 1 in 10 escape attempts are succesful.
+Float Property LockAccessDifficulty = 0.0 Auto			; If set to greater than zero, the character cannot easily reach the locks when locked in this restraint. The higher the number, the harder she will find it to unlock herself, even when in possession of the key. A value of 100 will make it impossible for her to reach the locks. She will need help. Make sure that your mod actually provides a means to escape such retraints!
+Float Property UnlockCooldown = 3.0	Auto				; How many hours have to pass between unlock attempts for hard to unlock restraints.
 
 Keyword[] Property EquipConflictingDevices Auto ; These item keywords, if present on the character, will prevent the item from getting equipped, unless a script does it.
 Keyword[] Property EquipRequiredDevices Auto ; These item keywords, if NOT present on the character, will prevent the item from getting equipped, unless a script does it.
@@ -41,6 +44,7 @@ Bool RemovedWithSuccess = True
 Bool RemovedViaEscape = False
 Float LastEscapeAttemptAt
 Int EscapeAttemptsMade = 0
+Float LastUnlockAttemptAt = 0.0							; When did the player last attempt to unlock this device.
 
 Function MultipleItemFailMessage(string offendingItem)
 	offendingItem = libs.MakeSingularIfPlural(offendingItem)
@@ -58,6 +62,10 @@ bool Function ShouldEquipSilently(actor akActor)
 	return false
 EndFunction
 
+Event OnSleepStart(float afSleepStartTime, float afDesiredSleepEndTime)
+	Float naplength = afDesiredSleepEndTime - afSleepStartTime
+	LastUnlockAttemptAt += naplength
+EndEvent
 
 Event OnEquipped(Actor akActor)
 	libs.Log("OnEquipped("+akActor.GetLeveledActorBase().GetName()+": "+deviceInventory.GetName()+")")
@@ -148,7 +156,7 @@ Event OnEquipped(Actor akActor)
                 utility.GetCurrentGameTime() + (utility.RandomInt(libs.config.lockShieldMinTime, libs.Config.lockShieldMaxTime) as Float / 24.0) \
         )
     endif
-
+	RegisterForSleep()
 	OnEquippedPost(akActor)
 EndEvent
 
@@ -210,7 +218,8 @@ Event OnUnequipped(Actor akActor)
 			Endif
 		Endif
 		unequipMutex = false
-	EndIf	
+	EndIf
+	UnRegisterForSleep()	
 EndEvent
 
 
@@ -455,6 +464,10 @@ bool Function RemoveDeviceWithKey(actor akActor = none, bool destroyDevice=false
 		libs.Notify("You attempt to unlock the "+deviceName+", but the lock is jammed!", true)
 		return false
 	EndIf
+	; Check if she is able to unlock herself:
+	If !CheckLockAccess()
+		Return False
+	EndIf
 	if akActor.GetItemCount(deviceKey)>=1
 		libs.Log("RemoveDeviceWithKey called, actor has correct key. Removing "+ deviceName +".")
 		RemovedViaEscape = False
@@ -579,6 +592,39 @@ Bool Function IsUnEquipDeviceConflict(Actor akActor)
 		Endif
 	Endif
 	return false
+EndFunction
+
+Bool Function CanMakeUnlockAttempt()
+	; check if the character can make an unlock attempt.
+	Float HoursNeeded = UnlockCooldown
+	Float HoursPassed = (Utility.GetCurrentGameTime() - LastUnlockAttemptAt) * 24.0
+	if HoursPassed > HoursNeeded
+		LastUnlockAttemptAt = Utility.GetCurrentGameTime()
+		return True
+	Else
+		Int HoursToWait = Math.Ceiling(HoursNeeded - HoursPassed)
+		libs.notify("You are still tired from the last attempt, and cannot again try to unlock this device already! You can try again in about " + HoursToWait + " hours.", messageBox = true)
+	EndIf
+	return False
+EndFunction
+
+Bool Function CheckLockAccess()
+	If LockAccessDifficulty > 0.0
+		If !CanMakeUnlockAttempt()
+			Return False
+		EndIf
+		If Utility.RandomFloat(0.0, 99.9) < LockAccessDifficulty
+			If LockAccessDifficulty < 50.0
+				libs.notify("You try to insert the key into the " + DeviceName + "'s lock, but find the locks a bit outsides of your reach. After a few failed attempts to slide the key into the lock, you have no choice but to give up for now. You should still eventually be able to unlock yourself. Just try again a bit later!", messageBox = True)
+			ElseIf LockAccessDifficulty < 100.0
+				libs.notify("This restraint was designed to make it hard for the person locked it in to unlock herself. You struggle hard trying to insert the key into the " + DeviceName + "'s lock anyway, but find the locks well outsides of your reach. Tired from your struggles, you have no choice but to give up for now. Maybe try again later!", messageBox = True)
+			Else
+				libs.notify("This restraint was designed to put the locks safely out of reach of the person wearing it. There is no way you will ever be able to unlock yourself, even when in possession of the proper key. You will need to seek help!", messageBox = True)
+			EndIf
+			Return False
+		EndIf
+	EndIf
+	Return True
 EndFunction
 
 
