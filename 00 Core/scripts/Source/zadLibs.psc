@@ -2394,7 +2394,7 @@ EndFunction
 
 
 bool Function IsBound(actor akActor)
-	return akActor.WornHasKeyword(zad_DeviousArmbinder) || akActor.WornHasKeyword(zad_deviousYoke) || akActor.WornHasKeyword(zad_DeviousStraitJacket)
+	return akActor.WornHasKeyword(zad_DeviousHeavyBondage) || (akActor.WornHasKeyword(zad_DeviousArmbinder) || akActor.WornHasKeyword(zad_DeviousArmBinderElbow) || akActor.WornHasKeyword(zad_DeviousYoke) || akActor.WornHasKeyword(zad_DeviousYokeBB) || akActor.WornHasKeyword(zad_DeviousStraitJacket))
 EndFunction
 
 

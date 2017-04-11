@@ -89,6 +89,47 @@ Function UpdateValues()
 EndFunction
 
 
+Function CONFIG_ABC()
+	libs.log("Config_ABC()")
+	ABC_CRC = FNIS_aa.GetInstallationCRC()
+	if ( ABC_CRC != 0 )
+		libs.Log("Initializing ABC values...")
+		UpdateValues()
+	endif
+EndFunction
+
+
+Function Maintenance_ABC()
+	libs.Log("Maintenance_ABC()")
+	if (!zbfc)
+		zbfc = zbfConfig.GetApi()
+	EndIf
+	int current_crc = FNIS_aa.GetInstallationCRC()
+	if ( current_crc != ABC_CRC || libs.GetVersion() < 3 || ABC_h2heqp == 0)
+		libs.log("Refreshing ABC values...")
+		UpdateValues()
+		ABC_CRC = current_crc
+	endif
+EndFunction
+
+
+;INTERNAL UTILITIES
+
+
+bool Function HasCompatibleDevice(actor akActor)
+	return (akActor.WornHasKeyword(libs.zad_DeviousArmbinder) || akActor.WornHasKeyword(libs.zad_DeviousArmBinderElbow) || akActor.WornHasKeyword(libs.zad_DeviousYoke) || akActor.WornHasKeyword(libs.zad_DeviousYokeBB) || (akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirt) && !akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirtRelaxed)))
+EndFunction
+
+
+Function OverrideZAPControls(actor akActor, float fValue = 1.0)
+	if (akActor == libs.playerRef)
+		; This is bad, and should be removed.
+		; I need to figure out why zbf is preventing attacks with fighting=true first, though.
+		zbfc.zbfSettingDisableEffects.SetValue(fValue)		
+	EndIf
+EndFunction
+
+
 Int Function GetPrimaryAAState(actor akActor)
 	If akActor.WornHasKeyword(libs.zad_DeviousYokeBB)
 		return 4	; Wearing BByoke
@@ -129,8 +170,7 @@ Int Function SelectAnimationSet(actor akActor)
 		elseIf AAStateA == 0
 			animSet = 0 ; Only hobble restraints
 		else
-			; Unsupported device type.
-			animSet = 1
+			animSet = 1 ; Unsupported device type.
 			libs.Warn("Equipped binding is incompatible with bound combat. Could not determine appropriate animation set. Defaulting to Armbinder Animations.")
 		endIf
 	Else
@@ -142,9 +182,10 @@ Int Function SelectAnimationSet(actor akActor)
 			animSet = 2 ; Elbowbinder animations
 		elseIf AAStateA == 4
 			animSet = 3 ; BBYoke animations
+		elseIf AAStateA == 0
+			animSet = -1 ; No bound animations
 		else
-			; Unsupported device type.
-			animSet = 0
+			animSet = 0 ; Unsupported device type
 			libs.Warn("Equipped binding is incompatible with bound combat. Could not determine appropriate animation set. Defaulting to Armbinder Animations.")
 		endIf
 	Endif
@@ -152,85 +193,33 @@ Int Function SelectAnimationSet(actor akActor)
 EndFunction
 
 
-Function CONFIG_ABC()
-	libs.log("Config_ABC()")
-	ABC_CRC = FNIS_aa.GetInstallationCRC()
-	if ( ABC_CRC != 0 )
-		libs.Log("Initializing ABC values...")
-		UpdateValues()
-	endif
-EndFunction
+;API FUNCTIONS
+;These can be called by external sources to apply or remove animations
+;EvaluateAA automatically chooses the correct animation set or reverts to default (including compatible AA mods, if applicable) based on equipped devices
 
 
-Function Maintenance_ABC()
-	libs.Log("Maintenance_ABC()")
-	if (!zbfc)
-		zbfc = zbfConfig.GetApi()
-	EndIf
-	int current_crc = FNIS_aa.GetInstallationCRC()
-	if ( current_crc != ABC_CRC || libs.GetVersion() < 3 || ABC_h2heqp == 0)
-		libs.log("Refreshing ABC values...")
-		UpdateValues()
-		ABC_CRC = current_crc
-	endif
-EndFunction
+Function EvaluateAA(actor akActor)
+;This function automatically executes the application and removal of FNIS Alternate Animations
 
-
-Function Apply_ABC(actor akActor)
-	libs.log("Apply_ABC()")
-	if (akActor == libs.playerRef)
-		; This is bad, and should be removed.
-		; I need to figure out why zbf is preventing attacks with fighting=true first, though.
-		zbfc.zbfSettingDisableEffects.SetValue(1.0)
-	EndIf
-	SetAA(akActor, True)
-EndFunction
-
-
-Function Remove_ABC(actor akActor)
-	libs.log("Remove_ABC()")
-	if (akActor == libs.playerRef)
-		; This is bad, and should be removed.
-		; I need to figure out why zbf is preventing attacks with fighting=true first, though.
-		zbfc.zbfSettingDisableEffects.SetValue(0.0)		
-	EndIf
-	SetAA(akActor, False)
-
-	;Utility.Wait(0.5)
-	If GetSecondaryAAState(akActor) != 0
-		Apply_HBC(akActor)
+	libs.log("EvaluateAA(" + akActor + ")")
+	
+	libs.UpdateControls()
+	
+	If GetPrimaryAAState(akActor) > 0 && !akActor.WornHasKeyword(libs.zad_BoundCombatDisableKick)
+		OverrideZAPControls(akActor, 1.0)
 	Else
-		ResetExternalAA(akActor)
+		OverrideZAPControls(akActor, 0.0)
 	Endif
-EndFunction
 
-
-Function Apply_HBC(actor akActor)
-	libs.log("Apply_HBC()")
-	SetAA(akActor, True)
-EndFunction
-
-
-Function Remove_HBC(actor akActor)
-	libs.log("Remove_HBC()")
-	SetAA(akActor, False)
-
-	;Utility.Wait(0.5)
-	If GetPrimaryAAState(akActor) != 0
-		Apply_ABC(akActor)
+	If !HasCompatibleDevice(akActor)
+		;zadLibs.OverrideZAPControls(akActor, 0.0)
+		ClearAA(akActor)
+		ResetExternalAA(akActor)
 	Else
-		ResetExternalAA(akActor)
-	Endif
-EndFunction
-
-
-Function SetAA(actor akActor, bool bApply = True)
-;This function executes the application and removal of FNIS Alternate Animations
-;Set bApply = True to apply animations, False to revert to vanilla state
-	If bApply == True
+		;zadLibs.OverrideZAPControls(akActor, 1.0)
+		ClearAA(akActor)
 		int animState = GetSecondaryAAState(akActor)
 		int animSet = SelectAnimationSet(akActor)
-		
 		if animState == 1
 			FNIS_aa.SetAnimGroup(akActor, "_h2heqp", HBC_h2heqp, animSet, "DeviousDevices", Config.LogMessages)
 			FNIS_aa.SetAnimGroup(akActor, "_h2hidle", HBC_h2hidle, animSet, "DeviousDevices", Config.LogMessages)
@@ -266,24 +255,30 @@ Function SetAA(actor akActor, bool bApply = True)
 			FNIS_aa.SetAnimGroup(akActor, "_mtidle", ABC_mtidle, animSet, "DeviousDevices", Config.LogMessages)
 			akActor.SetAnimationVariableInt("FNIS_abc_h2h_LocomotionPose", animSet + 1)
 		endif
-	Else
-		FNIS_aa.SetAnimGroup(akActor, "_h2heqp", 0, 0, "DeviousDevices", Config.LogMessages)
-		FNIS_aa.SetAnimGroup(akActor, "_h2hidle", 0, 0, "DeviousDevices", Config.LogMessages)
-		FNIS_aa.SetAnimGroup(akActor, "_h2hatkpow", 0, 0, "DeviousDevices", Config.LogMessages)
-		FNIS_aa.SetAnimGroup(akActor, "_h2hatk", 0, 0, "DeviousDevices", Config.LogMessages)
-		FNIS_aa.SetAnimGroup(akActor, "_h2hstag", 0, 0, "DeviousDevices", Config.LogMessages)
-		FNIS_aa.SetAnimGroup(akActor, "_jump", 0, 0, "DeviousDevices", Config.LogMessages)
-		FNIS_aa.SetAnimGroup(akActor, "_sneakmt", 0, 0, "DeviousDevices", Config.LogMessages)
-		FNIS_aa.SetAnimGroup(akActor, "_sneakidle", 0, 0, "DeviousDevices", Config.LogMessages)
-		FNIS_aa.SetAnimGroup(akActor, "_sprint", 0, 0, "DeviousDevices", Config.LogMessages)
-
-		FNIS_aa.SetAnimGroup(akActor, "_shout", 0, 0, "DeviousDevices", Config.LogMessages)
-		FNIS_aa.SetAnimGroup(akActor, "_mtx", 0, 0, "DeviousDevices", Config.LogMessages)
-		FNIS_aa.SetAnimGroup(akActor, "_mt", 0, 0, "DeviousDevices", Config.LogMessages)
-		FNIS_aa.SetAnimGroup(akActor, "_mtturn", 0, 0, "DeviousDevices", Config.LogMessages)
-		FNIS_aa.SetAnimGroup(akActor, "_mtidle", 0, 0, "DeviousDevices", Config.LogMessages)
-		akActor.SetAnimationVariableInt("FNIS_abc_h2h_LocomotionPose", 0)
 	EndIf
+EndFunction
+
+Function ClearAA(actor akActor)
+;This function forcibly reverts animations to the vanilla state
+;On its own it is used in transitions between different animation sets
+;In order to revert to animations from compatible AA mods, remember to use ResetExteralAA() afterwards
+
+	FNIS_aa.SetAnimGroup(akActor, "_h2heqp", 0, 0, "DeviousDevices", Config.LogMessages)
+	FNIS_aa.SetAnimGroup(akActor, "_h2hidle", 0, 0, "DeviousDevices", Config.LogMessages)
+	FNIS_aa.SetAnimGroup(akActor, "_h2hatkpow", 0, 0, "DeviousDevices", Config.LogMessages)
+	FNIS_aa.SetAnimGroup(akActor, "_h2hatk", 0, 0, "DeviousDevices", Config.LogMessages)
+	FNIS_aa.SetAnimGroup(akActor, "_h2hstag", 0, 0, "DeviousDevices", Config.LogMessages)
+	FNIS_aa.SetAnimGroup(akActor, "_jump", 0, 0, "DeviousDevices", Config.LogMessages)
+	FNIS_aa.SetAnimGroup(akActor, "_sneakmt", 0, 0, "DeviousDevices", Config.LogMessages)
+	FNIS_aa.SetAnimGroup(akActor, "_sneakidle", 0, 0, "DeviousDevices", Config.LogMessages)
+	FNIS_aa.SetAnimGroup(akActor, "_sprint", 0, 0, "DeviousDevices", Config.LogMessages)
+
+	FNIS_aa.SetAnimGroup(akActor, "_shout", 0, 0, "DeviousDevices", Config.LogMessages)
+	FNIS_aa.SetAnimGroup(akActor, "_mtx", 0, 0, "DeviousDevices", Config.LogMessages)
+	FNIS_aa.SetAnimGroup(akActor, "_mt", 0, 0, "DeviousDevices", Config.LogMessages)
+	FNIS_aa.SetAnimGroup(akActor, "_mtturn", 0, 0, "DeviousDevices", Config.LogMessages)
+	FNIS_aa.SetAnimGroup(akActor, "_mtidle", 0, 0, "DeviousDevices", Config.LogMessages)
+	akActor.SetAnimationVariableInt("FNIS_abc_h2h_LocomotionPose", 0)
 EndFunction
 
 
@@ -312,6 +307,10 @@ Function ResetExternalAA(actor akActor)
 EndFunction
 
 
+;NPC MANAGEMENT
+;These are all the hacky measures we use to pretend that NPCs can use our devices... if they feel like it
+
+
 Function Apply_NPC_ABC(actor akActor)
 	libs.Log("Apply_NPC_ABC( " + akActor.GetLeveledActorBase().GetName() + ", UnarmedDamage: " + akActor.GetActorValue("UnarmedDamage") + " )")
 	; ActorUtil.AddPackageOverride(akActor, NPCBoundCombatPackageSandbox, 100)
@@ -320,12 +319,14 @@ Function Apply_NPC_ABC(actor akActor)
 	akActor.AddSpell(ArmbinderDebuff)
 EndFunction
 
+
 Function Remove_NPC_ABC(actor akActor)
 	libs.Log("Removing NPC Bound Combat Package")
 	akActor.RemoveSpell(ArmbinderDebuff)
 	ActorUtil.RemovePackageOverride(akActor, NPCBoundCombatPackage)
 	StorageUtil.FormListRemove(libs.zadNPCQuest, "BoundCombatActors", akActor, true)
 EndFunction
+
 
 Function CleanupNPCs()
 	int i = StorageUtil.FormListCount(libs.zadNPCQuest, "BoundCombatActors")
@@ -340,6 +341,30 @@ Function CleanupNPCs()
 	EndWhile
 EndFunction
 
-bool Function HasCompatibleDevice(actor akActor)
-	return (akActor.WornHasKeyword(libs.zad_DeviousArmbinder) || akActor.WornHasKeyword(libs.zad_DeviousArmBinderElbow) || akActor.WornHasKeyword(libs.zad_DeviousYoke) || akActor.WornHasKeyword(libs.zad_DeviousYokeBB) || (akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirt) && !akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirtRelaxed)))
+
+;OLD FUNCTIONS, no longer used as of version 3.4.0
+;Only EvaluateAA should be used directly, Apply_ABC and Remove_ABC no longer have independent functionality and should be considered depreciated
+
+
+Function Apply_ABC(actor akActor)
+	libs.log("Apply_ABC(akActor) is depreciated, please use EvaluateAA(akActor) instead!")
+	EvaluateAA(akActor)
+EndFunction
+
+
+Function Remove_ABC(actor akActor)
+	libs.log("Remove_ABC(akActor) is depreciated, please use EvaluateAA(akActor) instead!")
+	EvaluateAA(akActor)
+EndFunction
+
+
+Function Apply_HBC(actor akActor)
+	libs.log("Apply_HBC(akActor) is depreciated, please use EvaluateAA(akActor) instead!")
+	EvaluateAA(akActor)
+EndFunction
+
+
+Function Remove_HBC(actor akActor)
+	libs.log("Remove_HBC(akActor) is depreciated, please use EvaluateAA(akActor) instead!")
+	EvaluateAA(akActor)
 EndFunction
