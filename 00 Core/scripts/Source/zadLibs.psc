@@ -247,6 +247,31 @@ Outfit Property zadEmptyOutfit Auto
 ;Default Message for the new escape system to use as a fallback in case a legacy device doesn't have one defined.
 Message Property zad_DeviceEscapeMsg Auto	; Device escape message
 GlobalVariable Property zadDeviceEscapeSuccessCount Auto ; counter for succesful escape attempts
+MiscObject Property Lockpick Auto
+FormList Property zad_DD_StandardCuttingToolsList Auto		; List of allowed cutting tools
+Message Property zad_DD_EscapeDeviceMSG Auto 				; Device escape dialogue. You can customize it if you want, but make sure not to change the order and functionality of the buttons.
+Message Property zad_DD_OnEquipDeviceMSG Auto 				; Message is displayed upon device equip (dialogue only)
+Message Property zad_DD_OnNoKeyMSG Auto 	 				; Message is displayed when the player has no key
+Message Property zad_DD_OnNotEnoughKeysMSG	Auto 			; Message is displayed when the player has not enough keys
+Message Property zad_DD_OnLeaveItNotWornMSG Auto 	 		; Message is displayed when the player clicks the "Leave it Alone" button while not wearing the device.
+Message Property zad_DD_OnLeaveItWornMSG Auto 		 		; Message is displayed when the player clicks the "Leave it Alone" button while wearing the device.
+Message Property zad_DD_KeyBreakMSG Auto 	 				; Message is displayed when a key breaks while trying to unlock this device.
+Message Property zad_DD_KeyBreakJamMSG Auto 				; Message is displayed when a key breaks and gets stuck in the lock when trying to unlock this device.
+Message Property zad_DD_UnlockFailJammedMSG	Auto 			; Message displayed when a player tries to unlock a jammed device.
+Message Property zad_DD_RepairLockNotJammedMSG Auto 		; Message displayed when a player tries to repair a device that's not jammed.
+Message Property zad_DD_RepairLockMSG Auto 					; Message displayed when a player tries to repair a lock.
+Message Property zad_DD_RepairLockSuccessMSG Auto 			; Message displayed when a player successfully tries to repair a lock.
+Message Property zad_DD_RepairLockFailureMSG Auto 			; Message displayed when a player fails to repair a lock.
+Message Property zad_DD_EscapeStruggleMSG Auto 				; Message to be displayed when the player tries to struggle out of a restraint
+Message Property zad_DD_EscapeStruggleFailureMSG Auto 		; Message to be displayed when the player fails to struggle out of a restraint
+Message Property zad_DD_EscapeStruggleSuccessMSG Auto 		; Message to be displayed when the player succeeds to struggle out of a restraint
+Message Property zad_DD_EscapeLockPickMSG Auto 				; Message to be displayed when the player tries to pick a restraint
+Message Property zad_DD_EscapeLockPickFailureMSG Auto 		; Message to be displayed when the player fails to pick a restraint
+Message Property zad_DD_EscapeLockPickSuccessMSG Auto 		; Message to be displayed when the player succeeds to pick a restraint
+Message Property zad_DD_EscapeCutMSG Auto 					; Message to be displayed when the player tries to cut a restraint
+Message Property zad_DD_EscapeCutFailureMSG Auto 			; Message to be displayed when the player fails to cut a restraint
+Message Property zad_DD_EscapeCutSuccessMSG Auto 			; Message to be displayed when the player succeeds to cut open a restraint
+
 
 ; Internal Variables
 Armor Property deviceRemovalToken Auto         ; Internal token for removal events

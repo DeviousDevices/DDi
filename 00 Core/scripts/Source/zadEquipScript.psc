@@ -25,9 +25,45 @@ Quest Property deviceQuest Auto
 String Property deviceName Auto
 
 ; Escape system
-Float Property BaseEscapeChance = 10.0 Auto				; Device escape difficulty: This is the base chance to make a succesful escape attempt in %. E.g. a value of 10 means that 1 in 10 escape attempts are succesful.
+Int Property NumberOfKeysNeeded = 1 Auto 				; Number of keys needed (=multiple locks)
 Float Property LockAccessDifficulty = 0.0 Auto			; If set to greater than zero, the character cannot easily reach the locks when locked in this restraint. The higher the number, the harder she will find it to unlock herself, even when in possession of the key. A value of 100 will make it impossible for her to reach the locks. She will need help. Make sure that your mod actually provides a means to escape such retraints!
 Float Property UnlockCooldown = 3.0	Auto				; How many hours have to pass between unlock attempts for hard to unlock restraints.
+; Struggle / Pick / Cut
+Float Property BaseEscapeChance = 10.0 Auto				; Base chance to escape a restraint via struggling. Magic bonus applies. 0 disables this feature.
+Float Property LockPickEscapeChance = 15.0 Auto			; Base chance to escape a restraint via lockpicking Need proper lockpick, Lockpick bonus applies. 0 disables this feature.
+Form[] Property AllowedLockPicks Auto 					; List of items other than lockpicks considered a valid pick tool for this device. The lockpick is allowed by default unless disabled.
+Bool Property AllowLockPick = True Auto					; Indicates whether or not the bobby pin is considered a valid lockpick for this device.
+Float Property CutDeviceEscapeChance = 0.0 Auto			; Base chance to escape a restraint via cutting it open. Need proper tool, Agiliy bonus applies. 0 disables this feature.
+Bool Property AllowStandardTools = True Auto			; Indicates whether or not the items in the standard tools list (all small blades) are considered a valid cutting tool for this device.
+Keyword[] Property AllowedTool Auto						; List of item keywords considered a cutting tool for this device. 
+Float Property CatastrophicFailureChance = 15.0 Auto	; Chance that an escape attempt fails in a catastrophic manner, preventing any further attempts to escape this device using that method.
+Float Property EscapeCooldown = 3.0	Auto				; How many hours have to pass between escape attempts.
+Float Property RepairJammedLockChance = 20.0 Auto		; Chance that the player manages to successfully repair a jammed lock.
+Float Property RepairCooldown = 5.0	Auto				; How many hours have to pass between repair attempts.
+; These messages exist both here and in zadlibs. Modders can override the messages per item with these!
+Message Property zad_DD_EscapeDeviceMSG Auto 				; Device escape dialogue. You can customize it if you want, but make sure not to change the order and functionality of the buttons.
+Message Property zad_DD_OnEquipDeviceMSG Auto 				; Message is displayed upon device equip (dialogue only)
+Message Property zad_DD_OnNoKeyMSG Auto 	 				; Message is displayed when the player has no key
+Message Property zad_DD_OnNotEnoughKeysMSG	Auto 			; Message is displayed when the player has not enough keys
+Message Property zad_DD_OnLeaveItNotWornMSG Auto 	 		; Message is displayed when the player clicks the "Leave it Alone" button while not wearing the device.
+Message Property zad_DD_OnLeaveItWornMSG Auto 		 		; Message is displayed when the player clicks the "Leave it Alone" button while wearing the device.
+Message Property zad_DD_KeyBreakMSG Auto 	 				; Message is displayed when a key breaks while trying to unlock this device.
+Message Property zad_DD_KeyBreakJamMSG Auto 				; Message is displayed when a key breaks and gets stuck in the lock when trying to unlock this device.
+Message Property zad_DD_UnlockFailJammedMSG	Auto 			; Message displayed when a player tries to unlock a jammed device.
+Message Property zad_DD_RepairLockNotJammedMSG Auto 		; Message displayed when a player tries to repair a device that's not jammed.
+Message Property zad_DD_RepairLockMSG Auto 					; Message displayed when a player tries to repair a lock.
+Message Property zad_DD_RepairLockSuccessMSG Auto 			; Message displayed when a player successfully tries to repair a lock.
+Message Property zad_DD_RepairLockFailureMSG Auto 			; Message displayed when a player fails to repair a lock.
+Message Property zad_DD_EscapeStruggleMSG Auto 				; Message to be displayed when the player tries to struggle out of a restraint
+Message Property zad_DD_EscapeStruggleFailureMSG Auto 		; Message to be displayed when the player fails to struggle out of a restraint
+Message Property zad_DD_EscapeStruggleSuccessMSG Auto 		; Message to be displayed when the player succeeds to struggle out of a restraint
+Message Property zad_DD_EscapeLockPickMSG Auto 				; Message to be displayed when the player tries to pick a restraint
+Message Property zad_DD_EscapeLockPickFailureMSG Auto 		; Message to be displayed when the player fails to pick a restraint
+Message Property zad_DD_EscapeLockPickSuccessMSG Auto 		; Message to be displayed when the player succeeds to pick a restraint
+Message Property zad_DD_EscapeCutMSG Auto 					; Message to be displayed when the player tries to cut a restraint
+Message Property zad_DD_EscapeCutFailureMSG Auto 			; Message to be displayed when the player fails to cut a restraint
+Message Property zad_DD_EscapeCutSuccessMSG Auto 			; Message to be displayed when the player succeeds to cut open a restraint
+
 
 Keyword[] Property EquipConflictingDevices Auto ; These item keywords, if present on the character, will prevent the item from getting equipped, unless a script does it.
 Keyword[] Property EquipRequiredDevices Auto ; These item keywords, if NOT present on the character, will prevent the item from getting equipped, unless a script does it.
@@ -40,11 +76,18 @@ Message Property zad_UnEquipFailMsg auto ; This message will get displayed if an
 bool menuDisable = false
 int mutexTimeout = 10
 bool unequipMutex
-Bool RemovedWithSuccess = True
-Bool RemovedViaEscape = False
-Float LastEscapeAttemptAt
-Int EscapeAttemptsMade = 0
 Float LastUnlockAttemptAt = 0.0							; When did the player last attempt to unlock this device.
+
+; Internal script variables
+Float DeviceEquippedAt = 0.0							; When was this device equipped?
+Int EscapeAttemptsMade = 0								; Tracker of how often the player tried to escape this device.
+Float LastEscapeAttemptAt = 0.0							; When did the player last attempt to escape.
+Float DifficultyModifier = 0.0							; Global modifier for escape attempts. Can be used to make escape harder or easier.
+Int RepairAttemptsMade = 0								; Tracker of how often the player tried to escape this device.
+Float LastRepairAttemptAt = 0.0							; When did the player last attempt to escape.
+Float RepairDifficultyModifier = 0.0					; Global modifier for escape attempts. Can be used to make escape harder or easier.
+;Float LockShieldTimer = 0.0								; The actual uptime of the lockshield. Randomly determined when the item is equipped using the min and max values.
+
 
 Function MultipleItemFailMessage(string offendingItem)
 	offendingItem = libs.MakeSingularIfPlural(offendingItem)
@@ -396,30 +439,6 @@ Function RemoveDevice(actor akActor, bool destroyDevice=false, bool skipMutex=fa
 		libs.NotifyPlayer("You cannot remove the " + deviceName + " while wearing bondage mittens!", true)
 		return
 	EndIf	
-	; RemovedWithSuccess is set to false when the key breaks, so we don't display the "You succesfully removed device" message later, when you actually didn't.
-	; Most OOP instructors are likely to faint seeing this cringeworthy implementation, but the alternative is changing the function header and making everyone recompile everything. Nah!
-	RemovedWithSuccess = True
-	if (akActor == libs.PlayerRef) && libs.Config.DestroyKeyProbability > 0.0 && deviceKey != none && !RemovedViaEscape ; don't break keys when the character escaped the item!
-		; At the time of writing this, only the player may unlock themselves / NPCs via this function.
-		; I do not really see that changing in the future, so using an explicit reference to the
-		; player here is probably the way to go. Quests will manipulate this via the API anyways,
-		; and this function is only for internal use.
-		if deviceInventory.HasKeyword(libs.zad_BlockGeneric) || deviceRendered.HasKeyword(libs.zad_BlockGeneric) || deviceInventory.HasKeyword(libs.zad_QuestItem) || deviceRendered.HasKeyword(libs.zad_QuestItem)
-			Libs.Log("Not breaking key for non-generic device.")
-		Elseif Utility.RandomInt(1, 100) <= libs.Config.DestroyKeyProbability
-			if (Utility.RandomInt(1, 100) <= libs.Config.DestroyKeyJamChance)
-				libs.NotifyPlayer("The key breaks while attempting to remove the "+deviceName+", and the broken key becomes stuck in the lock!", true)				
-				libs.SendDeviceJamLockEventVerbose(deviceInventory, zad_DeviousDevice, akActor)
-				StorageUtil.SetIntValue(akActor, "zad_Equipped" + libs.LookupDeviceType(zad_DeviousDevice) + "_LockJammedStatus", 1)
-			Else
-				libs.NotifyPlayer("The key breaks while attempting to remove the "+deviceName+"!", true)
-			EndIf			
-			libs.SendDeviceKeyBreakEventVerbose(deviceInventory, zad_DeviousDevice, akActor)
-			libs.PlayerRef.RemoveItem(deviceKey, 1, true)
-			RemovedWithSuccess = False
-			return
-		EndIf
-	Endif
 	libs.SendDeviceRemovalEvent(deviceName, akActor)
 	libs.SendDeviceRemovedEventVerbose(deviceInventory, zad_DeviousDevice, akActor)
 	if deviceInventory.HasKeyword(libs.zad_QuestItem) || deviceRendered.HasKeyword(libs.zad_QuestItem)
@@ -454,31 +473,53 @@ bool Function RemoveDeviceWithKey(actor akActor = none, bool destroyDevice=false
 	if akActor == none
 		akActor = libs.PlayerRef
 	EndIf
-
     if !CheckLockShield(akActor)
         return false
     endif
-
 	if (akActor == libs.PlayerRef) && StorageUtil.GetIntValue(akActor, "zad_Equipped" + libs.LookupDeviceType(zad_DeviousDevice) + "_LockJammedStatus") == 1
 		libs.Log("RemoveDeviceWithKey called, but lock is jammed.")
 		libs.Notify("You attempt to unlock the "+deviceName+", but the lock is jammed!", true)
 		return false
 	EndIf
+	If DeviceKey
+		If libs.PlayerReF.GetItemCount(DeviceKey) <= 0
+			If zad_DD_OnNoKeyMSG
+				zad_DD_OnNoKeyMSG.Show()
+			Else
+				libs.Notify("You do not posess the correct key to manipulate this " + deviceName + ".")
+			EndIf
+			Return False
+		ElseIf libs.PlayerRef.GetItemCount(DeviceKey) < NumberOfKeysNeeded
+			If zad_DD_OnNotEnoughKeysMSG
+				zad_DD_OnNotEnoughKeysMSG.Show()
+			Else
+				libs.Notify("You do not posess enough keys to manipulate this " + deviceName + ".")
+			EndIf
+			Return False
+		EndIf
+	EndIf
 	; Check if she is able to unlock herself:
 	If !CheckLockAccess()
 		Return False
-	EndIf
-	if akActor.GetItemCount(deviceKey)>=1
-		libs.Log("RemoveDeviceWithKey called, actor has correct key. Removing "+ deviceName +".")
-		RemovedViaEscape = False
-		RemoveDevice(akActor)
-		;return true
-		return RemovedWithSuccess
-	else
-		libs.Log("RemoveDeviceWithKey called for a "+deviceName+" while actor does not possess key.")
-		libs.Notify("You do not posess the correct key to manipulate this " + deviceName + ".")
-		return false
-	Endif
+	EndIf	
+	if (akActor == libs.PlayerRef) && libs.Config.DestroyKeyProbability > 0.0 && deviceKey != none 
+		if deviceInventory.HasKeyword(libs.zad_BlockGeneric) || deviceRendered.HasKeyword(libs.zad_BlockGeneric) || deviceInventory.HasKeyword(libs.zad_QuestItem) || deviceRendered.HasKeyword(libs.zad_QuestItem)
+			Libs.Log("Not breaking key for non-generic device.")
+		Elseif Utility.RandomInt(1, 100) <= libs.Config.DestroyKeyProbability
+			if (Utility.RandomInt(1, 100) <= libs.Config.DestroyKeyJamChance)
+				libs.NotifyPlayer("The key breaks while attempting to remove the "+deviceName+", and the broken key becomes stuck in the lock!", true)				
+				libs.SendDeviceJamLockEventVerbose(deviceInventory, zad_DeviousDevice, akActor)
+				StorageUtil.SetIntValue(akActor, "zad_Equipped" + libs.LookupDeviceType(zad_DeviousDevice) + "_LockJammedStatus", 1)
+			Else
+				libs.NotifyPlayer("The key breaks while attempting to remove the "+deviceName+"!", true)
+			EndIf			
+			libs.SendDeviceKeyBreakEventVerbose(deviceInventory, zad_DeviousDevice, akActor)
+			libs.PlayerRef.RemoveItem(deviceKey, 1, true)
+			return False
+		EndIf
+	Endif		
+	RemoveDevice(akActor)	
+	return True
 EndFunction
 
 
@@ -662,8 +703,8 @@ Function DeviceMenuEquip()
 	libs.NotifyPlayer("You choose to put the " + deviceName + " on.")	
 EndFunction
 
-function DeviceMenuRemoveWithKey()
-    If !IsUnEquipDeviceConflict(libs.playerref)
+function DeviceMenuRemoveWithKey()    
+	If !IsUnEquipDeviceConflict(libs.playerref)
 		if RemoveDeviceWithKey()
 			libs.NotifyPlayer("You succesfully unlock the " + deviceName+".")
 		Endif
@@ -675,8 +716,7 @@ EndFunction
 ;Lockpick Menu
 ;==========
 ; In a real language, this would be so much easier...
-string Function DeviceMenuPickLockSuccess()
-	RemovedViaEscape = True
+string Function DeviceMenuPickLockSuccess()	
 	RemoveDevice(libs.PlayerRef)
 	return ""
 EndFunction
@@ -778,8 +818,7 @@ Function DeviceMenuMagic()
 				out += DeviceMenuDestructionModerate()
 			else
 				out += "You channel the powers of Fire and Ice in to the "+deviceName+", and sufficiently destroy the band that is securing it in place. "
-				out += DeviceMenuDestructionSuccess()
-				RemovedViaEscape = True
+				out += DeviceMenuDestructionSuccess()				
 				RemoveDevice(libs.PlayerRef, destroyDevice=true)
 			Endif
                 elseif magicChoice==1
@@ -790,8 +829,7 @@ Function DeviceMenuMagic()
 				out += DeviceMenuAlterationFail()
 			else
 				out += "After a few moments, the magical energy is sufficient to turn the lock to goo, and you easily free yourself. "
-				out += DeviceMenuAlterationSuccess()
-				RemovedViaEscape = True
+				out += DeviceMenuAlterationSuccess()			
 				RemoveDevice(libs.PlayerRef, destroyDevice=true)
 			Endif
                 elseif magicChoice==2
@@ -824,30 +862,134 @@ Function DeviceMenuCarryOn()
 	libs.Notify("Since there seems to be no obvious way to remove the "+deviceName+" you have no choice but to reluctantly leave it locked on for now.", messageBox=true)
 EndFunction
 
-Float Function CalclulateEscapeModifiers()
-	Float result = BaseEscapeChance
-	; Apply modifiers, but only if the device is not impossible to escape from.
-	If BaseEscapeChance > 0.0
+Function DisplayDifficultyMsg()
+	Int StruggleEscapeChance = Math.Floor(BaseEscapeChance)
+	String result = "You carefully examine the " + DeviceName + ". "
+	If StruggleEscapeChance > 75
+		result += "This restraint is fairly weak and will not offer much resistance against struggling."
+	ElseIf StruggleEscapeChance > 50
+		result += "This is not a very secure restraint. Struggling out should be easy."
+	ElseIf StruggleEscapeChance > 25
+		result += "This restraint is somewhat secure, but not overly much so. Struggling out will be moderately difficult."
+	ElseIf StruggleEscapeChance > 10
+		result += "This restraint is fairly secure and will be hard to struggle out from."
+	ElseIf StruggleEscapeChance > 5
+		result += "This restraint is secure and will be extremely difficult to struggle out from."
+	ElseIf StruggleEscapeChance > 0
+		result += "This restraint is very secure and will withstand most escape attempts. Struggling out of this device will be almost impossible."
+	Else
+		result += "This is a high security restraint. Struggling out from this device will be impossible!"
+	Endif
+	result += " "
+	If LockPickEscapeChance > 75
+		result += "Its lock is weak and will not offer much resistance to pick attempts."
+	ElseIf LockPickEscapeChance > 50
+		result += "Its lock is not very secure. Picking it should be easy."
+	ElseIf LockPickEscapeChance > 25
+		result += "Its lock is somewhat secure, but not overly much so. Picking it will be moderately difficult."
+	ElseIf LockPickEscapeChance > 10
+		result += "Its lock is fairly secure and will be hard to pick."
+	ElseIf LockPickEscapeChance > 5
+		result += "Its lock is secure and will be extremely difficult to pick."
+	ElseIf LockPickEscapeChance > 0
+		result += "Its lock is very secure and will withstand most attempts to pick it."
+	Else
+		result += "It has a high security lock. Unlocking it without the proper key will be impossible!"
+	Endif
+	result += " "
+	If CutDeviceEscapeChance > 75
+		result += "Its material is weak and will not offer much resistance to cutting."
+	ElseIf CutDeviceEscapeChance > 50
+		result += "Its material is not very tough. Cutting it should be easy."
+	ElseIf CutDeviceEscapeChance > 25
+		result += "Its material is somewhat tough, but not overly much so. Cutting it will be moderately difficult."
+	ElseIf CutDeviceEscapeChance > 10
+		result += "Its material is fairly tough and will be hard to cut."
+	ElseIf CutDeviceEscapeChance > 5
+		result += "Its material is hard and will be extremely difficult to cut."
+	ElseIf CutDeviceEscapeChance > 0
+		result += "Its material is very hard and will withstand most attempts to cut it."
+	Else
+		result += "Its material is impossible to cut!"
+	Endif
+	libs.notify(result, messageBox = true)
+EndFunction
+
+Bool Function CanMakeEscapeAttempt()
+	; check if the character can make an escape attempt
+	Float HoursNeeded = EscapeCooldown
+	Float HoursPassed = (Utility.GetCurrentGameTime() - LastEscapeAttemptAt) * 24.0
+	if HoursPassed > HoursNeeded
+		LastEscapeAttemptAt = Utility.GetCurrentGameTime()
+		return True
+	Else
+		Int HoursToWait = Math.Ceiling(HoursNeeded - HoursPassed)
+		libs.notify("You cannot try to escape this device so soon after the last attempt! You can try again in about " + HoursToWait + " hours.", messageBox = true)
+	EndIf
+	return False
+EndFunction
+
+; returns 0 when the escape attempt fails, 1 at success and -1 when no attempt was made due to cooldown
+Int Function Escape(Float Chance)
+	Bool Success = False
+	If Chance == 0.0
+		; no need to process, but returning here will prevent catastrophic failures when there is zero chance of success. We're not THAT mean!
+		return 0
+	Endif
+	libs.log("Player is trying to escape " + DeviceName + ". Escape chance after modifiers: " + Chance +"%")
+	If Utility.RandomFloat(0.0, 99.9) < Chance
+		libs.log("Player has escaped " + DeviceName)
+		; increase success counter
+		libs.zadDeviceEscapeSuccessCount.SetValueInt(libs.zadDeviceEscapeSuccessCount.GetValueInt() + 1)		
+		RemoveDevice(libs.PlayerRef)
+		return 1
+	Else
+		libs.log("Player has failed to escape " + DeviceName)
+	EndIf
+	return 0
+EndFunction
+
+Bool Function HasValidCuttingTool()
+	; on second thought...this is Skyrim! Does anybody ever NOT carry a blade?
+	Return True	
+	; Bool HasValidItem = false	
+	; Int i = libs.zad_DD_StandardCuttingToolsList.GetSize()
+	; While i > 0 && !HasValidItem
+		; i -= 1
+		; Form frm = libs.zad_DD_StandardCuttingToolsList.GetAt(i)
+		; If libs.playerref.GetItemCount(frm) > 0
+			; HasValidItem = True
+		; EndIf
+	; EndWhile	
+	; i = AllowedTool.Length
+	; While i > 0 && !HasValidItem
+		; i -= 1
+		; Form frm = AllowedTool[i]		
+		; If libs.playerref.GetItemCount(frm) > 0
+			; HasValidItem = True
+		; EndIf
+	; EndWhile
+	; return HasValidItem
+EndFunction
+
+Float Function CalclulateCutSuccess()
+	Float result = CutDeviceEscapeChance
+	; Apply modifiers, but only if the device is not impossible to escape from to begin with.
+	If CutDeviceEscapeChance > 0.0
+		; add 1% for every previous attempt
 		result += EscapeAttemptsMade
-		result += Libs.Config.DeviceDifficultyModifer
-		If Libs.PlayerRef.GetAV("Destruction") > 25 || Libs.PlayerRef.GetAV("Alteration") > 25
+		; apply global modifier
+		result += DifficultyModifier
+		If Libs.PlayerRef.GetAV("OneHanded") > 25
 			result += 1.0
 		Endif
-		If Libs.PlayerRef.GetAV("Destruction") > 50 || Libs.PlayerRef.GetAV("Alteration") > 50
+		If Libs.PlayerRef.GetAV("OneHanded") > 50
 			result += 2.0
 		Endif
-		If Libs.PlayerRef.GetAV("Destruction") > 75 || Libs.PlayerRef.GetAV("Alteration") > 75
+		If Libs.PlayerRef.GetAV("OneHanded") > 75
 			result += 3.0
 		Endif
-		If Libs.PlayerRef.GetAV("Lockpicking") > 25
-			result += 1.0
-		Endif
-		If Libs.PlayerRef.GetAV("Lockpicking") > 50
-			result += 2.0
-		Endif
-		If Libs.PlayerRef.GetAV("Lockpicking") > 75
-			result += 3.0
-		Endif
+		; apply bonus for total successful escapes
 		Int EscapesMade = libs.zadDeviceEscapeSuccessCount.GetValueInt()
 		If EscapesMade > 10
 			result += 1.0
@@ -870,46 +1012,291 @@ Float Function CalclulateEscapeModifiers()
 	return result
 EndFunction
 
-Function DisplayDifficultyMsg(Float EscapeChance)
-	If EscapeChance > 80
-		libs.notify("You carefully examine the " + deviceInventory.GetName() +". This restraint will not offer much resistance. Escape from this device will be trivial.", messageBox = true)
-	ElseIf EscapeChance > 50
-		libs.notify("You carefully examine the " + deviceInventory.GetName() +". It is not a very secure restraint. Escape from this device will be easy.", messageBox = true)
-	ElseIf EscapeChance > 25
-		libs.notify("You carefully examine the " + deviceInventory.GetName() +". This restraint is somewhat secure, but not overly much so. Escape from this device will be moderately difficult.", messageBox = true)
-	ElseIf EscapeChance > 10
-		libs.notify("You carefully examine the " + deviceInventory.GetName() +". This restraint is fairly secure. Escape from this device will be difficult.", messageBox = true)
-	ElseIf EscapeChance > 5
-		libs.notify("You carefully examine the " + deviceInventory.GetName() +". This restraint was designed secure. Escape from this device will be very difficult.", messageBox = true)
-	ElseIf EscapeChance > 0
-		libs.notify("You carefully examine the " + deviceInventory.GetName() +". This restraint is very secure and will withstand most escape attempts. Escape from this device will be extremely difficult.", messageBox = true)
+Function EscapeAttemptCut()
+	; If libs.PlayerRef.WornHasKeyword(libs.DD_kw_EffectType_BondageMittens)		
+		; libs.notify("You can not try to cut your " + DeviceName + " with sealed hands!", messageBox = true)
+		; return
+	; EndIf
+	If !HasValidCuttingTool()
+		libs.notify("You do not possess a tool you could use for cutting your " + DeviceName + ".", messageBox = true)
+		return
+	EndIf
+	If !CanMakeEscapeAttempt()
+		return
+	EndIf	
+	If zad_DD_EscapeCutMSG
+		zad_DD_EscapeCutMSG.Show()
+	Else 
+		libs.zad_DD_EscapeCutMSG.Show()
+	EndIf
+	Int i = Escape(CalclulateCutSuccess())
+	If i == 1
+		; device got removed in Escape(), so just need to show the success message.
+		If zad_DD_EscapeCutSuccessMSG
+			zad_DD_EscapeCutSuccessMSG.Show()
+		Else
+			libs.zad_DD_EscapeCutSuccessMSG.Show()
+		EndIf
+	Elseif i == 0
+		; catastrophic failure will prevent further escape attempts
+		if Utility.RandomFloat(0.0, 99.9) < CatastrophicFailureChance
+			CutDeviceEscapeChance = 0.0
+			libs.notify("You fail to escape from your " + DeviceName + " and your feeble attempts tighten the device so much that you won't ever be able to cut it open.", messageBox = true)
+		Else
+			; regular failure
+			EscapeAttemptsMade += 1
+			If zad_DD_EscapeCutFailureMSG
+				zad_DD_EscapeCutFailureMSG.Show()
+			Else
+				libs.zad_DD_EscapeCutFailureMSG.Show()
+			EndIf
+		Endif
+	EndIf
+EndFunction
+
+Function EscapeAttemptLockPick()
+	if StorageUtil.GetIntValue(libs.Playerref, "zad_Equipped" + libs.LookupDeviceType(zad_DeviousDevice) + "_LockJammedStatus") == 1		
+		libs.Notify("You cannot try to pick a jammed lock!", true)
+		return
+	EndIf
+	If !HasValidLockPick()
+		libs.notify("You do not possess a pick you could use on your " + DeviceName + ".", messageBox = true)
+		return
+	EndIf
+	If !CanMakeEscapeAttempt()
+		return
+	EndIf
+	If zad_DD_EscapeLockPickMSG	
+		zad_DD_EscapeLockPickMSG.Show()
 	Else
-		libs.notify("You carefully examine the " + deviceInventory.GetName() +". It is a high security restraint. Escape from this device will be impossible. You will need the proper key!", messageBox = true)
+		libs.zad_DD_EscapeLockPickMSG.Show()
+	EndIf
+	Int i = Escape(CalclulateLockPickSuccess())
+	If i == 1
+		; device got removed in Escape(), so just need to show the success message.
+		If zad_DD_EscapeLockPickSuccessMSG
+			zad_DD_EscapeLockPickSuccessMSG.Show()
+		Else
+			libs.zad_DD_EscapeLockPickSuccessMSG.Show()
+		EndIf
+	Elseif i == 0
+		; catastrophic failure will prevent further escape attempts
+		if Utility.RandomFloat(0.0, 99.9) < CatastrophicFailureChance
+			LockPickEscapeChance = 0.0
+			libs.notify("You fail to escape from your " + DeviceName + " and your feeble attempts trigger a safety shield inside the lock, preventing further pick attempts.", messageBox = true)
+		Else
+			; regular failure
+			EscapeAttemptsMade += 1
+			; destroy the lockpick
+			DestroyLockPick()
+			If zad_DD_EscapeLockPickFailureMSG
+				zad_DD_EscapeLockPickFailureMSG.Show()
+			Else
+				libs.zad_DD_EscapeLockPickFailureMSG.Show()
+			EndIf
+		Endif
+	EndIf
+EndFunction
+
+Bool Function HasValidLockPick()
+	Bool HasValidItem = false
+	If AllowLockPick && libs.PlayerRef.GetItemCount(libs.Lockpick) > 0
+		return true
+	EndIf
+	Int i = AllowedLockPicks.Length
+	While i > 0 && !HasValidItem
+		i -= 1
+		Form frm = AllowedLockPicks[i]
+		If libs.playerRef.GetItemCount(frm) > 0
+			HasValidItem = True
+		EndIf
+	EndWhile
+	return HasValidItem
+EndFunction
+
+Bool Function DestroyLockPick()
+	Bool LockPickDestroyed = false
+	If AllowLockPick && libs.PlayerRef.GetItemCount(libs.Lockpick) > 0
+		libs.playerRef.RemoveItem(libs.Lockpick)
+		return True
+	EndIf
+	Int i = AllowedLockPicks.Length
+	While i > 0 && !LockPickDestroyed
+		i -= 1
+		Form frm = AllowedLockPicks[i]
+		If libs.playerRef.GetItemCount(frm) > 0 && !(frm As Keyword)
+			libs.playerRef.RemoveItem(frm)
+			LockPickDestroyed = True
+		EndIf
+	EndWhile
+	return LockPickDestroyed
+EndFunction
+
+Float Function CalclulateLockPickSuccess()
+	Float result = LockPickEscapeChance
+	; Apply modifiers, but only if the device is not impossible to escape from to begin with.
+	If LockPickEscapeChance > 0.0
+		; add 1% for every previous attempt
+		result += EscapeAttemptsMade
+		; apply global modifier
+		result += DifficultyModifier
+		If Libs.PlayerRef.GetAV("Lockpicking") > 25
+			result += 1.0
+		Endif
+		If Libs.PlayerRef.GetAV("Lockpicking") > 50
+			result += 2.0
+		Endif
+		If Libs.PlayerRef.GetAV("Lockpicking") > 75
+			result += 3.0
+		Endif
+		; apply bonus for total successful escapes
+		Int EscapesMade = libs.zadDeviceEscapeSuccessCount.GetValueInt()
+		If EscapesMade > 10
+			result += 1.0
+		Endif
+		If EscapesMade > 25
+			result += 1.0
+		Endif
+		If EscapesMade > 50
+			result += 1.0
+		Endif
+		If EscapesMade > 100
+			result += 1.0
+		Endif
 	Endif
+	If result < 0.0
+		return 0.0
+	ElseIf result > 100.0
+		return 100.0
+	Endif
+	return result
+EndFunction
+
+Function EscapeAttemptStruggle()
+	If !CanMakeEscapeAttempt()
+		return
+	EndIf
+	If zad_DD_EscapeStruggleMSG
+		zad_DD_EscapeStruggleMSG.Show()
+	Else
+		libs.zad_DD_EscapeStruggleMSG.Show()
+	EndIf
+	Int i = Escape(CalclulateStruggleSuccess())
+	If i == 1
+		; device got removed in Escape(), so just need to show the success message.
+		If zad_DD_EscapeStruggleSuccessMSG
+			zad_DD_EscapeStruggleSuccessMSG.Show()
+		Else
+			libs.zad_DD_EscapeStruggleSuccessMSG.Show()
+		EndIf
+	Elseif i == 0
+		; catastrophic failure will prevent further escape attempts
+		if Utility.RandomFloat(0.0, 99.9) < CatastrophicFailureChance
+			BaseEscapeChance = 0.0
+			libs.notify("You fail to escape from your " + DeviceName + " and your feeble attempts tighten the device so much that you won't ever be able to struggle out from it.", messageBox = true)
+		Else
+			; regular failure
+			EscapeAttemptsMade += 1
+			If zad_DD_EscapeStruggleFailureMSG
+				zad_DD_EscapeStruggleFailureMSG.Show()
+			Else
+				libs.zad_DD_EscapeStruggleFailureMSG.Show()
+			EndIf
+		Endif
+	EndIf
+EndFunction
+
+Float Function CalclulateStruggleSuccess()
+	Float result = BaseEscapeChance
+	; Apply modifiers, but only if the device is not impossible to escape from to begin with.
+	If BaseEscapeChance > 0.0
+		; add 1% for every previous attempt
+		result += EscapeAttemptsMade
+		; apply global modifier
+		result += DifficultyModifier
+		; apply strength bonus
+		If Libs.PlayerRef.GetAV("Destruction") > 25 || Libs.PlayerRef.GetAV("Alteration") > 25
+			result += 1.0
+		Endif
+		If Libs.PlayerRef.GetAV("Destruction") > 50 || Libs.PlayerRef.GetAV("Alteration") > 50
+			result += 2.0
+		Endif
+		If Libs.PlayerRef.GetAV("Destruction") > 75 || Libs.PlayerRef.GetAV("Alteration") > 75
+			result += 3.0
+		Endif		
+		; apply bonus for total successful escapes
+		Int EscapesMade = libs.zadDeviceEscapeSuccessCount.GetValueInt()
+		If EscapesMade > 10
+			result += 1.0
+		Endif
+		If EscapesMade > 25
+			result += 1.0
+		Endif
+		If EscapesMade > 50
+			result += 1.0
+		Endif
+		If EscapesMade > 100
+			result += 1.0
+		Endif
+	Endif
+	If result < 0.0
+		return 0.0
+	ElseIf result > 100.0
+		return 100.0
+	Endif
+	return result
+EndFunction
+
+; returns 0 when the escape attempt fails, 1 at success and -1 when no attempt was made due to cooldown
+Int Function RepairJammedLock(Float Chance)
+	Bool Success = False
+	If Chance == 0.0
+		; no need to process, but returning here will prevent catastrophic failures when there is zero chance of success. We're not THAT mean!
+		return 0
+	Endif
+	libs.log("Player is trying to repair " + DeviceName + ". Repair chance after modifiers: " + Chance +"%")
+	; check if the character can make a repair attempt
+	Float HoursNeeded = RepairCooldown
+	Float HoursPassed = (Utility.GetCurrentGameTime() - LastRepairAttemptAt) * 24.0
+	if HoursPassed > HoursNeeded
+		LastRepairAttemptAt = Utility.GetCurrentGameTime()
+		If Utility.RandomFloat(0.0, 99.9) < Chance
+			libs.log("Player has repaired " + DeviceName)			
+			StorageUtil.SetIntValue(libs.playerref, "zad_Equipped" + libs.LookupDeviceType(zad_DeviousDevice) + "_LockJammedStatus", 0)			
+			return 1
+		Else
+			libs.log("Player has failed to repair " + DeviceName)
+		EndIf
+	Else
+		Int HoursToWait = Math.Ceiling(HoursNeeded - HoursPassed)
+		libs.notify("You cannot try to repair this device's lock so soon after the last attempt! You can try again in about " + HoursToWait + " hours.", messageBox = true)
+		return -1
+	EndIf
+	return 0
 EndFunction
 
 Function DeviceMenuRemoveWithoutKey()
 	If IsUnEquipDeviceConflict(libs.playerref)
 		return
 	Endif
-	Bool useDeviceDifficultyEscape = Libs.Config.UseDeviceDifficultyEscape
-	If !useDeviceDifficultyEscape || !BaseEscapeChance
-		int deviceRemoveOption = zad_DeviceRemoveMsg.show()
-		if deviceRemoveOption == 0 ; Lockpicking
-            if !CheckLockShield(libs.PlayerRef)
-                return
-            endif
-			DeviceMenuPickLock()
-		elseif deviceRemoveOption == 1 ; Magicking
-			DeviceMenuMagic()
-		elseif deviceRemoveOption == 2 ; Brute force
-			DeviceMenuBruteForce()
-		elseif deviceRemoveOption == 3
-			DeviceMenuCarryOn()
-		endif
-		return
-	EndIf
-	Float EscapeChance = CalclulateEscapeModifiers()
+	; legacy escape system
+	; If !BaseEscapeChance
+		; int deviceRemoveOption = zad_DeviceRemoveMsg.show()
+		; if deviceRemoveOption == 0 ; Lockpicking
+            ; if !CheckLockShield(libs.PlayerRef)
+                ; return
+            ; endif
+			; DeviceMenuPickLock()
+		; elseif deviceRemoveOption == 1 ; Magicking
+			; DeviceMenuMagic()
+		; elseif deviceRemoveOption == 2 ; Brute force
+			; DeviceMenuBruteForce()
+		; elseif deviceRemoveOption == 3
+			; DeviceMenuCarryOn()
+		; endif
+		; return
+	; EndIf
+	
 	int msgOption 
 	If !zad_DeviceEscapeMsg ; legacy device, use the default message in zadlibs
 		msgOption = libs.zad_DeviceEscapeMsg.show()	
@@ -917,40 +1304,64 @@ Function DeviceMenuRemoveWithoutKey()
 		msgOption = zad_DeviceEscapeMsg.show()	
 	Endif
 	If msgOption == 0 ; try to escape		
-		If BaseEscapeChance == 0.0
-			libs.notify("You have no chance to escape the " + deviceInventory.GetName() + ". You need to look for the proper key!", messageBox = true)
-			return
-		Endif
-		libs.log("Player is trying to escape " + deviceInventory.GetName() + ". Escape chance after modifiers: " + EscapeChance +"%")
-		; check if the character can make an escape attempt
-		Float HoursNeeded = Libs.Config.DeviceDifficultyCooldown
-		Float HoursPassed = (Utility.GetCurrentGameTime() - LastEscapeAttemptAt) * 24.0
-		if HoursPassed > HoursNeeded
-			LastEscapeAttemptAt = Utility.GetCurrentGameTime()
-			If Utility.RandomFloat(0.0, 99.9) < EscapeChance
-				libs.log("Player has escaped " + deviceInventory.GetName())
-				libs.notify("You succesfully escape from your " + deviceInventory.GetName(), messageBox = true)
-				; increase success counter
-				libs.zadDeviceEscapeSuccessCount.SetValueInt(libs.zadDeviceEscapeSuccessCount.GetValueInt() + 1)
-				RemovedViaEscape = True
-				RemoveDevice(libs.PlayerRef)
-			Else
-				libs.log("Player has failed to escape " + deviceInventory.GetName())
-				; catastrophic failure will prevent further escape attempts
-				if Utility.RandomFloat(0.0, 99.9) < Libs.Config.DeviceDifficultyCatastrophicFailChance
-					BaseEscapeChance = 0.0
-					libs.notify("You fail to escape from your " + deviceInventory.GetName() + " and your feeble attempts tighten the device so much that you won't ever be able to escape it. You need to look for the proper key!", messageBox = true)
-				Else
-					EscapeAttemptsMade += 1
-					libs.notify("You fail to escape from your " + deviceInventory.GetName(), messageBox = true)
-				Endif
-			EndIf
+		If IsUnequipDeviceConflict(libs.PlayerRef)
+			Return
+		EndIf
+		Int EscapeOption
+		If !zad_DD_EscapeDeviceMSG ; legacy device, use the default message in zadlibs
+			EscapeOption = libs.zad_DD_EscapeDeviceMSG.show()	
 		Else
-			Int HoursToWait = Math.Ceiling(HoursNeeded - HoursPassed)
-			libs.notify("You cannot try to escape this device so soon after the last attempt! You can try again in about " + HoursToWait + " hours.", messageBox = true)
+			EscapeOption = zad_DD_EscapeDeviceMSG.show()	
+		Endif		
+		If EscapeOption == 0 ; Struggle
+			EscapeAttemptStruggle()
+		Elseif EscapeOption == 1 ; Pick Lock
+			EscapeAttemptLockPick()
+		Elseif EscapeOption == 2 ; Cut Device
+			EscapeAttemptCut()
+		Elseif EscapeOption == 3 ; Examine
+			DisplayDifficultyMsg()
+		Elseif EscapeOption == 4 ; Repair
+			If StorageUtil.GetIntValue(libs.playerref, "zad_Equipped" + libs.LookupDeviceType(zad_DeviousDevice) + "_LockJammedStatus") == 1				
+				; this device has a jammed lock
+				Int JamOption 
+				If zad_DD_RepairLockMSG
+					JamOption = zad_DD_RepairLockMSG.Show()
+				Else
+					JamOption = libs.zad_DD_RepairLockMSG.Show()
+				EndIf
+				If JamOption == 0 ; try
+					Int RepairResult = RepairJammedLock(RepairJammedLockChance)
+					If RepairResult == 0 ; fail
+						If zad_DD_RepairLockFailureMSG
+							zad_DD_RepairLockFailureMSG.Show()
+						Else
+							libs.zad_DD_RepairLockFailureMSG.Show()
+						EndIf
+					Elseif RepairResult == 1 ; success
+						If zad_DD_RepairLockSuccessMSG
+							zad_DD_RepairLockSuccessMSG.Show()
+						Else
+							libs.zad_DD_RepairLockSuccessMSG.Show()
+						EndIf
+						; no further action needed. Jammed lock status got reset in the function
+					EndIf
+				EndIf
+			Else
+				; not jammed. Silly player!
+				If zad_DD_RepairLockNotJammedMSG
+					zad_DD_RepairLockNotJammedMSG.Show()
+				Else
+					libs.zad_DD_RepairLockNotJammedMSG.Show()
+				EndIf
+			EndIf		
+		Elseif EscapeOption == 5 ; Nothing
+			If zad_DD_OnLeaveItWornMSG
+				zad_DD_OnLeaveItWornMSG.Show()
+			EndIf
 		EndIf		
 	ElseIf msgOption == 1 ; examine
-		DisplayDifficultyMsg(EscapeChance)
+		DisplayDifficultyMsg()
 	ElseIf msgOption == 2 ; leave it on
 		DeviceMenuCarryOn()
 	Endif

@@ -33,15 +33,6 @@ int destroyKeyProbabilityDefault = 0
 int Property DestroyKeyJamChance Auto 
 int destroyKeyJamChanceDefault = 0
 
-Bool Property UseDeviceDifficultyEscape = True Auto
-Bool UseDeviceDifficultyEscapeDefault = True
-Float Property DeviceDifficultyCooldown = 4.0 Auto
-Float DeviceDifficultyCooldownDefault = 4.0
-Float Property DeviceDifficultyModifer = 0.0 Auto
-Float DeviceDifficultyModiferDefault = 0.0
-Float Property DeviceDifficultyCatastrophicFailChance = 10.0 Auto
-Float DeviceDifficultyCatastrophicFailChanceDefault = 10.0
-
 Float Property ArmbinderStruggleBaseChance = 5.0 Auto
 Float ArmbinderStruggleBaseChanceDefault = 5.0
 Int Property ArmbinderMinStruggle = 5 Auto
@@ -386,20 +377,12 @@ Event OnPageReset(string page)
 			thresholdModifierOID = -1
 			keyCraftingOID = -1
 			destroyKeyProbabilityOID = -1
-			destroyKeyJamChanceOID = -1			
-			UseDeviceDifficultyEscapeOID = -1
-			DeviceDifficultyCooldownOID = -1
-			DeviceDifficultyModiferOID = -1
-			DeviceDifficultyCatastrophicFailChanceOID = -1
+			destroyKeyJamChanceOID = -1						
 			ArmbinderMinStruggleOID = -1
 			ArmbinderStruggleBaseChanceOID = -1
 			YokeRemovalCostPerLevelOID =- 1
 		else
-			AddHeaderOption("Device Escape Options")
-			UseDeviceDifficultyEscapeOID = AddToggleOption("Use Device Difficulty Escape", UseDeviceDifficultyEscape)
-			DeviceDifficultyCooldownOID = AddSliderOption("Escape Attempt Cooldown", DeviceDifficultyCooldown, "{1} Hours")
-			DeviceDifficultyModiferOID = AddSliderOption("Difficulty Modifier", DeviceDifficultyModifer, "{1}")
-			DeviceDifficultyCatastrophicFailChanceOID = AddSliderOption("Catastrophic Fail Chance", DeviceDifficultyCatastrophicFailChance, "{1}%")
+			AddHeaderOption("Device Escape Options")			
 			keyCraftingOID = AddMenuOption("Key Creation Difficulty", difficultyList[KeyCrafting])
 			destroyKeyOID = AddToggleOption("Destroy Key", destroyKey)
 			destroyKeyProbabilityOID = AddSliderOption("Key Break Chance", destroyKeyProbability, "{1}")
@@ -779,22 +762,7 @@ Event OnOptionSliderOpen(int option)
 		SetSliderDialogStartValue(destroyKeyJamChance)
 		SetSliderDialogDefaultValue(destroyKeyJamChanceDefault)
 		SetSliderDialogRange(0, 100)
-		SetSliderDialogInterval(1)
-	elseIf option == DeviceDifficultyCooldownOID
-		SetSliderDialogStartValue(DeviceDifficultyCooldown)
-		SetSliderDialogDefaultValue(DeviceDifficultyCooldownDefault)
-		SetSliderDialogRange(0.0, 100.0)
-		SetSliderDialogInterval(0.5)
-	elseIf option == DeviceDifficultyModiferOID
-		SetSliderDialogStartValue(DeviceDifficultyModifer)
-		SetSliderDialogDefaultValue(DeviceDifficultyModiferDefault)
-		SetSliderDialogRange(-50.0, 50.0)
-		SetSliderDialogInterval(0.5)
-	elseIf option == DeviceDifficultyCatastrophicFailChanceOID
-		SetSliderDialogStartValue(DeviceDifficultyCatastrophicFailChance)
-		SetSliderDialogDefaultValue(DeviceDifficultyCatastrophicFailChanceDefault)
-		SetSliderDialogRange(0.0, 100.0)
-		SetSliderDialogInterval(0.5)
+		SetSliderDialogInterval(1)	
 	elseIf option == ArmbinderStruggleBaseChanceOID
 		SetSliderDialogStartValue(ArmbinderStruggleBaseChance)
 		SetSliderDialogDefaultValue(ArmbinderStruggleBaseChanceDefault)
@@ -902,10 +870,7 @@ Event OnOptionSelect(int option)
 		SetToggleOptionValue(bellyNodeManagementOID, bellyNodeManagement)
 	elseif option == UseBoundCombatOID
 		UseBoundCombat = !UseBoundCombat
-		SetToggleOptionValue(UseBoundCombatOID, UseBoundCombat)
-	elseif option == UseDeviceDifficultyEscapeOID
-		UseDeviceDifficultyEscape = !UseDeviceDifficultyEscape
-		SetToggleOptionValue(UseDeviceDifficultyEscapeOID, UseDeviceDifficultyEscape)
+		SetToggleOptionValue(UseBoundCombatOID, UseBoundCombat)	
     elseif option == lockShieldActiveOID
         lockShieldActive = !lockShieldActive
         SetToggleOptionValue(lockShieldActiveOID, lockShieldActive)
@@ -1075,19 +1040,7 @@ Event OnOptionDefault(int option)
 		SetToggleOptionValue(bellyNodeManagementOID, bellyNodeManagement)
 	elseIf (option == UseBoundCombatOID)
 		UseBoundCombat = UseBoundCombatDefault
-		SetToggleOptionValue(UseBoundCombatOID, UseBoundCombat)
-	elseIf (option == UseDeviceDifficultyEscapeOID)
-		UseDeviceDifficultyEscape = UseDeviceDifficultyEscapeDefault
-		SetToggleOptionValue(UseDeviceDifficultyEscapeOID, UseDeviceDifficultyEscape)
-	elseIf (option == DeviceDifficultyCooldownOID)
-		DeviceDifficultyCooldown = DeviceDifficultyCooldownDefault
-		SetSliderOptionValue(DeviceDifficultyCooldownOID, DeviceDifficultyCooldown)
-	elseIf (option == DeviceDifficultyModiferOID)
-		DeviceDifficultyModifer = DeviceDifficultyModiferDefault
-		SetSliderOptionValue(DeviceDifficultyModiferOID, DeviceDifficultyModifer)
-	elseIf (option == DeviceDifficultyCatastrophicFailChanceOID)
-		DeviceDifficultyCatastrophicFailChance = DeviceDifficultyCatastrophicFailChanceDefault
-		SetSliderOptionValue(DeviceDifficultyCatastrophicFailChanceOID, DeviceDifficultyCatastrophicFailChance)	
+		SetToggleOptionValue(UseBoundCombatOID, UseBoundCombat)	
 	elseIf (option == ArmbinderStruggleBaseChanceOID)
 		ArmbinderStruggleBaseChance = ArmbinderStruggleBaseChanceDefault
 		SetSliderOptionValue(ArmbinderStruggleBaseChanceOID, ArmbinderStruggleBaseChance)	
@@ -1226,15 +1179,7 @@ Event OnOptionHighlight(int option)
 	elseIf (option == bellyNodeManagementOID)
 		SetInfoText("If enabled, belly will be resized while the corset is worn, to minimized HDT clipping.\nDefault: "+bellyNodeManagementDefault)
 	elseIf (option == UseBoundCombatOID)
-		SetInfoText("If enabled, unarmed combat (Kicking) will be enabled for the player while bound. Currently only works in third person, and only for the armbinder.\nDefault: "+UseBoundCombatDefault)
-	elseIf (option == UseDeviceDifficultyEscapeOID)
-		SetInfoText("If enabled, trying to escape a device will depend it the difficulty of the device itself and some modifiers, such as\na character's experience in lockpicking, relevant magic school, and how many\nrestraints they managed to escape in the past.\nDefault: "+UseDeviceDifficultyEscapeDefault)
-	elseIf (option == DeviceDifficultyCooldownOID)
-		SetInfoText("Time in hours that has to pass before a character to try escaping a restraint again.\nDefault: "+DeviceDifficultyCooldownDefault)
-	elseIf (option == DeviceDifficultyModiferOID)
-		SetInfoText("Modifier applied to the device difficulty. A value greater than zero means that the character is good at escaping devices.\nA value of +10 means that the character has twice the base chance to escape a device with default difficulty.\nDefault: "+DeviceDifficultyModiferDefault)
-	elseIf (option == DeviceDifficultyCatastrophicFailChanceOID)
-		SetInfoText("Chance for an escape attempt to fail in a catastrophic fashion, preventing any further escape attempts.\nDefault: "+DeviceDifficultyCatastrophicFailChanceDefault)
+		SetInfoText("If enabled, unarmed combat (Kicking) will be enabled for the player while bound. Currently only works in third person, and only for the armbinder.\nDefault: "+UseBoundCombatDefault)	
 	elseIf (option == ArmbinderMinStruggleOID)
 		SetInfoText("Minimum amount of times you have to struggle against your armbinder to have a chance to escape it.\nDefault: "+ArmbinderMinStruggleDefault)
 	elseIf (option == ArmbinderStruggleBaseChanceOID)
@@ -1340,16 +1285,7 @@ Event OnOptionSliderAccept(int option, float value)
 		SetSliderOptionValue(option, value, "{1}")
 	elseIf option == numNpcsOID
 		numNpcs = (value as Int)
-		SetSliderOptionValue(option, value, "{1}")
-	elseIf option == DeviceDifficultyCooldownOID
-		DeviceDifficultyCooldown = (value as Float)
-		SetSliderOptionValue(option, value, "{1} Hours")
-	elseIf option == DeviceDifficultyModiferOID
-		DeviceDifficultyModifer = (value as Float)
-		SetSliderOptionValue(option, value, "{1}")
-	elseIf option == DeviceDifficultyCatastrophicFailChanceOID
-		DeviceDifficultyCatastrophicFailChance = (value as Float)
-		SetSliderOptionValue(option, value, "{1}%")
+		SetSliderOptionValue(option, value, "{1}")	
 	elseIf option == ArmbinderStruggleBaseChanceOID
 		ArmbinderStruggleBaseChance = (value as Float)
 		SetSliderOptionValue(option, value, "{1}%")
