@@ -4,31 +4,34 @@ Scriptname zadEquipScript extends ObjectReference
 zadlibs Property libs Auto
 slaUtilScr Property Aroused Auto
 
-; Dialog
-Message Property zad_DeviceMsg auto        	; Device interaction message
-Message Property zad_DeviceMsgMagic auto   	; Device removal via magic message
-Message Property zad_DeviceRemoveMsg auto  	; Device removal message
-Message Property zad_DeviceEscapeMsg Auto	; Device escape message
+; Old escape dialog - DO NOT USE
+Message Property zad_DeviceMsgMagic auto   	; Device removal via magic message Deprecated!!
+Message Property zad_DeviceRemoveMsg auto  	; Device removal message Deprecated!!
+Message Property zad_DeviceEscapeMsg Auto	; Device escape message Deprecated!!
 
-; Item Types
-Armor Property deviceRendered Auto         ; Internal Device
-Armor Property deviceInventory Auto        ; Inventory Device
-Key Property deviceKey  Auto               ; Key type to unlock this device
-Bool Property JammedLock = False Auto      ; Is the lock currently jammed? (Deprecated, do NOT use!)
-MiscObject Property Lockpick Auto
-
-; Keywords
+; Item Descriptors
+Message Property zad_DeviceMsg auto			; Device interaction message
+Armor Property deviceRendered Auto			; Rendered Device - is what's displayed in game.
+Armor Property deviceInventory Auto			; Inventory Device - has the script
 Keyword Property zad_DeviousDevice Auto
 
 ; Persistant Variables
 Quest Property deviceQuest Auto
 String Property deviceName Auto
+Bool Property JammedLock = False Auto      ; Is the lock currently jammed? (Deprecated, do NOT use!)
+MiscObject Property Lockpick Auto
 
-; Escape system
+; Unlock system
+Key Property deviceKey  Auto               				; Key type to unlock this device
+Bool Property DestroyKey = False Auto 					; If set to true, the key(s) will be destroyed when the device is unlocked or escaped from.
+Bool Property DestroyOnRemove = False Auto 				; If set to true, they device will be destroyed when it is unlocked or escaped from.
 Int Property NumberOfKeysNeeded = 1 Auto 				; Number of keys needed (=multiple locks)
 Float Property LockAccessDifficulty = 0.0 Auto			; If set to greater than zero, the character cannot easily reach the locks when locked in this restraint. The higher the number, the harder she will find it to unlock herself, even when in possession of the key. A value of 100 will make it impossible for her to reach the locks. She will need help. Make sure that your mod actually provides a means to escape such retraints!
 Float Property UnlockCooldown = 3.0	Auto				; How many hours have to pass between unlock attempts for hard to unlock restraints.
-; Struggle / Pick / Cut
+Float Property KeyBreakChance = 0.0 Auto				; Chance that the key breaks when trying to unlock an item. WARNING: Do NOT use this feature when there is only one key in the game etc.
+Float Property LockJamChance = 30.0 Auto				; Chance that the key gets stuck in the lock when it breaks. The lock has to be repaired before further unlock attempts.
+
+; Escape system
 Float Property BaseEscapeChance = 10.0 Auto				; Base chance to escape a restraint via struggling. Magic bonus applies. 0 disables this feature.
 Float Property LockPickEscapeChance = 15.0 Auto			; Base chance to escape a restraint via lockpicking Need proper lockpick, Lockpick bonus applies. 0 disables this feature.
 Form[] Property AllowedLockPicks Auto 					; List of items other than lockpicks considered a valid pick tool for this device. The lockpick is allowed by default unless disabled.
@@ -40,6 +43,7 @@ Float Property CatastrophicFailureChance = 15.0 Auto	; Chance that an escape att
 Float Property EscapeCooldown = 3.0	Auto				; How many hours have to pass between escape attempts.
 Float Property RepairJammedLockChance = 20.0 Auto		; Chance that the player manages to successfully repair a jammed lock.
 Float Property RepairCooldown = 5.0	Auto				; How many hours have to pass between repair attempts.
+
 ; These messages exist both here and in zadlibs. Modders can override the messages per item with these!
 Message Property zad_DD_EscapeDeviceMSG Auto 				; Device escape dialogue. You can customize it if you want, but make sure not to change the order and functionality of the buttons.
 Message Property zad_DD_OnEquipDeviceMSG Auto 				; Message is displayed upon device equip (dialogue only)
@@ -64,21 +68,21 @@ Message Property zad_DD_EscapeCutMSG Auto 					; Message to be displayed when th
 Message Property zad_DD_EscapeCutFailureMSG Auto 			; Message to be displayed when the player fails to cut a restraint
 Message Property zad_DD_EscapeCutSuccessMSG Auto 			; Message to be displayed when the player succeeds to cut open a restraint
 
-
-Keyword[] Property EquipConflictingDevices Auto ; These item keywords, if present on the character, will prevent the item from getting equipped, unless a script does it.
-Keyword[] Property EquipRequiredDevices Auto ; These item keywords, if NOT present on the character, will prevent the item from getting equipped, unless a script does it.
-Keyword[] Property UnEquipConflictingDevices Auto ; These item keywords, if present on the character, will prevent the item from getting unequipped, unless a script does it.
-Message Property zad_EquipConflictFailMsg auto ; This message will get displayed if an item fails to equip due to present keyword conflicts. Make sure to explain the conflicts, so the player knows what's going on!
-Message Property zad_EquipRequiredFailMsg auto ; This message will get displayed if an item fails to equip due to missing keyword conflicts. Make sure to explain the conflicts, so the player knows what's going on!
-Message Property zad_UnEquipFailMsg auto ; This message will get displayed if an item fails to unequip due to keyword conflicts. Make sure to explain the conflicts, so the player knows what's going on!
+; Device dependencies
+Keyword[] Property EquipConflictingDevices Auto 		; These item keywords, if present on the character, will prevent the item from getting equipped, unless a script does it.
+Keyword[] Property EquipRequiredDevices Auto 			; These item keywords, if NOT present on the character, will prevent the item from getting equipped, unless a script does it.
+Keyword[] Property UnEquipConflictingDevices Auto 		; These item keywords, if present on the character, will prevent the item from getting unequipped, unless a script does it.
+Message Property zad_EquipConflictFailMsg auto 			; This message will get displayed if an item fails to equip due to present keyword conflicts. Make sure to explain the conflicts, so the player knows what's going on!
+Message Property zad_EquipRequiredFailMsg auto 			; This message will get displayed if an item fails to equip due to missing keyword conflicts. Make sure to explain the conflicts, so the player knows what's going on!
+Message Property zad_UnEquipFailMsg auto 				; This message will get displayed if an item fails to unequip due to keyword conflicts. Make sure to explain the conflicts, so the player knows what's going on!
 
 ; Local Variables
 bool menuDisable = false
 int mutexTimeout = 10
 bool unequipMutex
-Float LastUnlockAttemptAt = 0.0							; When did the player last attempt to unlock this device.
 
 ; Internal script variables
+Float LastUnlockAttemptAt = 0.0							; When did the player last attempt to unlock this device.
 Float DeviceEquippedAt = 0.0							; When was this device equipped?
 Int EscapeAttemptsMade = 0								; Tracker of how often the player tried to escape this device.
 Float LastEscapeAttemptAt = 0.0							; When did the player last attempt to escape.
@@ -450,26 +454,22 @@ Function RemoveDevice(actor akActor, bool destroyDevice=false, bool skipMutex=fa
 		akActor.UnequipItemEx(deviceInventory, 0, false)
 		akActor.RemoveItem(deviceRendered, 1, true) 
 		libs.CleanupDevices(akActor, zad_DeviousDevice)
-		if destroyDevice
+		if DestroyOnRemove
 			akActor.RemoveItem(deviceInventory, 1, true)
 		EndIf
 	Else
-		libs.RemoveDevice(akActor, deviceInventory, deviceRendered, zad_DeviousDevice, destroyDevice, skipMutex=skipMutex)
-	Endif
-	if deviceKey != none && akActor.GetItemCount(deviceKey) < 1 && libs.config.thresholdModifier > 0
-		libs.Log("Player escaped device without having the key. Modifying unlock threshold.")
-		libs.Config.UnlockThreshold = (libs.Config.UnlockThreshold + libs.Config.thresholdModifier) ; += giving syntax errors? 
+		libs.RemoveDevice(akActor, deviceInventory, deviceRendered, zad_DeviousDevice, DestroyOnRemove, skipMutex=skipMutex)
+	Endif	
+	If akActor != Libs.PlayerRef
+		return
 	EndIf
-	If libs.Config.destroyKey
-		if deviceInventory.HasKeyword(libs.zad_BlockGeneric) || deviceRendered.HasKeyword(libs.zad_BlockGeneric) || deviceInventory.HasKeyword(libs.zad_QuestItem) || deviceRendered.HasKeyword(libs.zad_QuestItem)
-			Libs.Log("Not breaking key for non-generic device.")
-		Else
-			libs.PlayerRef.RemoveItem(deviceKey, 1, true)
-		EndIf
-	EndIf
+	If DestroyKey
+		libs.PlayerRef.RemoveItem(DeviceKey, NumberOfKeysNeeded, False)
+	EndIf	
 EndFunction
 
 bool Function RemoveDeviceWithKey(actor akActor = none, bool destroyDevice=false)
+	; the destroyDevice Parameter is ignored since it's now an item property, but it's left in not to cause conflicts with existing mods.
 	if akActor == none
 		akActor = libs.PlayerRef
 	EndIf
@@ -478,9 +478,13 @@ bool Function RemoveDeviceWithKey(actor akActor = none, bool destroyDevice=false
     endif
 	if (akActor == libs.PlayerRef) && StorageUtil.GetIntValue(akActor, "zad_Equipped" + libs.LookupDeviceType(zad_DeviousDevice) + "_LockJammedStatus") == 1
 		libs.Log("RemoveDeviceWithKey called, but lock is jammed.")
-		libs.Notify("You attempt to unlock the "+deviceName+", but the lock is jammed!", true)
+		If zad_DD_UnlockFailJammedMSG
+			zad_DD_UnlockFailJammedMSG.Show()
+		Else
+			libs.zad_DD_UnlockFailJammedMSG.Show()
+		EndIf
 		return false
-	EndIf
+	EndIf	
 	If DeviceKey
 		If libs.PlayerReF.GetItemCount(DeviceKey) <= 0
 			If zad_DD_OnNoKeyMSG
@@ -497,27 +501,33 @@ bool Function RemoveDeviceWithKey(actor akActor = none, bool destroyDevice=false
 			EndIf
 			Return False
 		EndIf
-	EndIf
-	; Check if she is able to unlock herself:
-	If !CheckLockAccess()
-		Return False
-	EndIf	
-	if (akActor == libs.PlayerRef) && libs.Config.DestroyKeyProbability > 0.0 && deviceKey != none 
-		if deviceInventory.HasKeyword(libs.zad_BlockGeneric) || deviceRendered.HasKeyword(libs.zad_BlockGeneric) || deviceInventory.HasKeyword(libs.zad_QuestItem) || deviceRendered.HasKeyword(libs.zad_QuestItem)
-			Libs.Log("Not breaking key for non-generic device.")
-		Elseif Utility.RandomInt(1, 100) <= libs.Config.DestroyKeyProbability
-			if (Utility.RandomInt(1, 100) <= libs.Config.DestroyKeyJamChance)
-				libs.NotifyPlayer("The key breaks while attempting to remove the "+deviceName+", and the broken key becomes stuck in the lock!", true)				
+		; Check if she is able to unlock herself:
+		If !CheckLockAccess()
+			Return False
+		EndIf
+		; The key break chance defaults to zero, so we don't need to check for quest items etc. If modders set this chance higher, it's their responsibility!
+		If Utility.RandomFloat(0.0, 99.9) < KeyBreakChance
+			Libs.PlayerRef.RemoveItem(DeviceKey, Utility.RandomInt(1, NumberOfKeysNeeded))
+			libs.SendDeviceKeyBreakEventVerbose(deviceInventory, zad_DeviousDevice, akActor)
+			If Utility.RandomFloat(0.0, 99.9) < LockJamChance
+				; broken key becomes stuck in the lock
 				libs.SendDeviceJamLockEventVerbose(deviceInventory, zad_DeviousDevice, akActor)
 				StorageUtil.SetIntValue(akActor, "zad_Equipped" + libs.LookupDeviceType(zad_DeviousDevice) + "_LockJammedStatus", 1)
+				if zad_DD_KeyBreakJamMSG
+					zad_DD_KeyBreakJamMSG.Show()
+				Else
+					libs.zad_DD_KeyBreakJamMSG.Show()
+				EndIf
 			Else
-				libs.NotifyPlayer("The key breaks while attempting to remove the "+deviceName+"!", true)
-			EndIf			
-			libs.SendDeviceKeyBreakEventVerbose(deviceInventory, zad_DeviousDevice, akActor)
-			libs.PlayerRef.RemoveItem(deviceKey, 1, true)
-			return False
+				If zad_DD_KeyBreakMSG
+					zad_DD_KeyBreakMSG.Show()
+				Else
+					libs.zad_DD_KeyBreakMSG.Show()
+				EndIf
+			EndIf
+			Return False
 		EndIf
-	Endif		
+	EndIf	
 	RemoveDevice(akActor)	
 	return True
 EndFunction

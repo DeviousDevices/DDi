@@ -26,13 +26,6 @@ bool npcMessagesDefault = true
 bool Property PlayerMessages Auto
 bool playerMessagesDefault = true
 
-bool Property DestroyKey Auto
-bool destroyKeyDefault = False
-int Property DestroyKeyProbability Auto
-int destroyKeyProbabilityDefault = 0
-int Property DestroyKeyJamChance Auto 
-int destroyKeyJamChanceDefault = 0
-
 Float Property ArmbinderStruggleBaseChance = 5.0 Auto
 Float ArmbinderStruggleBaseChanceDefault = 5.0
 Int Property ArmbinderMinStruggle = 5 Auto
@@ -75,9 +68,9 @@ int lockShieldMaxTimeDefault = 72
 
 ; Blindfold
 int Property blindfoldMode Auto ; 0 == DD's mode, 1 == DD's mode w/ leeches, 2 == leeches
-int blindfoldModeDefault = 0
+int blindfoldModeDefault = 2
 float Property blindfoldStrength Auto
-float blindfoldStrengthDefault = 1.0
+float blindfoldStrengthDefault = 0.5
 int Property darkfogStrength Auto
 int Property darkfogStrength2 Auto
 int darkfogStrengthDefault = 300
@@ -375,18 +368,13 @@ Event OnPageReset(string page)
 			AddHeaderOption(" while being restrained.")
 			thresholdOID = -1
 			thresholdModifierOID = -1
-			keyCraftingOID = -1
-			destroyKeyProbabilityOID = -1
-			destroyKeyJamChanceOID = -1						
+			keyCraftingOID = -1			
 			ArmbinderMinStruggleOID = -1
 			ArmbinderStruggleBaseChanceOID = -1
 			YokeRemovalCostPerLevelOID =- 1
 		else
 			AddHeaderOption("Device Escape Options")			
-			keyCraftingOID = AddMenuOption("Key Creation Difficulty", difficultyList[KeyCrafting])
-			destroyKeyOID = AddToggleOption("Destroy Key", destroyKey)
-			destroyKeyProbabilityOID = AddSliderOption("Key Break Chance", destroyKeyProbability, "{1}")
-			destroyKeyJamChanceOID = AddSliderOption("Jam LockChance", destroyKeyJamChance, "{1}")
+			keyCraftingOID = AddMenuOption("Key Creation Difficulty", difficultyList[KeyCrafting])			
 			ArmbinderStruggleBaseChanceOID = AddSliderOption("Armbinder Escape Base Chance", ArmbinderStruggleBaseChance, "{1}%")
 			ArmbinderMinStruggleOID = AddSliderOption("Armbinder Minimum Struggles", ArmbinderMinStruggle, "{0}")
 			YokeRemovalCostPerLevelOID = AddSliderOption("Yoke Removal Cost Per Level", YokeRemovalCostPerLevel, "{0}/Level")			
@@ -752,16 +740,6 @@ Event OnOptionSliderOpen(int option)
 		SetSliderDialogStartValue(numNpcs)
 		SetSliderDialogDefaultValue(numNpcsDefault)
 		SetSliderDialogRange(0, 20)
-		SetSliderDialogInterval(1)
-	elseIf option == destroyKeyProbabilityOID
-		SetSliderDialogStartValue(destroyKeyProbability)
-		SetSliderDialogDefaultValue(destroyKeyProbabilityDefault)
-		SetSliderDialogRange(0, 100)
-		SetSliderDialogInterval(1)
-	elseIf option == destroyKeyJamChanceOID
-		SetSliderDialogStartValue(destroyKeyJamChance)
-		SetSliderDialogDefaultValue(destroyKeyJamChanceDefault)
-		SetSliderDialogRange(0, 100)
 		SetSliderDialogInterval(1)	
 	elseIf option == ArmbinderStruggleBaseChanceOID
 		SetSliderDialogStartValue(ArmbinderStruggleBaseChance)
@@ -806,10 +784,7 @@ Event OnOptionSelect(int option)
 		SetToggleOptionValue(npcMessagesOID, NpcMessages)
 	elseif option == playerMessagesOID
 		PlayerMessages = !PlayerMessages
-		SetToggleOptionValue(playerMessagesOID, PlayerMessages)
-	elseif option == destroyKeyOID
-		destroyKey = !destroyKey
-		SetToggleOptionValue(destroyKeyOID, destroyKey)
+		SetToggleOptionValue(playerMessagesOID, PlayerMessages)	
 	elseif option == preserveAggroOID
 		PreserveAggro = !PreserveAggro
 		SetToggleOptionValue(PreserveAggroOID, PreserveAggro)
@@ -926,16 +901,7 @@ Event OnOptionDefault(int option)
 		SetToggleOptionValue(npcMessagesOID, npcMessagesDefault)
 	elseIf (option == playerMessagesOID)
 		PlayerMessages = playerMessagesDefault
-		SetToggleOptionValue(playerMessagesOID, playerMessagesDefault)
-	elseIf (option == destroyKeyOID)
-		destroyKey = destroyKeyDefault
-		SetToggleOptionValue(destroyKeyOID, destroyKeyDefault)
-	elseIf (option == destroyKeyProbabilityOID)
-		destroyKeyProbability = destroyKeyProbabilityDefault
-		SetToggleOptionValue(destroyKeyProbabilityOID, destroyKeyProbabilityDefault)
-	elseIf (option == destroyKeyJamChanceOID)
-		destroyKeyJamChance = destroyKeyJamChanceDefault
-		SetToggleOptionValue(destroyKeyJamChanceOID, destroyKeyJamChanceDefault)
+		SetToggleOptionValue(playerMessagesOID, playerMessagesDefault)	
 	elseIf (option == PreserveAggroOID)
 		PreserveAggro = PreserveAggroDefault
 		SetToggleOptionValue(PreserveAggroOID, PreserveAggroDefault)
@@ -1109,13 +1075,7 @@ Event OnOptionHighlight(int option)
 	elseIf (option == useBoundAnimsOID)
 		SetInfoText("Toggle the use of bound animations within scenes. Without this option, Yokes / Armbinders / etc will be removed until the sex act has concluded.\nDefault:"+useBoundAnimsDefault)
 	elseIf (option == useAnimFilterOID)
-		SetInfoText("Toggle the use of the animation filter.\nIf enabled, DD will make sure that only animations compatible with worn devices are played.\nE.g. if the character is belted, she can't have vaginal sex.\nThis feature is incompatible with the filter included in ZAZ Animation Pack, which will get automatically disabled if used.\nDefault:" + useAnimFilterDefault)
-	elseIf (option == destroyKeyOID)
-		SetInfoText("Toggle whether or not the key should be destroyed after device removal.")
-	elseIf (option == destroyKeyProbabilityOID)
-		SetInfoText("Set the chance of the key being destroyed prior to device removal.\nDefault:"+destroyKeyProbabilityDefault)
-	elseIf (option == destroyKeyJamChanceOID)
-		SetInfoText("Set the chance of the lock jamming, if the key is destroyed.\nWARNING: If you do not have an alternative method of escape (Such as through a mod like Captured Dreams), do not enable this feature, or you will permanently be stuck wearing the device!\nDefault:"+destroyKeyJamChanceDefault)
+		SetInfoText("Toggle the use of the animation filter.\nIf enabled, DD will make sure that only animations compatible with worn devices are played.\nE.g. if the character is belted, she can't have vaginal sex.\nThis feature is incompatible with the filter included in ZAZ Animation Pack, which will get automatically disabled if used.\nDefault:" + useAnimFilterDefault)	
 	elseIf (option == skyreOID)
 		SetInfoText("Enable/disable SkyRe support. If enabled, this option will use the player's Pickpocket skill instead of their lockpick skill for escape attempts (Lockpick is Wayfaring in SkyRe, and Pickpocket is Fingersmithing).\nDefault:"+skyreDefault)
 	elseIf (option == logMessagesOID)
@@ -1276,13 +1236,7 @@ Event OnOptionSliderAccept(int option, float value)
 		SetSliderOptionValue(option, value, "{3}")
 	elseIf option == rmSummonHeartbeatIntervalOID
 		rmSummonHeartbeatInterval = (value as Float)
-		SetSliderOptionValue(option, value, "{3}")
-	elseIf (option == destroyKeyProbabilityOID)
-		destroyKeyProbability = value as Int
-		SetSliderOptionValue(option, value, "{1}")
-	elseIf (option == destroyKeyJamChanceOID)
-		destroyKeyJamChance = value as Int
-		SetSliderOptionValue(option, value, "{1}")
+		SetSliderOptionValue(option, value, "{3}")	
 	elseIf option == numNpcsOID
 		numNpcs = (value as Int)
 		SetSliderOptionValue(option, value, "{1}")	
