@@ -33,6 +33,7 @@ Keyword Property zad_DeviousHobbleSkirt Auto
 Keyword Property zad_DeviousHobbleSkirtRelaxed Auto
 Keyword Property zad_DeviousAnkleShackles Auto
 Keyword Property zad_DeviousStraitJacket Auto
+Keyword Property zad_DeviousCuffsFront Auto
 
 Keyword Property zad_DeviousYoke Auto
 Keyword Property zad_DeviousYokeBB Auto
@@ -2471,6 +2472,15 @@ Form Function GetWornHeavyBondageInstance(actor akActor)
 	if !armb ; Check for straitjackets
 		armb = GetRenderedDeviceInstance(akActor, 0x00010000, zad_DeviousStraitJacket)
 	EndIf
+	if !armb ; Check for elbowbinders
+		armb = GetRenderedDeviceInstance(akActor, 0x00010000, zad_DeviousArmbinderElbow)
+	EndIf
+	if !armb ; Check for breastyokes
+		armb = GetRenderedDeviceInstance(akActor, 0x00010000, zad_DeviousYokeBB)
+	EndIf
+	if !armb ; Check for frontcuffs
+		armb = GetRenderedDeviceInstance(akActor, 0x00010000, zad_DeviousCuffsFront)
+	EndIf
 	return armb
 EndFunction
 
@@ -2758,7 +2768,17 @@ string Function LookupDeviceType(keyword kwd)
 	ElseIf kwd == zad_DeviousPiercingsNipple
 		return "PiercingsNipple"  
 	ElseIf kwd == zad_DeviousPiercingsVaginal
-		return "PiercingsVaginal" 
+		return "PiercingsVaginal"
+	ElseIf kwd == zad_DeviousArmbinderElbow
+		return "ArmBinderElbow"
+	ElseIf kwd == zad_DeviousYokeBB
+		return "YokeBB"
+	ElseIf kwd == zad_DeviousCuffsFront
+		return "CuffsFront"
+	ElseIf kwd == zad_DeviousBondageMittens
+		return "Mittens"
+	ElseIf kwd == zad_DeviousHobbleSkirt
+		return "HobbleSkirt"
 	EndIf
 	Error("LookupDeviceType received invalid keyword " + kwd)
 EndFunction
