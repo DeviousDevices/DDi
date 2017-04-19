@@ -54,16 +54,6 @@ bool useAnimFilterDefault = true
 ; this will make DDI disable the ZAP animation filter when DDI's filter is active, as they are incompatible. Disable this flag to stop this behaviour.
 bool Property snipeZAZFilter = true Auto
 
-; Timed Lock Shield Config
-bool property lockShieldActive Auto
-bool lockShieldActiveDefault = false
-bool property lockShieldDebilitating Auto
-bool lockShieldDebilitatingDefault = false
-int property lockShieldMinTime Auto
-int lockShieldMinTimeDefault = 24
-int property lockShieldMaxTime Auto
-int lockShieldMaxTimeDefault = 72
-
 ; Blindfold
 int Property blindfoldMode Auto ; 0 == DD's mode, 1 == DD's mode w/ leeches, 2 == leeches
 int blindfoldModeDefault = 2
@@ -209,10 +199,6 @@ Int DeviceDifficultyCatastrophicFailChanceOID
 Int ArmbinderMinStruggleOID
 Int ArmbinderStruggleBaseChanceOID
 Int YokeRemovalCostPerLevelOID
-int lockShieldActiveOID
-int lockShieldDebilitatingOID
-int lockShieldMinTimeOID
-int lockShieldMaxTimeOID
 
 string[] difficultyList
 string[] blindfoldList
@@ -322,30 +308,7 @@ Event OnVersionUpdate(int newVersion)
 			darkfogStrength = darkfogStrengthDefault
 			darkfogStrength2 = (darkfogStrength * 2) - 50
 		EndIf
-
-        if !lockShieldActive
-            lockShieldActive       = lockShieldActiveDefault
-            lockShieldDebilitating = lockShieldDebilitatingDefault
-            lockShieldMinTime      = lockShieldMinTimeDefault
-            lockShieldMaxTime      = lockShieldMaxTimeDefault
-        endif
-
-	EndIf
-	; if CurrentVersion == 0 ; New Game
-	; 	SexlabFramework SexLab = SexLabUtil.GetAPI()
-	; 	If SexLab == None
-	; 		libs.Error("Mod initialization failed: Could not fetch Sexlab API.")
-	; 	EndIf
-	; 	; Wait for Sexlab to finish initializing.
-	; 	int timeout = 0
-	; 	float waitFor = 5.0
-	; 	While (!Sexlab.Enabled && (timeout * waitFor) < 180.0)
-	; 		libs.Log("Waiting for Sexlab to initialize... (Waited " + (timeout * waitFor) + " seconds).")
-	; 		timeout += 1
-	; 		Utility.Wait(waitFor)
-	; 	EndWhile
-	; 	SendModEvent("__DeviousDevicesInit")
-	; EndIf
+	EndIf	
 EndEvent
 
 
@@ -358,14 +321,10 @@ Event OnPageReset(string page)
 		UnloadCustomContent()
 	EndIf
 	If page == "General"
-		SetCursorFillMode(TOP_TO_BOTTOM)
-		SetCursorPosition(0) ; Can be removed because it starts at 0 anyway
+		SetCursorFillMode(TOP_TO_BOTTOM)		
 		if libs.PlayerRef.WornHasKeyword(libs.zad_Lockable) && zadDebugMode.GetValueInt() != 1
 			AddHeaderOption("Device Escape Options are unavailable")
-			AddHeaderOption(" while being restrained.")
-			thresholdOID = -1
-			thresholdModifierOID = -1
-			keyCraftingOID = -1			
+			AddHeaderOption(" while being restrained.")			
 			ArmbinderMinStruggleOID = -1
 			ArmbinderStruggleBaseChanceOID = -1
 			YokeRemovalCostPerLevelOID =- 1
@@ -374,11 +333,7 @@ Event OnPageReset(string page)
 			keyCraftingOID = AddMenuOption("Key Creation Difficulty", difficultyList[KeyCrafting])			
 			ArmbinderStruggleBaseChanceOID = AddSliderOption("Armbinder Escape Base Chance", ArmbinderStruggleBaseChance, "{1}%")
 			ArmbinderMinStruggleOID = AddSliderOption("Armbinder Minimum Struggles", ArmbinderMinStruggle, "{0}")
-			YokeRemovalCostPerLevelOID = AddSliderOption("Yoke Removal Cost Per Level", YokeRemovalCostPerLevel, "{0}/Level")			
-			AddEmptyOption()
-			AddHeaderOption("Legacy Device Escape System")
-			thresholdOID = AddSliderOption("Unlock Threshold", UnlockThreshold)
-			thresholdModifierOID = AddSliderOption("Unlock Threshold Modifier", ThresholdModifier)			
+			YokeRemovalCostPerLevelOID = AddSliderOption("Yoke Removal Cost Per Level", YokeRemovalCostPerLevel, "{0}/Level")						
 		EndIf
 		AddEmptyOption()		
 		AddHeaderOption("Camera Configuration")
@@ -386,20 +341,7 @@ Event OnPageReset(string page)
 		SetCursorPosition(1) ; Move cursor to top right position
 		AddHeaderOption("Message Visibility Settings")
 		npcMessagesOID = AddToggleOption("Show NPC Messages", NpcMessages)
-		playerMessagesOID = AddToggleOption("Show Player Messages", PlayerMessages)
-	        
-        AddHeaderOption("Lock Shield")
-        lockShieldActiveOID       = AddToggleOption("Activate Lock Shield", lockShieldActive)
-    
-        int lockShieldFlag = OPTION_FLAG_NONE
-        if !lockShieldActive
-            lockShieldFlag = OPTION_FLAG_DISABLED
-        endif
-
-        lockShieldDebilitatingOID = AddToggleOption("Include debilitating items", lockShieldDebilitating, lockShieldFlag)
-        lockShieldMinTimeOID      = AddSliderOption("Minimum Time", lockShieldMinTime, "{0}", lockShieldFlag)
-        lockShieldMaxTimeOID      = AddSliderOption("Maximum Time", lockShieldMaxTime, "{0}", lockShieldFlag)
-    
+		playerMessagesOID = AddToggleOption("Show Player Messages", PlayerMessages)	   
 		AddHeaderOption("Debug")
 		logMessagesOID = AddToggleOption("Enable Debug Logging", LogMessages)
 		SetCursorPosition(1) ; Move cursor to top right position
@@ -751,17 +693,7 @@ Event OnOptionSliderOpen(int option)
 		SetSliderDialogStartValue(YokeRemovalCostPerLevel)
 		SetSliderDialogDefaultValue(YokeRemovalCostPerLevelDefault)
 		SetSliderDialogRange(0, 5000)
-		SetSliderDialogInterval(50)
-    elseIf option == lockShieldMinTimeOID
-        SetSliderDialogStartValue(lockShieldMinTime)
-        SetSliderDialogDefaultValue(lockShieldMinTimeDefault)
-        SetSliderDialogRange(0, lockShieldMaxTime)
-        SetSliderDialogInterval(1)
-    elseIf option == lockShieldMaxTimeOID
-        SetSliderDialogStartValue(lockShieldMaxTime)
-        SetSliderDialogDefaultValue(lockShieldMaxTimeDefault)
-        SetSliderDialogRange(lockShieldMinTime, 168)
-        SetSliderDialogInterval(1)
+		SetSliderDialogInterval(50)   
 	elseIf option == HobbleSkirtSpeedDebuffOID
         SetSliderDialogStartValue(HobbleSkirtSpeedDebuff)
         SetSliderDialogDefaultValue(HobbleSkirtSpeedDebuffDefault)
@@ -838,14 +770,7 @@ Event OnOptionSelect(int option)
 		SetToggleOptionValue(bellyNodeManagementOID, bellyNodeManagement)
 	elseif option == UseBoundCombatOID
 		UseBoundCombat = !UseBoundCombat
-		SetToggleOptionValue(UseBoundCombatOID, UseBoundCombat)	
-    elseif option == lockShieldActiveOID
-        lockShieldActive = !lockShieldActive
-        SetToggleOptionValue(lockShieldActiveOID, lockShieldActive)
-        ForcePageReset()
-    elseif option == lockShieldDebilitatingOID
-        lockShieldDebilitating = !lockShieldDebilitating
-        SetToggleOptionValue(lockShieldDebilitatingOID, lockShieldDebilitating)
+		SetToggleOptionValue(UseBoundCombatOID, UseBoundCombat)	   
 	EndIf
 EndEvent
 
@@ -1005,19 +930,7 @@ Event OnOptionDefault(int option)
 		SetSliderOptionValue(ArmbinderMinStruggleOID, ArmbinderMinStruggle)	
 	elseIf (option == YokeRemovalCostPerLevelOID)
 		YokeRemovalCostPerLevel = YokeRemovalCostPerLevelDefault
-		SetSliderOptionValue(YokeRemovalCostPerLevelOID, YokeRemovalCostPerLevel)	
-    elseIf (option == lockShieldActiveOID)
-        lockShieldActive = lockShieldActiveDefault
-        SetToggleOptionValue(lockShieldActiveOID, lockShieldActive)
-    elseIf (option == lockShieldDebilitatingOID)
-        lockShieldDebilitating = lockShieldDebilitatingDefault
-        SetToggleOptionValue(lockShieldDebilitatingOID, lockShieldDebilitating)
-    elseIf (option == lockShieldMinTimeOID)
-        lockShieldMinTime = lockShieldMinTimeDefault
-        SetSliderOptionValue(lockShieldMinTimeOID, lockShieldMinTime, "{0}")
-    elseIf (option == lockShieldMaxTimeOID)
-        lockShieldMaxTime = lockShieldMaxTimeDefault
-        SetSliderOptionValue(lockShieldMaxTimeOID, lockShieldMaxTime, "{0}")
+		SetSliderOptionValue(YokeRemovalCostPerLevelOID, YokeRemovalCostPerLevel)	    
 	endIf
 EndEvent
 
@@ -1133,15 +1046,7 @@ Event OnOptionHighlight(int option)
 	elseIf (option == ArmbinderStruggleBaseChanceOID)
 		SetInfoText("Base chance to escape your armbinder after the minimum required attemts. 1% will be added to this value for every failed attemt.\nDefault: "+ArmbinderStruggleBaseChanceDefault)
 	elseIf (option == YokeRemovalCostPerLevelOID)
-		SetInfoText("Merchants will charge you this much gold per level for helping you out of a yoke.\nDefault: "+YokeRemovalCostPerLevelDefault)
-    elseIf (option == lockShieldActiveOID)
-        SetInfoText("Enables a shield over a device's lock, disabling the use of keys until the time has passed.\nDefault: " + lockShieldActiveDefault)
-    elseIf (option == lockShieldDebilitatingOID)
-        SetInfoText("Apply lock shield to debilitating items, such as blindfolds and gags.\nDefault: " + lockShieldDebilitatingDefault)
-    elseIf (option == lockShieldMinTimeOID)
-        SetInfoText("Sets the minimum number of hours on the lock shield\nDefault: " + lockShieldMinTime)
-    elseIf (option == lockShieldMaxTimeOID)
-        SetInfoText("Sets the maximum number of hours on the lock shield\nDefault: " + lockShieldMaxTime)
+		SetInfoText("Merchants will charge you this much gold per level for helping you out of a yoke.\nDefault: "+YokeRemovalCostPerLevelDefault)    
 	elseIf (option == HobbleSkirtSpeedDebuffOID)
         SetInfoText("Sets the strength of the speed debuff caused by wearing a hobble skirt.\nThe higher the number, the slower characters wearing a hobble skirt can walk.\nNote: The animations are meant for the default value and will look off at lower values, but some people might find this speed too slow.\nDefault: " + HobbleSkirtSpeedDebuffDefault)
 	endIf
@@ -1236,13 +1141,7 @@ Event OnOptionSliderAccept(int option, float value)
 		SetSliderOptionValue(option, value, "{0}")
 	elseIf option == YokeRemovalCostPerLevelOID
 		YokeRemovalCostPerLevel = (value as Int)
-		SetSliderOptionValue(option, value, "{0}/Level")	
-    elseIf (option == lockShieldMinTimeOID)
-        lockShieldMinTime = value as Int
-        SetSliderOptionValue(option, value, "{0}")
-	elseIf (option == lockShieldMaxTimeOID)
-        lockShieldMaxTime = value as Int
-        SetSliderOptionValue(option, value, "{0}")
+		SetSliderOptionValue(option, value, "{0}/Level")	    
 	elseIf (option == HobbleSkirtSpeedDebuffOID)
         HobbleSkirtSpeedDebuff = value as Int
         SetSliderOptionValue(option, value, "{0}")
