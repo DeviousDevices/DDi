@@ -56,17 +56,11 @@ string Function DeviceMenuPickLockFail()
 EndFunction
 
 Function DeviceMenuPickLock()
-	string skillName = ""
-	if libs.Config.SkyRe
-		skillName = "Pickpocket"
-	else
-		skillName = "Lockpicking"
-	EndIf
 	if libs.PlayerRef.WornHasKeyword(libs.zad_DeviousArmbinder)
 		zad_GagArmsTiedMsg.Show()
 		return
 	EndIf
-	int unlockChance = libs.CheckDeviceEscape(libs.GetUnlockThreshold(), skillName)
+	int unlockChance = libs.CheckDeviceEscape(libs.GetUnlockThreshold(), "Lockpicking")
         if (unlockChance == -1)
 		DeviceMenuPickLockSuccess()
 	else

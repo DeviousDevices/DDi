@@ -737,14 +737,8 @@ string Function DeviceMenuPickLockFail()
 	libs.PlayerRef.RemoveItem(Lockpick)
 	return ""
 EndFunction
-Function DeviceMenuPickLock()
-	string skillName = ""
-	if libs.Config.SkyRe
-		skillName = "Pickpocket"
-	else
-		skillName = "Lockpicking"
-	EndIf
-	int unlockChance = libs.CheckDeviceEscape(libs.GetUnlockThreshold(), skillName)
+Function DeviceMenuPickLock()	
+	int unlockChance = libs.CheckDeviceEscape(libs.GetUnlockThreshold(), "Lockpicking")
 	string out = ""
         if (unlockChance == -1)
 		out += "You carefully insert a lockpick into the keyhole and manage to pick the lock. "

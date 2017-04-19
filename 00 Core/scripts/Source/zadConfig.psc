@@ -33,8 +33,6 @@ Int ArmbinderMinStruggleDefault = 5
 Int Property YokeRemovalCostPerLevel = 200 Auto
 Int YokeRemovalCostPerLevelDefault = 200
 
-bool Property SkyRe Auto
-bool skyreDefault = false
 bool Property LogMessages Auto
 bool logMessagesDefault = true
 bool Property ifp Auto
@@ -162,7 +160,6 @@ int destroyKeyOID
 int npcMessagesOID
 int destroyKeyProbabilityOID
 int destroyKeyJamChanceOID
-int skyreOID
 int logMessagesOID
 int masturbateOnRemovalOID
 int eventIntervalOID
@@ -383,8 +380,7 @@ Event OnPageReset(string page)
 			thresholdOID = AddSliderOption("Unlock Threshold", UnlockThreshold)
 			thresholdModifierOID = AddSliderOption("Unlock Threshold Modifier", ThresholdModifier)			
 		EndIf
-		AddEmptyOption()
-		skyreOID = AddToggleOption("Using SkyRe", SkyRe)
+		AddEmptyOption()		
 		AddHeaderOption("Camera Configuration")
 		ifpOID = AddToggleOption("Immersive First Person", ifp)
 		SetCursorPosition(1) ; Move cursor to top right position
@@ -797,10 +793,7 @@ Event OnOptionSelect(int option)
 		; snipe the ZAP filter to make sure they don't both execute. This would suck.
 		if useAnimFilter && beltedAnims.filterquest.zbfSL.bOverrideSexLabAnimation && snipeZAZFilter
 			beltedAnims.filterquest.zbfSL.bOverrideSexLabAnimation = False
-		EndIf
-	elseif option == skyreOID
-		SkyRe = !SkyRe
-		SetToggleOptionValue(skyreOID, SkyRe)
+		EndIf	
 	elseif option == logMessagesOID
 		 LogMessages = !LogMessages
 		SetToggleOptionValue(logMessagesOID, LogMessages)
@@ -910,10 +903,7 @@ Event OnOptionDefault(int option)
 		SetToggleOptionValue(useBoundAnimsOID, useBoundAnimsDefault)
 	elseIf (option == useAnimFilterOID)
 		useAnimFilter = useAnimFilterDefault
-		SetToggleOptionValue(useAnimFilterOID, useAnimFilterDefault)
-	elseIf (option == skyreOID)
-		SkyRe = skyreDefault
-		SetToggleOptionValue(skyreOID, skyreDefault)
+		SetToggleOptionValue(useAnimFilterOID, useAnimFilterDefault)	
 	elseIf (option == logMessagesOID)
 		LogMessages = logMessagesDefault
 		SetToggleOptionValue(logMessagesOID, LogMessages)
@@ -1075,9 +1065,7 @@ Event OnOptionHighlight(int option)
 	elseIf (option == useBoundAnimsOID)
 		SetInfoText("Toggle the use of bound animations within scenes. Without this option, Yokes / Armbinders / etc will be removed until the sex act has concluded.\nDefault:"+useBoundAnimsDefault)
 	elseIf (option == useAnimFilterOID)
-		SetInfoText("Toggle the use of the animation filter.\nIf enabled, DD will make sure that only animations compatible with worn devices are played.\nE.g. if the character is belted, she can't have vaginal sex.\nThis feature is incompatible with the filter included in ZAZ Animation Pack, which will get automatically disabled if used.\nDefault:" + useAnimFilterDefault)	
-	elseIf (option == skyreOID)
-		SetInfoText("Enable/disable SkyRe support. If enabled, this option will use the player's Pickpocket skill instead of their lockpick skill for escape attempts (Lockpick is Wayfaring in SkyRe, and Pickpocket is Fingersmithing).\nDefault:"+skyreDefault)
+		SetInfoText("Toggle the use of the animation filter.\nIf enabled, DD will make sure that only animations compatible with worn devices are played.\nE.g. if the character is belted, she can't have vaginal sex.\nThis feature is incompatible with the filter included in ZAZ Animation Pack, which will get automatically disabled if used.\nDefault:" + useAnimFilterDefault)		
 	elseIf (option == logMessagesOID)
 		SetInfoText("Toggles display of debug messages in Papyrus.0.log. You can disable this if everything is working correctly.")
 	elseIf (option == eventIntervalOID)
