@@ -6,6 +6,7 @@ zadCameraState Property cameraState Auto
  
 zadLibs Property libs Auto
 Formlist Property SitBlockKeywords Auto
+Armor Property zad_DeviceHider Auto
 
 Event OnPlayerLoadGame()
 	actor akActor = libs.PlayerRef
@@ -83,6 +84,12 @@ Event OnLocationChange(Location akOldLoc, Location akNewLoc)
 	EndIf
 EndEvent
  
+bool Function isDeviousDevice(Form device)
+	if device.HasKeyword(libs.zad_InventoryDevice) || device.HasKeyword(libs.zad_Lockable) 
+		return true
+	endif
+	return false
+EndFunction
  
 Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
 	actor akActor = libs.PlayerRef
@@ -97,18 +104,15 @@ Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
 			EndIf
 		EndIf
 	EndIf
-	if akActor.WornHasKeyword(libs.zad_DeviousHeavyBondage) && ((akBaseObject as Weapon) || (akBaseObject as Spell) || (akBaseObject as Light) || (akBaseObject as Armor).HasKeywordString("ArmorShield"))
-		if akActor.GetEquippedItemType(0) > 0
-			akActor.UnequipItem((akActor.GetEquippedObject(0) as Weapon), abSilent = true)
-			akActor.UnequipItem((akActor.GetEquippedObject(0) as Armor), abSilent = true)
-			akActor.UnequipItem((akActor.GetEquippedObject(0) as Light), abSilent = true)
-			akActor.UnequipSpell((akActor.GetEquippedObject(0) as Spell), 0)
-		endif
-		if akActor.GetEquippedItemType(1) > 0
-			akActor.UnequipItem((akActor.GetEquippedObject(1) as Weapon), abSilent = true)
-			akActor.UnequipSpell((akActor.GetEquippedObject(1) as Spell), 1)
-		endif
-	endif
+	If akActor.WornHasKeyword(libs.zad_DeviousHeavyBondage) && ((akBaseObject as Weapon) || (akBaseObject as Spell) || (akBaseObject as Light) || ((akBaseObject as Armor) && (!isDeviousDevice(akBaseObject) && (akBaseObject != zad_DeviceHider))))
+		If UI.IsMenuOpen("InventoryMenu")
+			libs.notify("You can't equip this with your hands tied!")	
+		Endif		
+		libs.playerRef.UnequipItem(akBaseObject)
+		while libs.hasAnyWeaponEquipped(libs.playerRef)
+			libs.stripweapons(libs.playerRef)
+		EndWhile				
+	Endif		
 EndEvent
  
  
@@ -124,5 +128,5 @@ Event OnObjectUnequipped(Form akBaseObject, ObjectReference akReference)
 				libs.HideBelly(libs.PlayerRef)
 			EndIf
 		EndIf
-	EndIf
+	EndIf	
 EndEvent

@@ -21,6 +21,10 @@ String Property deviceName Auto
 Bool Property JammedLock = False Auto      ; Is the lock currently jammed? (Deprecated, do NOT use!)
 MiscObject Property Lockpick Auto
 
+; Wrist Bondage and struggle system
+Idle[] Property struggleIdles Auto
+Idle[] Property struggleIdlesHob Auto
+
 ; Unlock system
 Key Property deviceKey  Auto               				; Key type to unlock this device
 Bool Property DestroyKey = False Auto 					; If set to true, the key(s) will be destroyed when the device is unlocked or escaped from.
@@ -184,6 +188,12 @@ Event OnEquipped(Actor akActor)
 	RegisterForSleep()
 	OnEquippedPost(akActor)
 	SetLockShield()
+	If deviceRendered.HasKeyword(libs.zad_DeviousHeavyBondage)		
+		libs.StartBoundEffects(akActor)
+	EndIf	
+	LastEscapeAttemptAt = 0.0
+	LastUnlockAttemptAt = 0.0
+	LastRepairAttemptAt = 0.0
 EndEvent
 
 
@@ -382,8 +392,7 @@ EndFunction
 
 Function RemoveDevice(actor akActor, bool destroyDevice=false, bool skipMutex=false)
 	; cannot remove DD devices when wearing bondage mittens...except the bondage mittens!
-	; armbinders and yokes do NOT use this function to get removed, hence this works.
-	if (akActor.WornHasKeyword(libs.zad_DeviousBondageMittens) && !deviceRendered.HasKeyword(libs.zad_DeviousBondageMittens))
+	if !deviceRendered.HasKeyword(libs.zad_DeviousHeavyBondage) && (akActor.WornHasKeyword(libs.zad_DeviousBondageMittens) && !deviceRendered.HasKeyword(libs.zad_DeviousBondageMittens))
 		libs.NotifyPlayer("You cannot remove the " + deviceName + " while wearing bondage mittens!", true)
 		return
 	EndIf	
@@ -404,6 +413,9 @@ Function RemoveDevice(actor akActor, bool destroyDevice=false, bool skipMutex=fa
 	Else
 		libs.RemoveDevice(akActor, deviceInventory, deviceRendered, zad_DeviousDevice, DestroyOnRemove, skipMutex=skipMutex)
 	Endif	
+	If deviceRendered.HasKeyword(libs.zad_DeviousHeavyBondage)
+		libs.StopBoundEffects(akActor)		
+	EndIf
 	If akActor != Libs.PlayerRef
 		return
 	EndIf
@@ -429,6 +441,10 @@ bool Function RemoveDeviceWithKey(actor akActor = none, bool destroyDevice=false
 	If !CheckLockShield() ; is the timer expired?
 		Return False
 	EndIf
+	; Check if she is able to unlock herself. We do this check here to allow it to apply even to keyless restraints that shouldn't be just removed.
+	If !CheckLockAccess()
+		Return False
+	EndIf
 	If DeviceKey
 		If libs.PlayerReF.GetItemCount(DeviceKey) <= 0
 			If zad_DD_OnNoKeyMSG
@@ -444,11 +460,7 @@ bool Function RemoveDeviceWithKey(actor akActor = none, bool destroyDevice=false
 				libs.Notify("You do not posess enough keys to manipulate this " + deviceName + ".")
 			EndIf
 			Return False
-		EndIf
-		; Check if she is able to unlock herself:
-		If !CheckLockAccess()
-			Return False
-		EndIf
+		EndIf		
 		; The key break chance defaults to zero, so we don't need to check for quest items etc. If modders set this chance higher, it's their responsibility!
 		If Utility.RandomFloat(0.0, 99.9) < KeyBreakChance
 			Libs.PlayerRef.RemoveItem(DeviceKey, Utility.RandomInt(1, NumberOfKeysNeeded))
@@ -636,12 +648,16 @@ Bool Function CheckLockAccess()
 			Return False
 		EndIf
 		If Utility.RandomFloat(0.0, 99.9) < LockAccessDifficulty
-			If LockAccessDifficulty < 50.0
-				libs.notify("You try to insert the key into the " + DeviceName + "'s lock, but find the locks a bit outsides of your reach. After a few failed attempts to slide the key into the lock, you have no choice but to give up for now. You should still eventually be able to unlock yourself. Just try again a bit later!", messageBox = True)
-			ElseIf LockAccessDifficulty < 100.0
-				libs.notify("This restraint was designed to make it hard for the person locked it in to unlock herself. You struggle hard trying to insert the key into the " + DeviceName + "'s lock anyway, but find the locks well outsides of your reach. Tired from your struggles, you have no choice but to give up for now. Maybe try again later!", messageBox = True)
+			If DeviceKey			
+				If LockAccessDifficulty < 50.0
+					libs.notify("You try to insert the key into the " + DeviceName + "'s lock, but find the locks a bit outsides of your reach. After a few failed attempts to slide the key into the lock, you have no choice but to give up for now. You should still eventually be able to unlock yourself. Just try again a bit later!", messageBox = True)
+				ElseIf LockAccessDifficulty < 100.0
+					libs.notify("This restraint was designed to make it hard for the person locked it in to unlock herself. You struggle hard trying to insert the key into the " + DeviceName + "'s lock anyway, but find the locks well outsides of your reach. Tired from your struggles, you have no choice but to give up for now. Maybe try again later!", messageBox = True)
+				Else
+					libs.notify("This restraint was designed to put the locks safely out of reach of the person wearing it. There is no way you will ever be able to unlock yourself, even when in possession of the proper key. You will need to seek help!", messageBox = True)
+				EndIf
 			Else
-				libs.notify("This restraint was designed to put the locks safely out of reach of the person wearing it. There is no way you will ever be able to unlock yourself, even when in possession of the proper key. You will need to seek help!", messageBox = True)
+				libs.notify("You try to undo your restraint, but you are unable to reach the locking mechanism!", messageBox = True)
 			EndIf
 			Return False
 		EndIf
@@ -680,6 +696,9 @@ Function DeviceMenuExt(Int msgChoice)
 EndFunction
 
 Function DeviceMenuEquip()
+	if libs.PlayerRef.IsEquipped(DeviceRendered) || libs.PlayerRef.WornHasKeyword(zad_DeviousDevice)
+		return
+	EndIf
     EquipDevice(libs.PlayerRef)
 	libs.NotifyPlayer("You choose to put the " + deviceName + " on.")	
 EndFunction
@@ -1147,6 +1166,37 @@ Float Function CalclulateLockPickSuccess()
 	return result
 EndFunction
 
+Idle[] Function SelectStruggleArray(actor akActor)
+	If akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirt) && !akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirtRelaxed)
+		if struggleIdlesHob.length > 0
+			return struggleIdlesHob		; Use hobbled struggle idles
+		else
+			return struggleIdles		; Fall back to standard animations if no hobbled variants are available
+		endif
+	Else
+		return struggleIdles		; Use regular struggle idles
+	Endif
+EndFunction
+
+Function StruggleScene(actor akActor)
+	if libs.IsAnimating(akActor)
+		return
+	EndIf
+	Idle[] struggleArray = SelectStruggleArray(akActor)
+	int len = struggleArray.length - 1
+	If len < 1 
+		return
+	EndIf
+	bool[] cameraState = libs.StartThirdPersonAnimation(akActor, struggleArray[Utility.RandomInt(0, len)], true)
+	Utility.Wait(2.5)
+	libs.Pant(libs.PlayerRef)
+	Utility.Wait(2.5)
+	akActor.PlayIdle(struggleArray[Utility.RandomInt(0, len)])
+	Utility.Wait(5)
+	libs.EndThirdPersonAnimation(akActor, cameraState, true)
+	libs.SexlabMoan(libs.PlayerRef)
+EndFunction
+
 Function EscapeAttemptStruggle()
 	If !CanMakeEscapeAttempt()
 		return
@@ -1156,6 +1206,7 @@ Function EscapeAttemptStruggle()
 	Else
 		libs.zad_DD_EscapeStruggleMSG.Show()
 	EndIf
+	StruggleScene(libs.PlayerRef)
 	Int i = Escape(CalclulateStruggleSuccess())
 	If i == 1
 		; device got removed in Escape(), so just need to show the success message.

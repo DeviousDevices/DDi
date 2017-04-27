@@ -15,6 +15,8 @@ zadEventSlots Property EventSlots Auto ; See zadBaseEvent.psc for how to use the
 zadDevicesUnderneathScript Property DevicesUnderneath Auto
 Quest Property zadNPCSlots Auto
 zadBoundCombatScript Property BoundCombat auto
+Int Property TweenMenuKey Auto
+bool Property Terminate Auto
 
 zbfBondageShell Property zbf Auto
 zbfPlayerControl Property zbfPC Auto
@@ -1317,11 +1319,11 @@ EndFunction
 
 
 float Function GetVersion()
-	return 6 ; build number increment to determine the newest version - does NOT correspond with the offical version name. Returns a float not to mess with existing implementations of this function.
+	return 7 ; build number increment to determine the newest version - does NOT correspond with the offical version name. Returns a float not to mess with existing implementations of this function.
 EndFunction
 
 String Function GetVersionString()
-	return "3.3" ; string to be displayed in MCM etc.
+	return "3.4" ; string to be displayed in MCM etc.
 EndFunction
 
 
@@ -2215,11 +2217,12 @@ Function UpdateControls()
 	EndIf
 	if IsBound(playerRef)
 		If playerRef.WornHasKeyword(zad_BoundCombatDisableKick)
-			fighting = false
+			fighting = false			
 		Else
-			fighting = config.UseBoundCombat
+			fighting = config.UseBoundCombat			
 		Endif
-		menu = !config.HardcoreEffects
+		sneaking = false
+		; menu = !config.HardcoreEffects
 	EndIf
 	zbfPC.SetDisabledControls(abMovement = !movement, abFighting = !fighting, abSneaking = !sneaking, abMenu = !menu, abActivate = !activate)
 EndFunction
@@ -2782,6 +2785,133 @@ string Function LookupDeviceType(keyword kwd)
 	EndIf
 	Error("LookupDeviceType received invalid keyword " + kwd)
 EndFunction
+
+bool function hasAnyWeaponEquipped(actor a)
+	if !a.GetEquippedWeapon(true) && !a.GetEquippedWeapon(false) && !a.getEquippedSpell(1) && !a.getEquippedSpell(0) 
+		return false
+	endif
+	return true
+EndFunction
+
+function stripweapons(actor a, bool unequiponly = true)		
+	int i = 2	
+	Spell spl
+	Weapon weap
+	Armor sh
+	While i > 0
+		i -= 1
+		if i == 0
+			Utility.Wait(1.0) 
+		EndIf	
+		spl = a.getEquippedSpell(1)
+		if spl
+			a.unequipSpell(spl, 1)			
+		endIf			
+		weap = a.GetEquippedWeapon(true)
+		if weap 
+			a.unequipItem(weap, false, true)									
+		endIf			
+		sh = a.GetEquippedShield()
+		if sh 
+			a.unequipItem(sh, false, true)									
+		endIf				
+		spl = a.getEquippedSpell(0)
+		if spl 
+			a.unequipSpell(spl, 0)			
+		endIf
+		weap = a.GetEquippedWeapon(false)
+		if weap 			
+			a.unequipItem(weap, false, true)									
+		endIf		
+	EndWhile
+endfunction
+
+Event StartBoundEffects(Actor akTarget)
+	while hasAnyWeaponEquipped(akTarget)
+		stripweapons(akTarget)
+	EndWhile
+	if akTarget != PlayerRef
+		BoundCombat.Apply_ABC(akTarget)
+		BoundCombat.Apply_NPC_ABC(akTarget)
+		return
+	EndIf
+	Log("OnEffectStart(): Wrist Bondage")		
+	if aktarget == PlayerRef
+		Terminate = False		
+	EndIf
+	PlayBoundIdle()
+	DoRegister()
+	if aktarget == PlayerRef
+		UpdateControls()
+	Endif
+EndEvent
+
+Event StopBoundEffects(Actor akTarget)
+	Log("OnEffectFinish(): Wrist Bondage")	
+	Debug.SendAnimationEvent(akTarget, "IdleForceDefaultState")
+	if aktarget == PlayerRef
+		Terminate = True
+		UpdateControls()		
+	else
+		BoundCombat.Remove_NPC_ABC(akTarget)
+	EndIf
+	BoundCombat.Remove_ABC(akTarget)
+EndEvent
+
+Function DoRegister()
+	if !Terminate
+		RegisterForSingleUpdate(8.0)
+	EndIf
+EndFunction
+
+Function DoUnregister()
+	if !Terminate
+		UnregisterForUpdate()
+	EndIf
+EndFunction
+
+Function DoReLoad()
+	if PlayerRef.WornHasKeyword(zad_DeviousHeavyBondage) && !Terminate
+		PlayBoundIdle()
+		DoRegister()
+	EndIf
+EndFunction
+
+Function DoUnLoad()
+	DoUnregister()	
+EndFunction
+
+Event OnUpdate()
+	if  ((Game.IsMenuControlsEnabled() && config.HardcoreEffects) || Game.IsFightingControlsEnabled())
+		if !IsAnimating(PlayerRef)
+			UpdateControls()
+		EndIf
+	EndIf
+	DoRegister()
+EndEvent
+
+Function PlayBoundIdle()
+	BoundCombat.Apply_ABC(PlayerRef)
+	if !Terminate && !IsAnimating(PlayerRef) && !PlayerRef.IsInFaction(SexLabAnimatingFaction) 
+		ApplyBoundAnim(PlayerRef)
+	EndIf
+EndFunction
+
+Event OnCellLoad()
+	DoReLoad()
+EndEvent
+
+Event OnCellAttach()
+	DoReLoad()
+EndEvent
+
+Event OnLoad()
+	DoReLoad()
+EndEvent
+
+Event OnCellDetach()
+	DoUnLoad()
+EndEvent
 
 ;===============================================================================
 ; GameSettings Manipulation
