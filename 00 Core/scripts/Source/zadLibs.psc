@@ -153,6 +153,8 @@ Armor Property collarPostureRendered Auto         ; Internal Device
 Armor Property collarPosture Auto        	  ; Inventory Device
 Armor Property armbinderRendered Auto         ; Internal Device
 Armor Property armbinder Auto        	  ; Inventory Device
+Armor Property zad_armBinderHisec_Rendered Auto
+Armor Property zad_armBinderHisec_Inventory Auto
 Armor Property gagBall Auto
 Armor Property gagBallRendered Auto
 Armor Property gagPanel Auto
@@ -1949,7 +1951,7 @@ int Function VibrateEffect(actor akActor, int vibStrength, int duration, bool te
 
 	; Start base expression
 	sslBaseExpression expression = SexLab.RandomExpressionByTag("Pleasure")
-	if Utility.RandomInt() <= (10*vibStrength) && (Config.HardcoreEffects || akActor != PlayerRef)
+	if Utility.RandomInt() <= (10*vibStrength) 
 		ApplyExpression(akActor, expression, (Aroused.GetActorExposure(akActor) * 0.75) as Int, openMouth=true)
 		PlayThirdPersonAnimation(akActor, AnimSwitchKeyword(akActor, "Horny01"), 3, permitRestrictive=true)
 	Else
@@ -2026,7 +2028,7 @@ int Function VibrateEffect(actor akActor, int vibStrength, int duration, bool te
 		;;;;;;;;;;
 		; Play horny idle?
 		;;;;;;;;;;
-		if (Config.HardcoreEffects || akActor != PlayerRef) && (vibAnimStarted == 0) && Utility.RandomInt() <= (3+(VibStrength * 2)) && !IsAnimating(PlayerRef)
+		if (vibAnimStarted == 0) && Utility.RandomInt() <= (3+(VibStrength * 2)) && !IsAnimating(PlayerRef)
 			; Log("XXX Starting Horny Idle")
 			ApplyExpression(akActor, expression, (Aroused.GetActorExposure(akActor) * 0.75) as Int, openMouth=true)
 			; Select animation
@@ -2135,21 +2137,16 @@ Function SpellCastVibrate(Actor akActor, Form tmp)
 		SendModEvent("EventOnCast")
 		Log("OnSpellCast()")
 		If akActor == PlayerRef && akActor.GetCombatState() >= 1
-			if !Config.HardcoreEffects 
-				Log("Player is in combat, and HardCoreEffects == false. Done.")
+			; punish her only every so often
+			if (Utility.GetCurrentRealTime() > SpellCastVibrateCooldown)					
+				SpellCastVibrateCooldown = Utility.GetCurrentRealTime() + 60 ; 60 seconds cooldown
+			else
 				return
-			Else
-				; punish her only every so often
-				if (Utility.GetCurrentRealTime() > SpellCastVibrateCooldown)					
-					SpellCastVibrateCooldown = Utility.GetCurrentRealTime() + 60 ; 60 seconds cooldown
-				else
-					return
-				endif		
-				Log("Player is in combat while trying to cast spell: Applying magicka penalty.")
-				; Hit Magicka and Mag Rate
-				ApplyMagickaPenalty(akActor)
-				return
-			EndIf
+			endif		
+			Log("Player is in combat while trying to cast spell: Applying magicka penalty.")
+			; Hit Magicka and Mag Rate
+			ApplyMagickaPenalty(akActor)
+			return			
 		Endif
 		Shout isShout = (tmp as Shout)
 		; Log("isShout: "+isShout)
@@ -2184,7 +2181,7 @@ Function SpellCastVibrate(Actor akActor, Form tmp)
 			duration = 1
 		EndIf
 		;NotifyPlayer("The plugs respond to the magicka flowing through you, and begin to vibrate!")
-		if Config.HardcoreEffects && Utility.RandomInt() <= vibStrength * 15
+		if Utility.RandomInt() <= vibStrength * 15
 			;Log("Interrupting cast.")
 			; PlayerRef.InterruptCast()
 			; NotifyPlayer("Your concentration wanes, and the spell fizzles.")
@@ -2221,8 +2218,7 @@ Function UpdateControls()
 		Else
 			fighting = config.UseBoundCombat			
 		Endif
-		sneaking = false
-		; menu = !config.HardcoreEffects
+		sneaking = false		
 	EndIf
 	zbfPC.SetDisabledControls(abMovement = !movement, abFighting = !fighting, abSneaking = !sneaking, abMenu = !menu, abActivate = !activate)
 EndFunction
@@ -2882,7 +2878,7 @@ Function DoUnLoad()
 EndFunction
 
 Event OnUpdate()
-	if  ((Game.IsMenuControlsEnabled() && config.HardcoreEffects) || Game.IsFightingControlsEnabled())
+	if  (Game.IsMenuControlsEnabled() || Game.IsFightingControlsEnabled())
 		if !IsAnimating(PlayerRef)
 			UpdateControls()
 		EndIf

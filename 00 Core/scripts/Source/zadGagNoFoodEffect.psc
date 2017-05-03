@@ -42,7 +42,7 @@ Event OnGagPanelStateChange(string eventName, string argString, float argNum, fo
 EndEvent
 
 Function UpdateState()
-	if libs.config.HardcoreEffects && target == libs.PlayerRef && !target.WornHasKeyword(zad_PermitOral) && !panelGagOpen
+	if target == libs.PlayerRef && !target.WornHasKeyword(zad_PermitOral) && !panelGagOpen
 		if !libs.config.GagTooltip
 			libs.config.GagTooltip = True
 			libs.NotifyPlayer("The Devious Devices Gag no-food effect is now active. While wearing a gag, you will be unable to eat, or to consume potions. As such, all food / potions you obtain will be removed from your inventory. Upon removing the gag (Or removing the plug, in the case of a Panel-gag), the items removed by this effect will be returned.", true)

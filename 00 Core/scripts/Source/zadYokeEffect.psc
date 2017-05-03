@@ -28,7 +28,7 @@ EndFunction
 
 
 Event OnUpdate()
-	if target == libs.PlayerRef && ((Game.IsMenuControlsEnabled() && libs.config.HardcoreEffects) || Game.IsFightingControlsEnabled() )
+	if target == libs.PlayerRef && (Game.IsMenuControlsEnabled() || Game.IsFightingControlsEnabled() )
 		if !libs.IsAnimating(target)
 			libs.UpdateControls()
 		EndIf

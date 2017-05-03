@@ -3,7 +3,15 @@ Scriptname zadBeltScript extends zadEquipScript
 ; Frameworks
 SexLabFramework property SexLab auto
 
+; This stuff is deprecated and is no longer used by anything in this script. It's left in here not to make custom scripts inheriting these property cough errors into the log.
+Keyword Property zad_DeviousPlug Auto 
+Idle Property ZazAPCAO104 Auto
+
 Function DeviceMenuExt(Int msgChoice)
+	; Struggle (was pee in the old script, but nothing will break this way, so it's all good)
+	if msgChoice == 3
+		StruggleScene(libs.playerref)
+	endif
 	; Masturbate
 	if msgChoice == 4
 		BeltMenuMasturbate()

@@ -90,8 +90,12 @@ bool unequipMutex
 ; Internal script variables
 Float LastUnlockAttemptAt = 0.0							; When did the player last attempt to unlock this device.
 Float DeviceEquippedAt = 0.0							; When was this device equipped?
-Int EscapeAttemptsMade = 0								; Tracker of how often the player tried to escape this device.
-Float LastEscapeAttemptAt = 0.0							; When did the player last attempt to escape.
+Int EscapeCutAttemptsMade = 0							; Tracker of how often the player tried to escape this device via cutting.
+Int EscapeStruggleAttemptsMade = 0						; Tracker of how often the player tried to escape this device via struggling.
+Int EscapeLockPickAttemptsMade = 0						; Tracker of how often the player tried to escape this device via lockpicking.
+Float LastStruggleEscapeAttemptAt = 0.0					; When did the player last attempt to escape via struggling.
+Float LastCutEscapeAttemptAt = 0.0						; When did the player last attempt to escape via cutting.
+Float LastLockPickEscapeAttemptAt = 0.0					; When did the player last attempt to escape via lockpicking.
 Float DifficultyModifier = 0.0							; Global modifier for escape attempts. Can be used to make escape harder or easier.
 Int RepairAttemptsMade = 0								; Tracker of how often the player tried to escape this device.
 Float LastRepairAttemptAt = 0.0							; When did the player last attempt to escape.
@@ -191,9 +195,14 @@ Event OnEquipped(Actor akActor)
 	If deviceRendered.HasKeyword(libs.zad_DeviousHeavyBondage)		
 		libs.StartBoundEffects(akActor)
 	EndIf	
-	LastEscapeAttemptAt = 0.0
+	LastCutEscapeAttemptAt = 0.0
+	LastStruggleEscapeAttemptAt = 0.0
+	LastLockPickEscapeAttemptAt = 0.0
 	LastUnlockAttemptAt = 0.0
 	LastRepairAttemptAt = 0.0
+	EscapeCutAttemptsMade = 0
+	EscapeStruggleAttemptsMade = 0
+	EscapeLockpickAttemptsMade = 0
 EndEvent
 
 
@@ -429,6 +438,7 @@ bool Function RemoveDeviceWithKey(actor akActor = none, bool destroyDevice=false
 	if akActor == none
 		akActor = libs.PlayerRef
 	EndIf   
+	StruggleScene(libs.PlayerRef)
 	if (akActor == libs.PlayerRef) && StorageUtil.GetIntValue(akActor, "zad_Equipped" + libs.LookupDeviceType(zad_DeviousDevice) + "_LockJammedStatus") == 1
 		libs.Log("RemoveDeviceWithKey called, but lock is jammed.")
 		If zad_DD_UnlockFailJammedMSG
@@ -678,7 +688,7 @@ Function NoKeyFailMessage(Actor akActor) ; Display fail removal for devices with
 EndFunction
 
 Function DeviceMenu(Int msgChoice = 0)
-        msgChoice = zad_DeviceMsg.Show() ; display menu
+	msgChoice = zad_DeviceMsg.Show() ; display menu
 	if msgChoice == 0 ; Equip Device voluntarily
 		DeviceMenuEquip()
 	elseif msgChoice == 1	; Remove device, with key
@@ -699,8 +709,12 @@ Function DeviceMenuEquip()
 	if libs.PlayerRef.IsEquipped(DeviceRendered) || libs.PlayerRef.WornHasKeyword(zad_DeviousDevice)
 		return
 	EndIf
-    EquipDevice(libs.PlayerRef)
-	libs.NotifyPlayer("You choose to put the " + deviceName + " on.")	
+	EquipDevice(libs.PlayerRef)	
+	If zad_DD_OnEquipDeviceMSG
+		zad_DD_OnEquipDeviceMSG.Show()
+	Else
+		libs.zad_DD_OnEquipDeviceMSG.Show()
+	EndIf    
 EndFunction
 
 function DeviceMenuRemoveWithKey()    
@@ -909,16 +923,44 @@ Function DisplayDifficultyMsg()
 	libs.notify(result, messageBox = true)
 EndFunction
 
-Bool Function CanMakeEscapeAttempt()
+Bool Function CanMakeStruggleEscapeAttempt()
 	; check if the character can make an escape attempt
 	Float HoursNeeded = EscapeCooldown
-	Float HoursPassed = (Utility.GetCurrentGameTime() - LastEscapeAttemptAt) * 24.0
+	Float HoursPassed = (Utility.GetCurrentGameTime() - LastStruggleEscapeAttemptAt) * 24.0
 	if HoursPassed > HoursNeeded
-		LastEscapeAttemptAt = Utility.GetCurrentGameTime()
+		LastStruggleEscapeAttemptAt = Utility.GetCurrentGameTime()
 		return True
 	Else
 		Int HoursToWait = Math.Ceiling(HoursNeeded - HoursPassed)
-		libs.notify("You cannot try to escape this device so soon after the last attempt! You can try again in about " + HoursToWait + " hours.", messageBox = true)
+		libs.notify("You cannot try to struggle out of this device so soon after the last attempt! You can try again in about " + HoursToWait + " hours.", messageBox = true)
+	EndIf
+	return False
+EndFunction
+
+Bool Function CanMakeCutEscapeAttempt()
+	; check if the character can make an escape attempt
+	Float HoursNeeded = EscapeCooldown
+	Float HoursPassed = (Utility.GetCurrentGameTime() - LastCutEscapeAttemptAt) * 24.0
+	if HoursPassed > HoursNeeded
+		LastCutEscapeAttemptAt = Utility.GetCurrentGameTime()
+		return True
+	Else
+		Int HoursToWait = Math.Ceiling(HoursNeeded - HoursPassed)
+		libs.notify("You cannot try to cut open this device so soon after the last attempt! You can try again in about " + HoursToWait + " hours.", messageBox = true)
+	EndIf
+	return False
+EndFunction
+
+Bool Function CanMakeLockPickEscapeAttempt()
+	; check if the character can make an escape attempt
+	Float HoursNeeded = EscapeCooldown
+	Float HoursPassed = (Utility.GetCurrentGameTime() - LastLockPickEscapeAttemptAt) * 24.0
+	if HoursPassed > HoursNeeded
+		LastLockPickEscapeAttemptAt = Utility.GetCurrentGameTime()
+		return True
+	Else
+		Int HoursToWait = Math.Ceiling(HoursNeeded - HoursPassed)
+		libs.notify("You cannot try to pick this device so soon after the last attempt! You can try again in about " + HoursToWait + " hours.", messageBox = true)
 	EndIf
 	return False
 EndFunction
@@ -971,7 +1013,7 @@ Float Function CalclulateCutSuccess()
 	; Apply modifiers, but only if the device is not impossible to escape from to begin with.
 	If CutDeviceEscapeChance > 0.0
 		; add 1% for every previous attempt
-		result += EscapeAttemptsMade
+		result += EscapeCutAttemptsMade
 		; apply global modifier
 		result += DifficultyModifier
 		If Libs.PlayerRef.GetAV("OneHanded") > 25
@@ -1015,7 +1057,12 @@ Function EscapeAttemptCut()
 		libs.notify("You do not possess a tool you could use for cutting your " + DeviceName + ".", messageBox = true)
 		return
 	EndIf
-	If !CanMakeEscapeAttempt()
+	; can't try this with bound hands. We do allow cutting wrist restraints itself, though.
+	If !libs.PlayerRef.WornHasKeyword(libs.zad_DeviousHeavyBondage) && !deviceRendered.HasKeyword(libs.zad_DeviousHeavyBondage)
+		libs.notify("You cannot try to cut open the " + DeviceName + " with bound hands.", messageBox = true)
+		return
+	EndIf
+	If !CanMakeCutEscapeAttempt()
 		return
 	EndIf	
 	If zad_DD_EscapeCutMSG
@@ -1038,7 +1085,7 @@ Function EscapeAttemptCut()
 			libs.notify("You fail to escape from your " + DeviceName + " and your feeble attempts tighten the device so much that you won't ever be able to cut it open.", messageBox = true)
 		Else
 			; regular failure
-			EscapeAttemptsMade += 1
+			EscapeCutAttemptsMade += 1
 			If zad_DD_EscapeCutFailureMSG
 				zad_DD_EscapeCutFailureMSG.Show()
 			Else
@@ -1057,13 +1104,23 @@ Function EscapeAttemptLockPick()
 		libs.notify("You do not possess a pick you could use on your " + DeviceName + ".", messageBox = true)
 		return
 	EndIf
-	If !CanMakeEscapeAttempt()
+	; can't try this with bound hands. We do allow wrist restraints itself, though.
+	If !libs.PlayerRef.WornHasKeyword(libs.zad_DeviousHeavyBondage) && !deviceRendered.HasKeyword(libs.zad_DeviousHeavyBondage)
+		libs.notify("You cannot try to pick the " + DeviceName + " with bound hands.", messageBox = true)
+		return
+	EndIf
+	If !CanMakeLockPickEscapeAttempt()
 		return
 	EndIf
 	If zad_DD_EscapeLockPickMSG	
 		zad_DD_EscapeLockPickMSG.Show()
 	Else
 		libs.zad_DD_EscapeLockPickMSG.Show()
+	EndIf
+	; first make a check against lock difficulty as you can't pick what you can't reach! The cooldown timer has already reset at this point.
+	If Utility.RandomFloat(0.0, 99.9) < LockAccessDifficulty
+		libs.notify("You fail to reach your " + DeviceName + "'s locks and can't attempt to pick the lock.", messageBox = true)		
+		return
 	EndIf
 	Int i = Escape(CalclulateLockPickSuccess())
 	If i == 1
@@ -1080,7 +1137,7 @@ Function EscapeAttemptLockPick()
 			libs.notify("You fail to escape from your " + DeviceName + " and your feeble attempts trigger a safety shield inside the lock, preventing further pick attempts.", messageBox = true)
 		Else
 			; regular failure
-			EscapeAttemptsMade += 1
+			EscapeLockPickAttemptsMade += 1
 			; destroy the lockpick
 			DestroyLockPick()
 			If zad_DD_EscapeLockPickFailureMSG
@@ -1131,7 +1188,7 @@ Float Function CalclulateLockPickSuccess()
 	; Apply modifiers, but only if the device is not impossible to escape from to begin with.
 	If LockPickEscapeChance > 0.0
 		; add 1% for every previous attempt
-		result += EscapeAttemptsMade
+		result += EscapeLockPickAttemptsMade
 		; apply global modifier
 		result += DifficultyModifier
 		If Libs.PlayerRef.GetAV("Lockpicking") > 25
@@ -1198,7 +1255,7 @@ Function StruggleScene(actor akActor)
 EndFunction
 
 Function EscapeAttemptStruggle()
-	If !CanMakeEscapeAttempt()
+	If !CanMakeStruggleEscapeAttempt()
 		return
 	EndIf
 	If zad_DD_EscapeStruggleMSG
@@ -1222,7 +1279,7 @@ Function EscapeAttemptStruggle()
 			libs.notify("You fail to escape from your " + DeviceName + " and your feeble attempts tighten the device so much that you won't ever be able to struggle out from it.", messageBox = true)
 		Else
 			; regular failure
-			EscapeAttemptsMade += 1
+			EscapeStruggleAttemptsMade += 1
 			If zad_DD_EscapeStruggleFailureMSG
 				zad_DD_EscapeStruggleFailureMSG.Show()
 			Else
@@ -1237,7 +1294,7 @@ Float Function CalclulateStruggleSuccess()
 	; Apply modifiers, but only if the device is not impossible to escape from to begin with.
 	If BaseEscapeChance > 0.0
 		; add 1% for every previous attempt
-		result += EscapeAttemptsMade
+		result += EscapeStruggleAttemptsMade
 		; apply global modifier
 		result += DifficultyModifier
 		; apply strength bonus

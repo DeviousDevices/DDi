@@ -84,10 +84,6 @@ int Property BaseHornyChance Auto
 int baseHornyChanceDefault = 5
 int Property BaseBumpPumpChance Auto
 int baseBumpPumpChanceDefault = 17
-bool Property HardcoreEffects Auto
-bool hardcoreEffectsDefault = true
-bool Property MasturbateOnBeltRemoval Auto
-bool masturbateOnBeltRemovalDefault = False 
 int Property numNpcs Auto Conditional
 int numNpcsDefault = 5
 
@@ -151,7 +147,6 @@ int npcMessagesOID
 int destroyKeyProbabilityOID
 int destroyKeyJamChanceOID
 int logMessagesOID
-int masturbateOnRemovalOID
 int eventIntervalOID
 int effectVibrateChanceOID
 int effectHealthDrainChanceOID
@@ -167,13 +162,11 @@ int ForbiddenTomeOID
 int SergiusExperimentOID
 int SurreptitiousStreetsOID
 int RadiantMasterOID
-int HardcoreEffectsOID
 int ssSleepChanceOID
 int ssTrapChanceOID
 int rmHeartbeatIntervalOID
 int rmSummonHeartbeatIntervalOID
 int ssWarningMessagesOID
-int MasturbateOnBeltRemovalOID
 int numNpcsOID
 int ifpOID
 int preserveAggroOID
@@ -382,8 +375,7 @@ Event OnPageReset(string page)
 	ElseIf page == "Events and Effects"
 		SetCursorFillMode(TOP_TO_BOTTOM)
 		AddHeaderOption("Global Events/Effects Configuration")
-		eventIntervalOID = AddSliderOption("Polling Interval", EventInterval, "{2}")
-		HardcoreEffectsOID = AddToggleOption("Enable Hardcore Effects", HardcoreEffects)
+		eventIntervalOID = AddSliderOption("Polling Interval", EventInterval, "{2}")		
 		numNpcsOID = AddSliderOption("Number of NPC's slotted", numNpcs, "{1}")
 		AddHeaderOption("Polled Events Configuration ("+libs.EventSlots.Slotted+"):")
 		int i = 0
@@ -391,9 +383,6 @@ Event OnPageReset(string page)
 			eventOIDs[i] = AddSliderOption(libs.EventSlots.Slots[i].Name+" Chance", libs.EventSlots.Slots[i].Probability, "{1}")
 			i += 1
 		EndWhile
-		AddHeaderOption("Special Events Configuration")
-		MasturbateOnBeltRemovalOID = AddToggleOption("Masturbate on belt removal", MasturbateOnBeltRemoval)
-
 	ElseIf page == "Sounds"
 		SetCursorFillMode(TOP_TO_BOTTOM)
 		AddHeaderOption("Audio Configuration")
@@ -728,10 +717,7 @@ Event OnOptionSelect(int option)
 		EndIf	
 	elseif option == logMessagesOID
 		 LogMessages = !LogMessages
-		SetToggleOptionValue(logMessagesOID, LogMessages)
-	elseif option == HardcoreEffectsOID
-		 HardcoreEffects = !HardcoreEffects
-		SetToggleOptionValue(HardcoreEffectsOID, HardcoreEffects)
+		SetToggleOptionValue(logMessagesOID, LogMessages)	
 	elseif option == ForbiddenTomeOID
 		 ForbiddenTome = !ForbiddenTome
 		SetToggleOptionValue(ForbiddenTomeOID, ForbiddenTome)
@@ -743,10 +729,7 @@ Event OnOptionSelect(int option)
 		SetToggleOptionValue(SurreptitiousStreetsOID, SurreptitiousStreets)
 	elseif option == RadiantMasterOID
 		 RadiantMaster = !RadiantMaster
-		SetToggleOptionValue(RadiantMasterOID, RadiantMaster)
-	elseif option == MasturbateOnBeltRemovalOID
-		 MasturbateOnBeltRemoval = !MasturbateOnBeltRemoval
-		SetToggleOptionValue(MasturbateOnBeltRemovalOID, MasturbateOnBeltRemoval)
+		SetToggleOptionValue(RadiantMasterOID, RadiantMaster)	
 	elseif option == ssWarningMessagesOID
 		 ssWarningMessages = !ssWarningMessages
 		SetToggleOptionValue(ssWarningMessagesOID, ssWarningMessages)
@@ -876,10 +859,7 @@ Event OnOptionDefault(int option)
 		SetToggleOptionValue(SurreptitiousStreetsOID, SurreptitiousStreets)
 	elseif option == RadiantMasterOID
 		RadiantMaster = RadiantMasterDefault
-		SetToggleOptionValue(RadiantMasterOID, RadiantMaster)
-	elseIf (option == HardcoreEffectsOID)
-		HardcoreEffects = HardcoreEffectsDefault
-		SetToggleOptionValue(HardcoreEffectsOID, HardcoreEffectsDefault)
+		SetToggleOptionValue(RadiantMasterOID, RadiantMaster)	
 	elseIf (option == ssSleepChanceOID)
 		ssSleepChance = ssSleepChanceDefault
 		SetSliderOptionValue(ssSleepChanceOID, ssSleepChanceDefault, "{1}")
@@ -891,10 +871,7 @@ Event OnOptionDefault(int option)
 		SetSliderOptionValue(rmHeartbeatIntervalOID, rmHeartbeatIntervalDefault, "{3}")
 	elseIf (option == rmSummonHeartbeatIntervalOID)
 		rmSummonHeartbeatInterval = rmSummonHeartbeatIntervalDefault
-		SetSliderOptionValue(rmSummonHeartbeatIntervalOID, rmSummonHeartbeatIntervalDefault, "{3}")
-	elseIf (option == MasturbateOnBeltRemovalOID)
-		MasturbateOnBeltRemoval = MasturbateOnBeltRemovalDefault
-		SetToggleOptionValue(MasturbateOnBeltRemovalOID, MasturbateOnBeltRemovalDefault)
+		SetSliderOptionValue(rmSummonHeartbeatIntervalOID, rmSummonHeartbeatIntervalDefault, "{3}")	
 	elseIf (option == ssWarningMessagesOID)
 		ssWarningMessages = ssWarningMessagesDefault
 		SetToggleOptionValue(ssWarningMessagesOID, ssWarningMessagesDefault)
@@ -1010,9 +987,7 @@ Event OnOptionHighlight(int option)
 	elseIf (option == SurreptitiousStreetsOID)
 		SetInfoText("Enable/disable the 'Catch All' triggers that start the radiant master quests. Hint: Booty-trapped containers, sleep encounters, etc.\nDefault:"+SurreptitiousStreetsDefault)
 	elseIf (option == RadiantMasterOID)
-		SetInfoText("Enable/disable the 'Radiant Master' quest. This is a Surreptitious Streets quest. If there are no elligible quests enabled, Surreptitious Streets will do nothing.\nDefault:"+RadiantMaster)
-	elseIf (option == HardcoreEffectsOID)
-		SetInfoText("Enable/disable the more detrimental effects that some items (Such as restraints) apply.\nDefault:"+HardcoreEffectsDefault)
+		SetInfoText("Enable/disable the 'Radiant Master' quest. This is a Surreptitious Streets quest. If there are no elligible quests enabled, Surreptitious Streets will do nothing.\nDefault:"+RadiantMaster)	
 	elseIf (option == ssSleepChanceOID)
 		SetInfoText("Configure the probability of a sleep capture event occuring while sleeping in an unsafe area.\nDefault:"+ssSleepChanceDefault)
 	elseIf (option == ssTrapChanceOID)
@@ -1020,9 +995,7 @@ Event OnOptionHighlight(int option)
 	elseIf (option == rmHeartbeatIntervalOID)
 		SetInfoText("Configure how frequently master is polled / status is checked.\nDefault:"+rmHeartbeatIntervalDefault)
 	elseIf (option == rmSummonHeartbeatIntervalOID)
-		SetInfoText("Configure the frequency of summon reminders.\nDefault:"+rmSummonHeartbeatIntervalDefault)
-	elseIf (option == MasturbateOnBeltRemovalOID)
-		SetInfoText("Enable/disable the Masturbate On Belt Removal event that occurs when the belt is voluntarily unequipped while over a certain arousal threshold.\nDefault:"+MasturbateOnBeltRemovalDefault)
+		SetInfoText("Configure the frequency of summon reminders.\nDefault:"+rmSummonHeartbeatIntervalDefault)	
 	elseIf (option == ssWarningMessagesOID)
 		SetInfoText("Enable/disable warning messages prior to Surreptitious Streets events. This option will give provide a way to avoid traps / capture events in an immersion friendly manner, without disabling them all-together.\nDefault:"+ssWarningMessagesDefault)
 	elseIf (option == UseQueueNiNodeOID)
