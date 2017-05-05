@@ -19,7 +19,7 @@ Int Property TweenMenuKey Auto
 bool Property Terminate Auto
 
 zbfBondageShell Property zbf Auto
-zbfPlayerControl Property zbfPC Auto
+;zbfPlayerControl Property zbfPC Auto
 
 ; Keywords
 Keyword Property zad_DeviousPlug Auto
@@ -2196,7 +2196,8 @@ EndFunction
 
 Function DisableControls()
 	; Mimics the behavior of Game.DisablePlayerControls()
-	zbfPC.SetDisabledControls(abMovement = True, abFighting = True, abSneaking = False, abMenu = True, abActivate = True)
+	;zbfPC.SetDisabledControls(abMovement = True, abFighting = True, abSneaking = False, abMenu = True, abActivate = True)
+	Game.DisablePlayerControls(abMovement = True, abFighting = True, abSneaking = False, abMenu = True, abActivate = True)
 EndFunction
 
 Function UpdateControls()
@@ -2220,7 +2221,8 @@ Function UpdateControls()
 		Endif
 		sneaking = false		
 	EndIf
-	zbfPC.SetDisabledControls(abMovement = !movement, abFighting = !fighting, abSneaking = !sneaking, abMenu = !menu, abActivate = !activate)
+	;zbfPC.SetDisabledControls(abMovement = !movement, abFighting = !fighting, abSneaking = !sneaking, abMenu = !menu, abActivate = !activate)
+	Game.DisablePlayerControls(abMovement = !movement, abFighting = !fighting, abSneaking = !sneaking, abMenu = !menu, abActivate = !activate)	
 EndFunction
 
 ;==================================================
@@ -2512,7 +2514,7 @@ Function ChastityBeltStruggle(actor akActor)
 	EndIf	
 	Aroused.UpdateActorExposure(akActor, 5)
 	If akActor == PlayerRef
-		notify("You tuck at your chastity belt, but it won't come off!")
+		notify("You tug at your chastity belt, but it won't come off!")
 	EndIf
 	SexlabMoan(akActor)		
 	If aroused.GetActorExposure(akActor) > 75
