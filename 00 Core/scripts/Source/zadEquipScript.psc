@@ -119,11 +119,6 @@ bool Function ShouldEquipSilently(actor akActor)
 	return false
 EndFunction
 
-Event OnSleepStart(float afSleepStartTime, float afDesiredSleepEndTime)
-	Float naplength = afDesiredSleepEndTime - afSleepStartTime
-	LastUnlockAttemptAt += naplength
-EndEvent
-
 Event OnEquipped(Actor akActor)
 	libs.Log("OnEquipped("+akActor.GetLeveledActorBase().GetName()+": "+deviceInventory.GetName()+")")
 	bool silently = ShouldEquipSilently(akActor)
@@ -188,8 +183,7 @@ Event OnEquipped(Actor akActor)
 	libs.DeviceMutex = false
 	if akActor != libs.PlayerRef
 		libs.RepopulateNpcs()
-	EndIf
-	RegisterForSleep()
+	EndIf	
 	OnEquippedPost(akActor)
 	SetLockShield()
 	If deviceRendered.HasKeyword(libs.zad_DeviousHeavyBondage)		
@@ -257,8 +251,7 @@ Event OnUnequipped(Actor akActor)
 			Endif
 		Endif
 		unequipMutex = false
-	EndIf
-	UnRegisterForSleep()	
+	EndIf	
 EndEvent
 
 
