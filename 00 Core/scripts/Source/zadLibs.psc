@@ -2494,7 +2494,7 @@ EndFunction
 
 Function ChastityBeltStruggle(actor akActor)
 	; sanity check
-	If !akActor.WornHasKeyword(zad_DeviousBelt) || akActor.WornHasKeyword(zad_DeviousHeavyBondage)
+	If !akActor.WornHasKeyword(zad_DeviousBelt) || akActor.WornHasKeyword(zad_DeviousHeavyBondage) || BoundCombat.HasCompatibleDevice(akActor)
 		Return
 	EndIf
 	; this should delay any anims if there is a menu open
@@ -2522,7 +2522,7 @@ Function ChastityBeltStruggle(actor akActor)
 		If akActor == PlayerRef
 			notify("You are incredibly horny and try to force a finger inside your belt.")
 		EndIf
-	EndIf
+	EndIf	
 EndFunction
 
 Function ApplyBoundAnim(actor akActor, idle theIdle = None)
@@ -2834,11 +2834,11 @@ Event StartBoundEffects(Actor akTarget)
 		return
 	EndIf
 	Log("OnEffectStart(): Wrist Bondage")		
-	if aktarget == PlayerRef
-		Terminate = False		
-	EndIf
+	; if aktarget == PlayerRef
+		; Terminate = False		
+	; EndIf
 	PlayBoundIdle()
-	DoRegister()
+	RegisterForSingleUpdate(8.0)
 	if aktarget == PlayerRef
 		UpdateControls()
 	Endif
@@ -2848,7 +2848,7 @@ Event StopBoundEffects(Actor akTarget)
 	Log("OnEffectFinish(): Wrist Bondage")	
 	Debug.SendAnimationEvent(akTarget, "IdleForceDefaultState")
 	if aktarget == PlayerRef
-		Terminate = True
+		UnregisterForUpdate()
 		UpdateControls()		
 	else
 		BoundCombat.Remove_NPC_ABC(akTarget)
@@ -2856,28 +2856,28 @@ Event StopBoundEffects(Actor akTarget)
 	BoundCombat.Remove_ABC(akTarget)
 EndEvent
 
-Function DoRegister()
-	if !Terminate
-		RegisterForSingleUpdate(8.0)
-	EndIf
-EndFunction
+; Function DoRegister()
+	; if !Terminate
+		; RegisterForSingleUpdate(8.0)
+	; EndIf
+; EndFunction
 
-Function DoUnregister()
-	if !Terminate
-		UnregisterForUpdate()
-	EndIf
-EndFunction
+; Function DoUnregister()
+	; if !Terminate
+		; UnregisterForUpdate()
+	; EndIf
+; EndFunction
 
-Function DoReLoad()
-	if PlayerRef.WornHasKeyword(zad_DeviousHeavyBondage) && !Terminate
-		PlayBoundIdle()
-		DoRegister()
-	EndIf
-EndFunction
+; Function DoReLoad()
+	; if PlayerRef.WornHasKeyword(zad_DeviousHeavyBondage) && !Terminate
+		; PlayBoundIdle()
+		; DoRegister()
+	; EndIf
+; EndFunction
 
-Function DoUnLoad()
-	DoUnregister()	
-EndFunction
+; Function DoUnLoad()
+	; DoUnregister()	
+; EndFunction
 
 Event OnUpdate()
 	if  (Game.IsMenuControlsEnabled() || Game.IsFightingControlsEnabled())
@@ -2885,31 +2885,31 @@ Event OnUpdate()
 			UpdateControls()
 		EndIf
 	EndIf
-	DoRegister()
+	RegisterForSingleUpdate(8.0)
 EndEvent
 
 Function PlayBoundIdle()
 	BoundCombat.Apply_ABC(PlayerRef)
-	if !Terminate && !IsAnimating(PlayerRef) && !PlayerRef.IsInFaction(SexLabAnimatingFaction) 
+	if !IsAnimating(PlayerRef) && !PlayerRef.IsInFaction(SexLabAnimatingFaction) 
 		ApplyBoundAnim(PlayerRef)
 	EndIf
 EndFunction
 
-Event OnCellLoad()
-	DoReLoad()
-EndEvent
+; Event OnCellLoad()
+	; DoReLoad()
+; EndEvent
 
-Event OnCellAttach()
-	DoReLoad()
-EndEvent
+; Event OnCellAttach()
+	; DoReLoad()
+; EndEvent
 
-Event OnLoad()
-	DoReLoad()
-EndEvent
+; Event OnLoad()
+	; DoReLoad()
+; EndEvent
 
-Event OnCellDetach()
-	DoUnLoad()
-EndEvent
+; Event OnCellDetach()
+	; DoUnLoad()
+; EndEvent
 
 ;===============================================================================
 ; GameSettings Manipulation

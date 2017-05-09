@@ -55,9 +55,9 @@ bool useAnimFilterDefault = true
 bool Property snipeZAZFilter = true Auto
 
 ; Blindfold
-int Property blindfoldMode Auto ; 0 == DD's mode, 1 == DD's mode w/ leeches, 2 == leeches
+int Property blindfoldMode = 2 Auto ; 0 == DD's mode, 1 == DD's mode w/ leeches, 2 == leeches
 int blindfoldModeDefault = 2
-float Property blindfoldStrength Auto
+float Property blindfoldStrength = 0.5 Auto
 float blindfoldStrengthDefault = 0.5
 int Property darkfogStrength Auto
 int Property darkfogStrength2 Auto
@@ -84,7 +84,7 @@ int Property BaseHornyChance Auto
 int baseHornyChanceDefault = 5
 int Property BaseBumpPumpChance Auto
 int baseBumpPumpChanceDefault = 17
-int Property numNpcs Auto Conditional
+int Property numNpcs = 5 Auto Conditional
 int numNpcsDefault = 5
 
 ; Sounds
