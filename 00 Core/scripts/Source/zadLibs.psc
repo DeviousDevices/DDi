@@ -19,7 +19,6 @@ Int Property TweenMenuKey Auto
 bool Property Terminate Auto
 
 zbfBondageShell Property zbf Auto
-;zbfPlayerControl Property zbfPC Auto
 
 ; Keywords
 Keyword Property zad_DeviousPlug Auto
@@ -2194,9 +2193,7 @@ bool Function IsValidActor(actor akActor)
 	return (akActor.Is3DLoaded() && !akActor.IsDead() && !akActor.IsDisabled() && akActor.GetCurrentScene() == none)
 EndFunction
 
-Function DisableControls()
-	; Mimics the behavior of Game.DisablePlayerControls()
-	;zbfPC.SetDisabledControls(abMovement = True, abFighting = True, abSneaking = False, abMenu = True, abActivate = True)
+Function DisableControls()	
 	Game.DisablePlayerControls(abMovement = True, abFighting = True, abSneaking = False, abMenu = True, abActivate = True)
 EndFunction
 
@@ -2220,9 +2217,9 @@ Function UpdateControls()
 			fighting = config.UseBoundCombat			
 		Endif
 		sneaking = false		
-	EndIf
-	;zbfPC.SetDisabledControls(abMovement = !movement, abFighting = !fighting, abSneaking = !sneaking, abMenu = !menu, abActivate = !activate)
+	EndIf	
 	Game.DisablePlayerControls(abMovement = !movement, abFighting = !fighting, abSneaking = !sneaking, abMenu = !menu, abActivate = !activate)	
+	Game.EnablePlayerControls(abMovement = movement, abFighting = fighting, abSneaking = sneaking, abMenu = menu, abActivate = activate)	
 EndFunction
 
 ;==================================================
