@@ -35,13 +35,13 @@ Int YokeRemovalCostPerLevelDefault = 200
 
 bool Property LogMessages Auto
 bool logMessagesDefault = true
-bool Property ifp Auto
+bool Property ifp = false Auto
 bool ifpDefault = false
 bool Property preserveAggro Auto
 bool preserveAggroDefault = true
-bool Property breastNodeManagement Auto
+bool Property breastNodeManagement = false Auto
 bool breastNodeManagementDefault = false
-bool Property bellyNodeManagement Auto
+bool Property bellyNodeManagement = false Auto
 bool bellyNodeManagementDefault = false
 
 bool Property UseBoundCombat Auto
@@ -133,8 +133,10 @@ bool Property mittensDropToggle = True Auto Conditional
 bool mittensDropToggleDefault = True 
 Int Property HobbleSkirtSpeedDebuff = 50 Auto
 Int HobbleSkirtSpeedDebuffDefault = 50
+bool Property debugSigTerm = False Auto
 
 ; OID's
+int debugSigTermOID
 int thresholdOID
 int beltRateOID
 int plugRateOID
@@ -283,7 +285,7 @@ Event OnConfigInit()
 EndEvent
 
 int Function GetVersion()
-	return 17 ; mcm menu version
+	return 18 ; mcm menu version
 EndFunction
 
 Event OnVersionUpdate(int newVersion)
@@ -332,13 +334,12 @@ Event OnPageReset(string page)
 		AddHeaderOption("Camera Configuration")
 		ifpOID = AddToggleOption("Immersive First Person", ifp)
 		SetCursorPosition(1) ; Move cursor to top right position
+		AddHeaderOption("Debug")
 		AddHeaderOption("Message Visibility Settings")
 		npcMessagesOID = AddToggleOption("Show NPC Messages", NpcMessages)
-		playerMessagesOID = AddToggleOption("Show Player Messages", PlayerMessages)	   
-		AddHeaderOption("Debug")
-		logMessagesOID = AddToggleOption("Enable Debug Logging", LogMessages)
-		SetCursorPosition(1) ; Move cursor to top right position
-		; AddHeaderOption("General Settings")
+		playerMessagesOID = AddToggleOption("Show Player Messages", PlayerMessages)	   		
+		logMessagesOID = AddToggleOption("Enable Debug Logging", LogMessages)		
+		debugSigTermOID = AddTextOption("Remove Quest Items", "Do It!")
 	ElseIf page == "Devices"
 		SetCursorFillMode(TOP_TO_BOTTOM)
 		SetCursorPosition(0) ; Can be removed because it starts at 0 anyway
@@ -754,6 +755,13 @@ Event OnOptionSelect(int option)
 	elseif option == UseBoundCombatOID
 		UseBoundCombat = !UseBoundCombat
 		SetToggleOptionValue(UseBoundCombatOID, UseBoundCombat)	   
+	elseif option == debugSigTermOID
+		If ShowMessage("WARNING:\nThis function will try to remove all DD items. Wiping quest items may result in broken quest states! This feature is intended to be used for debug purposes and as a last resort only! Using it to escape DD devices is strongly discouraged.\n\nAre you sure?")
+			debugSigTerm = true
+			libs.UnregisterForUpdate()
+			libs.RegisterForSingleUpdate(1)
+			SetTextOptionValue(debugSigTermOID, "Ok! Exit Menu now!")	
+		EndIf
 	EndIf
 EndEvent
 

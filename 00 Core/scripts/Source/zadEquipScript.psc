@@ -101,7 +101,7 @@ Int RepairAttemptsMade = 0								; Tracker of how often the player tried to esc
 Float LastRepairAttemptAt = 0.0							; When did the player last attempt to escape.
 Float RepairDifficultyModifier = 0.0					; Global modifier for escape attempts. Can be used to make escape harder or easier.
 Float LockShieldTimer = 0.0								; The actual uptime of the lockshield. Randomly determined when the item is equipped using the min and max values.
-
+Bool QuestItemRemovalTokenInternal = False
 
 Function MultipleItemFailMessage(string offendingItem)
 	offendingItem = libs.MakeSingularIfPlural(offendingItem)
@@ -203,7 +203,24 @@ EndEvent
 Event OnUnequipped(Actor akActor)
 	unequipMutex = true
 	libs.Log("OnUnequipped("+akActor.GetLeveledActorBase().GetName()+": "+deviceInventory.GetName()+")")
-	
+	If DeviceRendered.HasKeyword(Libs.Zad_QuestItem) || DeviceInventory.HasKeyword(Libs.Zad_QuestItem)
+		libs.Log("Attempt to remove quest item: "+akActor.GetLeveledActorBase().GetName()+": "+deviceInventory.GetName()+")")
+		if !QuestItemRemovalTokenInternal && (libs.questItemRemovalAuthorizationToken == None || libs.zadStandardKeywords.HasForm(libs.questItemRemovalAuthorizationToken) || (!DeviceRendered.HasKeyword(libs.questItemRemovalAuthorizationToken) && !DeviceInventory.HasKeyword(libs.questItemRemovalAuthorizationToken)))
+			libs.Log("Caught and prevented unauthorized removal attempt!")
+			unequipMutex = false
+			libs.DeviceMutex = false
+			EquipDevice(akActor, skipMutex=true)
+			SyncInventory(akActor)
+			; If this is a genuine attempt to unlock the item, display the menu
+			if UI.IsMenuOpen("InventoryMenu")
+				DeviceMenu()
+			EndIf
+			Return
+		Else
+			libs.questItemRemovalAuthorizationToken = None			
+			QuestItemRemovalTokenInternal = False
+		EndIf
+	EndIf	
 	if StorageUtil.GetIntValue(akActor, "zad_RemovalToken" + deviceInventory, 0) >= 1
 		if OnUnequippedFilter(akActor) >= 1
 			libs.Log("OnUnequipped(): Detected removal token, but OnUnequippedFilter return >= 1. Not removing device.")
@@ -406,12 +423,13 @@ Function RemoveDevice(actor akActor, bool destroyDevice=false, bool skipMutex=fa
 		EndIf
 		libs.Log("Acquired mutex, removing " + deviceInventory.GetName())		
 		StorageUtil.SetIntValue(akActor, "zad_RemovalToken" + deviceInventory, 1)
+		QuestItemRemovalTokenInternal = True
 		akActor.UnequipItemEx(deviceInventory, 0, false)
 		akActor.RemoveItem(deviceRendered, 1, true) 
 		libs.CleanupDevices(akActor, zad_DeviousDevice)
 		if DestroyOnRemove
 			akActor.RemoveItem(deviceInventory, 1, true)
-		EndIf
+		EndIf		
 	Else
 		libs.RemoveDevice(akActor, deviceInventory, deviceRendered, zad_DeviousDevice, DestroyOnRemove, skipMutex=skipMutex)
 	Endif	
@@ -1051,7 +1069,7 @@ Function EscapeAttemptCut()
 		return
 	EndIf
 	; can't try this with bound hands. We do allow cutting wrist restraints itself, though.
-	If !libs.PlayerRef.WornHasKeyword(libs.zad_DeviousHeavyBondage) && !deviceRendered.HasKeyword(libs.zad_DeviousHeavyBondage)
+	If libs.PlayerRef.WornHasKeyword(libs.zad_DeviousHeavyBondage) && !deviceRendered.HasKeyword(libs.zad_DeviousHeavyBondage)
 		libs.notify("You cannot try to cut open the " + DeviceName + " with bound hands.", messageBox = true)
 		return
 	EndIf
@@ -1098,7 +1116,7 @@ Function EscapeAttemptLockPick()
 		return
 	EndIf
 	; can't try this with bound hands. We do allow wrist restraints itself, though.
-	If !libs.PlayerRef.WornHasKeyword(libs.zad_DeviousHeavyBondage) && !deviceRendered.HasKeyword(libs.zad_DeviousHeavyBondage)
+	If libs.PlayerRef.WornHasKeyword(libs.zad_DeviousHeavyBondage) && !deviceRendered.HasKeyword(libs.zad_DeviousHeavyBondage)
 		libs.notify("You cannot try to pick the " + DeviceName + " with bound hands.", messageBox = true)
 		return
 	EndIf
