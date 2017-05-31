@@ -1,4 +1,19 @@
 Scriptname zadLibs extends Quest
+
+{ 
+DDI framework conventions:
+The vision of Devious Devices is providing a foundation for a mulitude of bondage-themed mods users can install and enjoy at the same time. Due to the unique characteristics of a large family of mods providing content having a strong potential to affect each other, the following conventions for the use of the DD framework API are in effect, to ensure maximum compatibility and fair play between DD mods. DD content mods are expected to respect these conventions. Linking to the DD framework and use of the DD API is considered consent to these conventions. The DD team reserves the right to take necessary steps to ensure the integrity of these framework conventions.
+
+1. DD content mods shall not overwrite standard framework features with their own. Other mods will rely on framework resources working the way they are coded/defined in the framework. If you want to create custom devices or behavior, clone the items or features in question and change them locally, in your own mod. In particular, do not make ANY changes to the base scripts.
+2. Do not re-pack/re-distribute any framework resources with your own mod. All framework assets are subject to changes and having outdated framework resources packed in DD content mods is just creating a support nightmare for everyone involved. You CAN re-use code or portions thereof, but give the scripts new names, in your own namespace.
+3. The zad_ and zadx_ namespaces are reserved for the framework. Please use your own namespace for your custom assets to avoid confusion and accidental incompatibilities.
+4. Standard keys and standard items can be created/dropped/crafted/sold by any content mod at their own discretion. DD mods should not rely on standard keys to be difficult to obtain etc.
+5. Items not marked with either zad_BlockGeneric OR zad_QuestItem are considered generic and can be removed by any DD mod at any time for any reason, including helpful blacksmiths, mercyful NPCs etc.
+6. Items marked with zad_BlockGeneric should NOT be removed by third party mods via trivial means of escape (e.g. blacksmith dialogues) or without compelling reason. They can be removed -when necessary-, to be replaced with quest items (and these only!), or temporarily, if required to run a scene etc. In the latter case, the removing mod is expected to equip back the item after completing the scene.
+7. Items tagged with zad_QuestItem mark essential items that are not to be removed for ANY reason by any content mod other than the mod that equipped them and the framework itself. Modders are asked to use this tag sparingly and only when warranted, as this might prevent other mods' quests or scenes from getting started. Live and let live!
+8. DD content mods are strongly encouraged to provide a local means to terminate their quests and remove their items upon user request, -particularly- if they make use of zad_QuestItem tagged items. The framework will send the DDI_Quest_SigTerm mod event if the user triggers the built-in DDI debug function. It is encouraged to register for this event and terminate/clean up all local DD quests when it's received.
+}
+
 ; Libraries
 SexLabFramework property SexLab auto
 ; import sslExpressionLibrary
@@ -291,6 +306,7 @@ Float Property SpellCastVibrateCooldown Auto
 Spell Property zad_splMagickaPenalty Auto
 bool Property BoundAnimsAvailable = True Auto ; Obsolete. Bound anims are now always available, post zap 6
 FormList Property zadStandardKeywords Auto
+Keyword Property questItemRemovalAuthorizationToken = None Auto
 
 ; Rechargeable Soulgem Stuff
 Soulgem Property SoulgemEmpty Auto
@@ -617,16 +633,15 @@ Function RemoveQuestDevice(actor akActor, armor deviceInventory, armor deviceRen
 	if !skipMutex
 		AcquireAndSpinlock()
 	EndIf
-	Log("Acquired mutex, removing " + deviceInventory.GetName())
-	; Work around more native papyrus limitations by using skse functions.
-	; This does present me with an easy way to swap devices without calling events though, if I want to use it. Neat.	
+	Log("Acquired mutex, removing " + deviceInventory.GetName())	
+	questItemRemovalAuthorizationToken = RemovalToken
 	StorageUtil.SetIntValue(akActor, "zad_RemovalToken" + deviceInventory, 1)
 	akActor.UnequipItemEx(deviceInventory, 0, false)
 	akActor.RemoveItem(deviceRendered, 1, true) 	
 	CleanupDevices(akActor, zad_DeviousDevice)
     if destroyDevice
 		akActor.RemoveItem(deviceInventory, 1, true)
-    EndIf
+    EndIf	
 	; DeviceMutex is unlocked in zadEquipScript
 EndFunction
 
@@ -1623,6 +1638,72 @@ Function SendDeviceJamLockEventVerbose(armor inventoryDevice, keyword deviceKeyw
 		ModEvent.Send(Handle)
 	Endif	
 EndFunction
+
+; Terminate signal for content mods
+; Do NOT trigger this signal from DD content mods. It's for framework use ONLY!!!
+Function SendQuestSigTerm()	
+	Int Handle = ModEvent.Create("DDI_Quest_SigTerm")
+	If (Handle)		
+		ModEvent.Send(Handle)
+	Endif	
+EndFunction
+
+; Remove all items from the player. For debug purposes ONLY! And I -really- don't want to see a DD content mod calling this function from outside the framework, or providing a function like it. It's for framework use ONLY!!!!!
+Function DDI_DebugTerminate()
+	; This function is intentionally slower than it could be. It's meant to be used for debug situations only.
+	Notify("DDI Debug Terminate signal triggered.\nAttempting to clear all DD items, including quest devices.", MessageBox = True)	
+	Utility.Wait(1)
+	Armor idevice = None
+	Armor rdevice = None
+	Keyword kw = None
+	Keyword token = None
+	if !PlayerRef.WornHasKeyword(zad_Lockable)
+		; no DD items equipped, can abort here
+		Notify("No DD items found on the player. Aborting.", MessageBox = True)	
+		return
+	endif			
+	Int i = PlayerRef.GetNumItems()
+	While i > 0			
+		i -= 1
+		Form kForm = PlayerRef.GetNthForm(i)	
+		If (kForm As Armor)
+			if kForm.HasKeyword(zad_InventoryDevice)
+				idevice = kForm As Armor
+				if idevice
+					rdevice = GetRenderedDevice(idevice)
+					kw = GetDeviceKeyword(idevice)
+					If idevice && rdevice && kw
+						; we got a valid DD item here, let's remove it
+						If idevice.HasKeyword(zad_QuestItem) || rdevice.HasKeyword(zad_QuestItem)
+							; It's a quest item, so we need a token to pass the checks. This is the only way I am aware of to remove 3rd party quest items. And again, I don't want to see content mods doing that.
+							Int k = rdevice.GetNumKeywords()
+							Bool done = false
+							Keyword dKeyword
+							While k > 0 && !done
+								k -= 1
+								dKeyword = rdevice.GetNthKeyword(k)
+								if dKeyword && !zadStandardKeywords.HasForm(dKeyword)
+									token = dKeyword
+									done = true
+								EndIf	
+							EndWhile
+							if token
+								RemoveQuestDevice(PlayerRef, idevice, rdevice, kw, token, destroyDevice = true, skipMutex = true)
+							EndIf
+						Else
+							removeDevice(PlayerRef, idevice, rdevice, kw, destroyDevice = true, skipevents = false, skipmutex = true)			
+						EndIf
+						Utility.Wait(1)
+					EndIf
+				Endif			
+			EndIf
+		EndIf
+	EndWhile
+	Notify("DDI Debug item removal completed. Sending SigTerm to content mods.", MessageBox = True)	
+	Utility.Wait(1)
+	SendQuestSigTerm()
+EndFunction
+
 
 ;==================================================
 ; Effects
@@ -2877,6 +2958,13 @@ EndEvent
 ; EndFunction
 
 Event OnUpdate()
+	If Config.debugSigTerm
+		Config.debugSigTerm = false
+		DDI_DebugTerminate()
+		; let's delay the next update, to make sure the debug has ample time to complete
+		RegisterForSingleUpdate(20.0)
+		Return
+	EndIf
 	if  (Game.IsMenuControlsEnabled() || Game.IsFightingControlsEnabled())
 		if !IsAnimating(PlayerRef)
 			UpdateControls()
