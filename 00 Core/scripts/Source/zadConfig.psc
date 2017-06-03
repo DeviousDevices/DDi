@@ -51,8 +51,6 @@ bool Property useBoundAnims =  true Auto
 bool useBoundAnimsDefault = true
 bool Property useAnimFilter =  true Auto
 bool useAnimFilterDefault = true
-; this will make DDI disable the ZAP animation filter when DDI's filter is active, as they are incompatible. Disable this flag to stop this behaviour.
-bool Property snipeZAZFilter = true Auto
 
 ; Blindfold
 int Property blindfoldMode = 2 Auto ; 0 == DD's mode, 1 == DD's mode w/ leeches, 2 == leeches
@@ -711,11 +709,7 @@ Event OnOptionSelect(int option)
 		SetToggleOptionValue(useBoundAnimsOID, useBoundAnims)
 	elseif option == useAnimFilterOID
 		useAnimFilter = !useAnimFilter
-		SetToggleOptionValue(useAnimFilterOID, useAnimFilter)
-		; snipe the ZAP filter to make sure they don't both execute. This would suck.
-		if useAnimFilter && beltedAnims.filterquest.zbfSL.bOverrideSexLabAnimation && snipeZAZFilter
-			beltedAnims.filterquest.zbfSL.bOverrideSexLabAnimation = False
-		EndIf	
+		SetToggleOptionValue(useAnimFilterOID, useAnimFilter)		
 	elseif option == logMessagesOID
 		 LogMessages = !LogMessages
 		SetToggleOptionValue(logMessagesOID, LogMessages)	

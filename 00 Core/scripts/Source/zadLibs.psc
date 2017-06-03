@@ -33,8 +33,6 @@ zadBoundCombatScript Property BoundCombat auto
 Int Property TweenMenuKey Auto
 bool Property Terminate Auto
 
-zbfBondageShell Property zbf Auto
-
 ; Keywords
 Keyword Property zad_DeviousPlug Auto
 Keyword Property zad_DeviousBelt Auto
@@ -80,10 +78,6 @@ Keyword Property zad_BlockGeneric Auto ; Block generic removal of this device.
 Keyword Property zad_QuestItem Auto ; Quest item tag. This item can not be removed conventionally.
 
 Keyword Property zad_BraNoBlockPiercings Auto
-
-; Don't apply gag expression for devices with these keywords (Zaz gags).
-Keyword Property zbfAnimMouth001 Auto 
-Keyword Property zbfEffectOpenMouth Auto
 
 Keyword Property zad_BoundCombatDisableKick Auto
 
@@ -2356,10 +2350,7 @@ int Function GetVibrating(actor akActor)
 	return akActor.GetFactionRank(zadVibratorFaction)
 EndFunction
 
-Function ApplyGagEffect(actor akActor)
-	if (akActor.WornHasKeyword(zbfAnimMouth001) || akActor.WornHasKeyword(zbfEffectOpenMouth)) ; Let Zap handle these.
-		return
-	EndIf
+Function ApplyGagEffect(actor akActor)	
 	if (GetPhonemeModifier(akActor, 0, 1) != 100 || GetPhonemeModifier(akActor, 0, 11) != 70) && GetPhonemeModifier(akActor, 0, 0) != 70 ; Last check is for vibration mouth expressions. HoC
 		SetPhonemeModifier(akActor, 0, 1, 100)
 		SetPhonemeModifier(akActor, 0, 11, 70)
