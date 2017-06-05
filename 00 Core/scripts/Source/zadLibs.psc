@@ -2290,8 +2290,7 @@ Function UpdateControls()
 			fighting = false			
 		Else
 			fighting = config.UseBoundCombat			
-		Endif
-		sneaking = false		
+		Endif	
 	EndIf	
 	Game.DisablePlayerControls(abMovement = !movement, abFighting = !fighting, abSneaking = !sneaking, abMenu = !menu, abActivate = !activate)	
 	Game.EnablePlayerControls(abMovement = movement, abFighting = fighting, abSneaking = sneaking, abMenu = menu, abActivate = activate)	

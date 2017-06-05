@@ -11,7 +11,6 @@ zadConfig Property config Auto
 Package Property NPCBoundCombatPackage Auto
 Package Property NPCBoundCombatPackageSandbox Auto
 Spell Property ArmbinderDebuff Auto
-zbfConfig Property zbfc Auto
 
 ;Arm AA
 int Property ABC_ModID Auto
@@ -101,9 +100,6 @@ EndFunction
 
 Function Maintenance_ABC()
 	libs.Log("Maintenance_ABC()")
-	if (!zbfc)
-		zbfc = zbfConfig.GetApi()
-	EndIf
 	int current_crc = FNIS_aa.GetInstallationCRC()
 	if ( current_crc != ABC_CRC || libs.GetVersion() < 3 || ABC_h2heqp == 0)
 		libs.log("Refreshing ABC values...")
@@ -118,15 +114,6 @@ EndFunction
 
 bool Function HasCompatibleDevice(actor akActor)
 	return (akActor.WornHasKeyword(libs.zad_DeviousArmbinder) || akActor.WornHasKeyword(libs.zad_DeviousArmBinderElbow) || akActor.WornHasKeyword(libs.zad_DeviousYoke) || akActor.WornHasKeyword(libs.zad_DeviousYokeBB) || (akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirt) && !akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirtRelaxed)))
-EndFunction
-
-
-Function OverrideZAPControls(actor akActor, float fValue = 1.0)
-	if (akActor == libs.playerRef)
-		; This is bad, and should be removed.
-		; I need to figure out why zbf is preventing attacks with fighting=true first, though.
-		zbfc.zbfSettingDisableEffects.SetValue(fValue)		
-	EndIf
 EndFunction
 
 
@@ -204,19 +191,11 @@ Function EvaluateAA(actor akActor)
 	libs.log("EvaluateAA(" + akActor + ")")
 	
 	libs.UpdateControls()
-	
-	If GetPrimaryAAState(akActor) > 0 && !akActor.WornHasKeyword(libs.zad_BoundCombatDisableKick)
-		OverrideZAPControls(akActor, 1.0)
-	Else
-		OverrideZAPControls(akActor, 0.0)
-	Endif
 
 	If !HasCompatibleDevice(akActor)
-		;zadLibs.OverrideZAPControls(akActor, 0.0)
 		ClearAA(akActor)
 		ResetExternalAA(akActor)
 	Else
-		;zadLibs.OverrideZAPControls(akActor, 1.0)
 		ClearAA(akActor)
 		int animState = GetSecondaryAAState(akActor)
 		int animSet = SelectAnimationSet(akActor)
