@@ -66,6 +66,7 @@ Event OnPlayerLoadGame()
 	if Probability < 0
 		Probability = DefaultProbability
 	EndIf
+	libs.EventSlots.Register(name, self) ; attempts auto-registration if possible
 	libs.Log("["+name+"] Loaded: "+Probability+"%")
 EndEvent
 
