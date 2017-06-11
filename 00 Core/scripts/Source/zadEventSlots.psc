@@ -36,7 +36,18 @@ EndFunction
 
 
 Function Initialize()
-	libs.Log("Initializing Events arrays.")
+	If (Registry.Find("")==0) ; SkyrimLL - Disable if already initialized
+		libs.Log("Initializing Events arrays.")
+		Registry = new String[125]
+		Slots = new zadBaseEvent[125]
+		LoadDefaults()
+	else
+		libs.Log("Events arrays already initialized - skipping.")
+	Endif
+EndFunction
+
+Function Reset()
+	libs.Log("Resetting Events arrays.")
 	Registry = new String[125]
 	Slots = new zadBaseEvent[125]
 	LoadDefaults()
