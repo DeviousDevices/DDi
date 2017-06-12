@@ -683,6 +683,12 @@ Bool Function UnJamLock(actor akActor, keyword zad_DeviousDevice)
 	return True
 EndFunction
 
+; wrapper for the function of same name in the basequest script, so modders can conveniently use it. This is a library version of the animation filter. This function is used to pick a valid sexlab animation to start a new animation with (avoiding filtering in the first place). For DD mods, this is the desired method to start a sexlab animation (it's much cleaner than starting a scene if you already know that it's going to be overridden by the filter!) Includetag can be used to try forcing a given animation tag (e.g. blowjob). This can lead to no valid animations being found, so make sure to try a fallback without forcing tag or aggressive if the return value is None.
+; Note: At the time of writing this, there are no bound animations for more than two actors. In other words, the result will -always- be None, if more than two actors are passed to this function and one of them is bound.
+sslBaseAnimation[] function SelectValidDDAnimations(Actor[] actors, int count, bool forceaggressive = false, string includetag = "")
+	return Config.beltedAnims.FilterQuest.SelectValidDDAnimations(actors, count, forceaggressive, includetag)
+EndFunction
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Begin Generic Functions
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1333,7 +1339,7 @@ float Function GetVersion()
 EndFunction
 
 String Function GetVersionString()
-	return "3.4" ; string to be displayed in MCM etc.
+	return "4.0" ; string to be displayed in MCM etc.
 EndFunction
 
 

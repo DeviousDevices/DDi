@@ -434,6 +434,84 @@ String Function GetCreatureType(sslBaseAnimation previousAnim)
 	EndIf
 EndFunction
 
+; library version of the animation filter. This function is used to pick a valid sexlab animation to start a new animation with (avoiding filtering in the first place). For DD mods, this is the desired method to start a sexlab animation. There is a wrapper function in zadLibs modders can use, as this script isn't commonly linked to by content mods.
+sslBaseAnimation[] function SelectValidDDAnimations(Actor[] actors, int count, bool forceaggressive = false, string includetag = "")
+	libs.Log("Selecting DD-aware animations.")					
+	bool aggr = false		
+	sslBaseAnimation[] Sanims	
+	bool permitOral = True
+	bool permitVaginal = True
+	bool permitAnal = True
+	bool permitBoobs = True
+	int NumExtraTags = 0
+	string[] ExtraTags = new String[12]
+	bool UsingArmbinder = False
+	bool UsingYoke = False
+	if forceaggressive
+		libs.Log("Using only aggressive animations.")					
+		aggr = true		
+	Endif	
+	int i = Actors.Length	
+	While i > 0
+		i -= 1
+		PermitAnal = PermitAnal && !IsBlockedAnal(Actors[i])
+		PermitVaginal = PermitVaginal && !IsBlockedVaginal(Actors[i])
+		PermitBoobs = PermitBoobs && !IsBlockedBreast(Actors[i])
+		PermitOral = PermitOral && !IsBlockedOral(Actors[i])
+		UsingArmbinder = UsingArmbinder || HasArmbinder(Actors[i])
+		UsingYoke = UsingYoke || HasYoke(Actors[i])
+	EndWhile	
+	; Bound Animations need to be processed separately, since they are not registered in SexLab.
+	if count > 1 && (UsingYoke || UsingArmbinder)
+		libs.Log("Actor(s) are bound. Trying to set up bound animation.")
+		Sanims = New sslBaseAnimation[1]
+		; we have bound anims only for two actors, so we pick an animation only if we have two actors, otherwise we return an empty array
+		If count == 2
+			Sanims[0] = GetBoundAnim(Actors[0], Actors[1])						
+		Endif
+		If Sanims[0] == None
+			libs.Log("Error: no valid bound animations could be found.")
+			return None
+		Else
+			return Sanims
+		Endif
+	Endif
+	string tagString = getTagString(aggr, UsingArmbinder, UsingYoke, includetag)
+	string suppressString = getSuppressString(aggr, UsingArmbinder, UsingYoke, permitOral, permitVaginal, permitAnal, permitBoobs)	
+	; ok, we need to process private animations and masturbation as a special case as the tag system would otherwise be unable to call DDI or ZAP armbinder and yoke animations and also not exclude opposite gender masturbation/
+	if count == 1 		
+		libs.Log("Selecting masturbation animation.")
+		If UsingArmbinder ; she is wearing an armbinder
+			Sanims = New sslBaseAnimation[1]
+			Sanims[0] = SexLab.GetAnimationObject("DDArmbinderSolo")
+			return Sanims
+		Endif
+		If UsingYoke ; she is wearing a yoke
+			Sanims = New sslBaseAnimation[1]
+			Sanims[0] = SexLab.GetAnimationObject("DDYokeSolo")
+			return Sanims
+		Endif
+		If !permitVaginal ;she is belted
+			Sanims = New sslBaseAnimation[1]
+			Sanims[0] = SexLab.GetAnimationObject("DDBeltedSolo")
+			return Sanims
+		Endif
+		; if she is not wearing chastity, we need to filter the wrong gender
+		tagString = "Solo," + tagString
+		If actors[0].GetLeveledActorBase().GetSex() == 1		
+			suppressString = "M," + suppressString
+		Elseif actors[0].GetLeveledActorBase().GetSex() == 0
+			suppressString = "F," + suppressString
+		EndIf
+	EndIf			
+	Sanims = SexLab.GetAnimationsByTags(count, tagString, suppressString, true)
+	libs.log("Selecting SexLab animations with number of actors: " + count)
+	libs.log("Selecting SexLab animations with tag string: " + tagString)
+	libs.log("Selecting SexLab animations with suppress string: " + suppressString)			
+	return Sanims
+endfunction
+
+; filter version of the animation selector
 sslBaseAnimation[] function SelectValidAnimations(sslThreadController Controller, int count, sslBaseAnimation previousAnim, bool forceaggressive, bool boundArmbinder, bool boundYoke, bool permitOral, bool permitVaginal, bool permitAnal, bool permitBoobs)
 	bool aggr = false	
 	string includetag = ""
