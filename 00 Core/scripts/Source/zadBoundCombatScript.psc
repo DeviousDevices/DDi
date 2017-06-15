@@ -113,12 +113,14 @@ EndFunction
 
 
 bool Function HasCompatibleDevice(actor akActor)
-	return (akActor.WornHasKeyword(libs.zad_DeviousArmbinder) || akActor.WornHasKeyword(libs.zad_DeviousArmBinderElbow) || akActor.WornHasKeyword(libs.zad_DeviousYoke) || akActor.WornHasKeyword(libs.zad_DeviousYokeBB) || (akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirt) && !akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirtRelaxed)))
+	return (akActor.WornHasKeyword(libs.zad_DeviousArmbinder) || akActor.WornHasKeyword(libs.zad_DeviousArmBinderElbow) || akActor.WornHasKeyword(libs.zad_DeviousYoke) || akActor.WornHasKeyword(libs.zad_DeviousYokeBB) || akActor.WornHasKeyword(libs.zad_DeviousCuffsFront) || (akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirt) && !akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirtRelaxed)))
 EndFunction
 
 
 Int Function GetPrimaryAAState(actor akActor)
-	If akActor.WornHasKeyword(libs.zad_DeviousYokeBB)
+	If akActor.WornHasKeyword(libs.zad_DeviousCuffsFront)
+		return 5	; Wearing frontcuffs
+	ElseIf akActor.WornHasKeyword(libs.zad_DeviousYokeBB)
 		return 4	; Wearing BByoke
 	Elseif akActor.WornHasKeyword(libs.zad_DeviousArmBinderElbow)
 		return 3	; Wearing elbowbinder
@@ -154,6 +156,8 @@ Int Function SelectAnimationSet(actor akActor)
 			animSet = 3 ; Elbowbinder animations
 		elseIf AAStateA == 4
 			animSet = 4 ; BBYoke animations
+		elseIf AAStateA == 5
+			animSet = 5 ; FrontCuffs animations
 		elseIf AAStateA == 0
 			animSet = 0 ; Only hobble restraints
 		else
@@ -169,6 +173,8 @@ Int Function SelectAnimationSet(actor akActor)
 			animSet = 2 ; Elbowbinder animations
 		elseIf AAStateA == 4
 			animSet = 3 ; BBYoke animations
+		elseIf AAStateA == 5
+			animSet = 4 ; FrontCuffs animations
 		elseIf AAStateA == 0
 			animSet = -1 ; No bound animations
 		else
