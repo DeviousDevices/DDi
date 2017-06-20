@@ -435,7 +435,7 @@ String Function GetCreatureType(sslBaseAnimation previousAnim)
 EndFunction
 
 ; library version of the animation filter. This function is used to pick a valid sexlab animation to start a new animation with (avoiding filtering in the first place). For DD mods, this is the desired method to start a sexlab animation. There is a wrapper function in zadLibs modders can use, as this script isn't commonly linked to by content mods.
-sslBaseAnimation[] function SelectValidDDAnimations(Actor[] actors, int count, bool forceaggressive = false, string includetag = "")
+sslBaseAnimation[] function SelectValidDDAnimations(Actor[] actors, int count, bool forceaggressive = false, string includetag = "", string suppresstag = "")
 	libs.Log("Selecting DD-aware animations.")					
 	bool aggr = false		
 	sslBaseAnimation[] Sanims	
@@ -477,7 +477,7 @@ sslBaseAnimation[] function SelectValidDDAnimations(Actor[] actors, int count, b
 		Endif
 	Endif
 	string tagString = getTagString(aggr, UsingArmbinder, UsingYoke, includetag)
-	string suppressString = getSuppressString(aggr, UsingArmbinder, UsingYoke, permitOral, permitVaginal, permitAnal, permitBoobs)	
+	string suppressString = getSuppressString(aggr, UsingArmbinder, UsingYoke, permitOral, permitVaginal, permitAnal, permitBoobs, suppresstag)	
 	; ok, we need to process private animations and masturbation as a special case as the tag system would otherwise be unable to call DDI or ZAP armbinder and yoke animations and also not exclude opposite gender masturbation/
 	if count == 1 		
 		libs.Log("Selecting masturbation animation.")
@@ -588,9 +588,11 @@ sslBaseAnimation[] function SelectValidAnimations(sslThreadController Controller
 	return Sanims
 endfunction
 
-string function getSuppressString(bool aggressive, bool boundArmbinder, bool boundYoke, bool permitOral, bool permitVaginal, bool permitAnal, bool permitBoobs)
-	string supr
-	int leng
+string function getSuppressString(bool aggressive, bool boundArmbinder, bool boundYoke, bool permitOral, bool permitVaginal, bool permitAnal, bool permitBoobs, string suppresstag = "")	
+	string supr = suppresstag
+	If suppresstag != "" && StringUtil.GetNthChar(suppresstag, (StringUtil.GetLength(suppresstag) - 1)) != ","
+		supr += ","
+	EndIf		
 	if !permitVaginal    
 		supr += "Vaginal,"			
 	endIf
@@ -614,7 +616,7 @@ string function getSuppressString(bool aggressive, bool boundArmbinder, bool bou
 		supr += "Armbinder,"
 	endif	
 	if supr != ""
-		leng = StringUtil.getlength(supr)
+		Int leng = StringUtil.getlength(supr)
 		leng -= 1
 		supr = StringUtil.SubString(supr, 0, leng)
 	endif	
@@ -622,7 +624,10 @@ string function getSuppressString(bool aggressive, bool boundArmbinder, bool bou
 endfunction
 
 string function getTagString(bool aggressive, bool boundArmbinder, bool boundYoke, string includetag = "")
-	string tags = includetag  
+	string tags = includetag 
+	If includetag != "" && StringUtil.GetNthChar(includetag, (StringUtil.GetLength(includetag) - 1)) != ","
+		tags += ","
+	EndIf
 	if boundYoke
 		tags += "Yoke,"
 	endif
