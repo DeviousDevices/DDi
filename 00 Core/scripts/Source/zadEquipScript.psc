@@ -409,12 +409,7 @@ Function EquipDevice(actor akActor, bool skipMutex=false)
 	libs.EquipDevice(akActor, deviceInventory, deviceRendered, zad_DeviousDevice, skipEvents=true, skipMutex=skipMutex)
 EndFunction
 
-Function RemoveDevice(actor akActor, bool destroyDevice=false, bool skipMutex=false)
-	; cannot remove DD devices when wearing bondage mittens...except the bondage mittens!
-	if !deviceRendered.HasKeyword(libs.zad_DeviousHeavyBondage) && (akActor.WornHasKeyword(libs.zad_DeviousBondageMittens) && !deviceRendered.HasKeyword(libs.zad_DeviousBondageMittens))
-		libs.NotifyPlayer("You cannot remove the " + deviceName + " while wearing bondage mittens!", true)
-		return
-	EndIf	
+Function RemoveDevice(actor akActor, bool destroyDevice=false, bool skipMutex=false)	
 	libs.SendDeviceRemovalEvent(deviceName, akActor)
 	libs.SendDeviceRemovedEventVerbose(deviceInventory, zad_DeviousDevice, akActor)
 	if deviceInventory.HasKeyword(libs.zad_QuestItem) || deviceRendered.HasKeyword(libs.zad_QuestItem)
@@ -664,6 +659,16 @@ Bool Function CanMakeUnlockAttempt()
 EndFunction
 
 Bool Function CheckLockAccess()
+	; You can unlock only wrist restraints when wearing wrist restraints.
+	If libs.playerRef.WornHasKeyword(libs.zad_DeviousHeavyBondage) && !deviceRendered.HasKeyword(libs.zad_DeviousHeavyBondage)
+		libs.notify("You cannot unlock the " + DeviceName + " with your wrists tied.", messageBox = True)
+		Return False
+	EndIf
+	; cannot remove other DD devices when wearing bondage mittens either
+	if !deviceRendered.HasKeyword(libs.zad_DeviousHeavyBondage) && (libs.PlayerRef.WornHasKeyword(libs.zad_DeviousBondageMittens) && !deviceRendered.HasKeyword(libs.zad_DeviousBondageMittens))
+		libs.NotifyPlayer("You cannot remove the " + deviceName + " while wearing bondage mittens!", true)
+		return False
+	EndIf	
 	If LockAccessDifficulty > 0.0
 		If !CanMakeUnlockAttempt()
 			Return False
@@ -1059,11 +1064,7 @@ Float Function CalclulateCutSuccess()
 	return result
 EndFunction
 
-Function EscapeAttemptCut()
-	; If libs.PlayerRef.WornHasKeyword(libs.DD_kw_EffectType_BondageMittens)		
-		; libs.notify("You can not try to cut your " + DeviceName + " with sealed hands!", messageBox = true)
-		; return
-	; EndIf
+Function EscapeAttemptCut()	
 	If !HasValidCuttingTool()
 		libs.notify("You do not possess a tool you could use for cutting your " + DeviceName + ".", messageBox = true)
 		return
