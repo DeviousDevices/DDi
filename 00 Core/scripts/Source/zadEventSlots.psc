@@ -130,6 +130,11 @@ EndFunction
 
 
 Event OnUpdateGameTime()
+	; dont start events if the player is in a scene.
+	if libs.IsAnimating(libs.PlayerRef)
+		DoRegister()
+		Return
+	EndIf
 	UpdateGlobalEvent()
 EndEvent
 
