@@ -674,11 +674,11 @@ Bool Function CheckLockAccess()
 			Return False
 		EndIf
 		If Utility.RandomFloat(0.0, 99.9) < LockAccessDifficulty
-			If DeviceKey			
+			If DeviceKey != None			
 				If LockAccessDifficulty < 50.0
 					libs.notify("You try to insert the key into the " + DeviceName + "'s lock, but find the locks a bit outsides of your reach. After a few failed attempts to slide the key into the lock, you have no choice but to give up for now. You should still eventually be able to unlock yourself. Just try again a bit later!", messageBox = True)
 				ElseIf LockAccessDifficulty < 100.0
-					libs.notify("This restraint was designed to make it hard for the person locked it in to unlock herself. You struggle hard trying to insert the key into the " + DeviceName + "'s lock anyway, but find the locks well outsides of your reach. Tired from your struggles, you have no choice but to give up for now. Maybe try again later!", messageBox = True)
+					libs.notify("This restraint was designed to make it hard for the person wearing it in to unlock herself. You struggle hard trying to insert the key into the " + DeviceName + "'s lock anyway, but find the locks well outsides of your reach. Tired from your struggles, you have no choice but to give up for now. Maybe try again later!", messageBox = True)
 				Else
 					libs.notify("This restraint was designed to put the locks safely out of reach of the person wearing it. There is no way you will ever be able to unlock yourself, even when in possession of the proper key. You will need to seek help!", messageBox = True)
 				EndIf
@@ -891,50 +891,56 @@ Function DisplayDifficultyMsg()
 	String result = "You carefully examine the " + DeviceName + ". "
 	If StruggleEscapeChance > 75
 		result += "This restraint is fairly weak and will not offer much resistance against struggling."
-	ElseIf StruggleEscapeChance > 50
+	ElseIf StruggleEscapeChance >= 50
 		result += "This is not a very secure restraint. Struggling out should be easy."
-	ElseIf StruggleEscapeChance > 25
+	ElseIf StruggleEscapeChance >= 25
 		result += "This restraint is somewhat secure, but not overly much so. Struggling out will be moderately difficult."
-	ElseIf StruggleEscapeChance > 10
-		result += "This restraint is fairly secure and will be hard to struggle out from."
-	ElseIf StruggleEscapeChance > 5
+	ElseIf StruggleEscapeChance >= 15
+		result += "This restraint is designed to be secure, but with enough patience could probably be struggled out from."
+	ElseIf StruggleEscapeChance >= 10
+		result += "This restraint is fairly secure and will be hard to struggle out from, but not impossible."
+	ElseIf StruggleEscapeChance >= 5
 		result += "This restraint is secure and will be extremely difficult to struggle out from."
 	ElseIf StruggleEscapeChance > 0
 		result += "This restraint is very secure and will withstand most escape attempts. Struggling out of this device will be almost impossible."
 	Else
-		result += "This is a high security restraint. Struggling out from this device will be impossible!"
+		result += "This is a high security restraint. Struggling out from this device will be completely impossible!"
 	Endif
 	result += " "
 	If LockPickEscapeChance > 75
 		result += "Its lock is weak and will not offer much resistance to pick attempts."
-	ElseIf LockPickEscapeChance > 50
+	ElseIf LockPickEscapeChance >= 50
 		result += "Its lock is not very secure. Picking it should be easy."
-	ElseIf LockPickEscapeChance > 25
+	ElseIf LockPickEscapeChance >= 25
 		result += "Its lock is somewhat secure, but not overly much so. Picking it will be moderately difficult."
-	ElseIf LockPickEscapeChance > 10
-		result += "Its lock is fairly secure and will be hard to pick."
-	ElseIf LockPickEscapeChance > 5
+	ElseIf StruggleEscapeChance >= 15
+		result += "Its lock is designed to be secure, but might not withstand serious picking attempts."
+	ElseIf LockPickEscapeChance >= 10
+		result += "Its lock is fairly secure and will be hard to pick, but not impossible."
+	ElseIf LockPickEscapeChance >= 5
 		result += "Its lock is secure and will be extremely difficult to pick."
 	ElseIf LockPickEscapeChance > 0
 		result += "Its lock is very secure and will withstand most attempts to pick it."
 	Else
-		result += "It has a high security lock. Unlocking it without the proper key will be impossible!"
+		result += "It has a tamper proof lock. Unlocking it without the proper key will be absolutely impossible!"
 	Endif
 	result += " "
 	If CutDeviceEscapeChance > 75
 		result += "Its material is weak and will not offer much resistance to cutting."
-	ElseIf CutDeviceEscapeChance > 50
+	ElseIf CutDeviceEscapeChance >= 50
 		result += "Its material is not very tough. Cutting it should be easy."
-	ElseIf CutDeviceEscapeChance > 25
+	ElseIf CutDeviceEscapeChance >= 25
 		result += "Its material is somewhat tough, but not overly much so. Cutting it will be moderately difficult."
-	ElseIf CutDeviceEscapeChance > 10
-		result += "Its material is fairly tough and will be hard to cut."
-	ElseIf CutDeviceEscapeChance > 5
+	ElseIf StruggleEscapeChance >= 15
+		result += "Its material is tough, but could probably be cut with the right tool and enough effort."
+	ElseIf CutDeviceEscapeChance >= 10
+		result += "Its material is fairly tough and will be hard to cut, but not impossible."
+	ElseIf CutDeviceEscapeChance >= 5
 		result += "Its material is hard and will be extremely difficult to cut."
 	ElseIf CutDeviceEscapeChance > 0
 		result += "Its material is very hard and will withstand most attempts to cut it."
 	Else
-		result += "Its material is impossible to cut!"
+		result += "Its made of material impossible to cut with any tool!"
 	Endif
 	libs.notify(result, messageBox = true)
 EndFunction
