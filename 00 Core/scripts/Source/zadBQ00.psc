@@ -842,33 +842,36 @@ function Logic(int threadID, bool HasPlayer)
 	actor[] solos
 	int actorIter = 0
 	int currentActorCount = originalActors.length
-
-	while actorIter < currentActorCount
-		if originalActors[actorIter].WornHasKeyword(zad_DeviousDevice) && actorIter!=0
-			; Can't have a belted actor pitching. Move to solo.
-			libs.Log("Moving belted actor " + originalActors[actorIter].GetLeveledActorBase().GetName() + " to solos")
-			solos = sslUtility.PushActor(originalActors[actorIter], solos)
-		Else
-			actors = sslUtility.PushActor(originalActors[actorIter], actors)
-		Endif
-		actorIter += 1
-	EndWhile
-
-	if actors.length == 1
-		; Slot 0 is (almost) always the female role. Just need to rearrange actors, I think?
-		if solos.length > 0
-			libs.Log("Moved too many actors to Solos. Rearranging actors list.")
-			actor[] tmp
-			tmp = sslUtility.PushActor(solos[0], tmp)
-			solos[0] = none
-			tmp = sslUtility.Pushactor(actors[0], tmp)
-			actors = tmp
-		EndIf
-	Endif
-
-	libs.Log("Total actors: " + originalActors.length + ". Participating Actors: " + actors.length + ". Animation: " + previousAnim.name)	
 	
-	sslBaseAnimation[] anims = SelectValidAnimations(Controller, actors.length, previousAnim, false, UsingArmbinder, UsingYoke, PermitOral, PermitVaginal, PermitAnal, permitBoobs)
+	; Let's try and see if we can get valid animations right here
+	sslBaseAnimation[] anims = SelectValidAnimations(Controller, originalActors.length, previousAnim, false, UsingArmbinder, UsingYoke, PermitOral, PermitVaginal, PermitAnal, permitBoobs)
+	
+	if anims.length <= 0
+		; we didn't get a valid animation. Let's move the belted actors to solos.
+		while actorIter < currentActorCount
+			if originalActors[actorIter].WornHasKeyword(libs.zad_DeviousBelt) && actorIter != 0
+				; Can't have a belted actor pitching. Move to solo.
+				libs.Log("Moving belted actor " + originalActors[actorIter].GetLeveledActorBase().GetName() + " to solos")
+				solos = sslUtility.PushActor(originalActors[actorIter], solos)
+			Else
+				actors = sslUtility.PushActor(originalActors[actorIter], actors)
+			Endif
+			actorIter += 1
+		EndWhile
+		if actors.length == 1
+			; Slot 0 is (almost) always the female role. Just need to rearrange actors, I think?
+			if solos.length > 0
+				libs.Log("Moved too many actors to Solos. Rearranging actors list.")
+				actor[] tmp
+				tmp = sslUtility.PushActor(solos[0], tmp)
+				solos[0] = none
+				tmp = sslUtility.Pushactor(actors[0], tmp)
+				actors = tmp
+			EndIf
+		Endif
+		libs.Log("Total actors: " + originalActors.length + ". Participating Actors: " + actors.length + ". Animation: " + previousAnim.name)		
+		anims = SelectValidAnimations(Controller, actors.length, previousAnim, false, UsingArmbinder, UsingYoke, PermitOral, PermitVaginal, PermitAnal, permitBoobs)
+	EndIf
 			
 	if anims.length <= 0
 		libs.Log("No animations available! Trying fallbacks...")
@@ -889,8 +892,8 @@ function Logic(int threadID, bool HasPlayer)
 			;;Still no animations, after resizing actors. Drop armbinders, and try again.
 			libs.Log("Removing armbinders, Trying to resize actors...")
 			StoreHeavyBondage(originalActors)			
-			 UsingArmbinder = False
-			 UsingYoke = False
+			UsingArmbinder = False
+			UsingYoke = False
 			NoBindings = True		
 			anims = SelectValidAnimations(Controller, actors.length, previousAnim, false, false, false, PermitOral, PermitVaginal, PermitAnal, permitBoobs)			
 		 EndIf

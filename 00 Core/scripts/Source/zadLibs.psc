@@ -2854,6 +2854,8 @@ string Function LookupDeviceType(keyword kwd)
 		return "Mittens"
 	ElseIf kwd == zad_DeviousHobbleSkirt
 		return "HobbleSkirt"
+	ElseIf kwd == zad_DeviousHeavyBondage
+		return "WristRestraint"
 	EndIf
 	Error("LookupDeviceType received invalid keyword " + kwd)
 EndFunction
