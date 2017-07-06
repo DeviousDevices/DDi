@@ -33,20 +33,20 @@ Int Property NumberOfKeysNeeded = 1 Auto 				; Number of keys needed (=multiple 
 Float Property LockAccessDifficulty = 0.0 Auto			; If set to greater than zero, the character cannot easily reach the locks when locked in this restraint. The higher the number, the harder she will find it to unlock herself, even when in possession of the key. A value of 100 will make it impossible for her to reach the locks. She will need help. Make sure that your mod actually provides a means to escape such retraints!
 Float Property UnlockCooldown = 3.0	Auto				; How many hours have to pass between unlock attempts for hard to unlock restraints.
 Float Property KeyBreakChance = 0.0 Auto				; Chance that the key breaks when trying to unlock an item. WARNING: Do NOT use this feature when there is only one key in the game etc.
-Float Property LockJamChance = 30.0 Auto				; Chance that the key gets stuck in the lock when it breaks. The lock has to be repaired before further unlock attempts.
-Float Property LockShieldTimerMin = 1.0 Auto			; If this number is greater than zero, the player has to wait for a minimum of this many hours before she can unlock the device with a key.
-Float Property LockShieldTimerMax = 5.0 Auto			; If this number is greater than zero, the player has to wait for a maximum of this many hours before she can unlock the device with a key.
+Float Property LockJamChance = 0.0 Auto				; Chance that the key gets stuck in the lock when it breaks. The lock has to be repaired before further unlock attempts.
+Float Property LockShieldTimerMin = 0.0 Auto			; If this number is greater than zero, the player has to wait for a minimum of this many hours before she can unlock the device with a key.
+Float Property LockShieldTimerMax = 0.0 Auto			; If this number is greater than zero, the player has to wait for a maximum of this many hours before she can unlock the device with a key.
 
 ; Escape system
-Float Property BaseEscapeChance = 10.0 Auto				; Base chance to escape a restraint via struggling. Magic bonus applies. 0 disables this feature.
-Float Property LockPickEscapeChance = 15.0 Auto			; Base chance to escape a restraint via lockpicking Need proper lockpick, Lockpick bonus applies. 0 disables this feature.
+Float Property BaseEscapeChance = 0.0 Auto				; Base chance to escape a restraint via struggling. Magic bonus applies. 0 disables this feature.
+Float Property LockPickEscapeChance = 0.0 Auto			; Base chance to escape a restraint via lockpicking Need proper lockpick, Lockpick bonus applies. 0 disables this feature.
 Form[] Property AllowedLockPicks Auto 					; List of items other than lockpicks considered a valid pick tool for this device. The lockpick is allowed by default unless disabled.
 Bool Property AllowLockPick = True Auto					; Indicates whether or not the bobby pin is considered a valid lockpick for this device.
 Float Property CutDeviceEscapeChance = 0.0 Auto			; Base chance to escape a restraint via cutting it open. Need proper tool, Agiliy bonus applies. 0 disables this feature.
 Bool Property AllowStandardTools = True Auto			; Indicates whether or not the items in the standard tools list (all small blades) are considered a valid cutting tool for this device.
 Keyword[] Property AllowedTool Auto						; List of item keywords considered a cutting tool for this device. 
-Float Property CatastrophicFailureChance = 15.0 Auto	; Chance that an escape attempt fails in a catastrophic manner, preventing any further attempts to escape this device using that method.
-Float Property EscapeCooldown = 3.0	Auto				; How many hours have to pass between escape attempts.
+Float Property CatastrophicFailureChance = 0.0 Auto		; Chance that an escape attempt fails in a catastrophic manner, preventing any further attempts to escape this device using that method.
+Float Property EscapeCooldown = 2.0	Auto				; How many hours have to pass between escape attempts.
 Float Property RepairJammedLockChance = 20.0 Auto		; Chance that the player manages to successfully repair a jammed lock.
 Float Property RepairCooldown = 5.0	Auto				; How many hours have to pass between repair attempts.
 
