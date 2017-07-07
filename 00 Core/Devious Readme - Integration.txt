@@ -36,8 +36,6 @@ Sexlab Support! -- While in a chastity belt, the Dragonborn's (or any NPC's) mos
  
 Sexlab Aroused Support! -- Being locked away in cold steel may not seem so bad at first, but the longer the Dragonborn is locked away, the more she'll crave that sweet release! Animations, on-screen messages, and even sounds will change depending upon arousal level; same with NPCs!
 
-Easy Configurability! -- Highly configurable via MCM interface, so that you can customize your Devious experience to your personal tastes. Don't like how hard it is to make a key? Change it! Don't like the hardcore deviousness of the effects? Turn'em off!
-
 And Much More! -- This mod continues to grow and evolve, so there will no doubt be other features not mentioned above!
 
 [ COMPATIBILITY AND CONFLICTS ]
