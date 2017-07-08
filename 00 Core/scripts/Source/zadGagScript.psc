@@ -28,19 +28,6 @@ Function DeviceMenuExt(int msgChoice)
 	EndIf
 EndFunction
 
-int Function OnEquippedFilter(actor akActor, bool silent=false)
-	if akActor != libs.PlayerRef || silent
-		return 0 ; Proceed.
-	EndIf
-        int interaction = zad_GagPreEquipMsg.show()
-        if interaction == 0 ; Equip Device
-		return 0 ; Proceed
-	Else
-		return 2
-	EndIf
-EndFunction
-
-
 string Function DeviceMenuPickLockSuccess()
 	RemoveDevice(libs.PlayerRef)
 	zad_GagPickLockSuccessMsg.Show()

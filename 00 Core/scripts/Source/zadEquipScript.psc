@@ -31,9 +31,9 @@ Bool Property DestroyKey = False Auto 					; If set to true, the key(s) will be 
 Bool Property DestroyOnRemove = False Auto 				; If set to true, they device will be destroyed when it is unlocked or escaped from.
 Int Property NumberOfKeysNeeded = 1 Auto 				; Number of keys needed (=multiple locks)
 Float Property LockAccessDifficulty = 0.0 Auto			; If set to greater than zero, the character cannot easily reach the locks when locked in this restraint. The higher the number, the harder she will find it to unlock herself, even when in possession of the key. A value of 100 will make it impossible for her to reach the locks. She will need help. Make sure that your mod actually provides a means to escape such retraints!
-Float Property UnlockCooldown = 3.0	Auto				; How many hours have to pass between unlock attempts for hard to unlock restraints.
+Float Property UnlockCooldown = 2.0	Auto				; How many hours have to pass between unlock attempts for hard to unlock restraints.
 Float Property KeyBreakChance = 0.0 Auto				; Chance that the key breaks when trying to unlock an item. WARNING: Do NOT use this feature when there is only one key in the game etc.
-Float Property LockJamChance = 0.0 Auto				; Chance that the key gets stuck in the lock when it breaks. The lock has to be repaired before further unlock attempts.
+Float Property LockJamChance = 0.0 Auto					; Chance that the key gets stuck in the lock when it breaks. The lock has to be repaired before further unlock attempts.
 Float Property LockShieldTimerMin = 0.0 Auto			; If this number is greater than zero, the player has to wait for a minimum of this many hours before she can unlock the device with a key.
 Float Property LockShieldTimerMax = 0.0 Auto			; If this number is greater than zero, the player has to wait for a maximum of this many hours before she can unlock the device with a key.
 
@@ -48,7 +48,8 @@ Keyword[] Property AllowedTool Auto						; List of item keywords considered a cu
 Float Property CatastrophicFailureChance = 0.0 Auto		; Chance that an escape attempt fails in a catastrophic manner, preventing any further attempts to escape this device using that method.
 Float Property EscapeCooldown = 2.0	Auto				; How many hours have to pass between escape attempts.
 Float Property RepairJammedLockChance = 20.0 Auto		; Chance that the player manages to successfully repair a jammed lock.
-Float Property RepairCooldown = 5.0	Auto				; How many hours have to pass between repair attempts.
+Float Property RepairCooldown = 4.0	Auto				; How many hours have to pass between repair attempts.
+Bool Property AllowDifficultyModifier = False Auto		; Override to allow the difficulty modifier for quest/custom items (tagged with zad_BlockGeneric or zad_QuestItem). For generic items this is always allowed, regardless of this setting.
 
 ; These messages exist both here and in zadlibs. Modders can override the messages per item with these!
 Message Property zad_DD_EscapeDeviceMSG Auto 				; Device escape dialogue. You can customize it if you want, but make sure not to change the order and functionality of the buttons.
@@ -96,7 +97,6 @@ Int EscapeLockPickAttemptsMade = 0						; Tracker of how often the player tried 
 Float LastStruggleEscapeAttemptAt = 0.0					; When did the player last attempt to escape via struggling.
 Float LastCutEscapeAttemptAt = 0.0						; When did the player last attempt to escape via cutting.
 Float LastLockPickEscapeAttemptAt = 0.0					; When did the player last attempt to escape via lockpicking.
-Float DifficultyModifier = 0.0							; Global modifier for escape attempts. Can be used to make escape harder or easier.
 Int RepairAttemptsMade = 0								; Tracker of how often the player tried to escape this device.
 Float LastRepairAttemptAt = 0.0							; When did the player last attempt to escape.
 Float RepairDifficultyModifier = 0.0					; Global modifier for escape attempts. Can be used to make escape harder or easier.
@@ -150,6 +150,13 @@ Event OnEquipped(Actor akActor)
 		libs.DeviceMutex = false
 		return
 	Endif
+	If !silently && !akActor.WornHasKeyword(zad_DeviousDevice) && akActor.GetItemCount(deviceRendered) == 0
+		Int msgChoice = zad_DeviceMsg.Show() ; display menu
+		if msgChoice != 0 ; Equip Device voluntarily
+			akActor.UnequipItem(deviceInventory, false, true)
+			return
+		EndIf
+	EndIf
 	int filter = OnEquippedFilter(akActor, silent=silently)
 	if filter >= 1
 		if filter == 2
@@ -478,10 +485,15 @@ bool Function RemoveDeviceWithKey(actor akActor = none, bool destroyDevice=false
 			Return False
 		EndIf		
 		; The key break chance defaults to zero, so we don't need to check for quest items etc. If modders set this chance higher, it's their responsibility!
-		If Utility.RandomFloat(0.0, 99.9) < KeyBreakChance
+		Float ModValue = (KeyBreakChance * CalculateDifficultyModifier(False))
+		If (KeyBreakChance < 100.0) && (ModValue > 100.0)
+			; If the modder didn't mean to make it completely impossible to unlock this item, it shouldn't be after applying the modifier either!
+			ModValue = 95.0
+		EndIf		
+		If Utility.RandomFloat(0.0, 99.9) < ModValue
 			Libs.PlayerRef.RemoveItem(DeviceKey, Utility.RandomInt(1, NumberOfKeysNeeded))
 			libs.SendDeviceKeyBreakEventVerbose(deviceInventory, zad_DeviousDevice, akActor)
-			If Utility.RandomFloat(0.0, 99.9) < LockJamChance
+			If Utility.RandomFloat(0.0, 99.9) < (LockJamChance * CalculateDifficultyModifier(False))
 				; broken key becomes stuck in the lock
 				libs.SendDeviceJamLockEventVerbose(deviceInventory, zad_DeviousDevice, akActor)
 				StorageUtil.SetIntValue(akActor, "zad_Equipped" + libs.LookupDeviceType(zad_DeviousDevice) + "_LockJammedStatus", 1)
@@ -511,7 +523,7 @@ EndFunction
 
 Function SetLockShield()
 	If (LockShieldTimerMin > 0.0) && (LockShieldTimerMin <= LockShieldTimerMax)
-		LockShieldTimer = Utility.RandomFloat(LockShieldTimerMin, LockShieldTimerMax)
+		LockShieldTimer = ((Utility.RandomFloat(LockShieldTimerMin, LockShieldTimerMax)) * CalculateDifficultyModifier(False))
 	Else
 		LockShieldTimer = 0.0
 	EndIf
@@ -646,7 +658,7 @@ EndFunction
 
 Bool Function CanMakeUnlockAttempt()
 	; check if the character can make an unlock attempt.
-	Float HoursNeeded = UnlockCooldown
+	Float HoursNeeded = (UnlockCooldown * CalculateDifficultyModifier(False))
 	Float HoursPassed = (Utility.GetCurrentGameTime() - LastUnlockAttemptAt) * 24.0
 	if HoursPassed > HoursNeeded
 		LastUnlockAttemptAt = Utility.GetCurrentGameTime()
@@ -673,7 +685,12 @@ Bool Function CheckLockAccess()
 		If !CanMakeUnlockAttempt()
 			Return False
 		EndIf
-		If Utility.RandomFloat(0.0, 99.9) < LockAccessDifficulty
+		Float ModValue = (LockAccessDifficulty * CalculateDifficultyModifier(False))
+		If (LockAccessDifficulty < 100.0) && (ModValue > 100.0)
+			; If the modder didn't mean to make it completely impossible to reach the locks, it shouldn't be after applying the modifier either!
+			ModValue = 95.0
+		EndIf
+		If Utility.RandomFloat(0.0, 99.9) < ModValue
 			If DeviceKey != None			
 				If LockAccessDifficulty < 50.0
 					libs.notify("You try to insert the key into the " + DeviceName + "'s lock, but find the locks a bit outsides of your reach. After a few failed attempts to slide the key into the lock, you have no choice but to give up for now. You should still eventually be able to unlock yourself. Just try again a bit later!", messageBox = True)
@@ -872,7 +889,6 @@ Function DeviceMenuMagic()
 	endif
 EndFunction
 
-
 string Function DeviceMenuBruteForceFail()
 	return ""
 EndFunction
@@ -945,9 +961,34 @@ Function DisplayDifficultyMsg()
 	libs.notify(result, messageBox = true)
 EndFunction
 
+Float Function CalculateDifficultyModifier(Bool operator = true)
+	; We don't modify for quest items
+	If deviceInventory.HasKeyword(libs.zad_BlockGeneric) || deviceRendered.HasKeyword(libs.zad_BlockGeneric) || deviceInventory.HasKeyword(libs.zad_QuestItem) || deviceRendered.HasKeyword(libs.zad_QuestItem)
+		; except the modder specifically allowed the system to be used for that item!
+		If !AllowDifficultyModifier
+			libs.log("Difficulty modifier not applied - custom/quest item!")
+			return 1.0
+		EndIf
+	EndIf
+	Float val = 1.0
+	Int mcmValue = libs.config.EscapeDifficulty	
+	Int mcmLength = libs.config.EsccapeDifficultyList.Length
+	Int median = ((mcmLength - 1) / 2) As Int ; This assumes the array to be uneven, otherwise there is no median value.
+	Float maxModifier = 0.75 ; set this as desired - it's the maximum possible +/- modifier. It should not be larger than 1 (=100%)
+	Float StepLength = maxModifier / median
+	Int Steps = mcmValue - median	
+	If operator
+		val = 1 + (Steps * StepLength)
+	Else
+		val = 1 - (Steps * StepLength)
+	EndIf
+	libs.log("Difficulty modifier applied: " + val + " [setting: " + mcmValue + "]")
+	return val
+EndFunction
+
 Bool Function CanMakeStruggleEscapeAttempt()
 	; check if the character can make an escape attempt
-	Float HoursNeeded = EscapeCooldown
+	Float HoursNeeded = (EscapeCooldown * CalculateDifficultyModifier(False))
 	Float HoursPassed = (Utility.GetCurrentGameTime() - LastStruggleEscapeAttemptAt) * 24.0
 	if HoursPassed > HoursNeeded
 		LastStruggleEscapeAttemptAt = Utility.GetCurrentGameTime()
@@ -961,7 +1002,7 @@ EndFunction
 
 Bool Function CanMakeCutEscapeAttempt()
 	; check if the character can make an escape attempt
-	Float HoursNeeded = EscapeCooldown
+	Float HoursNeeded = (EscapeCooldown * CalculateDifficultyModifier(False))
 	Float HoursPassed = (Utility.GetCurrentGameTime() - LastCutEscapeAttemptAt) * 24.0
 	if HoursPassed > HoursNeeded
 		LastCutEscapeAttemptAt = Utility.GetCurrentGameTime()
@@ -975,7 +1016,7 @@ EndFunction
 
 Bool Function CanMakeLockPickEscapeAttempt()
 	; check if the character can make an escape attempt
-	Float HoursNeeded = EscapeCooldown
+	Float HoursNeeded = (EscapeCooldown * CalculateDifficultyModifier(False))
 	Float HoursPassed = (Utility.GetCurrentGameTime() - LastLockPickEscapeAttemptAt) * 24.0
 	if HoursPassed > HoursNeeded
 		LastLockPickEscapeAttemptAt = Utility.GetCurrentGameTime()
@@ -995,7 +1036,7 @@ Int Function Escape(Float Chance)
 		return 0
 	Endif
 	libs.log("Player is trying to escape " + DeviceName + ". Escape chance after modifiers: " + Chance +"%")
-	If Utility.RandomFloat(0.0, 99.9) < Chance
+	If Utility.RandomFloat(0.0, 99.9) < (Chance * CalculateDifficultyModifier(True))
 		libs.log("Player has escaped " + DeviceName)
 		; increase success counter
 		libs.zadDeviceEscapeSuccessCount.SetValueInt(libs.zadDeviceEscapeSuccessCount.GetValueInt() + 1)		
@@ -1035,9 +1076,7 @@ Float Function CalclulateCutSuccess()
 	; Apply modifiers, but only if the device is not impossible to escape from to begin with.
 	If CutDeviceEscapeChance > 0.0
 		; add 1% for every previous attempt
-		result += EscapeCutAttemptsMade
-		; apply global modifier
-		result += DifficultyModifier
+		result += EscapeCutAttemptsMade		
 		If Libs.PlayerRef.GetAV("OneHanded") > 25
 			result += 1.0
 		Endif
@@ -1206,9 +1245,7 @@ Float Function CalclulateLockPickSuccess()
 	; Apply modifiers, but only if the device is not impossible to escape from to begin with.
 	If LockPickEscapeChance > 0.0
 		; add 1% for every previous attempt
-		result += EscapeLockPickAttemptsMade
-		; apply global modifier
-		result += DifficultyModifier
+		result += EscapeLockPickAttemptsMade		
 		If Libs.PlayerRef.GetAV("Lockpicking") > 25
 			result += 1.0
 		Endif
@@ -1312,9 +1349,7 @@ Float Function CalclulateStruggleSuccess()
 	; Apply modifiers, but only if the device is not impossible to escape from to begin with.
 	If BaseEscapeChance > 0.0
 		; add 1% for every previous attempt
-		result += EscapeStruggleAttemptsMade
-		; apply global modifier
-		result += DifficultyModifier
+		result += EscapeStruggleAttemptsMade		
 		; apply strength bonus
 		If Libs.PlayerRef.GetAV("Destruction") > 25 || Libs.PlayerRef.GetAV("Alteration") > 25
 			result += 1.0
@@ -1357,11 +1392,11 @@ Int Function RepairJammedLock(Float Chance)
 	Endif
 	libs.log("Player is trying to repair " + DeviceName + ". Repair chance after modifiers: " + Chance +"%")
 	; check if the character can make a repair attempt
-	Float HoursNeeded = RepairCooldown
-	Float HoursPassed = (Utility.GetCurrentGameTime() - LastRepairAttemptAt) * 24.0
+	Float HoursNeeded = (RepairCooldown * CalculateDifficultyModifier(False))
+	Float HoursPassed = (Utility.GetCurrentGameTime() - LastRepairAttemptAt) * 24.0	
 	if HoursPassed > HoursNeeded
 		LastRepairAttemptAt = Utility.GetCurrentGameTime()
-		If Utility.RandomFloat(0.0, 99.9) < Chance
+		If Utility.RandomFloat(0.0, 99.9) < (Chance * CalculateDifficultyModifier(True))
 			libs.log("Player has repaired " + DeviceName)			
 			StorageUtil.SetIntValue(libs.playerref, "zad_Equipped" + libs.LookupDeviceType(zad_DeviousDevice) + "_LockJammedStatus", 0)			
 			return 1

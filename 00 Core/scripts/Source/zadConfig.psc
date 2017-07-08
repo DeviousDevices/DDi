@@ -11,19 +11,21 @@ Perk Property zad_keyCraftingEasy Auto ; Obsolete, will remove later
 Perk Property zad_keyCraftingHard Auto ; Obsolete, will remove later.
 
 ; Config Variables
+Int Property EscapeDifficulty = 3 Auto
+
 int Property UnlockThreshold Auto
 int thresholdDefault = 185
 int Property ThresholdModifier Auto
 int ThresholdModifierDefault = 0
-float Property BeltRateMult Auto
+float Property BeltRateMult = 1.5 Auto
 float beltRateDefault = 1.5
-float Property PlugRateMult Auto
+float Property PlugRateMult = 3.0 Auto
 float plugRateDefault = 3.0
 int Property KeyCrafting Auto Conditional
 int keyCraftingDefault = 1
-bool Property NpcMessages Auto
+bool Property NpcMessages = True Auto
 bool npcMessagesDefault = true
-bool Property PlayerMessages Auto
+bool Property PlayerMessages = True Auto
 bool playerMessagesDefault = true
 
 Float Property ArmbinderStruggleBaseChance = 5.0 Auto
@@ -33,18 +35,18 @@ Int ArmbinderMinStruggleDefault = 5
 Int Property YokeRemovalCostPerLevel = 200 Auto
 Int YokeRemovalCostPerLevelDefault = 200
 
-bool Property LogMessages Auto
+bool Property LogMessages = True Auto
 bool logMessagesDefault = true
 bool Property ifp = false Auto
 bool ifpDefault = false
-bool Property preserveAggro Auto
-bool preserveAggroDefault = true
+bool Property preserveAggro = True Auto
+bool preserveAggroDefault = True
 bool Property breastNodeManagement = false Auto
 bool breastNodeManagementDefault = false
 bool Property bellyNodeManagement = false Auto
 bool bellyNodeManagementDefault = false
 
-bool Property UseBoundCombat Auto
+bool Property UseBoundCombat = True Auto
 bool UseBoundCombatDefault = true
 
 bool Property useBoundAnims =  true Auto
@@ -57,7 +59,7 @@ int Property blindfoldMode = 2 Auto ; 0 == DD's mode, 1 == DD's mode w/ leeches,
 int blindfoldModeDefault = 2
 float Property blindfoldStrength = 0.5 Auto
 float blindfoldStrengthDefault = 0.5
-int Property darkfogStrength Auto
+int Property darkfogStrength = 300 Auto
 int Property darkfogStrength2 Auto
 int darkfogStrengthDefault = 300
 
@@ -66,62 +68,62 @@ bool Property BlindfoldTooltip Auto
 bool Property GagTooltip Auto
 
 ; Events and Effects
-float Property EventInterval Auto
+float Property EventInterval = 1.5 Auto
 float eventIntervalDefault = 1.5
-int Property EffectVibrateChance Auto
+int Property EffectVibrateChance = 25 Auto
 int effectVibrateChanceDefault = 25
-int Property EffectHealthDrainChance Auto
+int Property EffectHealthDrainChance = 50 Auto
 int effectHealthDrainChanceDefault = 50
-int Property EffectManaDrainChance Auto
+int Property EffectManaDrainChance = 50 Auto
 int EffectManaDrainChanceDefault = 50
-int Property EffectStaminaDrainChance Auto
+int Property EffectStaminaDrainChance = 50 Auto
 int EffectStaminaDrainChanceDefault = 50
-int Property BaseMessageChance Auto
+int Property BaseMessageChance = 10 Auto
 int baseMessageChanceDefault = 10
-int Property BaseHornyChance Auto
+int Property BaseHornyChance = 5 Auto
 int baseHornyChanceDefault = 5
-int Property BaseBumpPumpChance Auto
+int Property BaseBumpPumpChance = 17 Auto
 int baseBumpPumpChanceDefault = 17
 int Property numNpcs = 5 Auto Conditional
 int numNpcsDefault = 5
 
 ; Sounds
-float Property VolumeOrgasm Auto
+float Property VolumeOrgasm = 1.0 Auto
 float volumeOrgasmDefault = 1.0
-float Property VolumeEdged Auto
+float Property VolumeEdged = 1.0 Auto
 float volumeEdgedDefault = 1.0
-float Property VolumeVibrator Auto
-float volumeVibratorDefault = 1.0
+float Property VolumeVibrator = 0.5 Auto
+float volumeVibratorDefault = 0.5
 
 ; Quest Monitor Configuration
-bool Property ForbiddenTome Auto
+bool Property ForbiddenTome = true Auto
 bool ForbiddenTomeDefault = true
-bool Property SergiusExperiment Auto
+bool Property SergiusExperiment = true Auto
 bool SergiusExperimentDefault = true
-bool Property SurreptitiousStreets Auto
+bool Property SurreptitiousStreets = true Auto
 bool SurreptitiousStreetsDefault = true
-bool Property RadiantMaster Auto
+bool Property RadiantMaster = True Auto
 bool RadiantMasterDefault = false
 
 ; Surreptitious Streets Config
-int Property ssSleepChance Auto
+int Property ssSleepChance = 100 Auto
 int ssSleepChanceDefault = 100
-int Property ssTrapChance Auto
+int Property ssTrapChance = 100 Auto
 int ssTrapChanceDefault = 100
-bool Property ssWarningMessages Auto
+bool Property ssWarningMessages = false Auto
 bool ssWarningMessagesDefault = false
 
 ; Radiant Master Configuration
-float Property rmHeartbeatInterval Auto
+float Property rmHeartbeatInterval = 2.0 Auto
 float rmHeartbeatIntervalDefault = 2.0
-float Property rmSummonHeartbeatInterval Auto
+float Property rmSummonHeartbeatInterval = 0.25 Auto
 float rmSummonHeartbeatIntervalDefault = 0.25
 
 ; Devices Underneath Configuration
 bool Property DevicesUnderneathEnabled = True Auto
-Int Property DevicesUnderneathSlot Auto
+Int Property DevicesUnderneathSlot = 12 Auto
 int Property DevicesUnderneathSlotDefault = 12 Auto
-bool Property UseQueueNiNode Auto
+bool Property UseQueueNiNode = False Auto
 bool UseQueueNiNodeDefault = False
 
 ; Devious Expansion Configuration
@@ -192,7 +194,9 @@ Int DeviceDifficultyCatastrophicFailChanceOID
 Int ArmbinderMinStruggleOID
 Int ArmbinderStruggleBaseChanceOID
 Int YokeRemovalCostPerLevelOID
+Int EscapeDifficultyOID
 
+string[] Property EsccapeDifficultyList Auto
 string[] difficultyList
 string[] blindfoldList
 string[] slotMasks
@@ -208,6 +212,20 @@ Function SetupBlindfolds()
 	blindfoldList[3] = "Dark Fog" ; if you change this entry, please alter the ConsoleUtil check in OnOptionMenuAccept() as well
 EndFunction
 
+Function SetupEscapeDifficulties()
+	; This can be extended as desired, but ALWAYS make it uneven length to centre the modifier at 0%
+	EsccapeDifficultyList = new String[9]
+	EsccapeDifficultyList[0] = "Born Slave [Hardest]"
+	EsccapeDifficultyList[1] = "Submissive"
+	EsccapeDifficultyList[2] = "Plaything"
+	EsccapeDifficultyList[3] = "Handcuff Girl"
+	EsccapeDifficultyList[4] = "Kinky [Default]"
+	EsccapeDifficultyList[5] = "Questioning"
+	EsccapeDifficultyList[6] = "Experimenting"
+	EsccapeDifficultyList[7] = "First time"
+	EsccapeDifficultyList[8] = "Vanilla [Easiest]"
+EndFunction
+
 Function SetupDifficulties()
 	difficultyList = new String[4]
 	difficultyList[0] = "Easy"
@@ -217,19 +235,16 @@ Function SetupDifficulties()
 EndFunction
 
 Function SetupPages()
-	Pages = new string[9]
-	Pages[0] = "General"
-	Pages[1] = "Devices"
-	pages[2] = "Sex Animation Filter"
-	Pages[3] = "Events and Effects"
-	Pages[4] = "Sounds"
-	Pages[5] = "Quests"
-	Pages[6] = "Devices Underneath (1)"
-	Pages[7] = "Devices Underneath (2)"
-	Pages[8] = "Devious Expansion"
+	Pages = new string[8]	
+	Pages[0] = "Devices"
+	pages[1] = "Sex Animation Filter"
+	Pages[2] = "Events and Effects"
+	Pages[3] = "Sounds"
+	Pages[4] = "Quests"
+	Pages[5] = "Devices Underneath (1)"
+	Pages[6] = "Devices Underneath (2)"
+	Pages[7] = "Debug"
 EndFunction
-
-
 
 Function SetupSlotMasks()
 	SlotMasks = new String[33]
@@ -278,12 +293,13 @@ Event OnConfigInit()
 	libs.Log("Building mcm menu.")
 	SetupPages()
 	SetupDifficulties()
+	SetupEscapeDifficulties()
 	SetupBlindfolds()
 	SlotMaskOIDS = new int[128]
 EndEvent
 
 int Function GetVersion()
-	return 18 ; mcm menu version
+	return 20 ; mcm menu version
 EndFunction
 
 Event OnVersionUpdate(int newVersion)
@@ -292,6 +308,7 @@ Event OnVersionUpdate(int newVersion)
 		SlotMaskOIDS = new int[128]
 		SetupPages()
 		SetupDifficulties()
+		SetupEscapeDifficulties()
 		SetupBlindfolds()
 		eventOIDs = new int[125]
 		if KeyCrafting == keyCraftingDefault && !libs.PlayerRef.HasPerk(zad_keyCraftingEasy) && !libs.PlayerRef.HasPerk(zad_keyCraftingHard)
@@ -312,35 +329,11 @@ Event OnPageReset(string page)
 		return
 	else
 		UnloadCustomContent()
-	EndIf
-	If page == "General"
+	EndIf	
+	If page == "Devices"
 		SetCursorFillMode(TOP_TO_BOTTOM)		
-		if libs.PlayerRef.WornHasKeyword(libs.zad_Lockable) && zadDebugMode.GetValueInt() != 1
-			AddHeaderOption("Device Escape Options are unavailable")
-			AddHeaderOption(" while being restrained.")			
-			ArmbinderMinStruggleOID = -1
-			ArmbinderStruggleBaseChanceOID = -1
-			YokeRemovalCostPerLevelOID =- 1
-		else
-			AddHeaderOption("Device Escape Options")			
-			keyCraftingOID = AddMenuOption("Key Creation Difficulty", difficultyList[KeyCrafting])			
-			ArmbinderStruggleBaseChanceOID = AddSliderOption("Armbinder Escape Base Chance", ArmbinderStruggleBaseChance, "{1}%")
-			ArmbinderMinStruggleOID = AddSliderOption("Armbinder Minimum Struggles", ArmbinderMinStruggle, "{0}")
-			YokeRemovalCostPerLevelOID = AddSliderOption("Yoke Removal Cost Per Level", YokeRemovalCostPerLevel, "{0}/Level")						
-		EndIf
-		AddEmptyOption()		
-		AddHeaderOption("Camera Configuration")
-		ifpOID = AddToggleOption("Immersive First Person", ifp)
-		SetCursorPosition(1) ; Move cursor to top right position
-		AddHeaderOption("Debug")
-		AddHeaderOption("Message Visibility Settings")
-		npcMessagesOID = AddToggleOption("Show NPC Messages", NpcMessages)
-		playerMessagesOID = AddToggleOption("Show Player Messages", PlayerMessages)	   		
-		logMessagesOID = AddToggleOption("Enable Debug Logging", LogMessages)		
-		debugSigTermOID = AddTextOption("Remove Quest Items", "Do It!")
-	ElseIf page == "Devices"
-		SetCursorFillMode(TOP_TO_BOTTOM)
-		SetCursorPosition(0) ; Can be removed because it starts at 0 anyway
+		AddHeaderOption("Device Difficulty")
+		EscapeDifficultyOID = AddMenuOption("Difficulty Modifier", EsccapeDifficultyList[EscapeDifficulty])
 		AddHeaderOption("Belt Arousal Options")
 		beltRateOID = AddSliderOption("Arousal rate belt multiplier", beltRateMult, "{1}")
 		plugRateOID = AddSliderOption("Arousal rate plugged multiplier", plugRateMult, "{1}")
@@ -361,9 +354,16 @@ Event OnPageReset(string page)
 			bellyNodeManagementOID = AddToggleOption("Belly Node Management", bellyNodeManagement)
 		EndIf
 		SetCursorPosition(1) ; Move cursor to top right position
+		if (Game.GetModByName("Devious Devices - Expansion.esm") > 0) ; DDx is present
+			bootsSlowdownToggleOID = AddToggleOption("Boots Slowdown Effect", bootsSlowdownToggle)
+			mittensDropToggleOID = AddToggleOption("Hardcore Bondage Mittens", mittensDropToggle)
+			HobbleSkirtSpeedDebuffOID = AddSliderOption("Hobble Skirt Debuff Strength", HobbleSkirtSpeedDebuff, "{0}")
+		Else
+			AddTextOption("Devious Devices - Expansion is not loaded.", "", OPTION_FLAG_DISABLED)
+			AddTextOption("This menu is disabled.", "", OPTION_FLAG_DISABLED)
+		EndIf
 		AddHeaderOption("Armbinder Options")
 		UseBoundCombatOID = AddToggleOption("Enable Bound Combat", UseBoundCombat)
-
 	ElseIf page == "Sex Animation Filter"
 		SetCursorFillMode(TOP_TO_BOTTOM)
 		SetCursorPosition(0) ; Can be removed because it starts at 0 anyway
@@ -388,7 +388,6 @@ Event OnPageReset(string page)
 		VolumeOrgasmOID = AddSliderOption("Orgasm Volume", VolumeOrgasm, "{3}")
 		VolumeEdgedOID = AddSliderOption("Edged Volume", VolumeEdged, "{3}")
 		VolumeVibratorOID = AddSliderOption("Vibrator Volume ", VolumeVibrator, "{3}")
-
 	ElseIf page == "Quests"
 		SetCursorFillMode(TOP_TO_BOTTOM)
 		AddHeaderOption("Quest Toggles for QuestMonitor")
@@ -439,18 +438,18 @@ Event OnPageReset(string page)
 				SetCursorPosition(1) ; Move cursor to top right position
 			EndIf
 			i += 1
-		EndWhile
-	ElseIf Page == "Devious Expansion"
-		; Check for DDx
-		if (Game.GetModByName("Devious Devices - Expansion.esm") > 0) ; DDx is present
-			bootsSlowdownToggleOID = AddToggleOption("Boots Slowdown Effect", bootsSlowdownToggle)
-			mittensDropToggleOID = AddToggleOption("Hardcore Bondage Mittens", mittensDropToggle)
-			HobbleSkirtSpeedDebuffOID = AddSliderOption("Hobble Skirt Debuff Strength", HobbleSkirtSpeedDebuff, "{0}")
-		Else
-			AddTextOption("Devious Devices - Expansion is not loaded.", "", OPTION_FLAG_DISABLED)
-			AddTextOption("This menu is disabled.", "", OPTION_FLAG_DISABLED)
-		EndIf
-	Endif
+		EndWhile	
+	ElseIf page == "Debug"
+		SetCursorFillMode(TOP_TO_BOTTOM)						
+		AddHeaderOption("Camera Configuration")
+		ifpOID = AddToggleOption("Immersive First Person", ifp)
+		SetCursorPosition(1) ; Move cursor to top right position		
+		AddHeaderOption("Message Visibility Settings")
+		npcMessagesOID = AddToggleOption("Show NPC Messages", NpcMessages)
+		playerMessagesOID = AddToggleOption("Show Player Messages", PlayerMessages)	   		
+		logMessagesOID = AddToggleOption("Enable Debug Logging", LogMessages)		
+		debugSigTermOID = AddTextOption("Remove Quest Items", "Do It!")
+	Endif	
 EndEvent
 
 
@@ -463,6 +462,10 @@ Event OnOptionMenuOpen(int option)
 		SetMenuDialogOptions(blindfoldList)
 		SetMenuDialogStartIndex(BlindfoldMode)
 		SetMenuDialogDefaultIndex(blindfoldModeDefault)
+	ElseIf option == EscapeDifficultyOID
+		SetMenuDialogOptions(EsccapeDifficultyList)
+		SetMenuDialogStartIndex(EscapeDifficulty)
+		SetMenuDialogDefaultIndex(3)
 	ElseIf option == DevicesUnderneathSlotOID
 		SetMenuDialogOptions(SlotMasks)
 		SetMenuDialogStartIndex(DevicesUnderneathSlot)
@@ -503,6 +506,9 @@ Event OnOptionMenuAccept(int option, int index)
 		UpdateCraftingPerks(index)
 		KeyCrafting = index
 		SetMenuOptionValue(keyCraftingOID, difficultyList[KeyCrafting])
+	ElseIf option == EscapeDifficultyOID
+		EscapeDifficulty = index
+		SetMenuOptionValue(EscapeDifficultyOID, EsccapeDifficultyList[EscapeDifficulty])	
 	ElseIf option == blindfoldModeOID
 		If BlindfoldMode == 3 && index != 3 ; Old mode was Dark Fog, remove it
 			if Weather.GetSkyMode() == 0
@@ -1022,6 +1028,8 @@ Event OnOptionHighlight(int option)
 		SetInfoText("Base chance to escape your armbinder after the minimum required attemts. 1% will be added to this value for every failed attemt.\nDefault: "+ArmbinderStruggleBaseChanceDefault)
 	elseIf (option == YokeRemovalCostPerLevelOID)
 		SetInfoText("Merchants will charge you this much gold per level for helping you out of a yoke.\nDefault: "+YokeRemovalCostPerLevelDefault)    
+	elseIf (option == EscapeDifficultyOID)
+		SetInfoText("This modifier will be applied to device difficulties and make it easier or harder to escape from them.\nIt applies to standard/generic devices and will not affect quest devices unless their creator enabled it.\nThe default modifier is zero.")
 	elseIf (option == HobbleSkirtSpeedDebuffOID)
         SetInfoText("Sets the strength of the speed debuff caused by wearing a hobble skirt.\nThe higher the number, the slower characters wearing a hobble skirt can walk.\nNote: The animations are meant for the default value and will look off at lower values, but some people might find this speed too slow.\nDefault: " + HobbleSkirtSpeedDebuffDefault)
 	endIf
