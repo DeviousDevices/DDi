@@ -486,7 +486,7 @@ bool Function RemoveDeviceWithKey(actor akActor = none, bool destroyDevice=false
 		EndIf		
 		; The key break chance defaults to zero, so we don't need to check for quest items etc. If modders set this chance higher, it's their responsibility!
 		Float ModValue = (KeyBreakChance * CalculateDifficultyModifier(False))
-		If (KeyBreakChance < 100.0) && (ModValue > 100.0)
+		If (KeyBreakChance < 100.0) && (ModValue >= 100.0)
 			; If the modder didn't mean to make it completely impossible to unlock this item, it shouldn't be after applying the modifier either!
 			ModValue = 95.0
 		EndIf		
@@ -686,7 +686,7 @@ Bool Function CheckLockAccess()
 			Return False
 		EndIf
 		Float ModValue = (LockAccessDifficulty * CalculateDifficultyModifier(False))
-		If (LockAccessDifficulty < 100.0) && (ModValue > 100.0)
+		If (LockAccessDifficulty < 100.0) && (ModValue >= 100.0)
 			; If the modder didn't mean to make it completely impossible to reach the locks, it shouldn't be after applying the modifier either!
 			ModValue = 95.0
 		EndIf
