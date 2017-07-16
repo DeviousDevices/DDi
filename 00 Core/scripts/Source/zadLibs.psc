@@ -2850,6 +2850,8 @@ string Function LookupDeviceType(keyword kwd)
 		return "YokeBB"
 	ElseIf kwd == zad_DeviousCuffsFront
 		return "CuffsFront"
+	ElseIf kwd == zad_DeviousStraitJacket
+		return "StraitJacket"
 	ElseIf kwd == zad_DeviousBondageMittens
 		return "Mittens"
 	ElseIf kwd == zad_DeviousHobbleSkirt
@@ -2905,7 +2907,7 @@ Event StartBoundEffects(Actor akTarget)
 		stripweapons(akTarget)
 	EndWhile
 	if akTarget != PlayerRef
-		BoundCombat.Apply_ABC(akTarget)
+		BoundCombat.EvaluateAA(akTarget)
 		BoundCombat.Apply_NPC_ABC(akTarget)
 		return
 	EndIf
@@ -2929,7 +2931,7 @@ Event StopBoundEffects(Actor akTarget)
 	else
 		BoundCombat.Remove_NPC_ABC(akTarget)
 	EndIf
-	BoundCombat.Remove_ABC(akTarget)
+	BoundCombat.EvaluateAA(akTarget)
 EndEvent
 
 ; Function DoRegister()
@@ -2972,7 +2974,7 @@ Event OnUpdate()
 EndEvent
 
 Function PlayBoundIdle()
-	BoundCombat.Apply_ABC(PlayerRef)
+	BoundCombat.EvaluateAA(PlayerRef)
 	if !IsAnimating(PlayerRef) && !PlayerRef.IsInFaction(SexLabAnimatingFaction) 
 		ApplyBoundAnim(PlayerRef)
 	EndIf

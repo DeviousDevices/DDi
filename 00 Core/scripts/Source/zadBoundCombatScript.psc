@@ -113,7 +113,7 @@ EndFunction
 
 
 bool Function HasCompatibleDevice(actor akActor)
-	return (akActor.WornHasKeyword(libs.zad_DeviousArmbinder) || akActor.WornHasKeyword(libs.zad_DeviousArmBinderElbow) || akActor.WornHasKeyword(libs.zad_DeviousYoke) || akActor.WornHasKeyword(libs.zad_DeviousYokeBB) || akActor.WornHasKeyword(libs.zad_DeviousCuffsFront) || (akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirt) && !akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirtRelaxed)))
+	return (akActor.WornHasKeyword(libs.zad_DeviousHeavyBondage) || (akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirt) && !akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirtRelaxed)))
 EndFunction
 
 
@@ -128,6 +128,8 @@ Int Function GetPrimaryAAState(actor akActor)
 		return 2	; Wearing yoke
 	ElseIf akActor.WornHasKeyword(libs.zad_DeviousArmBinder)
 		return 1	; Wearing armbinder
+	ElseIf akActor.WornHasKeyword(libs.zad_DeviousStraitJacket)
+		return 1	; Wearing straightjacket
 	Else
 		return 0	; No primary AA modifiers
 	Endif
@@ -199,9 +201,11 @@ Function EvaluateAA(actor akActor)
 	libs.UpdateControls()
 
 	If !HasCompatibleDevice(akActor)
+		libs.log("EvaluateAA: Reverting to unbound AA")
 		ClearAA(akActor)
 		ResetExternalAA(akActor)
 	Else
+		libs.log("EvaluateAA: Applying animSet = " + animSet + ", animState = " + animState)
 		ClearAA(akActor)
 		int animState = GetSecondaryAAState(akActor)
 		int animSet = SelectAnimationSet(akActor)
@@ -221,7 +225,7 @@ Function EvaluateAA(actor akActor)
 			FNIS_aa.SetAnimGroup(akActor, "_mt", HBC_mt, animSet, "DeviousDevices", Config.LogMessages)
 			FNIS_aa.SetAnimGroup(akActor, "_mtturn", HBC_mtturn, animSet, "DeviousDevices", Config.LogMessages)
 			FNIS_aa.SetAnimGroup(akActor, "_mtidle", HBC_mtidle, animSet, "DeviousDevices", Config.LogMessages)
-			akActor.SetAnimationVariableInt("FNIS_hbc_h2h_LocomotionPose", animSet + 1)
+			;akActor.SetAnimationVariableInt("FNIS_hbc_h2h_LocomotionPose", animSet + 1)
 		else
 			FNIS_aa.SetAnimGroup(akActor, "_h2heqp", ABC_h2heqp, animSet, "DeviousDevices", Config.LogMessages)
 			FNIS_aa.SetAnimGroup(akActor, "_h2hidle", ABC_h2hidle, animSet, "DeviousDevices", Config.LogMessages)

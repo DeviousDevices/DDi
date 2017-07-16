@@ -243,6 +243,9 @@ Event OnUnequipped(Actor akActor)
 			akActor.RemoveItem(deviceRendered, 1, true) ; This should not be necessary, but ensure that SD+ bug does not reoccur.
 			UnsetStoredDevice(akActor)
 			OnRemoveDevice(akActor)
+			If deviceRendered.HasKeyword(libs.zad_DeviousHeavyBondage)
+				libs.StopBoundEffects(akActor)
+			EndIf
 			StorageUtil.UnsetIntValue(akActor, "zad_RemovalToken"+deviceInventory)
 			unequipMutex = false
 			libs.DeviceMutex = false			
@@ -434,10 +437,7 @@ Function RemoveDevice(actor akActor, bool destroyDevice=false, bool skipMutex=fa
 		EndIf		
 	Else
 		libs.RemoveDevice(akActor, deviceInventory, deviceRendered, zad_DeviousDevice, DestroyOnRemove, skipMutex=skipMutex)
-	Endif	
-	If deviceRendered.HasKeyword(libs.zad_DeviousHeavyBondage)
-		libs.StopBoundEffects(akActor)		
-	EndIf
+	Endif
 	If akActor != Libs.PlayerRef
 		return
 	EndIf
