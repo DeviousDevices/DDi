@@ -41,6 +41,29 @@ b DDHobBBYokeStruggle02 DDHobBBYokeStruggle02.hkx
 b DDHobCuffsFrontStruggle01 DDHobCuffsFrontStruggle01.hkx
 b DDHobCuffsFrontStruggle02 DDHobCuffsFrontStruggle02.hkx
 
+b DDRegArmbStruggle01 DDRegArmbStruggle01.hkx
+b DDRegArmbStruggle02 DDRegArmbStruggle02.hkx
+b DDRegArmbStruggle03 DDRegArmbStruggle03.hkx
+b DDRegArmbStruggle04 DDRegArmbStruggle04.hkx
+b DDRegArmbStruggle05 DDRegArmbStruggle05.hkx
+b DDRegYokeStruggle01 DDRegYokeStruggle01.hkx
+b DDRegYokeStruggle02 DDRegYokeStruggle02.hkx
+b DDRegYokeStruggle03 DDRegYokeStruggle03.hkx
+b DDRegYokeStruggle04 DDRegYokeStruggle04.hkx
+b DDRegYokeStruggle05 DDRegYokeStruggle05.hkx
+b DDRegElbStruggle01 DDRegElbStruggle01.hkx
+b DDRegElbStruggle02 DDRegElbStruggle02.hkx
+b DDRegElbStruggle03 DDRegElbStruggle03.hkx
+b DDRegElbStruggle04 DDRegElbStruggle04.hkx
+b DDRegElbStruggle05 DDRegElbStruggle05.hkx
+b DDRegBBYokeStruggle01 DDRegBBYokeStruggle01.hkx
+b DDRegBBYokeStruggle02 DDRegBBYokeStruggle02.hkx
+b DDRegBBYokeStruggle03 DDRegBBYokeStruggle03.hkx
+b DDRegBBYokeStruggle04 DDRegBBYokeStruggle04.hkx
+b DDRegBBYokeStruggle05 DDRegBBYokeStruggle05.hkx
+b DDRegCuffsFrontStruggle02 DDRegCuffsFrontStruggle02.hkx
+b DDRegCuffsFrontStruggle03 DDRegCuffsFrontStruggle03.hkx
+
 b DDChastityBeltStruggle01 FT_DD_Chastity_Struggle_1.hkx
 b DDChastityBeltStruggle02 FT_DD_Chastity_Struggle_2.hkx
 
