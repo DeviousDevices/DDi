@@ -100,9 +100,9 @@ bool Property ForbiddenTome = true Auto
 bool ForbiddenTomeDefault = true
 bool Property SergiusExperiment = true Auto
 bool SergiusExperimentDefault = true
-bool Property SurreptitiousStreets = true Auto
-bool SurreptitiousStreetsDefault = true
-bool Property RadiantMaster = True Auto
+bool Property SurreptitiousStreets = false Auto
+bool SurreptitiousStreetsDefault = false
+bool Property RadiantMaster = false Auto
 bool RadiantMasterDefault = false
 
 ; Surreptitious Streets Config
