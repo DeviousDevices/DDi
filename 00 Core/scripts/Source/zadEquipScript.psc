@@ -50,6 +50,7 @@ Float Property EscapeCooldown = 2.0	Auto				; How many hours have to pass betwee
 Float Property RepairJammedLockChance = 20.0 Auto		; Chance that the player manages to successfully repair a jammed lock.
 Float Property RepairCooldown = 4.0	Auto				; How many hours have to pass between repair attempts.
 Bool Property AllowDifficultyModifier = False Auto		; Override to allow the difficulty modifier for quest/custom items (tagged with zad_BlockGeneric or zad_QuestItem). For generic items this is always allowed, regardless of this setting.
+Bool Property DisableLockManipulation = False Auto		; Override to disallow the player manipulating the locks. Not needed for quest/custom items, as this feature is disabled for them anyway.
 
 ; These messages exist both here and in zadlibs. Modders can override the messages per item with these!
 Message Property zad_DD_EscapeDeviceMSG Auto 				; Device escape dialogue. You can customize it if you want, but make sure not to change the order and functionality of the buttons.
@@ -74,6 +75,7 @@ Message Property zad_DD_EscapeLockPickSuccessMSG Auto 		; Message to be displaye
 Message Property zad_DD_EscapeCutMSG Auto 					; Message to be displayed when the player tries to cut a restraint
 Message Property zad_DD_EscapeCutFailureMSG Auto 			; Message to be displayed when the player fails to cut a restraint
 Message Property zad_DD_EscapeCutSuccessMSG Auto 			; Message to be displayed when the player succeeds to cut open a restraint
+Message Property zad_DD_OnPutOnDevice Auto					; Message to be displayed when the player locks on an item, so she can manipulate the locks if she choses. You can customize it if you want, but make sure not to change the order and functionality of the buttons.
 
 ; Device dependencies
 Keyword[] Property EquipConflictingDevices Auto 		; These item keywords, if present on the character, will prevent the item from getting equipped, unless a script does it.
@@ -84,6 +86,7 @@ Message Property zad_EquipRequiredFailMsg auto 			; This message will get displa
 Message Property zad_UnEquipFailMsg auto 				; This message will get displayed if an item fails to unequip due to keyword conflicts. Make sure to explain the conflicts, so the player knows what's going on!
 
 ; Local Variables
+bool isLockManipulated = false
 bool menuDisable = false
 int mutexTimeout = 10
 bool unequipMutex
@@ -152,9 +155,22 @@ Event OnEquipped(Actor akActor)
 	Endif
 	If !silently && !akActor.WornHasKeyword(zad_DeviousDevice) && akActor.GetItemCount(deviceRendered) == 0
 		Int msgChoice = zad_DeviceMsg.Show() ; display menu
-		if msgChoice != 0 ; Equip Device voluntarily
+		if msgChoice != 0 ; Equip Device voluntarily			
 			akActor.UnequipItem(deviceInventory, false, true)
 			return
+		Else
+			isLockManipulated = False
+			If !DisableLockManipulation && !deviceInventory.HasKeyword(libs.zad_QuestItem) && !deviceRendered.HasKeyword(libs.zad_QuestItem) && !deviceInventory.HasKeyword(libs.zad_BlockGeneric) && !deviceRendered.HasKeyword(libs.zad_BlockGeneric) 
+				Int Choice 
+				If zad_DD_OnPutOnDevice
+					Choice = zad_DD_OnPutOnDevice.Show()
+				Else
+					Choice = libs.zad_DD_OnPutOnDevice.Show()
+				EndIf
+				If Choice == 1
+					isLockManipulated = True				
+				EndIf
+			EndIf
 		EndIf
 	EndIf
 	int filter = OnEquippedFilter(akActor, silent=silently)
@@ -452,6 +468,11 @@ bool Function RemoveDeviceWithKey(actor akActor = none, bool destroyDevice=false
 		akActor = libs.PlayerRef
 	EndIf   
 	StruggleScene(libs.PlayerRef)
+	If isLockManipulated
+		libs.Notify("As you have manipulated the " + deviceName + ", you are able to slip out of the device with ease!", messageBox = True)
+		RemoveDevice(akActor)	
+		Return True
+	EndIf	
 	if (akActor == libs.PlayerRef) && StorageUtil.GetIntValue(akActor, "zad_Equipped" + libs.LookupDeviceType(zad_DeviousDevice) + "_LockJammedStatus") == 1
 		libs.Log("RemoveDeviceWithKey called, but lock is jammed.")
 		If zad_DD_UnlockFailJammedMSG
@@ -1036,7 +1057,7 @@ Int Function Escape(Float Chance)
 		return 0
 	Endif
 	libs.log("Player is trying to escape " + DeviceName + ". Escape chance after modifiers: " + Chance +"%")
-	If Utility.RandomFloat(0.0, 99.9) < (Chance * CalculateDifficultyModifier(True))
+	If true ;Utility.RandomFloat(0.0, 99.9) < (Chance * CalculateDifficultyModifier(True))
 		libs.log("Player has escaped " + DeviceName)
 		; increase success counter
 		libs.zadDeviceEscapeSuccessCount.SetValueInt(libs.zadDeviceEscapeSuccessCount.GetValueInt() + 1)		

@@ -284,7 +284,7 @@ Message Property zad_DD_EscapeLockPickSuccessMSG Auto 		; Message to be displaye
 Message Property zad_DD_EscapeCutMSG Auto 					; Message to be displayed when the player tries to cut a restraint
 Message Property zad_DD_EscapeCutFailureMSG Auto 			; Message to be displayed when the player fails to cut a restraint
 Message Property zad_DD_EscapeCutSuccessMSG Auto 			; Message to be displayed when the player succeeds to cut open a restraint
-
+Message Property zad_DD_OnPutOnDevice Auto					; Message to be displayed when the player locks on an item, so she can manipulate the locks if she choses.
 
 ; Internal Variables
 Armor Property deviceRemovalToken Auto         ; Internal token for removal events
@@ -574,6 +574,42 @@ Function EquipDevice(actor akActor, armor deviceInventory, armor deviceRendered,
 	Endif
 EndFunction
 
+; Force equips an item on an actor even when a (generic) device of that type is already worn. This will NOT work on quest/custom devices. 
+; Returns true if the item was equipped successfully, otherwise false.
+Bool Function ForceEquipDevice(actor akActor, armor deviceInventory, armor deviceRendered, keyword zad_DeviousDevice, bool skipEvents=false, bool skipMutex = True)
+	if !skipMutex
+		Log("ForceEquipDevice called for " + deviceInventory.GetName())
+		AcquireAndSpinlock()
+		Log("Acquired mutex, equipping " + deviceInventory.GetName())	
+	EndIf
+	ReEquipExistingDevice(akActor, zad_DeviousDevice)
+	if WearingConflictingDevice(akActor, deviceRendered, zad_DeviousDevice)
+		Log("ForceEquipDevice() called for one device, while already wearing a device of the same type:" + zad_DeviousDevice)
+		If ManipulateGenericDeviceByKeyword(akActor, zad_DeviousDevice, equipOrUnequip = False, skipEvents = skipEvents, skipMutex = skipMutex)
+			Log("Force equip: Conflicting item removed successfully!")
+		Else
+			Log("Force equip: Failed to remove worn item. Aborting.")
+			if !skipMutex
+				DeviceMutex = false
+			EndIf
+			return False
+		EndIf
+	EndIf
+	if akActor.GetItemCount(deviceInventory) <=0
+		akActor.AddItem(deviceInventory, 1, true)
+	EndIf	
+	if skipEvents
+		akActor.EquipItem(deviceInventory, false, true)
+		akActor.EquipItem(deviceRendered, true, true)
+		if !skipMutex
+			DeviceMutex = false
+		EndIf
+	else
+		akActor.EquipItemEx(deviceInventory, 0, false, true)
+	Endif
+	return True
+EndFunction
+
 ; Remove device from actor.
 Function RemoveDevice(actor akActor, armor deviceInventory, armor deviceRendered, keyword zad_DeviousDevice, bool destroyDevice=false, bool skipEvents=false, bool skipMutex=false)
 	Log("RemoveDevice called for " + deviceInventory.GetName())
@@ -736,7 +772,7 @@ bool Function ManipulateGenericDeviceByKeyword(Actor akActor, Keyword kw, bool e
 			return false
 		EndIf
      		RemoveDevice(akActor, tmpInv as Armor, tmpRend as Armor, kw, skipEvents=skipEvents, skipMutex=skipMutex)
-		return true
+			return true
         EndIf
 	Int iFormIndex = akActor.GetNumItems()
 	bool breakFlag = false
@@ -2802,6 +2838,8 @@ EndFunction
 string Function LookupDeviceType(keyword kwd)
 	if kwd == zad_DeviousPlug
 		return "Plug"
+	ElseIf kwd == zad_DeviousHeavyBondage
+		return "WristRestraint"
 	ElseIf kwd == zad_DeviousBelt
 		return "Belt" 
 	ElseIf kwd == zad_DeviousBra
@@ -2855,9 +2893,7 @@ string Function LookupDeviceType(keyword kwd)
 	ElseIf kwd == zad_DeviousBondageMittens
 		return "Mittens"
 	ElseIf kwd == zad_DeviousHobbleSkirt
-		return "HobbleSkirt"
-	ElseIf kwd == zad_DeviousHeavyBondage
-		return "WristRestraint"
+		return "HobbleSkirt"	
 	EndIf
 	Error("LookupDeviceType received invalid keyword " + kwd)
 EndFunction
