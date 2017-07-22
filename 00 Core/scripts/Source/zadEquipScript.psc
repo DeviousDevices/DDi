@@ -1070,7 +1070,7 @@ Int Function Escape(Float Chance)
 		return 0
 	Endif
 	libs.log("Player is trying to escape " + DeviceName + ". Escape chance after modifiers: " + Chance +"%")
-	If true ;Utility.RandomFloat(0.0, 99.9) < (Chance * CalculateDifficultyModifier(True))
+	If Utility.RandomFloat(0.0, 99.9) < (Chance * CalculateDifficultyModifier(True))
 		libs.log("Player has escaped " + DeviceName)
 		; increase success counter
 		libs.zadDeviceEscapeSuccessCount.SetValueInt(libs.zadDeviceEscapeSuccessCount.GetValueInt() + 1)		
