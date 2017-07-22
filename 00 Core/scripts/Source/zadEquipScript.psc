@@ -159,9 +159,9 @@ Event OnEquipped(Actor akActor)
 			akActor.UnequipItem(deviceInventory, false, true)
 			return
 		Else
-			isLockManipulated = False
+			isLockManipulated = False		
 			If !DisableLockManipulation && !deviceInventory.HasKeyword(libs.zad_QuestItem) && !deviceRendered.HasKeyword(libs.zad_QuestItem) && !deviceInventory.HasKeyword(libs.zad_BlockGeneric) && !deviceRendered.HasKeyword(libs.zad_BlockGeneric) 
-				Int Choice 
+				Int Choice = 0
 				If zad_DD_OnPutOnDevice
 					Choice = zad_DD_OnPutOnDevice.Show()
 				Else
@@ -1009,6 +1009,10 @@ EndFunction
 
 Bool Function CanMakeStruggleEscapeAttempt()
 	; check if the character can make an escape attempt
+	If libs.PlayerRef.WornHasKeyword(libs.zad_DeviousHeavyBondage) && !deviceRendered.HasKeyword(libs.zad_DeviousHeavyBondage)
+		libs.notify("You cannot try to struggle out of the " + DeviceName + " with bound hands.", messageBox = true)
+		return False
+	EndIf	
 	Float HoursNeeded = (EscapeCooldown * CalculateDifficultyModifier(False))
 	Float HoursPassed = (Utility.GetCurrentGameTime() - LastStruggleEscapeAttemptAt) * 24.0
 	if HoursPassed > HoursNeeded
@@ -1023,6 +1027,10 @@ EndFunction
 
 Bool Function CanMakeCutEscapeAttempt()
 	; check if the character can make an escape attempt
+	If libs.PlayerRef.WornHasKeyword(libs.zad_DeviousHeavyBondage) && !deviceRendered.HasKeyword(libs.zad_DeviousHeavyBondage)
+		libs.notify("You cannot try to cut the " + DeviceName + " with bound hands.", messageBox = true)
+		return False
+	EndIf	
 	Float HoursNeeded = (EscapeCooldown * CalculateDifficultyModifier(False))
 	Float HoursPassed = (Utility.GetCurrentGameTime() - LastCutEscapeAttemptAt) * 24.0
 	if HoursPassed > HoursNeeded
@@ -1037,6 +1045,11 @@ EndFunction
 
 Bool Function CanMakeLockPickEscapeAttempt()
 	; check if the character can make an escape attempt
+	; can't try this with bound hands. We do allow wrist restraints itself, though.
+	If libs.PlayerRef.WornHasKeyword(libs.zad_DeviousHeavyBondage) && !deviceRendered.HasKeyword(libs.zad_DeviousHeavyBondage)
+		libs.notify("You cannot try to pick the " + DeviceName + " with bound hands.", messageBox = true)
+		return False
+	EndIf	
 	Float HoursNeeded = (EscapeCooldown * CalculateDifficultyModifier(False))
 	Float HoursPassed = (Utility.GetCurrentGameTime() - LastLockPickEscapeAttemptAt) * 24.0
 	if HoursPassed > HoursNeeded
@@ -1181,12 +1194,7 @@ Function EscapeAttemptLockPick()
 	If !HasValidLockPick()
 		libs.notify("You do not possess a pick you could use on your " + DeviceName + ".", messageBox = true)
 		return
-	EndIf
-	; can't try this with bound hands. We do allow wrist restraints itself, though.
-	If libs.PlayerRef.WornHasKeyword(libs.zad_DeviousHeavyBondage) && !deviceRendered.HasKeyword(libs.zad_DeviousHeavyBondage)
-		libs.notify("You cannot try to pick the " + DeviceName + " with bound hands.", messageBox = true)
-		return
-	EndIf
+	EndIf	
 	If !CanMakeLockPickEscapeAttempt()
 		return
 	EndIf
