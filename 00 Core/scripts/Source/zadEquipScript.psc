@@ -153,7 +153,7 @@ Event OnEquipped(Actor akActor)
 		libs.DeviceMutex = false
 		return
 	Endif
-	If !silently && akActor != libs.playerref && !akActor.WornHasKeyword(zad_DeviousDevice) && akActor.GetItemCount(deviceRendered) == 0
+	If !silently && akActor == libs.playerref && !akActor.WornHasKeyword(zad_DeviousDevice) && akActor.GetItemCount(deviceRendered) == 0
 		Int msgChoice = zad_DeviceMsg.Show() ; display menu
 		if msgChoice != 0 ; Equip Device voluntarily			
 			akActor.UnequipItem(deviceInventory, false, true)
