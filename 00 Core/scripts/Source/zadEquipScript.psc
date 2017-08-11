@@ -1329,11 +1329,11 @@ Function StruggleScene(actor akActor)
 		return
 	EndIf
 	bool[] cameraState = libs.StartThirdPersonAnimation(akActor, struggleArray[Utility.RandomInt(0, len)], true)
-	Utility.Wait(2.5)
+	Utility.Wait(10)
 	libs.Pant(libs.PlayerRef)
-	Utility.Wait(2.5)
-	akActor.PlayIdle(struggleArray[Utility.RandomInt(0, len)])
-	Utility.Wait(5)
+	Utility.Wait(10)
+	libs.Pant(libs.PlayerRef)
+	Utility.Wait(10)
 	libs.EndThirdPersonAnimation(akActor, cameraState, true)
 	libs.SexlabMoan(libs.PlayerRef)
 EndFunction
