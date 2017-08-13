@@ -11,7 +11,7 @@ Perk Property zad_keyCraftingEasy Auto ; Obsolete, will remove later
 Perk Property zad_keyCraftingHard Auto ; Obsolete, will remove later.
 
 ; Config Variables
-Int Property EscapeDifficulty = 3 Auto
+Int Property EscapeDifficulty = 5 Auto
 
 int Property UnlockThreshold Auto
 int thresholdDefault = 185

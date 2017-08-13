@@ -950,7 +950,7 @@ Function DisplayDifficultyMsg()
 		result += "Its lock is not very secure. Picking it should be easy."
 	ElseIf LockPickEscapeChance >= 25
 		result += "Its lock is somewhat secure, but not overly much so. Picking it will be moderately difficult."
-	ElseIf StruggleEscapeChance >= 15
+	ElseIf LockPickEscapeChance >= 15
 		result += "Its lock is designed to be secure, but might not withstand serious picking attempts."
 	ElseIf LockPickEscapeChance >= 10
 		result += "Its lock is fairly secure and will be hard to pick, but not impossible."
@@ -968,7 +968,7 @@ Function DisplayDifficultyMsg()
 		result += "Its material is not very tough. Cutting it should be easy."
 	ElseIf CutDeviceEscapeChance >= 25
 		result += "Its material is somewhat tough, but not overly much so. Cutting it will be moderately difficult."
-	ElseIf StruggleEscapeChance >= 15
+	ElseIf CutDeviceEscapeChance >= 15
 		result += "Its material is tough, but could probably be cut with the right tool and enough effort."
 	ElseIf CutDeviceEscapeChance >= 10
 		result += "Its material is fairly tough and will be hard to cut, but not impossible."
