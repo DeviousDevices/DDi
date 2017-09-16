@@ -7,6 +7,7 @@ Function Fragment_1(ObjectReference akSpeakerRef)
 Actor akSpeaker = akSpeakerRef as Actor
 ;BEGIN CODE
 libs.Moan(libs.PlayerRef)
+zadGagRNG.SetValue(utility.RandomInt(-100, 120))
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -14,3 +15,4 @@ EndFunction
 ;END FRAGMENT CODE - Do not edit anything between this and the begin comment
 
 zadlibs Property libs Auto
+GlobalVariable Property zadGagRNG Auto

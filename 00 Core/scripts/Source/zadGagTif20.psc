@@ -6,6 +6,7 @@ Scriptname zadGagTif20 Extends TopicInfo Hidden
 Function Fragment_1(ObjectReference akSpeakerRef)
 Actor akSpeaker = akSpeakerRef as Actor
 ;BEGIN CODE
+PlayerRef.AddSpell(gag.zadgag_SpeechDebuff)
 gag.enableTalk()
 ;END CODE
 EndFunction
@@ -14,3 +15,4 @@ EndFunction
 ;END FRAGMENT CODE - Do not edit anything between this and the begin comment
 
 zadGagQuestScript property gag Auto
+Actor Property PlayerRef  Auto  
