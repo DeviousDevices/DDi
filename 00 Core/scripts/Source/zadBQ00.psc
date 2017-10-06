@@ -936,7 +936,8 @@ function Logic(int threadID, bool HasPlayer)
 	
 	libs.Log("Overriding animations.")
 	Controller.SetForcedAnimations(anims)
-	if actors.Length != originalActors.Length || solos.Length >= 1
+	; see if we need to rebuild the actor arrays
+	if (actors.Length > 0 && actors.Length != originalActors.Length) || solos.Length >= 1
 		libs.Log("Requesting actor change to " + actors.Length + " actors.")
 		i = 0
 		while i < actors.Length
