@@ -90,6 +90,13 @@ bool Function isDeviousDevice(Form device)
 	endif
 	return false
 EndFunction
+
+bool Function isStrapOn(Form device)
+	if device.HasKeyword(SexLabNoStrip) && device.HasKeyword(ArmorJewelry) 
+		return true
+	endif
+	return false
+EndFunction
  
 Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
 	actor akActor = libs.PlayerRef
@@ -104,7 +111,7 @@ Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
 			EndIf
 		EndIf
 	EndIf
-	If akActor.WornHasKeyword(libs.zad_DeviousHeavyBondage) && ((akBaseObject as Weapon) || (akBaseObject as Spell) || (akBaseObject as Light) || ((akBaseObject as Armor) && (!isDeviousDevice(akBaseObject) && (akBaseObject != zad_DeviceHider))))
+	If akActor.WornHasKeyword(libs.zad_DeviousHeavyBondage) && ((akBaseObject as Weapon) || (akBaseObject as Spell) || (akBaseObject as Light) || ((akBaseObject as Armor) && (!isDeviousDevice(akBaseObject) && !isStrapOn(akBaseObject) && (akBaseObject != zad_DeviceHider))))
 		If UI.IsMenuOpen("InventoryMenu")
 			libs.notify("You can't equip this with your hands tied!")	
 		Endif		
@@ -130,3 +137,6 @@ Event OnObjectUnequipped(Form akBaseObject, ObjectReference akReference)
 		EndIf
 	EndIf	
 EndEvent
+Keyword Property ArmorJewelry  Auto  
+
+Keyword Property SexLabNoStrip  Auto  
