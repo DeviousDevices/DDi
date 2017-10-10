@@ -71,29 +71,33 @@ EndFunction
 ; EndFunction
 
 Function DeviceMenu(Int msgChoice = 0)
-        msgChoice = zad_DeviceMsg.Show() ; display menu
-	if msgChoice==0 ; Not wearing a belt/harness, no piercing
+    msgChoice = zad_DeviceMsg.Show() ; display menu
+	if msgChoice==0 ; put it in
 		Debug.Notification("You choose to put the piercings in.")
 		libs.EquipDevice(libs.PlayerRef, deviceInventory, deviceRendered, zad_DeviousDevice)
-	elseif msgChoice==1 ; Wearing a harness, no piercings
-		Debug.MessageBox(strFailEquipHarness)
-	elseif msgChoice==2 ; Wearing a belt, no piercings
-		Debug.MessageBox(strFailEquipBelt)
-	elseif msgChoice==3 ; Not wearing a belt/harness, Remove piercings with tool
-		DeviceMenuRemoveWithKey()
-	elseif msgChoice==4 ; Wearing a harness, piercings
-		NoKeyFailMessageHarness(libs.PlayerRef)
-	elseif msgChoice==5 ; Wearing a belt, piercings
-		NoKeyFailMessageBelt(libs.PlayerRef)
-	elseif msgChoice==6 ; Force them out
-		if libs.playerRef.WornhasKeyword(libs.zad_DeviousBelt)
-			NoKeyFailMessageBelt(libs.playerRef)
-		ElseIf libs.playerRef.WornhasKeyword(libs.zad_DeviousHarness)
-			NoKeyFailMessageHarness(libs.playerRef)
-		Else
-			DeviceMenuRemoveWithoutKey()
+	elseif msgChoice==1 ; remove
+		If libs.Playerref.WornHasKeyword(libs.zad_DeviousBelt)
+			; display a different message if it's likely a belt harness:
+			If libs.Playerref.WornHasKeyword(libs.zad_DeviousHarness)
+				NoKeyFailMessageHarness(libs.playerRef)
+			else
+				NoKeyFailMessageBelt(libs.playerRef)
+			EndIf
+			return
 		EndIf
-	Endif
+		DeviceMenuRemoveWithKey()	
+	elseif msgChoice == 2 ; Remove device, without key
+		If libs.Playerref.WornHasKeyword(libs.zad_DeviousBelt)
+			; display a different message if it's likely a belt harness:
+			If libs.Playerref.WornHasKeyword(libs.zad_DeviousHarness)
+				NoKeyFailMessageHarness(libs.playerRef)
+			else
+				NoKeyFailMessageBelt(libs.playerRef)
+			EndIf
+			return
+		EndIf
+		DeviceMenuRemoveWithoutKey()
+	endif		
 	DeviceMenuExt(msgChoice)
 	SyncInventory()
 EndFunction
