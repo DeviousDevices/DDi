@@ -1744,6 +1744,39 @@ EndFunction
 ;==================================================
 ; Effects
 ;==================================================
+
+function Masturbate(actor a, bool feedback = false)	
+	sslBaseAnimation[] Manims 
+	If a == PlayerRef && feedback
+		NotifyPlayer("You can not resist your urges anymore!")
+	Else
+		If a.GetLeveledActorBase().GetSex() == 1 && feedback
+			NotifyPlayer(a.GetLeveledActorBase().GetName() + " can't resist her urges anymore...")
+		ElseIf a.GetLeveledActorBase().GetSex() == 0 && feedback
+			NotifyPlayer(a.GetLeveledActorBase().GetName() + " can't resist his urges anymore...")
+		Endif
+	EndIf	
+	If a.WornHasKeyword(zad_DeviousArmbinder) || a.WornHasKeyword(zad_DeviousArmbinderElbow)
+		Manims = New sslBaseAnimation[1]
+		Manims[0] = SexLab.GetAnimationObject("DDArmbinderSolo")				
+	elseIf a.WornHasKeyword(zad_DeviousYoke)
+		Manims = New sslBaseAnimation[1]
+		Manims[0] = SexLab.GetAnimationObject("DDYokeSolo")			
+	Elseif a.WornHasKeyword(zad_DeviousBelt) || a.WornHasKeyword(zad_DeviousHarness)
+		Manims = New sslBaseAnimation[1]
+		Manims[0] = SexLab.GetAnimationObject("DDBeltedSolo")		
+	Else
+		If a.GetLeveledActorBase().GetSex() == 1
+			Manims = SexLab.GetAnimationsByTag(1, "Solo", "F", requireAll=true)
+		Else
+			Manims = SexLab.GetAnimationsByTag(1, "Solo", "M", requireAll=true)
+		Endif
+	Endif
+	actor[] tmp = new actor[1]
+	tmp[0] = a    
+	SexLab.StartSex(tmp, Manims)
+EndFunction
+
 ; Cause actor to have an orgasm.
 ;;; Function ActorOrgasm(actor akActor, int setArousalTo=-1, int vsID=-1)
 ;;;             actor akActor, ; The actor to operate on.

@@ -34,12 +34,9 @@ function DeviceMenuRemoveWithKey()
 EndFunction
 
 function BeltMenuMasturbate()
-	libs.NotifyPlayer("You attempt to seek relief from the burning desire that fills you...")
-	sslBaseAnimation[] anims = SexLab.GetAnimationsByTag(1, "Solo", "F", "DeviousDevice", requireAll=true)
-	actor[] tmp = new actor[1]
-	tmp[0] = libs.PlayerRef
-        Aroused.UpdateActorExposure(libs.PlayerRef,3)
-	SexLab.StartSex(tmp, anims)
+	libs.NotifyPlayer("You attempt to seek relief from the burning desire that fills you...")	
+    Aroused.UpdateActorExposure(libs.PlayerRef, 3)
+	libs.Masturbate(libs.PlayerRef)
 EndFunction
 
 Function OnEquippedPre(actor akActor, bool silent=false)

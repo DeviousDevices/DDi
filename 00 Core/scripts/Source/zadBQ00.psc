@@ -979,7 +979,7 @@ EndFunction
 
 
 Bool Function HasArmbinder(Actor akActor)
-	Return (akActor != None) && (akActor.WornHasKeyword(libs.zad_DeviousArmbinder))
+	Return (akActor != None) && (akActor.WornHasKeyword(libs.zad_DeviousArmbinder) || akActor.WornHasKeyword(libs.zad_DeviousArmbinderElbow))
 EndFunction
 
 Bool Function HasYoke(Actor akActor)
