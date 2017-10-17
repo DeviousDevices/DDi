@@ -712,7 +712,7 @@ Bool Function CheckLockAccess()
 			ModValue = 95.0
 		EndIf
 		If Utility.RandomFloat(0.0, 99.9) < ModValue
-			If DeviceKey != None			
+			If DeviceKey != None || isLockManipulated		
 				If LockAccessDifficulty < 50.0
 					libs.notify("You try to insert the key into the " + DeviceName + "'s lock, but find the locks a bit outsides of your reach. After a few failed attempts to slide the key into the lock, you have no choice but to give up for now. You should still eventually be able to unlock yourself. Just try again a bit later!", messageBox = True)
 				ElseIf LockAccessDifficulty < 100.0
