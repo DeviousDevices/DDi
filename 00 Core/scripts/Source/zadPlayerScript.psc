@@ -85,7 +85,7 @@ Event OnLocationChange(Location akOldLoc, Location akNewLoc)
 EndEvent
  
 bool Function isDeviousDevice(Form device)
-	if device.HasKeyword(libs.zad_InventoryDevice) || device.HasKeyword(libs.zad_Lockable) 
+	if device.HasKeyword(libs.zad_InventoryDevice) || device.HasKeyword(libs.zad_Lockable) || device.HasKeyword(libs.zad_DeviousPlug) 
 		return true
 	endif
 	return false
