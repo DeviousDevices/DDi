@@ -2651,9 +2651,11 @@ Function ChastityBeltStruggle(actor akActor)
 		return 
 	Endif		
 	If Utility.RandomInt(1,2) == 1
-		akActor.PlayIdle(DDChastityBeltStruggle01)
+		StartThirdPersonAnimation(akActor, DDChastityBeltStruggle01, true)
+		;akActor.PlayIdle(DDChastityBeltStruggle01)
 	Else
-		akActor.PlayIdle(DDChastityBeltStruggle02)
+		StartThirdPersonAnimation(akActor, DDChastityBeltStruggle02, true)
+		;akActor.PlayIdle(DDChastityBeltStruggle02)
 	EndIf	
 	Aroused.UpdateActorExposure(akActor, 5)
 	If akActor == PlayerRef
