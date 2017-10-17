@@ -78,6 +78,7 @@ Keyword Property zad_BlockGeneric Auto ; Block generic removal of this device.
 Keyword Property zad_QuestItem Auto ; Quest item tag. This item can not be removed conventionally.
 
 Keyword Property zad_BraNoBlockPiercings Auto
+Keyword Property zad_GagNoOpenMouth Auto
 
 Keyword Property zad_BoundCombatDisableKick Auto
 
@@ -2425,6 +2426,10 @@ int Function GetVibrating(actor akActor)
 EndFunction
 
 Function ApplyGagEffect(actor akActor)	
+	; apply this affect to actual gags only, not hoods that also share this keyword.
+	If akActor.WornHasKeyword(zad_GagNoOpenMouth)
+		return
+	EndIf
 	if (GetPhonemeModifier(akActor, 0, 1) != 100 || GetPhonemeModifier(akActor, 0, 11) != 70) && GetPhonemeModifier(akActor, 0, 0) != 70 ; Last check is for vibration mouth expressions. HoC
 		SetPhonemeModifier(akActor, 0, 1, 100)
 		SetPhonemeModifier(akActor, 0, 11, 70)
