@@ -22,8 +22,8 @@ Bool Property JammedLock = False Auto      ; Is the lock currently jammed? (Depr
 MiscObject Property Lockpick Auto
 
 ; Wrist Bondage and struggle system
-Idle[] Property struggleIdles Auto
-Idle[] Property struggleIdlesHob Auto
+String[] Property struggleIdles Auto
+String[] Property struggleIdlesHob Auto
 
 ; Unlock system
 Key Property deviceKey  Auto               				; Key type to unlock this device
@@ -1307,7 +1307,7 @@ Float Function CalclulateLockPickSuccess()
 	return result
 EndFunction
 
-Idle[] Function SelectStruggleArray(actor akActor)
+String[] Function SelectStruggleArray(actor akActor)
 	If akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirt) && !akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirtRelaxed)
 		if struggleIdlesHob.length > 0
 			return struggleIdlesHob		; Use hobbled struggle idles
@@ -1323,7 +1323,7 @@ Function StruggleScene(actor akActor)
 	if libs.IsAnimating(akActor)
 		return
 	EndIf
-	Idle[] struggleArray = SelectStruggleArray(akActor)
+	String[] struggleArray = SelectStruggleArray(akActor)
 	int len = struggleArray.length - 1
 	If len < 1 
 		return

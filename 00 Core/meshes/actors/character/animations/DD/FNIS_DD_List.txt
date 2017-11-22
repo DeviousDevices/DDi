@@ -1,23 +1,56 @@
-Version V3.4.0
-' Format:	<type> -<option,option,...> <AnimEvent> <Animation File> [<AnimObject CK>]
-'		type: 	b (basic)
-'				o (animated objects) 	
-'		option: a (acyclic) 				default: cyclic
-'				h (headtracking remains) 	default: headtracking off
-'               Tn (clip transition "00Next Clip": used if another idle will follow immediately)
-'               Ts (clip transition "IdleStop": (should be "regular idle end", but in FNIS similar to Next Clip)
-'          					default "IdleForceDefaultState": everything set to default)
-'				B<n.m>						Blend time into Animation
+Version V4.0.0
+
+' Format:
+'			<type> [-<option,option,...>] <AnimEvent> <AnimFile> [<AnimObject> ...]		(FNIS Animation)
+'			AnimVar <AnimVar> [ BOOL | INT32 | REAL ] <numeric_value>					(Behavior Variable)
+'			Version <VersionNumber>
 '
-'		<Animation File> without path (files expected in Animations\<mod name>)
+' <type>:
+'			b	 	basic: simple idle animation with one animation file
+'			o		AnimObject: basic animation with one or more AnimObjects
+'			s		sequenced animation (SA): first of at least 2 animation played as sequence 
+'			so		sequenced optimized: SA with AnimObjects and optimized Equip/UnEquip 
+'			fu		furniture animation: first of at least 3 animations played on a furniture object
+'			fuo		furniture animation optimized: fu with AnimObjects and optimized Equip/UnEquip
+'			+		second to last animation of a s/so/fu/fuo definition 
+'			ofa		offset arm animation: animations modifying arm position while other animations play  
+'			pa		paired animation
+' 			km		killmove
 '
-' Example:
-' b -a,h,Tn,B1.2 MyAnimEvent1 MyAnimFile1.hkx
-'	
-' Comment:	' in column 1 / empty lines possible
+' <option>: 
+'			a		acyclic animation: 1-time only (default: cyclic)
+'			o		one or more AnimObjects
+'			Tn		transition next: character keeps position after -a animation (no IdleForceDefaultState)
+'			h		headtracking ON (default OFF)
+'			Bn.m	blendtime n.m sec
+'			k		"known" animation file (part of vanilla or different mod) -> excl. from consistance check
+'			bsa		animation file part of bsa file -> excluded from consistence check 
+'			st		sticky AO -> AO will not be unequipped at the end of animation (last animation only)
+'			D<time>	animation duration (pa and km only)
+'			T<AnimEvent>/<time>	triggered AnimEvents during pa/km animations
+'
+' <AnimEvent>		Animation Event, used for Idle Definition (CK) or SendAnimationEvent() (script)
+' <AnimFile>		Animation File for this AnimEvent; path relative to "animations/<mod name>"
+' <AnimObject>		any Animation Object defined in CK (can also be standard or from different mod)
+' <AnimVar>			e.g. used for GetAnimationVariableInt() (Script) or GetGraphVariableInt condition (CK)
+' <VersionNumber>	e.g. V5.0
+'
+' For details please refer to "FNIS for Modders Documentation"
+' 
+'Examples:
+'	b -a,h,Tn,B1.2 MyAnimEvent1 MyAnimFile1.hkx
+'	o -h MyAnimEvent2 AnimationWithAO.hkx MyAnimObject01 MyAnimObject02
+'	s -a SA1entry SAanim1.hkx  
+'	+ -h,o,k SA1loop ..\OtherMod\OtherModAnim.hkx MYAnimObject03
+'	+ -a SA1exit SAanim3.hkx
+'	fu -a FURNITURE1_Enter FURNITURE1_Enter.hkx 
+'	+ FURNITURE1_Loop FURNITURE1_Loop.hkx
+'	+ -a FURNITURE1_Exit FURNITURE1_Exit.hkx
+'	pa -D3.466667 HugB paired_hugb.hkx 
+'	km -o,D4.000000,Tnpcsoundplay.npckillchop/2.555,T2_killactor/3.333 FNISKillmove FNIS_Killmove.hkx AnimObjectSword/1
 '
 ' AnimEvents and Animation File names have to be unique through all mods (even for files in different folders)
-' so it's a good idea use mod specific abbrevioations for all our names
+' so it's a good idea to use mod specific abbreviations for all your names
 
 ' Sex Animations
 b DDBeltedSolo DDBeltedSolo.hkx
@@ -28,6 +61,15 @@ b DDZazHornyB ZazHornyB.hkx
 b DDZazHornyC ZazHornyC.hkx
 b DDZazHornyD ZazHornyD.hkx
 b DDZazHornyE ZazHornyE.hkx
+b DDZazArmbHorny01 ZapArmbHorny01.hkx
+b DDZazArmbHorny02 ZapArmbHorny02.hkx
+b DDZazArmbHorny03 ZapArmbHorny03.hkx
+b DDZazYokeHorny01 ZapYokeHorny01.hkx
+b DDZazYokeHorny02 ZapYokeHorny02.hkx
+b DDZazYokeHorny03 ZapYokeHorny03.hkx
+
+b -md DDArmbBleedoutIdle ZapArmbBleedoutIdle.hkx
+b -md DDYokeBleedoutIdle ZapYokeBleedoutIdle.hkx
 
 ' Struggle
 b DDHobArmbStruggle01 DDHobArmbStruggle01.hkx

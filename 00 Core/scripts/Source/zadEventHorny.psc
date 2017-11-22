@@ -31,7 +31,7 @@ Function Execute(actor akActor)
 	Endif
 	; want to buy table
 	int i = Utility.RandomInt(1,3)
-	Idle anim
+	String anim
 	if i == 1
 		anim = libs.AnimSwitchKeyword(akActor, "Horny01")
 	ElseIf i == 2

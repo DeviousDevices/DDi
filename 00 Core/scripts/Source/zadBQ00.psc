@@ -72,14 +72,6 @@ zadDeviousMagic Property zadMagic Auto
 zadAssets Property assets Auto
 zadBenchmark Property benchmark Auto
 
-; Idles
-Idle Property DDBeltedSolo Auto
-Idle Property DDZazHornyA Auto
-Idle Property DDZazHornyB Auto
-Idle Property DDZazHornyC Auto
-Idle Property DDZazHornyD Auto
-Idle Property DDZazHornyE Auto
-
 ; Messages
 Message Property zad_eventSleepStopContent auto
 Message Property zad_eventSleepStopDesire auto

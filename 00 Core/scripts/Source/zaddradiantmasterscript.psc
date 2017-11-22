@@ -331,7 +331,7 @@ Function InitiationStart()
 	Game.FadeOutGame(false, true, 5.0, 10.0)
 
 	playerItems = SexLab.StripActor(libs.PlayerRef, DoAnimate=false)
-	cameraState = libs.StartThirdPersonAnimation(libs.PlayerRef, ZazAPCAO052)
+	cameraState = libs.StartThirdPersonAnimation(libs.PlayerRef, "ZazAPCAO052")
 	Utility.Wait(5)
 	master.EnableAI(true)
 	fg.ForceGreet(InitiationStartScene)
