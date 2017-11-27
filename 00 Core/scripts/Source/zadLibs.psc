@@ -2466,7 +2466,7 @@ String Function AnimSwitchKeyword(actor akActor, string idleName )
 		ElseIf akActor.WornHasKeyword(zad_DeviousYoke)
 			return "DDYokeBleedoutIdle"
 		Else 
-			return "BleedoutIdle"
+			return "BleedOutStart"
 		EndIf
 	EndIf
 	Error("Failed to find valid animation for presentation.")

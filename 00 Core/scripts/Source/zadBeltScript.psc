@@ -9,7 +9,7 @@ Keyword Property zad_DeviousPlug Auto
 Function DeviceMenuExt(Int msgChoice)
 	; Struggle (was pee in the old script, but nothing will break this way, so it's all good)
 	if msgChoice == 3
-		StruggleScene(libs.playerref)
+		libs.ChastityBeltStruggle(libs.playerref)
 	endif
 	; Masturbate
 	if msgChoice == 4

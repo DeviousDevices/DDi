@@ -160,7 +160,7 @@ Event OnEquipped(Actor akActor)
 			return
 		Else
 			isLockManipulated = False		
-			If !DisableLockManipulation && !deviceInventory.HasKeyword(libs.zad_QuestItem) && !deviceRendered.HasKeyword(libs.zad_QuestItem) && !deviceInventory.HasKeyword(libs.zad_BlockGeneric) && !deviceRendered.HasKeyword(libs.zad_BlockGeneric) 
+			If !DisableLockManipulation && ( deviceRendered.HasKeyword(libs.zad_Lockable) || deviceInventory.HasKeyword(libs.zad_Lockable) ) && !deviceInventory.HasKeyword(libs.zad_QuestItem) && !deviceRendered.HasKeyword(libs.zad_QuestItem) && !deviceInventory.HasKeyword(libs.zad_BlockGeneric) && !deviceRendered.HasKeyword(libs.zad_BlockGeneric) 
 				Int Choice = 0
 				If zad_DD_OnPutOnDevice
 					Choice = zad_DD_OnPutOnDevice.Show()

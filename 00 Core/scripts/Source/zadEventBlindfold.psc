@@ -47,11 +47,9 @@ Function Execute(actor akActor)
 			libs.SetAnimating(libs.PlayerRef, True)
 			PoisonEventSpell.RemoteCast(libs.PlayerRef, libs.PlayerRef, libs.PlayerRef)
 			libs.DisableControls()
-			Debug.SendAnimationEvent(libs.PlayerRef, "BleedOutStart")
+			libs.AnimSwitchKeyword(libs.PlayerRef, "OutOfBreath")
 			Utility.Wait(10)
-			if !libs.IsBound(libs.PlayerRef)
-				Debug.SendAnimationEvent(libs.PlayerRef, "IdleForceDefaultState")
-			EndIf
+			Debug.SendAnimationEvent(libs.PlayerRef, "IdleForceDefaultState")
 			libs.UpdateControls()
 			libs.SetAnimating(libs.PlayerRef, False)
 		ElseIf encounter == 2 ; Insect
@@ -59,7 +57,7 @@ Function Execute(actor akActor)
 		ElseIf encounter == 3 ;Sharp Stone
 			if libs.IsBound(libs.PlayerRef)
 				libs.NotifyPlayer("In doing so you almost cut yourself on the unusually sharp stone in front of you. Employing both your intellect and flexibility you decide to take advantage of the situation and rub your binding against the rock. Even though you don't manage to get free at least your bonds now don't feel quite as tight as before.",true)
-				libs.abq.StruggleCount = libs.abq.StruggleCount + 15
+				;no longer working under the new struggle system, need to come up with an alternative
 			Else
 				libs.NotifyPlayer("In doing so you almost cut yourself on the unusually sharp stone in front of you. You quickly step back, and avoid cutting yourself.",true)
 			EndIf

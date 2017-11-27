@@ -6,8 +6,8 @@ zadLibs Property libs Auto
 Message Property CustomStruggleMsg Auto
 Message Property CustomStruggleImpossibleMsg Auto
 
-Idle[] Property struggleIdles Auto
-Idle[] Property struggleIdlesHob Auto
+String[] Property struggleIdles Auto
+String[] Property struggleIdlesHob Auto
 
 Bool Property IsLocked Auto
 Bool Property IsLoose Auto
@@ -43,7 +43,7 @@ Function SetDeviceKey(key k)
 	devicekey = k
 EndFunction
 
-Idle[] Function SelectStruggleArray(actor akActor)
+String[] Function SelectStruggleArray(actor akActor)
 	If akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirt) && !akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirtRelaxed)
 		if struggleIdlesHob.length > 0
 			return struggleIdlesHob		; Use hobbled struggle idles
@@ -59,13 +59,13 @@ Function StruggleScene(actor akActor)
 	if libs.IsAnimating(akActor)
 		return
 	EndIf
-	Idle[] struggleArray = SelectStruggleArray(akActor)
+	String[] struggleArray = SelectStruggleArray(akActor)
 	int len = struggleArray.length - 1
 	bool[] cameraState = libs.StartThirdPersonAnimation(akActor, struggleArray[Utility.RandomInt(0, len)], true)
 	Utility.Wait(2.5)
 	libs.Pant(libs.PlayerRef)
 	Utility.Wait(2.5)
-	akActor.PlayIdle(struggleArray[Utility.RandomInt(0, len)])
+	Debug.SendAnimationEvent(akActor, struggleArray[Utility.RandomInt(0, len)])
 	Utility.Wait(5)
 	libs.EndThirdPersonAnimation(akActor, cameraState, true)
 	libs.SexlabMoan(libs.PlayerRef)

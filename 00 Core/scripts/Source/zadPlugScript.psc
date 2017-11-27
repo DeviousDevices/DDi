@@ -9,13 +9,14 @@ int Function OnEquippedFilter(actor akActor, bool silent=false)
 	; FTM optimization
 	if silent && akActor != libs.PlayerRef
 		return 0
-	EndIf	
-	if akActor == libs.PlayerRef && !silent
-		int i = libs.zad_PlugsConfirmMSG.Show()
-		If i != 0
-			return 2
-		EndIf
 	EndIf
+	;Player doesn't need a second confirmation dialogue, the main device menu handles that now
+	;if akActor == libs.PlayerRef && !silent
+	;	int i = libs.zad_PlugsConfirmMSG.Show()
+	;	If i != 0
+	;		return 2
+	;	EndIf
+	;EndIf
 	if akActor.WornHasKeyword(libs.zad_DeviousBelt)
 		if akActor == libs.PlayerRef && !silent
 			libs.NotifyActor(strFailEquipBelt, akActor, true)
@@ -177,7 +178,7 @@ Function DeviceMenu(Int msgChoice = 0)
 		Else
 			RemovePlugLock()
 		EndIf		
-	elseif msgChoice==5 && deviceKey ; Force it out
+	elseif msgChoice==5 && (deviceKey != None) ; Force it out
 		if libs.playerRef.WornhasKeyword(libs.zad_DeviousBelt)
 			NoKeyFailMessageBelt(libs.playerRef)		
 		Else
