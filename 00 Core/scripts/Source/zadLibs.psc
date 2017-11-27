@@ -2325,6 +2325,9 @@ EndFunction
 ;==================================================
 ; Is the actor animating through Sexlab, or DD?
 bool Function IsAnimating(actor akActor)
+	if (akActor.GetSitState() != 0) || akActor.IsOnMount()
+		return True
+	endif
 	return (akActor.IsInFaction(zadAnimatingFaction) || akActor.IsInFaction(Sexlab.AnimatingFaction))
 EndFunction
 
