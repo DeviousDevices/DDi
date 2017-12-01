@@ -1282,7 +1282,7 @@ Function PlayThirdPersonAnimation(actor akActor, string animation, int duration,
 		Log("Actor already in animating faction.")
 		return
 	EndIf
-	if SexLab.ValidateActor(akActor) < 0 || akActor.IsSwimming() || akActor.IsOnMount() || akActor.GetCurrentScene() != none
+	if SexLab.ValidateActor(akActor) < 0 || akActor.IsSwimming() || akActor.IsOnMount() || akActor.GetCurrentScene() != none || akActor.GetSitState() != 0
 		Warn("Not playing third person animation: Actor is already in a blocking animation.")
 		return
 	EndIf
