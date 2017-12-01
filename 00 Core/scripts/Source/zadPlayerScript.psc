@@ -111,9 +111,11 @@ Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
 			EndIf
 		EndIf
 	EndIf
-	if !Utility.IsInMenuMode()	
-		Return
-	EndIf
+	;This breaks defetection for hotkeyed items, we should find a better way to do this
+	;Disabled for now
+	;if !Utility.IsInMenuMode()	
+	;	Return
+	;EndIf
 	If akActor.WornHasKeyword(libs.zad_DeviousHeavyBondage) && ((akBaseObject as Weapon) || (akBaseObject as Spell) || (akBaseObject as Light) || ((akBaseObject as Armor) && (!isDeviousDevice(akBaseObject) && !isStrapOn(akBaseObject) && (akBaseObject != zad_DeviceHider))))
 		If UI.IsMenuOpen("InventoryMenu")
 			libs.notify("You can't equip this with your hands tied!")	

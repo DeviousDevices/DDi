@@ -13,6 +13,21 @@ function enableTalk()
 ;	Libs.NotifyPlayer("Speak Enabled")
 endFunction
 
+event OnInit()
+	RegisterForMenu("Dialogue Menu")
+endEvent
+ 
+event OnMenuClose(String asMenuName)
+	if asMenuName == "Dialogue Menu" && canTalk
+		canTalk = false
+		PlayerRef.RemoveSpell(zadgag_SpeechDebuff)
+;		Libs.NotifyPlayer("Speak Disabled!")
+	endIf
+endEvent
+
+;Both of these are depreciated
+;Kept in case we decide to reuse the fonctions or their associated globals in the future
+
 function increaseGagExp()
 	float gagexp = zadGagExpertise.GetValue()
 	gagexp += 1
@@ -40,15 +55,3 @@ function increasePlayerMaso()
 	endif
 	zadPlayerMasochism.SetValue(playermaso)
 endFunction
-
-event OnInit()
-	RegisterForMenu("Dialogue Menu")
-endEvent
- 
-event OnMenuClose(String asMenuName)
-	if asMenuName == "Dialogue Menu" && canTalk
-		canTalk = false
-		PlayerRef.RemoveSpell(zadgag_SpeechDebuff)
-;		Libs.NotifyPlayer("Speak Disabled!")
-	endIf
-endEvent
