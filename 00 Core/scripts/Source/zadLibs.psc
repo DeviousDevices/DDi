@@ -1320,7 +1320,7 @@ EndFunction
 
 
 float Function GetVersion()
-	return 7 ; build number increment to determine the newest version - does NOT correspond with the offical version name. Returns a float not to mess with existing implementations of this function.
+	return 8 ; build number increment to determine the newest version - does NOT correspond with the offical version name. Returns a float not to mess with existing implementations of this function.
 EndFunction
 
 String Function GetVersionString()
@@ -2908,35 +2908,35 @@ bool function hasAnyWeaponEquipped(actor a)
 EndFunction
 
 function stripweapons(actor a, bool unequiponly = true)		
-	int i = 2	
+	int i = 2
 	Spell spl
 	Weapon weap
 	Armor sh
 	While i > 0
 		i -= 1
 		if i == 0
-			Utility.Wait(1.0) 
-		EndIf	
+			Utility.Wait(1.0)
+		EndIf
 		spl = a.getEquippedSpell(1)
 		if spl
-			a.unequipSpell(spl, 1)			
-		endIf			
+			a.unequipSpell(spl, 1)
+		endIf
 		weap = a.GetEquippedWeapon(true)
-		if weap 
-			a.unequipItem(weap, false, true)									
-		endIf			
+		if weap
+			a.unequipItem(weap, false, true)
+		endIf
 		sh = a.GetEquippedShield()
-		if sh 
-			a.unequipItem(sh, false, true)									
-		endIf				
+		if sh
+			a.unequipItem(sh, false, true)
+		endIf
 		spl = a.getEquippedSpell(0)
-		if spl 
-			a.unequipSpell(spl, 0)			
+		if spl
+			a.unequipSpell(spl, 0)
 		endIf
 		weap = a.GetEquippedWeapon(false)
-		if weap 			
-			a.unequipItem(weap, false, true)									
-		endIf		
+		if weap
+			a.unequipItem(weap, false, true)
+		endIf
 	EndWhile
 endfunction
 
