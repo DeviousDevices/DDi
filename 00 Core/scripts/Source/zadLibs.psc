@@ -2339,6 +2339,12 @@ Function SetAnimating(actor akActor, bool isAnimating=true)
 	Else
 		akActor.RemoveFromFaction(zadAnimatingFaction)
 	EndIf
+	;Add to the sexlab faction as well to improve compatibility with DD-unaware mods
+	if isAnimating
+		akActor.AddToFaction(Sexlab.AnimatingFaction)
+	Else
+		akActor.RemoveFromFaction(Sexlab.AnimatingFaction)
+	EndIf
 EndFunction
 
 ; Is the actor currently in a vibration event?
