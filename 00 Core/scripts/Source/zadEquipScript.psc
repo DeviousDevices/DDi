@@ -144,6 +144,13 @@ Event OnEquipped(Actor akActor)
 		libs.DeviceMutex = false
         return
 	EndIf
+	; check for device conflicts
+	If !silently && (IsEquipDeviceConflict(akActor) || IsEquipRequiredDeviceConflict(akActor))
+		menuDisable = true
+		akActor.UnequipItem(deviceInventory, false, true)
+		libs.DeviceMutex = false
+		return
+    EndIf
 	; Check to see if item state is broken
 	libs.ReEquipExistingDevice(akActor, zad_DeviousDevice)
 	if akActor.WornHasKeyword(zad_DeviousDevice)
@@ -182,13 +189,6 @@ Event OnEquipped(Actor akActor)
 		libs.DeviceMutex = false
 		return
 	EndIf
-	; check for device conflicts
-	If !silently && (IsEquipDeviceConflict(akActor) || IsEquipRequiredDeviceConflict(akActor))
-		menuDisable = true
-		akActor.UnequipItem(deviceInventory, false, true)
-		libs.DeviceMutex = false
-		return
-    EndIf
 	libs.CleanupDevices(akActor, zad_DeviousDevice, deviceRendered)
 	; I would extend this to NPC's, but I am concerned about potential bloating.
 	; ( NPC's going out of cell, resetting inventories, etc. without OnRemoveDevice() being called )
