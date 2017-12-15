@@ -1,0 +1,103 @@
+﻿<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://qconsulting.ca/fo3/ModConfig5.0.xsd">
+  <moduleName>Devious Devices: Integration</moduleName>
+  <moduleImage path="fomod\images\header.png"/>
+  <installSteps order="Explicit">
+
+    <installStep name="Animation Style">
+      <optionalFileGroups>
+        <group name="Which style of bound animations do you prefer?" type="SelectExactlyOne">
+          <plugins order="Explicit">
+			<plugin name="FeuerTin (default)">
+              <description>
+                Animations by FeuerTin. Feminine but not exaggerated, upright posture. Choose this for maximum consistency.
+              </description>
+              <image path="fomod\images\01_feuertin.png"/>
+              <files>
+                <folder source="00 Core" destination="" priority="1"/>
+              </files>
+              <conditionFlags>
+                <flag name="ABC_default">On</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Optional"/></typeDescriptor>
+            </plugin>
+			<plugin name="FeuerTin (alternative)">
+              <description>
+                Animations by FeuerTin. Similar to default but changes directional animations (left, right, back) to forward-facing.
+              </description>
+              <image path="fomod\images\01_feuertin.png"/>
+              <files>
+                <folder source="00 Core" destination="" priority="1"/>
+				<folder source="01 Feuertin Alt" destination="" priority="2"/>
+              </files>
+              <conditionFlags>
+                <flag name="ABC_feuertinalt">On</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Optional"/></typeDescriptor>
+            </plugin>
+            <plugin name="Cedec0">
+              <description>
+                Animations by cedec0. Copious upper body movement. Overrides: armbinder, yoke.
+              </description>
+              <image path="fomod\images\01_cedec0.png"/>
+              <files>
+                <folder source="00 Core" destination="" priority="1"/>
+				<folder source="01 Cedec0" destination="" priority="2"/>
+              </files>
+              <conditionFlags>
+                <flag name="ABC_cedec0">On</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Optional"/></typeDescriptor>
+            </plugin>
+            <plugin name="MaikCG">
+              <description>
+                Animations by MaikCG. More emphasised hip movement. Overrides: armbinder, yoke.
+              </description>
+              <image path="fomod\images\01_maikcg.png"/>
+              <files>
+                <folder source="00 Core" destination="" priority="1"/>
+                <folder source="01 MaikCG" destination="" priority="2"/>
+              </files>
+              <conditionFlags>
+                <flag name="ABC_maik">On</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Optional"/></typeDescriptor>
+            </plugin>
+  	      </plugins>
+        </group>
+      </optionalFileGroups>
+    </installStep>
+	
+    <installStep name="Hobble Skirt Animations">
+      <optionalFileGroups>
+        <group name="Which style of hobble skirt animations do you prefer?" type="SelectExactlyOne">
+          <plugins order="Explicit">
+            <plugin name="Walking (default)">
+              <description>
+                Animations by Feuertin. Slowly pushing feet forward one at a time. Optimised for low movement speed.
+              </description>
+              <image path="fomod\images\02_walk.png"/>
+              <conditionFlags>
+                <flag name="HBC_default">On</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Optional"/></typeDescriptor>
+            </plugin>
+            <plugin name="Bunnyhopping">
+              <description>
+                Animations by Feuertin. Hop, hop, hop! Optimised for high movement speed.
+              </description>
+              <image path="fomod\images\02_bunny.png"/>
+              <files>
+                <folder source="02 BunnyHop" destination="" priority="3"/>
+              </files>
+              <conditionFlags>
+                <flag name="HBC_bunny">On</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Optional"/></typeDescriptor>
+            </plugin>
+  	      </plugins>
+        </group>
+      </optionalFileGroups>
+    </installStep>
+
+  </installSteps>
+</config>

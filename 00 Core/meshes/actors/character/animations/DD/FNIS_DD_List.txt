@@ -1,0 +1,130 @@
+Version V4.0.0
+
+' Format:
+'			<type> [-<option,option,...>] <AnimEvent> <AnimFile> [<AnimObject> ...]		(FNIS Animation)
+'			AnimVar <AnimVar> [ BOOL | INT32 | REAL ] <numeric_value>					(Behavior Variable)
+'			Version <VersionNumber>
+'
+' <type>:
+'			b	 	basic: simple idle animation with one animation file
+'			o		AnimObject: basic animation with one or more AnimObjects
+'			s		sequenced animation (SA): first of at least 2 animation played as sequence 
+'			so		sequenced optimized: SA with AnimObjects and optimized Equip/UnEquip 
+'			fu		furniture animation: first of at least 3 animations played on a furniture object
+'			fuo		furniture animation optimized: fu with AnimObjects and optimized Equip/UnEquip
+'			+		second to last animation of a s/so/fu/fuo definition 
+'			ofa		offset arm animation: animations modifying arm position while other animations play  
+'			pa		paired animation
+' 			km		killmove
+'
+' <option>: 
+'			a		acyclic animation: 1-time only (default: cyclic)
+'			o		one or more AnimObjects
+'			Tn		transition next: character keeps position after -a animation (no IdleForceDefaultState)
+'			h		headtracking ON (default OFF)
+'			Bn.m	blendtime n.m sec
+'			k		"known" animation file (part of vanilla or different mod) -> excl. from consistance check
+'			bsa		animation file part of bsa file -> excluded from consistence check 
+'			st		sticky AO -> AO will not be unequipped at the end of animation (last animation only)
+'			D<time>	animation duration (pa and km only)
+'			T<AnimEvent>/<time>	triggered AnimEvents during pa/km animations
+'
+' <AnimEvent>		Animation Event, used for Idle Definition (CK) or SendAnimationEvent() (script)
+' <AnimFile>		Animation File for this AnimEvent; path relative to "animations/<mod name>"
+' <AnimObject>		any Animation Object defined in CK (can also be standard or from different mod)
+' <AnimVar>			e.g. used for GetAnimationVariableInt() (Script) or GetGraphVariableInt condition (CK)
+' <VersionNumber>	e.g. V5.0
+'
+' For details please refer to "FNIS for Modders Documentation"
+' 
+'Examples:
+'	b -a,h,Tn,B1.2 MyAnimEvent1 MyAnimFile1.hkx
+'	o -h MyAnimEvent2 AnimationWithAO.hkx MyAnimObject01 MyAnimObject02
+'	s -a SA1entry SAanim1.hkx  
+'	+ -h,o,k SA1loop ..\OtherMod\OtherModAnim.hkx MYAnimObject03
+'	+ -a SA1exit SAanim3.hkx
+'	fu -a FURNITURE1_Enter FURNITURE1_Enter.hkx 
+'	+ FURNITURE1_Loop FURNITURE1_Loop.hkx
+'	+ -a FURNITURE1_Exit FURNITURE1_Exit.hkx
+'	pa -D3.466667 HugB paired_hugb.hkx 
+'	km -o,D4.000000,Tnpcsoundplay.npckillchop/2.555,T2_killactor/3.333 FNISKillmove FNIS_Killmove.hkx AnimObjectSword/1
+'
+' AnimEvents and Animation File names have to be unique through all mods (even for files in different folders)
+' so it's a good idea to use mod specific abbreviations for all your names
+
+' Sex Animations
+b DDBeltedSolo DDBeltedSolo.hkx
+
+' Events
+b DDZazHornyA ZazHornyA.hkx
+b DDZazHornyB ZazHornyB.hkx
+b DDZazHornyC ZazHornyC.hkx
+b DDZazHornyD ZazHornyD.hkx
+b DDZazHornyE ZazHornyE.hkx
+b DDZazArmbHorny01 ZapArmbHorny01.hkx
+b DDZazArmbHorny02 ZapArmbHorny02.hkx
+b DDZazArmbHorny03 ZapArmbHorny03.hkx
+b DDZazYokeHorny01 ZapYokeHorny01.hkx
+b DDZazYokeHorny02 ZapYokeHorny02.hkx
+b DDZazYokeHorny03 ZapYokeHorny03.hkx
+
+b -md DDArmbBleedoutIdle ZapArmbBleedoutIdle.hkx
+b -md DDYokeBleedoutIdle ZapYokeBleedoutIdle.hkx
+
+' Struggle
+b DDHobArmbStruggle01 DDHobArmbStruggle01.hkx
+b DDHobArmbStruggle02 DDHobArmbStruggle02.hkx
+b DDHobYokeStruggle01 DDHobYokeStruggle01.hkx
+b DDHobYokeStruggle02 DDHobYokeStruggle02.hkx
+b DDHobElbStruggle01 DDHobElbStruggle01.hkx
+b DDHobElbStruggle02 DDHobElbStruggle02.hkx
+b DDHobBBYokeStruggle01 DDHobBBYokeStruggle01.hkx
+b DDHobBBYokeStruggle02 DDHobBBYokeStruggle02.hkx
+b DDHobCuffsFrontStruggle01 DDHobCuffsFrontStruggle01.hkx
+b DDHobCuffsFrontStruggle02 DDHobCuffsFrontStruggle02.hkx
+
+b DDRegArmbStruggle01 DDRegArmbStruggle01.hkx
+b DDRegArmbStruggle02 DDRegArmbStruggle02.hkx
+b DDRegArmbStruggle03 DDRegArmbStruggle03.hkx
+b DDRegArmbStruggle04 DDRegArmbStruggle04.hkx
+b DDRegArmbStruggle05 DDRegArmbStruggle05.hkx
+b DDRegYokeStruggle01 DDRegYokeStruggle01.hkx
+b DDRegYokeStruggle02 DDRegYokeStruggle02.hkx
+b DDRegYokeStruggle03 DDRegYokeStruggle03.hkx
+b DDRegYokeStruggle04 DDRegYokeStruggle04.hkx
+b DDRegYokeStruggle05 DDRegYokeStruggle05.hkx
+b DDRegElbStruggle01 DDRegElbStruggle01.hkx
+b DDRegElbStruggle02 DDRegElbStruggle02.hkx
+b DDRegElbStruggle03 DDRegElbStruggle03.hkx
+b DDRegElbStruggle04 DDRegElbStruggle04.hkx
+b DDRegElbStruggle05 DDRegElbStruggle05.hkx
+b DDRegBBYokeStruggle01 DDRegBBYokeStruggle01.hkx
+b DDRegBBYokeStruggle02 DDRegBBYokeStruggle02.hkx
+b DDRegBBYokeStruggle03 DDRegBBYokeStruggle03.hkx
+b DDRegBBYokeStruggle04 DDRegBBYokeStruggle04.hkx
+b DDRegBBYokeStruggle05 DDRegBBYokeStruggle05.hkx
+b DDRegCuffsFrontStruggle02 DDRegCuffsFrontStruggle02.hkx
+b DDRegCuffsFrontStruggle03 DDRegCuffsFrontStruggle03.hkx
+
+b DDChastityBeltStruggle01 FT_DD_Chastity_Struggle_1.hkx
+b DDChastityBeltStruggle02 FT_DD_Chastity_Struggle_2.hkx
+
+' Note to self:
+' the index of the h2h_locomotionpose animation always has to be 1 higher than the index of its corresponding AA set
+
+AAprefix abc
+
+AAset _h2heqp 5
+AAset _h2hidle 5
+AAset _h2hatkpow 5
+AAset _h2hstag 5
+AAset _h2hatk 5
+AAset _jump 5
+AAset _sprint 5
+AAset _sneakmt 5
+AAset _sneakidle 5
+AAset _shout 5
+AAset _mtx 5
+AAset _mt 5
+AAset _mtturn 5
+AAset _mtidle 5

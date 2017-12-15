@@ -1,0 +1,255 @@
+Version V4.0.0
+
+
+' FunnyBiz Yoke
+
+
+' DD_FBYokeHolding
+s DD_FBYokeHolding_A1_S1 DD_FBYokeHoldingA1_s1.hkx
++ DD_FBYokeHolding_A1_S2 DD_FBYokeHoldingA1_s2.hkx
++ DD_FBYokeHolding_A1_S3 DD_FBYokeHoldingA1_s3.hkx
++ DD_FBYokeHolding_A1_S4 DD_FBYokeHoldingA1_s4.hkx
++ DD_FBYokeHolding_A1_S5 DD_FBYokeHoldingA1_s5.hkx
+s DD_FBYokeHolding_A2_S1 DD_FBYokeHoldingA2_s1.hkx
++ DD_FBYokeHolding_A2_S2 DD_FBYokeHoldingA2_s2.hkx
++ DD_FBYokeHolding_A2_S3 DD_FBYokeHoldingA2_s3.hkx
++ DD_FBYokeHolding_A2_S4 DD_FBYokeHoldingA2_s4.hkx
++ DD_FBYokeHolding_A2_S5 DD_FBYokeHoldingA2_s5.hkx
+
+' DD_FBYokeDoggy
+s DD_FBYokeDoggy_A1_S1 DD_FBYokeDoggyA1_s1.hkx
++ DD_FBYokeDoggy_A1_S2 DD_FBYokeDoggyA1_s2.hkx
++ DD_FBYokeDoggy_A1_S3 DD_FBYokeDoggyA1_s3.hkx
++ DD_FBYokeDoggy_A1_S4 DD_FBYokeDoggyA1_s4.hkx
++ DD_FBYokeDoggy_A1_S5 DD_FBYokeDoggyA1_s5.hkx
+s DD_FBYokeDoggy_A2_S1 DD_FBYokeDoggyA2_s1.hkx
++ DD_FBYokeDoggy_A2_S2 DD_FBYokeDoggyA2_s2.hkx
++ DD_FBYokeDoggy_A2_S3 DD_FBYokeDoggyA2_s3.hkx
++ DD_FBYokeDoggy_A2_S4 DD_FBYokeDoggyA2_s4.hkx
++ DD_FBYokeDoggy_A2_S5 DD_FBYokeDoggyA2_s5.hkx
+
+' DD_FBMolagStandingYoke
+s DD_FBMolagStandingYoke_A1_S1 DD_FBMolagStandingYokeA1_s1.hkx
++ DD_FBMolagStandingYoke_A1_S2 DD_FBMolagStandingYokeA1_s2.hkx
++ DD_FBMolagStandingYoke_A1_S3 DD_FBMolagStandingYokeA1_s3.hkx
++ DD_FBMolagStandingYoke_A1_S4 DD_FBMolagStandingYokeA1_s4.hkx
++ DD_FBMolagStandingYoke_A1_S5 DD_FBMolagStandingYokeA1_s5.hkx
+s DD_FBMolagStandingYoke_A2_S1 DD_FBMolagStandingYokeA2_s1.hkx
++ DD_FBMolagStandingYoke_A2_S2 DD_FBMolagStandingYokeA2_s2.hkx
++ DD_FBMolagStandingYoke_A2_S3 DD_FBMolagStandingYokeA2_s3.hkx
++ DD_FBMolagStandingYoke_A2_S4 DD_FBMolagStandingYokeA2_s4.hkx
++ DD_FBMolagStandingYoke_A2_S5 DD_FBMolagStandingYokeA2_s5.hkx
+
+
+' ZAP Wrists (behind)
+
+
+' Aggressive Doggy Style
+b DD_ZapWriDoggy01_A1_S1 DD_ZapWriDoggy01_A1_S1.hkx
+b DD_ZapWriDoggy01_A1_S2 DD_ZapWriDoggy01_A1_S2.hkx
+b DD_ZapWriDoggy01_A1_S3 DD_ZapWriDoggy01_A1_S3.hkx
+b DD_ZapWriDoggy01_A1_S4 DD_ZapWriDoggy01_A1_S4.hkx
+
+b DD_ZapWriDoggy01_A2_S1 DD_ZapWriDoggy01_A2_S1.hkx
+b DD_ZapWriDoggy01_A2_S2 DD_ZapWriDoggy01_A2_S2.hkx
+b DD_ZapWriDoggy01_A2_S3 DD_ZapWriDoggy01_A2_S3.hkx
+b DD_ZapWriDoggy01_A2_S4 DD_ZapWriDoggy01_A2_S4.hkx
+
+' Agressive Missionary
+s DD_ZapWriMissionary01_A1_S1 DD_ZapWriMissionary01_A1_S1.hkx
++ DD_ZapWriMissionary01_A1_S2 DD_ZapWriMissionary01_A1_S2.hkx
++ DD_ZapWriMissionary01_A1_S3 DD_ZapWriMissionary01_A1_S3.hkx
++ DD_ZapWriMissionary01_A1_S4 DD_ZapWriMissionary01_A1_S4.hkx
+
+' AP Skullfuck
+s DD_ZapWriSkullFuck01_A1_S1 DD_ZapWriSkullFuck01_A1_S1.hkx
++ DD_ZapWriSkullFuck01_A1_S2 DD_ZapWriSkullFuck01_A1_S2.hkx
++ DD_ZapWriSkullFuck01_A1_S3 DD_ZapWriSkullFuck01_A1_S3.hkx
++ DD_ZapWriSkullFuck01_A1_S4 DD_ZapWriSkullFuck01_A1_S4.hkx
++ DD_ZapWriSkullFuck01_A1_S5 DD_ZapWriSkullFuck01_A1_S5.hkx
+
+' Arrok Lesbian
+s DD_ZapWriLesbian01_A1_S1 DD_ZapWriLesbian01_A1_S1.hkx
++ DD_ZapWriLesbian01_A1_S2 DD_ZapWriLesbian01_A1_S2.hkx
++ DD_ZapWriLesbian01_A1_S3 DD_ZapWriLesbian01_A1_S3.hkx
++ DD_ZapWriLesbian01_A1_S4 DD_ZapWriLesbian01_A1_S4.hkx
+
+s DD_ZapWriLesbian01_A2_S1 DD_ZapWriLesbian01_A2_S1.hkx
++ DD_ZapWriLesbian01_A2_S2 DD_ZapWriLesbian01_A2_S2.hkx
++ DD_ZapWriLesbian01_A2_S3 DD_ZapWriLesbian01_A2_S3.hkx
++ DD_ZapWriLesbian01_A2_S4 DD_ZapWriLesbian01_A2_S4.hkx
+
+' Arrok Boobjob
+s DD_ZapWriBoobjob01_A1_S1 DD_ZapWriBoobjob01_A1_S1.hkx
++ DD_ZapWriBoobjob01_A1_S2 DD_ZapWriBoobjob01_A1_S2.hkx
++ DD_ZapWriBoobjob01_A1_S3 DD_ZapWriBoobjob01_A1_S3.hkx
++ DD_ZapWriBoobjob01_A1_S4 DD_ZapWriBoobjob01_A1_S4.hkx
+
+' Leito Kissing
+s -a DD_ZapWriKissing01_A1_S1 DD_ZapWriKissing01_A1_S1.hkx
++ DD_ZapWriKissing01_A1_S2 DD_ZapWriKissing01_A1_S2.hkx
+b -a,Tn DD_ZapWriKissing01_A1_S3 DD_ZapWriKissing01_A1_S3.hkx
+
+' Leito Blowjob
+s DD_ZapWriBlowjob01_A1_S1 DD_ZapWriBlowjob01_A1_S1.hkx
++ DD_ZapWriBlowjob01_A1_S2 DD_ZapWriBlowjob01_A1_S2.hkx
++ DD_ZapWriBlowjob01_A1_S3 DD_ZapWriBlowjob01_A1_S3.hkx
++ DD_ZapWriBlowjob01_A1_S4 DD_ZapWriBlowjob01_A1_S4.hkx
++ DD_ZapWriBlowjob01_A1_S5 DD_ZapWriBlowjob01_A1_S5.hkx
+
+' Arrok Missionary
+s DD_ZapWriMissionary03_A1_S1 DD_ZapWriMissionary03_A1_S1.hkx
++ DD_ZapWriMissionary03_A1_S2 DD_ZapWriMissionary03_A1_S2.hkx
++ DD_ZapWriMissionary03_A1_S3 DD_ZapWriMissionary03_A1_S3.hkx
++ DD_ZapWriMissionary03_A1_S4 DD_ZapWriMissionary03_A1_S4.hkx
+
+' Arrok Foreplay
+s DD_ZapWriForeplay01_A1_S1 DD_ZapWriForeplay01_A1_S1.hkx
++ DD_ZapWriForeplay01_A1_S2 DD_ZapWriForeplay01_A1_S2.hkx
++ DD_ZapWriForeplay01_A1_S3 DD_ZapWriForeplay01_A1_S3.hkx
++ DD_ZapWriForeplay01_A1_S4 DD_ZapWriForeplay01_A1_S4.hkx
+
+
+' ZAP Armbinder
+
+
+' Aggressive Doggy Style
+b DD_ZapArmbDoggy01_A1_S1 DD_ZapArmbDoggy01_A1_S1.hkx
+b DD_ZapArmbDoggy01_A1_S2 DD_ZapArmbDoggy01_A1_S2.hkx
+b DD_ZapArmbDoggy01_A1_S3 DD_ZapArmbDoggy01_A1_S3.hkx
+b DD_ZapArmbDoggy01_A1_S4 DD_ZapArmbDoggy01_A1_S4.hkx
+
+b DD_ZapArmbDoggy01_A2_S1 DD_ZapArmbDoggy01_A2_S1.hkx
+b DD_ZapArmbDoggy01_A2_S2 DD_ZapArmbDoggy01_A2_S2.hkx
+b DD_ZapArmbDoggy01_A2_S3 DD_ZapArmbDoggy01_A2_S3.hkx
+b DD_ZapArmbDoggy01_A2_S4 DD_ZapArmbDoggy01_A2_S4.hkx
+
+' Agressive Missionary
+s DD_ZapArmbMissionary01_A1_S1 DD_ZapArmbMissionary01_A1_S1.hkx
++ DD_ZapArmbMissionary01_A1_S2 DD_ZapArmbMissionary01_A1_S2.hkx
++ DD_ZapArmbMissionary01_A1_S3 DD_ZapArmbMissionary01_A1_S3.hkx
++ DD_ZapArmbMissionary01_A1_S4 DD_ZapArmbMissionary01_A1_S4.hkx
+
+' AP Skullfuck
+s DD_ZapArmbSkullFuck01_A1_S1 DD_ZapArmbSkullFuck01_A1_S1.hkx
++ DD_ZapArmbSkullFuck01_A1_S2 DD_ZapArmbSkullFuck01_A1_S2.hkx
++ DD_ZapArmbSkullFuck01_A1_S3 DD_ZapArmbSkullFuck01_A1_S3.hkx
++ DD_ZapArmbSkullFuck01_A1_S4 DD_ZapArmbSkullFuck01_A1_S4.hkx
++ DD_ZapArmbSkullFuck01_A1_S5 DD_ZapArmbSkullFuck01_A1_S5.hkx
+
+' Arrok Lesbian
+s DD_ZapArmbLesbian01_A1_S1 DD_ZapArmbLesbian01_A1_S1.hkx
++ DD_ZapArmbLesbian01_A1_S2 DD_ZapArmbLesbian01_A1_S2.hkx
++ DD_ZapArmbLesbian01_A1_S3 DD_ZapArmbLesbian01_A1_S3.hkx
++ DD_ZapArmbLesbian01_A1_S4 DD_ZapArmbLesbian01_A1_S4.hkx
+
+s DD_ZapArmbLesbian01_A2_S1 DD_ZapArmbLesbian01_A2_S1.hkx
++ DD_ZapArmbLesbian01_A2_S2 DD_ZapArmbLesbian01_A2_S2.hkx
++ DD_ZapArmbLesbian01_A2_S3 DD_ZapArmbLesbian01_A2_S3.hkx
++ DD_ZapArmbLesbian01_A2_S4 DD_ZapArmbLesbian01_A2_S4.hkx
+
+' Arrok Boobjob
+s DD_ZapArmbBoobjob01_A1_S1 DD_ZapArmbBoobjob01_A1_S1.hkx
++ DD_ZapArmbBoobjob01_A1_S2 DD_ZapArmbBoobjob01_A1_S2.hkx
++ DD_ZapArmbBoobjob01_A1_S3 DD_ZapArmbBoobjob01_A1_S3.hkx
++ DD_ZapArmbBoobjob01_A1_S4 DD_ZapArmbBoobjob01_A1_S4.hkx
+
+' Leito kissing
+s -a DD_ZapArmbKissing01_A1_S1 DD_ZapArmbKissing01_A1_S1.hkx
++ DD_ZapArmbKissing01_A1_S2 DD_ZapArmbKissing01_A1_S2.hkx
+b -a,Tn DD_ZapArmbKissing01_A1_S3 DD_ZapArmbKissing01_A1_S3.hkx
+
+' Leito Blowjob
+s DD_ZapArmbBlowjob01_A1_S1 DD_ZapArmbBlowjob01_A1_S1.hkx
++ DD_ZapArmbBlowjob01_A1_S2 DD_ZapArmbBlowjob01_A1_S2.hkx
++ DD_ZapArmbBlowjob01_A1_S3 DD_ZapArmbBlowjob01_A1_S3.hkx
++ DD_ZapArmbBlowjob01_A1_S4 DD_ZapArmbBlowjob01_A1_S4.hkx
++ DD_ZapArmbBlowjob01_A1_S5 DD_ZapArmbBlowjob01_A1_S5.hkx
+
+
+' ZAP Yoke
+
+
+' Agressive Missionary
+s DD_ZapYokeMissionary01_A1_S1 DD_ZapYokeMissionary01_A1_S1.hkx
++ DD_ZapYokeMissionary01_A1_S2 DD_ZapYokeMissionary01_A1_S2.hkx
++ DD_ZapYokeMissionary01_A1_S3 DD_ZapYokeMissionary01_A1_S3.hkx
++ DD_ZapYokeMissionary01_A1_S4 DD_ZapYokeMissionary01_A1_S4.hkx
+
+' AP Skullfuck
+s DD_ZapYokeSkullFuck01_A1_S1 DD_ZapYokeSkullFuck01_A1_S1.hkx
++ DD_ZapYokeSkullFuck01_A1_S2 DD_ZapYokeSkullFuck01_A1_S2.hkx
++ DD_ZapYokeSkullFuck01_A1_S3 DD_ZapYokeSkullFuck01_A1_S3.hkx
++ DD_ZapYokeSkullFuck01_A1_S4 DD_ZapYokeSkullFuck01_A1_S4.hkx
++ DD_ZapYokeSkullFuck01_A1_S5 DD_ZapYokeSkullFuck01_A1_S5.hkx
+
+' Zyn Missionary
+s DD_ZapYokeMissionary02_A1_S1 DD_ZapYokeMissionary02_A1_S1.hkx
++ DD_ZapYokeMissionary02_A1_S2 DD_ZapYokeMissionary02_A1_S2.hkx
++ DD_ZapYokeMissionary02_A1_S3 DD_ZapYokeMissionary02_A1_S3.hkx
++ DD_ZapYokeMissionary02_A1_S4 DD_ZapYokeMissionary02_A1_S4.hkx
++ DD_ZapYokeMissionary02_A1_S5 DD_ZapYokeMissionary02_A1_S5.hkx
+
+' Leito kissing
+s -a DD_ZapYokeKissing01_A1_S1 DD_ZapYokeKissing01_A1_S1.hkx
++ DD_ZapYokeKissing01_A1_S2 DD_ZapYokeKissing01_A1_S2.hkx
+b -a,Tn DD_ZapYokeKissing01_A1_S3 DD_ZapYokeKissing01_A1_S3.hkx
+
+' Leito Blowjob
+s DD_ZapYokeBlowjob01_A1_S1 DD_ZapYokeBlowjob01_A1_S1.hkx
++ DD_ZapYokeBlowjob01_A1_S2 DD_ZapYokeBlowjob01_A1_S2.hkx
++ DD_ZapYokeBlowjob01_A1_S3 DD_ZapYokeBlowjob01_A1_S3.hkx
++ DD_ZapYokeBlowjob01_A1_S4 DD_ZapYokeBlowjob01_A1_S4.hkx
++ DD_ZapYokeBlowjob01_A1_S5 DD_ZapYokeBlowjob01_A1_S5.hkx
+
+' Arrok Missionary
+s DD_ZapYokeMissionary03_A1_S1 DD_ZapYokeMissionary03_A1_S1.hkx
++ DD_ZapYokeMissionary03_A1_S2 DD_ZapYokeMissionary03_A1_S2.hkx
++ DD_ZapYokeMissionary03_A1_S3 DD_ZapYokeMissionary03_A1_S3.hkx
++ DD_ZapYokeMissionary03_A1_S4 DD_ZapYokeMissionary03_A1_S4.hkx
+
+' Arrok Foreplay
+s DD_ZapYokeForeplay01_A2_S1 DD_ZapYokeForeplay01_A2_S1.hkx
++ DD_ZapYokeForeplay01_A2_S2 DD_ZapYokeForeplay01_A2_S2.hkx
++ DD_ZapYokeForeplay01_A2_S3 DD_ZapYokeForeplay01_A2_S3.hkx
++ DD_ZapYokeForeplay01_A2_S4 DD_ZapYokeForeplay01_A2_S4.hkx
+
+' Arrok Lesbian
+s DD_ZapYokeLesbian01_A1_S1 DD_ZapYokeLesbian01_A1_S1.hkx
++ DD_ZapYokeLesbian01_A1_S2 DD_ZapYokeLesbian01_A1_S2.hkx
++ DD_ZapYokeLesbian01_A1_S3 DD_ZapYokeLesbian01_A1_S3.hkx
++ DD_ZapYokeLesbian01_A1_S4 DD_ZapYokeLesbian01_A1_S4.hkx
+
+s DD_ZapYokeLesbian01_A2_S1 DD_ZapYokeLesbian01_A2_S1.hkx
++ DD_ZapYokeLesbian01_A2_S2 DD_ZapYokeLesbian01_A2_S2.hkx
++ DD_ZapYokeLesbian01_A2_S3 DD_ZapYokeLesbian01_A2_S3.hkx
++ DD_ZapYokeLesbian01_A2_S4 DD_ZapYokeLesbian01_A2_S4.hkx
+
+
+' ZAP Free (used for unbound actors in mixed animations) 
+
+
+s -a DD_ZapKissing01_A1_S1 DD_LeitoKissingM_a1_s1.hkx
++ DD_ZapKissing01_A1_S2 DD_LeitoKissingM_a1_s2.hkx
+b -a,Tn DD_ZapKissing01_A1_S3 DD_LeitoKissingM_a1_s3.hkx
+s -a DD_ZapKissing01_A2_S1 DD_LeitoKissingM_a2_s1.hkx
++ DD_ZapKissing01_A2_S2 DD_LeitoKissingM_a2_s2.hkx
+b -a,Tn DD_ZapKissing01_A2_S3 DD_LeitoKissingM_a2_s3.hkx
+
+s -a DD_ZapKissing02_A1_S1 DD_LeitoKissingF_a1_s1.hkx
++ DD_ZapKissing02_A1_S2 DD_LeitoKissingF_a1_s2.hkx
+b -a,Tn DD_ZapKissing02_A1_S3 DD_LeitoKissingF_a1_s3.hkx
+s -a DD_ZapKissing02_A2_S1 DD_LeitoKissingF_a2_s1.hkx
++ DD_ZapKissing02_A2_S2 DD_LeitoKissingF_a2_s2.hkx
+b -a,Tn DD_ZapKissing02_A2_S3 DD_LeitoKissingF_a2_s3.hkx
+
+' Aggressive Doggy Style
+b DD_ZapDoggy01_A1_S1 DD_ZapDoggy01_A1_S1.hkx
+b DD_ZapDoggy01_A1_S2 DD_ZapDoggy01_A1_S2.hkx
+b DD_ZapDoggy01_A1_S3 DD_ZapDoggy01_A1_S3.hkx
+b DD_ZapDoggy01_A1_S4 DD_ZapDoggy01_A1_S4.hkx
+
+b DD_ZapDoggy01_A2_S1 DD_ZapDoggy01_A2_S1.hkx
+b DD_ZapDoggy01_A2_S2 DD_ZapDoggy01_A2_S2.hkx
+b DD_ZapDoggy01_A2_S3 DD_ZapDoggy01_A2_S3.hkx
+b DD_ZapDoggy01_A2_S4 DD_ZapDoggy01_A2_S4.hkx
