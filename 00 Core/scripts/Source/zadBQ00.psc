@@ -1235,7 +1235,7 @@ EndFunction
 Event OnDDIEquipDevice(Form akActor, String DeviceType)
 	Actor a = akActor As Actor
 	String tags = ""
-	; Adding support for optional tags separated from device string by a '|' - ex: 'Collar:metal,black'
+	; Adding support for optional tags separated from device string by a '|' - ex: 'Collar|metal,black'
 	Int iTagsIndex 
 	String sDevice = ""
 	String sTags = ""
