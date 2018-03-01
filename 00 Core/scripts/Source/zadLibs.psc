@@ -2126,7 +2126,7 @@ int Function VibrateEffect(actor akActor, int vibStrength, int duration, bool te
 		;;;;;;;;;;
 		; Play horny idle?
 		;;;;;;;;;;
-		if (vibAnimStarted == 0) && Utility.RandomInt() <= (3+(VibStrength * 2)) && !IsAnimating(PlayerRef)
+		if (vibAnimStarted == 0) && Utility.RandomInt() <= (3+(VibStrength * 2)) && !IsAnimating(akActor)
 			; Log("XXX Starting Horny Idle")
 			ApplyExpression(akActor, expression, (Aroused.GetActorExposure(akActor) * 0.75) as Int, openMouth=true)
 			; Select animation
