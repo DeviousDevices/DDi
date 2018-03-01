@@ -1007,13 +1007,63 @@ Float Function CalculateDifficultyModifier(Bool operator = true)
 	return val
 EndFunction
 
+Float Function CalculateCooldownModifier(Bool operator = true)
+	; We don't modify for quest items
+	If deviceInventory.HasKeyword(libs.zad_BlockGeneric) || deviceRendered.HasKeyword(libs.zad_BlockGeneric) || deviceInventory.HasKeyword(libs.zad_QuestItem) || deviceRendered.HasKeyword(libs.zad_QuestItem)
+		; except the modder specifically allowed the system to be used for that item!
+		If !AllowDifficultyModifier
+			libs.log("Difficulty modifier not applied - custom/quest item!")
+			return 1.0
+		EndIf
+	EndIf
+	Float val = 1.0
+	Int mcmValue = libs.config.CooldownDifficulty	
+	Int mcmLength = libs.config.EsccapeDifficultyList.Length
+	Int median = ((mcmLength - 1) / 2) As Int ; This assumes the array to be uneven, otherwise there is no median value.
+	Float maxModifier = 0.9 ; set this as desired - it's the maximum possible +/- modifier. It should not be larger than 1 (=100%)
+	Float StepLength = maxModifier / median
+	Int Steps = mcmValue - median	
+	If operator
+		val = 1 + (Steps * StepLength)
+	Else
+		val = 1 - (Steps * StepLength)
+	EndIf
+	libs.log("Difficulty modifier applied: " + val + " [setting: " + mcmValue + "]")
+	return val
+EndFunction
+
+Float Function CalculateKeyModifier(Bool operator = true)
+	; We don't modify for quest items
+	If deviceInventory.HasKeyword(libs.zad_BlockGeneric) || deviceRendered.HasKeyword(libs.zad_BlockGeneric) || deviceInventory.HasKeyword(libs.zad_QuestItem) || deviceRendered.HasKeyword(libs.zad_QuestItem)
+		; except the modder specifically allowed the system to be used for that item!
+		If !AllowDifficultyModifier
+			libs.log("Difficulty modifier not applied - custom/quest item!")
+			return 1.0
+		EndIf
+	EndIf
+	Float val = 1.0
+	Int mcmValue = libs.config.KeyDifficulty	
+	Int mcmLength = libs.config.EsccapeDifficultyList.Length
+	Int median = ((mcmLength - 1) / 2) As Int ; This assumes the array to be uneven, otherwise there is no median value.
+	Float maxModifier = 1 ; set this as desired - it's the maximum possible +/- modifier. It should not be larger than 1 (=100%)
+	Float StepLength = maxModifier / median
+	Int Steps = mcmValue - median	
+	If operator
+		val = 1 + (Steps * StepLength)
+	Else
+		val = 1 - (Steps * StepLength)
+	EndIf
+	libs.log("Difficulty modifier applied: " + val + " [setting: " + mcmValue + "]")
+	return val
+EndFunction
+
 Bool Function CanMakeStruggleEscapeAttempt()
 	; check if the character can make an escape attempt
 	If libs.PlayerRef.WornHasKeyword(libs.zad_DeviousHeavyBondage) && !deviceRendered.HasKeyword(libs.zad_DeviousHeavyBondage)
 		libs.notify("You cannot try to struggle out of the " + DeviceName + " with bound hands.", messageBox = true)
 		return False
 	EndIf	
-	Float HoursNeeded = (EscapeCooldown * CalculateDifficultyModifier(False))
+	Float HoursNeeded = (EscapeCooldown * CalculateCooldownModifier(False))
 	Float HoursPassed = (Utility.GetCurrentGameTime() - LastStruggleEscapeAttemptAt) * 24.0
 	if HoursPassed > HoursNeeded
 		LastStruggleEscapeAttemptAt = Utility.GetCurrentGameTime()
@@ -1031,7 +1081,7 @@ Bool Function CanMakeCutEscapeAttempt()
 		libs.notify("You cannot try to cut the " + DeviceName + " with bound hands.", messageBox = true)
 		return False
 	EndIf	
-	Float HoursNeeded = (EscapeCooldown * CalculateDifficultyModifier(False))
+	Float HoursNeeded = (EscapeCooldown * CalculateCooldownModifier(False))
 	Float HoursPassed = (Utility.GetCurrentGameTime() - LastCutEscapeAttemptAt) * 24.0
 	if HoursPassed > HoursNeeded
 		LastCutEscapeAttemptAt = Utility.GetCurrentGameTime()
@@ -1050,7 +1100,7 @@ Bool Function CanMakeLockPickEscapeAttempt()
 		libs.notify("You cannot try to pick the " + DeviceName + " with bound hands.", messageBox = true)
 		return False
 	EndIf	
-	Float HoursNeeded = (EscapeCooldown * CalculateDifficultyModifier(False))
+	Float HoursNeeded = (EscapeCooldown * CalculateCooldownModifier(False))
 	Float HoursPassed = (Utility.GetCurrentGameTime() - LastLockPickEscapeAttemptAt) * 24.0
 	if HoursPassed > HoursNeeded
 		LastLockPickEscapeAttemptAt = Utility.GetCurrentGameTime()

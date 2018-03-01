@@ -12,6 +12,8 @@ Perk Property zad_keyCraftingHard Auto ; Obsolete, will remove later.
 
 ; Config Variables
 Int Property EscapeDifficulty = 5 Auto
+Int Property CooldownDifficulty = 5 Auto
+Int Property KeyDifficulty = 5 Auto
 
 int Property UnlockThreshold Auto
 int thresholdDefault = 185
@@ -195,6 +197,8 @@ Int ArmbinderMinStruggleOID
 Int ArmbinderStruggleBaseChanceOID
 Int YokeRemovalCostPerLevelOID
 Int EscapeDifficultyOID
+Int CooldownDifficultyOID
+Int KeyDifficultyOID
 
 string[] Property EsccapeDifficultyList Auto
 string[] difficultyList
@@ -334,6 +338,8 @@ Event OnPageReset(string page)
 		SetCursorFillMode(TOP_TO_BOTTOM)		
 		AddHeaderOption("Device Difficulty")
 		EscapeDifficultyOID = AddMenuOption("Difficulty Modifier", EsccapeDifficultyList[EscapeDifficulty])
+		CooldownDifficultyOID = AddMenuOption("Cooldown Modifier", EsccapeDifficultyList[CooldownDifficulty])
+		KeyDifficultyOID = AddMenuOption("Keybreak Modifier", EsccapeDifficultyList[KeyDifficulty])
 		AddHeaderOption("Belt Arousal Options")
 		beltRateOID = AddSliderOption("Arousal rate belt multiplier", beltRateMult, "{1}")
 		plugRateOID = AddSliderOption("Arousal rate plugged multiplier", plugRateMult, "{1}")
@@ -388,11 +394,11 @@ Event OnPageReset(string page)
 		VolumeOrgasmOID = AddSliderOption("Orgasm Volume", VolumeOrgasm, "{3}")
 		VolumeEdgedOID = AddSliderOption("Edged Volume", VolumeEdged, "{3}")
 		VolumeVibratorOID = AddSliderOption("Vibrator Volume ", VolumeVibrator, "{3}")
-	ElseIf page == "Quests"
-		SetCursorFillMode(TOP_TO_BOTTOM)
-		AddHeaderOption("Quest Toggles for QuestMonitor")
-		ForbiddenTomeOID = AddToggleOption("Forbidden Tome", ForbiddenTome)
-		SergiusExperimentOID = AddToggleOption("Sergius's Experiment", SergiusExperiment)
+	; ElseIf page == "Quests"
+		; SetCursorFillMode(TOP_TO_BOTTOM)
+		; AddHeaderOption("Quest Toggles for QuestMonitor")
+		; ForbiddenTomeOID = AddToggleOption("Forbidden Tome", ForbiddenTome)
+		; SergiusExperimentOID = AddToggleOption("Sergius's Experiment", SergiusExperiment)
 		; SurreptitiousStreetsOID = AddToggleOption("Surreptitious Streets", SurreptitiousStreets)
 		; RadiantMasterOID = AddToggleOption("Radiant Master", RadiantMaster)
 		; AddHeaderOption("Surreptitious Streets Configuration")
@@ -465,7 +471,15 @@ Event OnOptionMenuOpen(int option)
 	ElseIf option == EscapeDifficultyOID
 		SetMenuDialogOptions(EsccapeDifficultyList)
 		SetMenuDialogStartIndex(EscapeDifficulty)
-		SetMenuDialogDefaultIndex(3)
+		SetMenuDialogDefaultIndex(5)
+	ElseIf option == CooldownDifficultyOID
+		SetMenuDialogOptions(EsccapeDifficultyList)
+		SetMenuDialogStartIndex(CooldownDifficulty)
+		SetMenuDialogDefaultIndex(5)
+	ElseIf option == KeyDifficultyOID
+		SetMenuDialogOptions(EsccapeDifficultyList)
+		SetMenuDialogStartIndex(KeyDifficulty)
+		SetMenuDialogDefaultIndex(5)	
 	ElseIf option == DevicesUnderneathSlotOID
 		SetMenuDialogOptions(SlotMasks)
 		SetMenuDialogStartIndex(DevicesUnderneathSlot)
@@ -509,6 +523,12 @@ Event OnOptionMenuAccept(int option, int index)
 	ElseIf option == EscapeDifficultyOID
 		EscapeDifficulty = index
 		SetMenuOptionValue(EscapeDifficultyOID, EsccapeDifficultyList[EscapeDifficulty])	
+	ElseIf option == CooldownDifficultyOID
+		CooldownDifficulty = index
+		SetMenuOptionValue(CooldownDifficultyOID, EsccapeDifficultyList[CooldownDifficulty])
+	ElseIf option == KeyDifficultyOID
+		KeyDifficulty = index
+		SetMenuOptionValue(KeyDifficultyOID, EsccapeDifficultyList[KeyDifficulty])	
 	ElseIf option == blindfoldModeOID
 		If BlindfoldMode == 3 && index != 3 ; Old mode was Dark Fog, remove it
 			if Weather.GetSkyMode() == 0
@@ -1029,7 +1049,11 @@ Event OnOptionHighlight(int option)
 	elseIf (option == YokeRemovalCostPerLevelOID)
 		SetInfoText("Merchants will charge you this much gold per level for helping you out of a yoke.\nDefault: "+YokeRemovalCostPerLevelDefault)    
 	elseIf (option == EscapeDifficultyOID)
-		SetInfoText("This modifier will be applied to device difficulties and make it easier or harder to escape from them.\nIt applies to standard/generic devices and will not affect quest devices unless their creator enabled it.\nThe default modifier is zero.")
+		SetInfoText("This modifier will be applied to escape chance difficulties (e.g. struggle and lockpick success chances) and make it easier or harder to escape from them.\nIt applies to standard/generic devices and will not affect quest devices unless their creator enabled it.\nThe default modifier is zero.")
+	elseIf (option == CooldownDifficultyOID)
+		SetInfoText("This modifier will be applied to device cooldowns (e.g. unlock, escape, repair cooldown).\nIt applies to standard/generic devices and will not affect quest devices unless their creator enabled it.\nThe default modifier is zero.")
+	elseIf (option == KeyDifficultyOID)
+		SetInfoText("This modifier will be applied to key break and jam lock chances.\nIt applies to standard/generic devices and will not affect quest devices unless their creator enabled it.\nThe default modifier is zero.")
 	elseIf (option == HobbleSkirtSpeedDebuffOID)
         SetInfoText("Sets the strength of the speed debuff caused by wearing a hobble skirt.\nThe higher the number, the slower characters wearing a hobble skirt can walk.\nNote: The animations are meant for the default value and will look off at lower values, but some people might find this speed too slow.\nDefault: " + HobbleSkirtSpeedDebuffDefault)
 	endIf
