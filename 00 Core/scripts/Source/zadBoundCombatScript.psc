@@ -284,13 +284,20 @@ Function ResetExternalAA(actor akActor)
 			If libs.playerref.GetLeveledActorBase().GetSex() != 1
 				return
 			Endif
-			FNISSMConfigMenu FNISSM = Game.GetFormFromFile(0x000012C7, "FNISSexyMove.esp") As FNISSMConfigMenu			
-			int SM = FNISSM.FNISSMquest.iSMplayer 						
+			FNISSMConfigMenu FNISSM = Game.GetFormFromFile(0x000012C7, "FNISSexyMove.esp") As FNISSMConfigMenu
+			int SM = FNISSM.FNISSMquest.iSMplayer
 			if SM == 0
 				FNIS_aa.SetAnimGroup(Game.GetPlayer(), "_mt", 0, 0, "FNIS Sexy Move", true)
+				FNIS_aa.SetAnimGroup(Game.GetPlayer(), "_mtx", 0, 0, "FNIS Sexy Move", true)
 			else
-				FNIS_aa.SetAnimGroup(Game.GetPlayer(), "_mt", FNISSM.FNISSMQuest.FNISsmMtBase, SM - 1, "FNIS Sexy Move", true)
-			endif					
+				if FNISSM.FNISSMquest.FNISs3ModID >= 0 && FNISSM.FNISSMquest.SM360 ; 360 pack installed and activated
+					FNIS_aa.SetAnimGroup(Game.GetPlayer(), "_mt", FNISSM.FNISSMquest.FNISs3MtBase, SM - 1, "FNIS Sexy Move(360)", true)
+					FNIS_aa.SetAnimGroup(Game.GetPlayer(), "_mtx", FNISSM.FNISSMquest.FNISs3MtxBase, SM - 1, "FNIS Sexy Move(360)", true)
+				else
+					FNIS_aa.SetAnimGroup(Game.GetPlayer(), "_mt", FNISSM.FNISSMquest.FNISsmMtBase, SM - 1, "FNIS Sexy Move", true)
+					FNIS_aa.SetAnimGroup(Game.GetPlayer(), "_mtx", FNISSM.FNISSMquest.FNISsmMtxBase, SM - 1, "FNIS Sexy Move", true)
+				endif
+			endif
 		Endif
 	EndIf
 EndFunction
