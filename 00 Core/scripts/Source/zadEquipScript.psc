@@ -467,7 +467,6 @@ bool Function RemoveDeviceWithKey(actor akActor = none, bool destroyDevice=false
 	if akActor == none
 		akActor = libs.PlayerRef
 	EndIf   
-	StruggleScene(libs.PlayerRef)
 	If isLockManipulated
 		libs.Notify("As you have manipulated the " + deviceName + ", you are able to slip out of the device with ease!", messageBox = True)
 		RemoveDevice(akActor)	
@@ -489,6 +488,7 @@ bool Function RemoveDeviceWithKey(actor akActor = none, bool destroyDevice=false
 	If !CheckLockAccess()
 		Return False
 	EndIf
+	StruggleScene(libs.PlayerRef)
 	If DeviceKey
 		If libs.PlayerReF.GetItemCount(DeviceKey) <= 0
 			If zad_DD_OnNoKeyMSG
@@ -506,7 +506,7 @@ bool Function RemoveDeviceWithKey(actor akActor = none, bool destroyDevice=false
 			Return False
 		EndIf		
 		; The key break chance defaults to zero, so we don't need to check for quest items etc. If modders set this chance higher, it's their responsibility!
-		Float ModValue = (KeyBreakChance * CalculateDifficultyModifier(False))
+		Float ModValue = (KeyBreakChance * CalculateKeyModifier(False))
 		If (KeyBreakChance < 100.0) && (ModValue >= 100.0)
 			; If the modder didn't mean to make it completely impossible to unlock this item, it shouldn't be after applying the modifier either!
 			ModValue = 95.0
@@ -514,7 +514,7 @@ bool Function RemoveDeviceWithKey(actor akActor = none, bool destroyDevice=false
 		If Utility.RandomFloat(0.0, 99.9) < ModValue
 			Libs.PlayerRef.RemoveItem(DeviceKey, Utility.RandomInt(1, NumberOfKeysNeeded))
 			libs.SendDeviceKeyBreakEventVerbose(deviceInventory, zad_DeviousDevice, akActor)
-			If Utility.RandomFloat(0.0, 99.9) < (LockJamChance * CalculateDifficultyModifier(False))
+			If Utility.RandomFloat(0.0, 99.9) < (LockJamChance * CalculateKeyModifier(False))
 				; broken key becomes stuck in the lock
 				libs.SendDeviceJamLockEventVerbose(deviceInventory, zad_DeviousDevice, akActor)
 				StorageUtil.SetIntValue(akActor, "zad_Equipped" + libs.LookupDeviceType(zad_DeviousDevice) + "_LockJammedStatus", 1)
@@ -544,7 +544,7 @@ EndFunction
 
 Function SetLockShield()
 	If (LockShieldTimerMin > 0.0) && (LockShieldTimerMin <= LockShieldTimerMax)
-		LockShieldTimer = ((Utility.RandomFloat(LockShieldTimerMin, LockShieldTimerMax)) * CalculateDifficultyModifier(False))
+		LockShieldTimer = ((Utility.RandomFloat(LockShieldTimerMin, LockShieldTimerMax)) * CalculateCooldownModifier(False))
 	Else
 		LockShieldTimer = 0.0
 	EndIf
@@ -679,7 +679,7 @@ EndFunction
 
 Bool Function CanMakeUnlockAttempt()
 	; check if the character can make an unlock attempt.
-	Float HoursNeeded = (UnlockCooldown * CalculateDifficultyModifier(False))
+	Float HoursNeeded = (UnlockCooldown * CalculateCooldownModifier(False))
 	Float HoursPassed = (Utility.GetCurrentGameTime() - LastUnlockAttemptAt) * 24.0
 	if HoursPassed > HoursNeeded
 		LastUnlockAttemptAt = Utility.GetCurrentGameTime()
@@ -1471,7 +1471,7 @@ Int Function RepairJammedLock(Float Chance)
 	Endif
 	libs.log("Player is trying to repair " + DeviceName + ". Repair chance after modifiers: " + Chance +"%")
 	; check if the character can make a repair attempt
-	Float HoursNeeded = (RepairCooldown * CalculateDifficultyModifier(False))
+	Float HoursNeeded = (RepairCooldown * CalculateCooldownModifier(False))
 	Float HoursPassed = (Utility.GetCurrentGameTime() - LastRepairAttemptAt) * 24.0	
 	if HoursPassed > HoursNeeded
 		LastRepairAttemptAt = Utility.GetCurrentGameTime()
