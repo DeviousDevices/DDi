@@ -331,7 +331,7 @@ Function CleanupNPCs()
 		Actor akActor = StorageUtil.FormListGet(libs.zadNPCQuest, "BoundCombatActors", i) as Actor
 		if !akActor
 			StorageUtil.FormListRemoveAt(libs.zadNPCQuest, "BoundCombatActors", i)
-		ElseIf libs.IsValidActor(akActor) && !akActor.WornHasKeyword(libs.zad_DeviousArmbinder)
+		ElseIf libs.IsValidActor(akActor) && !akActor.WornHasKeyword(libs.zad_DeviousHeavyBondage)
 			Remove_NPC_ABC(akActor)
 		EndIf
 	EndWhile
