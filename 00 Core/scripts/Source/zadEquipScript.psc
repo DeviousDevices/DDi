@@ -31,7 +31,7 @@ Bool Property DestroyKey = False Auto 					; If set to true, the key(s) will be 
 Bool Property DestroyOnRemove = False Auto 				; If set to true, they device will be destroyed when it is unlocked or escaped from.
 Int Property NumberOfKeysNeeded = 1 Auto 				; Number of keys needed (=multiple locks)
 Float Property LockAccessDifficulty = 0.0 Auto			; If set to greater than zero, the character cannot easily reach the locks when locked in this restraint. The higher the number, the harder she will find it to unlock herself, even when in possession of the key. A value of 100 will make it impossible for her to reach the locks. She will need help. Make sure that your mod actually provides a means to escape such retraints!
-Float Property UnlockCooldown = 2.0	Auto				; How many hours have to pass between unlock attempts for hard to unlock restraints.
+Float Property UnlockCooldown = 0.0	Auto				; How many hours have to pass between unlock attempts for hard to unlock restraints.
 Float Property KeyBreakChance = 0.0 Auto				; Chance that the key breaks when trying to unlock an item. WARNING: Do NOT use this feature when there is only one key in the game etc.
 Float Property LockJamChance = 0.0 Auto					; Chance that the key gets stuck in the lock when it breaks. The lock has to be repaired before further unlock attempts.
 Float Property LockShieldTimerMin = 0.0 Auto			; If this number is greater than zero, the player has to wait for a minimum of this many hours before she can unlock the device with a key.
