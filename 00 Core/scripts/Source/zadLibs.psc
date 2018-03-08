@@ -58,6 +58,7 @@ Keyword Property zad_DeviousHood Auto
 Keyword Property zad_DeviousSuit Auto
 
 Keyword Property zad_DeviousGag Auto
+Keyword Property zad_DeviousGagLarge Auto
 Keyword Property zad_DeviousGagPanel Auto
 Keyword Property zad_DeviousPlugVaginal Auto
 Keyword Property zad_DeviousPlugAnal Auto
@@ -2380,6 +2381,13 @@ Function ApplyGagEffect(actor akActor)
 	; apply this affect to actual gags only, not hoods that also share this keyword.
 	If akActor.WornHasKeyword(zad_GagNoOpenMouth)
 		return
+	EndIf
+	If akActor.WornHasKeyword(zad_DeviousGagLarge)
+		if (GetPhonemeModifier(akActor, 0, 1) != 90 || GetPhonemeModifier(akActor, 0, 11) != 0) && GetPhonemeModifier(akActor, 0, 0) != 70 ; Last check is for vibration mouth expressions. HoC
+			SetPhonemeModifier(akActor, 0, 1, 90)
+			SetPhonemeModifier(akActor, 0, 11, 0)
+		EndIf
+		Return
 	EndIf
 	if (GetPhonemeModifier(akActor, 0, 1) != 100 || GetPhonemeModifier(akActor, 0, 11) != 70) && GetPhonemeModifier(akActor, 0, 0) != 70 ; Last check is for vibration mouth expressions. HoC
 		SetPhonemeModifier(akActor, 0, 1, 100)
