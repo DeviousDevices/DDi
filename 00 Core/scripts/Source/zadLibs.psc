@@ -2674,6 +2674,64 @@ Function ChastityBeltStruggle(actor akActor)
 	EndIf
 EndFunction
 
+Function Trip(actor akActor)
+	; this should delay any anims if there is a menu open
+	Utility.Wait(0.1)
+	; don't play anims if the actor is already in one.
+	If IsAnimating(akActor)
+		return
+	EndIf	
+	; don't play the animation in combat if it's the player
+	if akActor == playerref && playerref.IsInCombat() 
+		return 
+	Endif
+	; use PlayThirdPersonAnimation instead of StartThirdPersonAnimation for non-looping animation
+	; alternatively EndThirdPersonAnimation can be called manually if termination is conditional
+	If !akActor.WornHasKeyword(zad_DeviousHeavyBondage)
+		PlayThirdPersonAnimation(akActor, "ft_fall_over_reg_1", 5, true)
+	Elseif akActor.WornHasKeyword(zad_DeviousArmBinder)
+		PlayThirdPersonAnimation(akActor, "ft_fall_over_armbinder_1", 5, true)
+	Elseif akActor.WornHasKeyword(zad_DeviousArmBinderElbow)
+		PlayThirdPersonAnimation(akActor, "ft_fall_over_elbowbinder_1", 5, true)
+	Elseif akActor.WornHasKeyword(zad_DeviousYokeBB)
+		PlayThirdPersonAnimation(akActor, "ft_fall_over_bbyoke_1", 5, true)
+	Elseif akActor.WornHasKeyword(zad_DeviousCuffsFront)
+		PlayThirdPersonAnimation(akActor, "ft_fall_over_frontcuffs_1", 5, true)	
+	Elseif akActor.WornHasKeyword(zad_DeviousYoke)
+		PlayThirdPersonAnimation(akActor, "ft_fall_over_yoke_1", 5, true)
+	EndIf	
+	SexlabMoan(akActor)
+EndFunction
+
+Function CatchBreath(actor akActor)
+	; this should delay any anims if there is a menu open
+	Utility.Wait(0.1)
+	; don't play anims if the actor is already in one.
+	If IsAnimating(akActor)
+		return
+	EndIf	
+	; don't play the animation in combat if it's the player
+	if akActor == playerref && playerref.IsInCombat() 
+		return 
+	Endif
+	; use PlayThirdPersonAnimation instead of StartThirdPersonAnimation for non-looping animation
+	; alternatively EndThirdPersonAnimation can be called manually if termination is conditional
+	If !akActor.WornHasKeyword(zad_DeviousHeavyBondage)
+		PlayThirdPersonAnimation(akActor, "ft_out_of_breath_reg", 5, true)
+	Elseif akActor.WornHasKeyword(zad_DeviousArmBinder)
+		PlayThirdPersonAnimation(akActor, "ft_out_of_breath_armbinder", 5, true)
+	Elseif akActor.WornHasKeyword(zad_DeviousArmBinderElbow)
+		PlayThirdPersonAnimation(akActor, "ft_out_of_breath_elbowbinder", 5, true)
+	Elseif akActor.WornHasKeyword(zad_DeviousYokeBB)
+		PlayThirdPersonAnimation(akActor, "ft_out_of_breath_bbyoke", 5, true)
+	Elseif akActor.WornHasKeyword(zad_DeviousCuffsFront)
+		PlayThirdPersonAnimation(akActor, "ft_out_of_breath_frontcuffs", 5, true)	
+	Elseif akActor.WornHasKeyword(zad_DeviousYoke)
+		PlayThirdPersonAnimation(akActor, "ft_fall_over_yoke_1", 5, true)
+	EndIf	
+	SexlabMoan(akActor)
+EndFunction
+
 ; theIdle is a remnant of long-depreciated ZAP offsets
 ; putting stuff there no longer does anything, it's kept for backwards-compatibility but should be removed eventually
 Function ApplyBoundAnim(actor akActor, idle theIdle = None)

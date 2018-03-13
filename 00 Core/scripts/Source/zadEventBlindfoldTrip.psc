@@ -17,9 +17,7 @@ Function Execute(actor akActor)
 		EndIf
 		libs.NotifyPlayer("You abruptly trip over something unseen, and curse your lack of vision.")
 		Game.ForceThirdPerson()
-		Debug.SendAnimationEvent(akActor, "BleedOutStart")
-		Utility.Wait(2.0)
-		Debug.SendAnimationEvent(akActor, "BleedOutStop")
+		libs.Trip(akActor)
 	EndIf
 EndFunction
 
