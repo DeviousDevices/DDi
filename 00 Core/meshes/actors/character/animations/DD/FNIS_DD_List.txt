@@ -109,6 +109,20 @@ b DDRegCuffsFrontStruggle03 DDRegCuffsFrontStruggle03.hkx
 b DDChastityBeltStruggle01 FT_DD_Chastity_Struggle_1.hkx
 b DDChastityBeltStruggle02 FT_DD_Chastity_Struggle_2.hkx
 
+b ft_fall_over_armbinder_1 ft_fall_over_armbinder_1.hkx
+b ft_fall_over_bbyoke_1 ft_fall_over_bbyoke_1.hkx
+b ft_fall_over_elbowbinder_1 ft_fall_over_elbowbinder_1.hkx
+b ft_fall_over_frontcuffs_1 ft_fall_over_frontcuffs_1.hkx
+b ft_fall_over_yoke_1 ft_fall_over_yoke_1.hkx
+b ft_fall_over_reg_1 ft_fall_over_reg_1.hkx
+b ft_out_of_breath_armbinder ft_out_of_breath_armbinder.hkx
+b ft_out_of_breath_bbyoke ft_out_of_breath_bbyoke.hkx
+b ft_out_of_breath_elbowbinder ft_out_of_breath_elbowbinder.hkx
+b ft_out_of_breath_frontcuffs ft_out_of_breath_frontcuffs.hkx
+b ft_out_of_breath_reg ft_out_of_breath_reg.hkx
+b ft_out_of_breath_yoke ft_out_of_breath_yoke.hkx
+
+
 ' Note to self:
 ' the index of the h2h_locomotionpose animation always has to be 1 higher than the index of its corresponding AA set
 
