@@ -2383,9 +2383,16 @@ Function ApplyGagEffect(actor akActor)
 		return
 	EndIf
 	If akActor.WornHasKeyword(zad_DeviousGagLarge)
-		if (GetPhonemeModifier(akActor, 0, 1) != 90 || GetPhonemeModifier(akActor, 0, 11) != 0) && GetPhonemeModifier(akActor, 0, 0) != 70 ; Last check is for vibration mouth expressions. HoC
-			SetPhonemeModifier(akActor, 0, 1, 90)
-			SetPhonemeModifier(akActor, 0, 11, 0)
+		if (GetPhonemeModifier(akActor, 0, 1) != 100 || GetPhonemeModifier(akActor, 0, 11) != 30 || GetPhonemeModifier(akActor, 0, 0) != 100 || GetPhonemeModifier(akActor, 0, 5) != 100) && GetPhonemeModifier(akActor, 0, 0) != 70 ; Last check is for vibration mouth expressions. HoC
+			SetPhonemeModifier(akActor, 0, 0, 100)
+			SetPhonemeModifier(akActor, 0, 1, 100)
+			SetPhonemeModifier(akActor, 0, 5, 100)
+			SetPhonemeModifier(akActor, 0, 11, 30)
+			
+			SetPhonemeModifier(akActor, 1, 4, 100)
+			SetPhonemeModifier(akActor, 1, 5, 100)
+			SetPhonemeModifier(akActor, 1, 6, 100)
+			SetPhonemeModifier(akActor, 1, 7, 100)
 		EndIf
 		Return
 	EndIf
@@ -2396,8 +2403,20 @@ Function ApplyGagEffect(actor akActor)
 EndFunction
 
 Function RemoveGagEffect(actor akActor)
-	SetPhonemeModifier(akActor, 0, 1, 0)
-	SetPhonemeModifier(akActor, 0, 11, 0)
+	If akActor.WornHasKeyword(zad_DeviousGagLarge)
+		SetPhonemeModifier(akActor, 0, 0, 0)
+		SetPhonemeModifier(akActor, 0, 1, 0)
+		SetPhonemeModifier(akActor, 0, 5, 0)
+		SetPhonemeModifier(akActor, 0, 11, 0)
+		
+		SetPhonemeModifier(akActor, 1, 4, 0)
+		SetPhonemeModifier(akActor, 1, 5, 0)
+		SetPhonemeModifier(akActor, 1, 6, 0)
+		SetPhonemeModifier(akActor, 1, 7, 0)
+	else
+		SetPhonemeModifier(akActor, 0, 1, 0)
+		SetPhonemeModifier(akActor, 0, 11, 0)
+	Endif
 EndFunction
 
 string Function MakeSingularIfPlural(string theString)
