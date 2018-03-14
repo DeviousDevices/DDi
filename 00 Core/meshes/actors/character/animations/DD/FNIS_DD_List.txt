@@ -122,6 +122,12 @@ b ft_out_of_breath_frontcuffs ft_out_of_breath_frontcuffs.hkx
 b ft_out_of_breath_reg ft_out_of_breath_reg.hkx
 b ft_out_of_breath_yoke ft_out_of_breath_yoke.hkx
 
+b ft_struggle_blindfold_1 ft_struggle_blindfold_1.hkx
+b ft_struggle_boots_1 ft_struggle_boots_1.hkx
+b ft_struggle_gag_1 ft_struggle_gag_1.hkx
+b ft_struggle_gloves_1 ft_struggle_gloves_1.hkx
+b ft_struggle_head_1 ft_struggle_head_1.hkx
+
 
 ' Note to self:
 ' the index of the h2h_locomotionpose animation always has to be 1 higher than the index of its corresponding AA set
