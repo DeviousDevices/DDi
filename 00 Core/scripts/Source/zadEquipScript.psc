@@ -367,7 +367,7 @@ Event OnContainerChanged(ObjectReference akNewContainer, ObjectReference akOldCo
 						return
 					EndIf
 					; handle belts locking in plugs
-					if npc.WornHasKeyword(libs.zad_DeviousBelt) && DeviceRendered.HasKeyword(libs.zad_DeviousPlugVaginal) || (DeviceRendered.HasKeyword(libs.zad_DeviousPlugAnal) && !npc.WornHasKeyword(libs.zad_PermitAnal))
+					if npc.WornHasKeyword(libs.zad_DeviousBelt) && (DeviceRendered.HasKeyword(libs.zad_DeviousPlugVaginal) || (DeviceRendered.HasKeyword(libs.zad_DeviousPlugAnal) && !npc.WornHasKeyword(libs.zad_PermitAnal)))
 						libs.Notify(npc.GetLeveledActorBase().GetName() + " is wearing a chastity belt. You can't remove the " + deviceName)
 						npc.AddItem(deviceInventory, 1, true)
 						npc.EquipItem(deviceInventory, false, true)
