@@ -194,6 +194,25 @@ Sound Property GaggedSound Auto
 Sound Property ShortMoanSound Auto
 Sound Property ShortPantSound Auto
 
+; Idles
+Idle Property DD_FT_Unconcious Auto
+Idle Property DD_FT_Surrender Auto
+Idle Property DD_FT_Surrender_Hobbled Auto
+Idle Property DD_FT_Bleedout_Armbinder Auto
+Idle Property DD_FT_Bleedout_BBYoke Auto
+Idle Property DD_FT_Bleedout_Elbowbinder Auto
+Idle Property DD_FT_Bleedout_Frontcuffs Auto
+Idle Property DD_FT_Bleedout_Yoke Auto
+Idle Property DD_FT_CollarMe Auto
+Idle Property DD_FT_Egyptian Auto
+Idle Property DD_FT_Inspection Auto
+
+Package Property zad_pk_surrender Auto
+Package Property zad_pk_surrender_hobbled Auto
+Package Property zad_pk_collarme Auto
+Package Property zad_pk_egyptian Auto
+Package Property zad_pk_inspection Auto
+
 ; Dialogue disable
 GlobalVariable Property DialogueGagDisable Auto
 GlobalVariable Property DialogueArmbinderDisable Auto

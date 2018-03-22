@@ -109,12 +109,12 @@ b DDRegCuffsFrontStruggle03 DDRegCuffsFrontStruggle03.hkx
 b DDChastityBeltStruggle01 FT_DD_Chastity_Struggle_1.hkx
 b DDChastityBeltStruggle02 FT_DD_Chastity_Struggle_2.hkx
 
-b ft_fall_over_armbinder_1 ft_fall_over_armbinder_1.hkx
-b ft_fall_over_bbyoke_1 ft_fall_over_bbyoke_1.hkx
-b ft_fall_over_elbowbinder_1 ft_fall_over_elbowbinder_1.hkx
-b ft_fall_over_frontcuffs_1 ft_fall_over_frontcuffs_1.hkx
-b ft_fall_over_yoke_1 ft_fall_over_yoke_1.hkx
-b ft_fall_over_reg_1 ft_fall_over_reg_1.hkx
+b -a ft_fall_over_armbinder_1 ft_fall_over_armbinder_1.hkx
+b -a ft_fall_over_bbyoke_1 ft_fall_over_bbyoke_1.hkx
+b -a ft_fall_over_elbowbinder_1 ft_fall_over_elbowbinder_1.hkx
+b -a ft_fall_over_frontcuffs_1 ft_fall_over_frontcuffs_1.hkx
+b -a ft_fall_over_yoke_1 ft_fall_over_yoke_1.hkx
+b -a ft_fall_over_reg_1 ft_fall_over_reg_1.hkx
 b ft_out_of_breath_armbinder ft_out_of_breath_armbinder.hkx
 b ft_out_of_breath_bbyoke ft_out_of_breath_bbyoke.hkx
 b ft_out_of_breath_elbowbinder ft_out_of_breath_elbowbinder.hkx
@@ -128,6 +128,34 @@ b ft_struggle_gag_1 ft_struggle_gag_1.hkx
 b ft_struggle_gloves_1 ft_struggle_gloves_1.hkx
 b ft_struggle_head_1 ft_struggle_head_1.hkx
 
+b ft_bdsm_idle_collarme ft_bdsm_idle_collarme.hkx
+b ft_bdsm_idle_egyptian ft_bdsm_idle_egyptian.hkx
+b ft_bdsm_idle_inspection ft_bdsm_idle_inspection.hkx
+b ft_surrender ft_surrender.hkx
+b ft_surrender_hobbled ft_surrender_hobbled.hkx
+
+s -a ft_unconcious_falling ft_unconcious_falling.hkx
++ ft_unconcious_idle ft_unconcious_idle.hkx
+
+s -a ft_bleedout_transin_armbinder ft_bleedout_transin_armbinder.hkx
++ ft_bleedout_idle_armbinder ft_bleedout_idle_armbinder.hkx
++ -a ft_bleedout_transout_armbinder ft_bleedout_transout_armbinder.hkx
+
+s -a ft_bleedout_transin_bbyoke ft_bleedout_transin_bbyoke.hkx
++ ft_bleedout_idle_bbyoke ft_bleedout_idle_bbyoke.hkx
++ -a ft_bleedout_transout_bbyoke ft_bleedout_transout_bbyoke.hkx
+
+s -a ft_bleedout_transin_elbowbinder ft_bleedout_transin_elbowbinder.hkx
++ ft_bleedout_idle_elbowbinder ft_bleedout_idle_elbowbinder.hkx
++ -a ft_bleedout_transout_elbowbinder ft_bleedout_transout_elbowbinder.hkx
+
+s -a ft_bleedout_transin_frontcuffs ft_bleedout_transin_frontcuffs.hkx
++ ft_bleedout_idle_frontcuffs ft_bleedout_idle_frontcuffs.hkx
++ -a ft_bleedout_transout_frontcuffs ft_bleedout_transout_frontcuffs.hkx
+
+s -a ft_bleedout_transin_yoke ft_bleedout_transin_yoke.hkx
++ ft_bleedout_idle_yoke ft_bleedout_idle_yoke.hkx
++ -a ft_bleedout_transout_yoke ft_bleedout_transout_yoke.hkx
 
 ' Note to self:
 ' the index of the h2h_locomotionpose animation always has to be 1 higher than the index of its corresponding AA set
