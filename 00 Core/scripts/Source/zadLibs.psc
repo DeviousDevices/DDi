@@ -2676,9 +2676,9 @@ Function ChastityBeltStruggle(actor akActor)
 	; use PlayThirdPersonAnimation instead of StartThirdPersonAnimation for non-looping animation
 	; alternatively EndThirdPersonAnimation can be called manually if termination is conditional
 	If Utility.RandomInt(1,2) == 1
-		PlayThirdPersonAnimation(akActor, "DDChastityBeltStruggle01", 30, true)
+		PlayThirdPersonAnimation(akActor, "DDChastityBeltStruggle01", Utility.RandomInt(5, 30), true)
 	Else
-		PlayThirdPersonAnimation(akActor, "DDChastityBeltStruggle02", 30, true)
+		PlayThirdPersonAnimation(akActor, "DDChastityBeltStruggle02", Utility.RandomInt(5, 30), true)
 	EndIf	
 	Aroused.UpdateActorExposure(akActor, 5)
 	If akActor == PlayerRef
