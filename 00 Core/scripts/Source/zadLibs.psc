@@ -2405,7 +2405,7 @@ Function ApplyGagEffect(actor akActor)
 		if (GetPhonemeModifier(akActor, 0, 1) != 100 || GetPhonemeModifier(akActor, 0, 11) != 30 || GetPhonemeModifier(akActor, 0, 0) != 100 || GetPhonemeModifier(akActor, 0, 5) != 100) && GetPhonemeModifier(akActor, 0, 0) != 70 ; Last check is for vibration mouth expressions. HoC
 			SetPhonemeModifier(akActor, 0, 0, 100)
 			SetPhonemeModifier(akActor, 0, 1, 100)
-			SetPhonemeModifier(akActor, 0, 5, 100)
+			;SetPhonemeModifier(akActor, 0, 5, 100)
 			SetPhonemeModifier(akActor, 0, 11, 30)
 			
 			SetPhonemeModifier(akActor, 1, 4, 100)
@@ -2425,7 +2425,7 @@ Function RemoveGagEffect(actor akActor)
 	If akActor.WornHasKeyword(zad_DeviousGagLarge)
 		SetPhonemeModifier(akActor, 0, 0, 0)
 		SetPhonemeModifier(akActor, 0, 1, 0)
-		SetPhonemeModifier(akActor, 0, 5, 0)
+		;SetPhonemeModifier(akActor, 0, 5, 0)
 		SetPhonemeModifier(akActor, 0, 11, 0)
 		
 		SetPhonemeModifier(akActor, 1, 4, 0)
