@@ -1,6 +1,10 @@
 scriptName zadEventStruggle extends zadBaseEvent
 
 bool Function HasKeywords(actor akActor)
+	; don't play the animation in combat
+	if akActor.IsInCombat() 
+		return false
+	Endif
 	; no wrist restraints for now. I will add them later! Make sure to give them priority!
 	return (akActor.WornHasKeyword(libs.zad_Lockable) && !akActor.WornHasKeyword(libs.zad_DeviousHeavyBondage))
 EndFunction
