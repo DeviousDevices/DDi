@@ -68,6 +68,68 @@ b DDZazYokeHorny01 ZapYokeHorny01.hkx
 b DDZazYokeHorny02 ZapYokeHorny02.hkx
 b DDZazYokeHorny03 ZapYokeHorny03.hkx
 
+b ft_edged_armbinder_1 ft_edged_armbinder_1.hkx
+b ft_edged_bbyoke_1 ft_edged_bbyoke_1.hkx
+b ft_edged_elbowbinder_1 ft_edged_elbowbinder_1.hkx
+b ft_edged_frontcuffs_1 ft_edged_frontcuffs_1.hkx
+b ft_edged_yoke_1 ft_edged_yoke_1.hkx
+b ft_edged_hobbled_armbinder_1 ft_edged_hobbled_armbinder_1.hkx
+b ft_edged_hobbled_bbyoke_1 ft_edged_hobbled_bbyoke_1.hkx
+b ft_edged_hobbled_elbowbinder_1 ft_edged_hobbled_elbowbinder_1.hkx
+b ft_edged_hobbled_frontcuffs_1 ft_edged_hobbled_frontcuffs_1.hkx
+b ft_edged_hobbled_yoke_1 ft_edged_hobbled_yoke_1.hkx
+
+b ft_horny_armbinder_1 ft_horny_armbinder_1.hkx
+b ft_horny_armbinder_2 ft_horny_armbinder_2.hkx
+b ft_horny_armbinder_3 ft_horny_armbinder_3.hkx
+b ft_horny_armbinder_4 ft_horny_armbinder_4.hkx
+b ft_horny_armbinder_5 ft_horny_armbinder_5.hkx
+b ft_horny_armbinder_6 ft_horny_armbinder_6.hkx
+b ft_horny_armbinder_7 ft_horny_armbinder_7.hkx
+
+b ft_horny_bbyoke_1 ft_horny_bbyoke_1.hkx
+b ft_horny_bbyoke_2 ft_horny_bbyoke_2.hkx
+b ft_horny_bbyoke_3 ft_horny_bbyoke_3.hkx
+b ft_horny_bbyoke_4 ft_horny_bbyoke_4.hkx
+b ft_horny_bbyoke_5 ft_horny_bbyoke_5.hkx
+b ft_horny_bbyoke_6 ft_horny_bbyoke_6.hkx
+b ft_horny_bbyoke_7 ft_horny_bbyoke_7.hkx
+
+b ft_horny_elbowbinder_1 ft_horny_elbowbinder_1.hkx
+b ft_horny_elbowbinder_2 ft_horny_elbowbinder_2.hkx
+b ft_horny_elbowbinder_3 ft_horny_elbowbinder_3.hkx
+b ft_horny_elbowbinder_4 ft_horny_elbowbinder_4.hkx
+b ft_horny_elbowbinder_5 ft_horny_elbowbinder_5.hkx
+b ft_horny_elbowbinder_6 ft_horny_elbowbinder_6.hkx
+b ft_horny_elbowbinder_7 ft_horny_elbowbinder_7.hkx
+
+b ft_horny_frontcuffs_1 ft_horny_frontcuffs_1.hkx
+b ft_horny_frontcuffs_2 ft_horny_frontcuffs_2.hkx
+b ft_horny_frontcuffs_3 ft_horny_frontcuffs_3.hkx
+b ft_horny_frontcuffs_4 ft_horny_frontcuffs_4.hkx
+b ft_horny_frontcuffs_5 ft_horny_frontcuffs_5.hkx
+b ft_horny_frontcuffs_6 ft_horny_frontcuffs_6.hkx
+b ft_horny_frontcuffs_7 ft_horny_frontcuffs_7.hkx
+
+b ft_horny_yoke_1 ft_horny_yoke_1.hkx
+b ft_horny_yoke_2 ft_horny_yoke_2.hkx
+b ft_horny_yoke_3 ft_horny_yoke_3.hkx
+b ft_horny_yoke_4 ft_horny_yoke_4.hkx
+b ft_horny_yoke_5 ft_horny_yoke_5.hkx
+b ft_horny_yoke_6 ft_horny_yoke_6.hkx
+b ft_horny_yoke_7 ft_horny_yoke_7.hkx
+
+b ft_orgasm_armbinder_1 ft_orgasm_armbinder_1.hkx
+b ft_orgasm_bbyoke_1 ft_orgasm_bbyoke_1.hkx
+b ft_orgasm_elbowbinder_1 ft_orgasm_elbowbinder_1.hkx
+b ft_orgasm_frontcuffs_1 ft_orgasm_frontcuffs_1.hkx
+b ft_orgasm_yoke_1 ft_orgasm_yoke_1.hkx
+b ft_orgasm_hobbled_armbinder_1 ft_orgasm_hobbled_armbinder_1.hkx
+b ft_orgasm_hobbled_bbyoke_1 ft_orgasm_hobbled_bbyoke_1.hkx
+b ft_orgasm_hobbled_elbowbinder_1 ft_orgasm_hobbled_elbowbinder_1.hkx
+b ft_orgasm_hobbled_frontcuffs_1 ft_orgasm_hobbled_frontcuffs_1.hkx
+b ft_orgasm_hobbled_yoke_1 ft_orgasm_hobbled_yoke_1.hkx
+
 b -md DDArmbBleedoutIdle ZapArmbBleedoutIdle.hkx
 b -md DDYokeBleedoutIdle ZapYokeBleedoutIdle.hkx
 

@@ -980,7 +980,7 @@ Function PlayHornyAnimation(actor akActor)
 	Else
 		anim = AnimSwitchKeyword(akActor, "Horny03")
 	EndIf
-	PlayThirdPersonAnimation(akActor, anim, Utility.RandomInt(10,15), permitRestrictive=true)
+	PlayThirdPersonAnimation(akActor, anim, 19, permitRestrictive=true)
 EndFunction
 
 ; simpler function without shaky cam stuff and tie-in to vibration effects.
@@ -1756,9 +1756,6 @@ Function ActorOrgasm(actor akActor, int setArousalTo=-1, int vsID=-1)
 	if setArousalTo < 0
 		setArousalTo = Utility.RandomInt(0, 75)
 	EndIf
-	if akActor == PlayerRef
-		Game.ShakeCamera(akActor, 1, 5)
-	EndIf
 	int sID = OrgasmSound.Play(akActor)
 	Sound.SetInstanceVolume(sid, Config.VolumeOrgasm)
 	Aroused.SetActorExposure(akActor, setArousalTo)
@@ -1847,10 +1844,7 @@ Function EdgeActor(actor akActor)
 	SendModEvent("DeviceEdgedActor", akActor.GetLeveledActorBase().GetName())
 	int sID = EdgedSound.Play(akActor)
 	Sound.SetInstanceVolume(sid, Config.VolumeEdged)
-	if akActor == PlayerRef
-		Game.ShakeCamera(akActor, 0.5, 3)
-	EndIf
-	PlayThirdPersonAnimation(akActor, AnimSwitchKeyword(akActor, "Edged"), 15, permitRestrictive=true)
+	PlayThirdPersonAnimation(akActor, AnimSwitchKeyword(akActor, "Edged"), 19, permitRestrictive=true)
 EndFunction
 
 
@@ -2175,7 +2169,7 @@ int Function VibrateEffect(actor akActor, int vibStrength, int duration, bool te
 		;;;;;;;;;
 		if akActor == PlayerRef
 			; Log("XXX VibrateEffect: Shaking Camera")
-			Game.ShakeCamera(akActor, (0.05*vibStrength), 1)
+			;Game.ShakeCamera(akActor, (0.05*vibStrength), 1)
 			; Log("XXX VibrateEffect: Done Shaking Camera")
 		EndIf
 		; Log("XXX VibrateEffect: End Tick "+timeVibrated+".")
@@ -2449,71 +2443,323 @@ EndFunction
 ;This function picks animations based on provided context and worn devices
 String Function AnimSwitchKeyword(actor akActor, string idleName )
 	; w2b switch, map, hash table, etc...
-	if idleName == "Horny01"
-		if akActor.WornHasKeyword(zad_DeviousArmbinder)
-			return "DDZazArmbHorny01"
-		ElseIf akActor.WornHasKeyword(zad_DeviousYoke)
-			return "DDZazYokeHorny01"
-		ElseIf akActor.WornHasKeyword(zad_DeviousArmbinderElbow)
-			return "DDRegElbStruggle01"
-		ElseIf akActor.WornHasKeyword(zad_DeviousYokeBB)
-			return "DDRegBBYokeStruggle01"
-		Else
-			return "DDZazHornyA"
+	; I will keep this backwards compatible with the old implementation even when this could be coded in a cleaner way, just in case some modders are calling this function directly.
+	if idleName == "Horny01" || idleName == "Horny02" || idleName == "Horny03"
+		if akActor.WornHasKeyword(zad_DeviousHobbleSkirt)
+			;the actor is hobbled - use fitting animations
+			int i = 0
+			if akActor.WornHasKeyword(zad_DeviousArmbinder)
+				i = Utility.RandomInt(1, 6)
+				If i == 1
+					return "DDHobArmbStruggle01"
+				ElseIf i == 2
+					return "DDHobArmbStruggle02"
+				ElseIf i == 3
+					return "ft_horny_armbinder_1"
+				ElseIf i == 4
+					return "ft_horny_armbinder_2"
+				ElseIf i == 5
+					return "ft_horny_armbinder_3"
+				ElseIf i == 6
+					return "ft_horny_armbinder_7"
+				Endif
+			ElseIf akActor.WornHasKeyword(zad_DeviousYoke)
+				i = Utility.RandomInt(1, 6)
+				If i == 1
+					return "DDHobYokeStruggle01"
+				ElseIf i == 2
+					return "DDHobYokeStruggle02"
+				ElseIf i == 3
+					return "ft_horny_yoke_1"
+				ElseIf i == 4
+					return "ft_horny_yoke_2"
+				ElseIf i == 5
+					return "ft_horny_yoke_3"
+				ElseIf i == 6
+					return "ft_horny_yoke_7"
+				Endif
+			ElseIf akActor.WornHasKeyword(zad_DeviousArmbinderElbow)
+				i = Utility.RandomInt(1, 6)
+				If i == 1
+					return "DDHobElbStruggle01"
+				ElseIf i == 2
+					return "DDHobElbStruggle02"
+				ElseIf i == 3
+					return "ft_horny_elbowbinder_1"
+				ElseIf i == 4
+					return "ft_horny_elbowbinder_2"
+				ElseIf i == 5
+					return "ft_horny_elbowbinder_3"
+				ElseIf i == 6
+					return "ft_horny_elbowbinder_7"
+				Endif
+			ElseIf akActor.WornHasKeyword(zad_DeviousYokeBB)
+				i = Utility.RandomInt(1, 6)
+				If i == 1
+					return "DDHobBBYokeStruggle01"
+				ElseIf i == 2
+					return "DDHobBBYokeStruggle02"
+				ElseIf i == 3
+					return "ft_horny_elbowbinder_1"
+				ElseIf i == 4
+					return "ft_horny_elbowbinder_2"
+				ElseIf i == 5
+					return "ft_horny_elbowbinder_3"
+				ElseIf i == 6
+					return "ft_horny_elbowbinder_7"
+				Endif
+			ElseIf akActor.WornHasKeyword(zad_DeviousCuffsFront)
+				i = Utility.RandomInt(1, 6)
+				If i == 1
+					return "DDHobCuffsFrontStruggle01"
+				ElseIf i == 2
+					return "DDHobCuffsFrontStruggle02"	
+				ElseIf i == 3
+					return "ft_horny_frontcuffs_1"
+				ElseIf i == 4
+					return "ft_horny_frontcuffs_2"
+				ElseIf i == 5
+					return "ft_horny_frontcuffs_3"
+				ElseIf i == 6
+					return "ft_horny_frontcuffs_7"
+				Endif
+			Else
+				i = Utility.RandomInt(1, 3)
+				If i == 1
+					return "DDZazHornyA"
+				ElseIf i == 2
+					return "DDZazHornyB"	
+				ElseIf i == 3
+					return "DDZazHornyC"
+				EndIf
+			EndIf
 		EndIf
-	ElseIf idleName == "Horny02"
-		if akActor.WornHasKeyword(zad_DeviousArmbinder)
-			return "DDZazArmbHorny02"
-		ElseIf akActor.WornHasKeyword(zad_DeviousYoke)
-			return "DDZazYokeHorny02"
-		ElseIf akActor.WornHasKeyword(zad_DeviousArmbinderElbow)
-			return "DDRegElbStruggle02"
-		ElseIf akActor.WornHasKeyword(zad_DeviousYokeBB)
-			return "DDRegBBYokeStruggle02"
-		Else 
-			return "DDZazHornyB"
-		EndIf
-	ElseIf idleName == "Horny03"
-		if akActor.WornHasKeyword(zad_DeviousArmbinder)
-			return "DDZazArmbHorny01"
-		ElseIf akActor.WornHasKeyword(zad_DeviousYoke)
-			return "DDZazYokeHorny01"
-		ElseIf akActor.WornHasKeyword(zad_DeviousArmbinderElbow)
-			return "DDRegElbStruggle03"
-		ElseIf akActor.WornHasKeyword(zad_DeviousYokeBB)
-			return "DDRegBBYokeStruggle03"
-		Else 
-			return "DDZazHornyC"
+		; non-hobbled animations
+		if !akActor.WornHasKeyword(zad_DeviousHobbleSkirt)
+			int i = 0
+			if akActor.WornHasKeyword(zad_DeviousArmbinder)
+				i = Utility.RandomInt(1, 12)
+				If i == 1
+					return "DDRegArmbStruggle01"
+				ElseIf i == 2
+					return "DDRegArmbStruggle02"
+				ElseIf i == 3
+					return "DDRegArmbStruggle03"
+				ElseIf i == 4
+					return "DDRegArmbStruggle04"
+				ElseIf i == 5
+					return "DDRegArmbStruggle05"
+				ElseIf i == 6
+					return "ft_horny_armbinder_1"
+				ElseIf i == 7
+					return "ft_horny_armbinder_2"
+				ElseIf i == 8
+					return "ft_horny_armbinder_3"
+				ElseIf i == 9
+					return "ft_horny_armbinder_4"
+				ElseIf i == 10
+					return "ft_horny_armbinder_5"
+				ElseIf i == 11
+					return "ft_horny_armbinder_6"
+				ElseIf i == 12
+					return "ft_horny_armbinder_7"
+				Endif
+			ElseIf akActor.WornHasKeyword(zad_DeviousYoke)
+				i = Utility.RandomInt(1, 12)
+				If i == 1
+					return "DDRegYokeStruggle01"
+				ElseIf i == 2
+					return "DDRegYokeStruggle02"
+				ElseIf i == 3
+					return "DDRegYokeStruggle03"
+				ElseIf i == 4
+					return "DDRegYokeStruggle04"
+				ElseIf i == 5
+					return "DDRegYokeStruggle05"
+				ElseIf i == 6
+					return "ft_horny_Yoke_1"
+				ElseIf i == 7
+					return "ft_horny_Yoke_2"
+				ElseIf i == 8
+					return "ft_horny_Yoke_3"
+				ElseIf i == 9
+					return "ft_horny_Yoke_4"
+				ElseIf i == 10
+					return "ft_horny_Yoke_5"
+				ElseIf i == 11
+					return "ft_horny_Yoke_6"
+				ElseIf i == 12
+					return "ft_horny_Yoke_7"
+				Endif
+			ElseIf akActor.WornHasKeyword(zad_DeviousArmbinderElbow)
+				i = Utility.RandomInt(1, 12)
+				If i == 1
+					return "DDRegElbStruggle01"
+				ElseIf i == 2
+					return "DDRegElbStruggle02"
+				ElseIf i == 3
+					return "DDRegElbStruggle03"
+				ElseIf i == 4
+					return "DDRegElbStruggle04"
+				ElseIf i == 5
+					return "DDRegElbStruggle05"
+				ElseIf i == 6
+					return "ft_horny_elbowbinder_1"
+				ElseIf i == 7
+					return "ft_horny_elbowbinder_2"
+				ElseIf i == 8
+					return "ft_horny_elbowbinder_3"
+				ElseIf i == 9
+					return "ft_horny_elbowbinder_4"
+				ElseIf i == 10
+					return "ft_horny_elbowbinder_5"
+				ElseIf i == 11
+					return "ft_horny_elbowbinder_6"
+				ElseIf i == 12
+					return "ft_horny_elbowbinder_7"
+				Endif
+			ElseIf akActor.WornHasKeyword(zad_DeviousYokeBB)
+				i = Utility.RandomInt(1, 12)
+				If i == 1
+					return "DDRegbbyokeStruggle01"
+				ElseIf i == 2
+					return "DDRegbbyokeStruggle02"
+				ElseIf i == 3
+					return "DDRegbbyokeStruggle03"
+				ElseIf i == 4
+					return "DDRegbbyokeStruggle04"
+				ElseIf i == 5
+					return "DDRegbbyokeStruggle05"
+				ElseIf i == 6
+					return "ft_horny_bbyoke_1"
+				ElseIf i == 7
+					return "ft_horny_bbyoke_2"
+				ElseIf i == 8
+					return "ft_horny_bbyoke_3"
+				ElseIf i == 9
+					return "ft_horny_bbyoke_4"
+				ElseIf i == 10
+					return "ft_horny_bbyoke_5"
+				ElseIf i == 11
+					return "ft_horny_bbyoke_6"
+				ElseIf i == 12
+					return "ft_horny_bbyoke_7"
+				Endif
+			ElseIf akActor.WornHasKeyword(zad_DeviousCuffsFront)
+				i = Utility.RandomInt(1, 12)
+				If i == 1
+					return "DDRegcuffsfrontStruggle02"
+				ElseIf i == 2
+					return "DDRegcuffsfrontStruggle02"
+				ElseIf i == 3
+					return "DDRegcuffsfrontStruggle03"
+				ElseIf i == 4
+					return "DDRegcuffsfrontStruggle03"
+				ElseIf i == 5
+					return "DDRegcuffsfrontStruggle03"
+				ElseIf i == 6
+					return "ft_horny_frontcuffs_1"
+				ElseIf i == 7
+					return "ft_horny_frontcuffs_2"
+				ElseIf i == 8
+					return "ft_horny_frontcuffs_3"
+				ElseIf i == 9
+					return "ft_horny_frontcuffs_4"
+				ElseIf i == 10
+					return "ft_horny_frontcuffs_5"
+				ElseIf i == 11
+					return "ft_horny_frontcuffs_6"
+				ElseIf i == 12
+					return "ft_horny_frontcuffs_7"
+				Endif
+			Else
+				i = Utility.RandomInt(1, 3)
+				If i == 1
+					return "DDZazHornyA"
+				ElseIf i == 2
+					return "DDZazHornyB"	
+				ElseIf i == 3
+					return "DDZazHornyC"
+				EndIf
+			EndIf
 		EndIf
 	ElseIf idleName == "Edged"
-		if akActor.WornHasKeyword(zad_DeviousArmbinder)
-			return "DDZazArmbHorny02"
-		ElseIf akActor.WornHasKeyword(zad_DeviousYoke)
-			return "DDZazYokeHorny02"
-		ElseIf akActor.WornHasKeyword(zad_DeviousArmbinderElbow)
-			return "DDRegElbStruggle04"
-		ElseIf akActor.WornHasKeyword(zad_DeviousYokeBB)
-			return "DDRegBBYokeStruggle04"
-		Else 
-			return "DDZazHornyD"
+		; hobbled animations
+		if akActor.WornHasKeyword(zad_DeviousHobbleSkirt)
+			if akActor.WornHasKeyword(zad_DeviousArmbinder)
+				return "ft_edged_hobbled_armbinder_1"
+			ElseIf akActor.WornHasKeyword(zad_DeviousYoke)
+				return "ft_edged_hobbled_yoke_1"
+			ElseIf akActor.WornHasKeyword(zad_DeviousArmbinderElbow)
+				return "ft_edged_hobbled_elbowbinder_1"
+			ElseIf akActor.WornHasKeyword(zad_DeviousYokeBB)
+				return "ft_edged_hobbled_bbyoke_1"
+			ElseIf akActor.WornHasKeyword(zad_DeviousCuffsFront)
+				return "ft_edged_hobbled_frontcuffs_1"
+			Else 
+				return "DDZazHornyD"
+			EndIf
+		EndIf
+		; non-hobbled animations
+		if !akActor.WornHasKeyword(zad_DeviousHobbleSkirt)
+			if akActor.WornHasKeyword(zad_DeviousArmbinder)
+				return "ft_edged_armbinder_1"
+			ElseIf akActor.WornHasKeyword(zad_DeviousYoke)
+				return "ft_edged_yoke_1"
+			ElseIf akActor.WornHasKeyword(zad_DeviousArmbinderElbow)
+				return "ft_edged_elbowbinder_1"
+			ElseIf akActor.WornHasKeyword(zad_DeviousYokeBB)
+				return "ft_edged_bbyoke_1"
+			ElseIf akActor.WornHasKeyword(zad_DeviousCuffsFront)
+				return "ft_edged_frontcuffs_1"
+			Else 
+				return "DDZazHornyD"
+			EndIf
 		EndIf
 	ElseIf idleName == "Orgasm"
-		if akActor.WornHasKeyword(zad_DeviousArmbinder)
-			return "DDZazArmbHorny03"
-		ElseIf akActor.WornHasKeyword(zad_DeviousYoke)
-			return "DDZazYokeHorny03"
-		ElseIf akActor.WornHasKeyword(zad_DeviousArmbinderElbow)
-			return "DDRegElbStruggle05"
-		ElseIf akActor.WornHasKeyword(zad_DeviousYokeBB)
-			return "DDRegBBYokeStruggle05"
-		Else 
-			return "DDZazHornyE"
+		; hobbled animations
+		if akActor.WornHasKeyword(zad_DeviousHobbleSkirt)
+			if akActor.WornHasKeyword(zad_DeviousArmbinder)
+				return "ft_orgasm_hobbled_armbinder_1"
+			ElseIf akActor.WornHasKeyword(zad_DeviousYoke)
+				return "ft_orgasm_hobbled_yoke_1"
+			ElseIf akActor.WornHasKeyword(zad_DeviousArmbinderElbow)
+				return "ft_orgasm_hobbled_elbowbinder_1"
+			ElseIf akActor.WornHasKeyword(zad_DeviousYokeBB)
+				return "ft_orgasm_hobbled_bbyoke_1"
+			ElseIf akActor.WornHasKeyword(zad_DeviousCuffsFront)
+				return "ft_orgasm_hobbled_frontcuffs_1"
+			Else 
+				return "DDZazHornyE"
+			EndIf
+		EndIf
+		; non-hobbled animations
+		if !akActor.WornHasKeyword(zad_DeviousHobbleSkirt)
+			if akActor.WornHasKeyword(zad_DeviousArmbinder)
+				return "ft_orgasm_armbinder_1"
+			ElseIf akActor.WornHasKeyword(zad_DeviousYoke)
+				return "ft_orgasm_yoke_1"
+			ElseIf akActor.WornHasKeyword(zad_DeviousArmbinderElbow)
+				return "ft_orgasm_elbowbinder_1"
+			ElseIf akActor.WornHasKeyword(zad_DeviousYokeBB)
+				return "ft_orgasm_bbyoke_1"
+			ElseIf akActor.WornHasKeyword(zad_DeviousCuffsFront)
+				return "ft_orgasm_frontcuffs_1"
+			Else 
+				return "DDZazHornyE"
+			EndIf
 		EndIf
 	ElseIf idleName == "OutOfBreath"
 		if akActor.WornHasKeyword(zad_DeviousArmbinder)
-			return "DDArmbBleedoutIdle"
+			return "ft_out_of_breath_armbinder"
 		ElseIf akActor.WornHasKeyword(zad_DeviousYoke)
-			return "DDYokeBleedoutIdle"
+			return "ft_out_of_breath_yoke"
+		ElseIf akActor.WornHasKeyword(zad_DeviousArmbinderElbow)
+			return "ft_out_of_breath_elbowbinder"
+		ElseIf akActor.WornHasKeyword(zad_DeviousYokeBB)
+			return "ft_out_of_breath_bbyoke"
+		ElseIf akActor.WornHasKeyword(zad_DeviousCuffsFront)
+			return "ft_out_of_breath_frontcuffs"
 		Else 
 			return "BleedOutStart"
 		EndIf
