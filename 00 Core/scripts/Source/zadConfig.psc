@@ -11,9 +11,10 @@ Perk Property zad_keyCraftingEasy Auto ; Obsolete, will remove later
 Perk Property zad_keyCraftingHard Auto ; Obsolete, will remove later.
 
 ; Config Variables
-Int Property EscapeDifficulty = 5 Auto
-Int Property CooldownDifficulty = 5 Auto
-Int Property KeyDifficulty = 5 Auto
+Int Property EscapeDifficulty = 4 Auto
+Int Property CooldownDifficulty = 4 Auto
+Int Property KeyDifficulty = 4 Auto
+Bool Property GlobalDestroyKey = True Auto
 
 int Property UnlockThreshold Auto
 int thresholdDefault = 185
@@ -199,6 +200,8 @@ Int YokeRemovalCostPerLevelOID
 Int EscapeDifficultyOID
 Int CooldownDifficultyOID
 Int KeyDifficultyOID
+Int GlobalDestroyKeyOID
+
 
 string[] Property EsccapeDifficultyList Auto
 string[] difficultyList
@@ -340,6 +343,7 @@ Event OnPageReset(string page)
 		EscapeDifficultyOID = AddMenuOption("Difficulty Modifier", EsccapeDifficultyList[EscapeDifficulty])
 		CooldownDifficultyOID = AddMenuOption("Cooldown Modifier", EsccapeDifficultyList[CooldownDifficulty])
 		KeyDifficultyOID = AddMenuOption("Keybreak Modifier", EsccapeDifficultyList[KeyDifficulty])
+		GlobalDestroyKeyOID = AddToggleOption("Consume Keys", GlobalDestroyKey)
 		AddHeaderOption("Belt Arousal Options")
 		beltRateOID = AddSliderOption("Arousal rate belt multiplier", beltRateMult, "{1}")
 		plugRateOID = AddSliderOption("Arousal rate plugged multiplier", plugRateMult, "{1}")
@@ -774,7 +778,10 @@ Event OnOptionSelect(int option)
 		SetToggleOptionValue(bellyNodeManagementOID, bellyNodeManagement)
 	elseif option == UseBoundCombatOID
 		UseBoundCombat = !UseBoundCombat
-		SetToggleOptionValue(UseBoundCombatOID, UseBoundCombat)	   
+		SetToggleOptionValue(UseBoundCombatOID, UseBoundCombat)
+	elseif option == GlobalDestroyKeyOID
+		GlobalDestroyKey = !GlobalDestroyKey
+		SetToggleOptionValue(GlobalDestroyKeyOID, GlobalDestroyKey)	
 	elseif option == debugSigTermOID
 		If ShowMessage("WARNING:\nThis function will try to remove all DD items. Wiping quest items may result in broken quest states! This feature is intended to be used for debug purposes and as a last resort only! Using it to escape DD devices is strongly discouraged.\n\nAre you sure?")
 			debugSigTerm = true
@@ -1056,6 +1063,8 @@ Event OnOptionHighlight(int option)
 		SetInfoText("This modifier will be applied to key break and jam lock chances.\nIt applies to standard/generic devices and will not affect quest devices unless their creator enabled it.\nThe default modifier is zero.")
 	elseIf (option == HobbleSkirtSpeedDebuffOID)
         SetInfoText("Sets the strength of the speed debuff caused by wearing a hobble skirt.\nThe higher the number, the slower characters wearing a hobble skirt can walk.\nNote: The animations are meant for the default value and will look off at lower values, but some people might find this speed too slow.\nDefault: " + HobbleSkirtSpeedDebuffDefault)
+	elseIf (option == GlobalDestroyKeyOID)
+		SetInfoText("When enabled, most keys can be used to unlock only one device, and will be consumed on use.\nThis feature will not affect custom keys unless set by the creator.")
 	endIf
 EndEvent
 

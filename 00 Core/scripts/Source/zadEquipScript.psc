@@ -209,9 +209,9 @@ Event OnEquipped(Actor akActor)
 	EndIf	
 	OnEquippedPost(akActor)
 	SetLockShield()
-	If deviceRendered.HasKeyword(libs.zad_DeviousHeavyBondage)		
+	;If deviceRendered.HasKeyword(libs.zad_DeviousHeavyBondage)		
 		libs.StartBoundEffects(akActor)
-	EndIf	
+	;EndIf	
 	LastCutEscapeAttemptAt = 0.0
 	LastStruggleEscapeAttemptAt = 0.0
 	LastLockPickEscapeAttemptAt = 0.0
@@ -259,7 +259,7 @@ Event OnUnequipped(Actor akActor)
 			akActor.RemoveItem(deviceRendered, 1, true) ; This should not be necessary, but ensure that SD+ bug does not reoccur.
 			UnsetStoredDevice(akActor)
 			OnRemoveDevice(akActor)
-			If deviceRendered.HasKeyword(libs.zad_DeviousHeavyBondage)
+			If deviceRendered.HasKeyword(libs.zad_DeviousHeavyBondage) || deviceRendered.HasKeyword(libs.zad_DeviousPonyGear) || deviceRendered.HasKeyword(libs.zad_DeviousHobbleSkirt) 
 				libs.StopBoundEffects(akActor)
 			EndIf
 			StorageUtil.UnsetIntValue(akActor, "zad_RemovalToken"+deviceInventory)
@@ -459,6 +459,8 @@ Function RemoveDevice(actor akActor, bool destroyDevice=false, bool skipMutex=fa
 	EndIf
 	If DestroyKey
 		libs.PlayerRef.RemoveItem(DeviceKey, NumberOfKeysNeeded, False)
+	elseif libs.Config.GlobalDestroyKey && DeviceKey.HasKeyword(libs.zad_NonUniqueKey)
+		libs.PlayerRef.RemoveItem(DeviceKey, NumberOfKeysNeeded, False)	
 	EndIf	
 EndFunction
 

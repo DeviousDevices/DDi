@@ -69,7 +69,7 @@ Keyword Property zad_Lockable Auto
 Keyword Property zad_DeviousPiercingsNipple Auto
 Keyword Property zad_DeviousPiercingsVaginal Auto
 Keyword Property zad_DeviousBondageMittens Auto
-
+Keyword Property zad_DeviousPonyGear Auto
 Keyword Property zad_PermitOral Auto
 Keyword Property zad_PermitAnal Auto
 Keyword Property zad_PermitVaginal Auto
@@ -82,6 +82,8 @@ Keyword Property zad_BraNoBlockPiercings Auto
 Keyword Property zad_GagNoOpenMouth Auto
 
 Keyword Property zad_BoundCombatDisableKick Auto
+
+Keyword Property zad_NonUniqueKey Auto		; A key tagged with this keyword will be consumed by the global Destroy Key feature, if enabled by the user.
 
 ; All standard devices, at this time. Shorthand for mods, and to avoid the hassle of re-adding these as properties for other scripts.
 ; If you're using a custom device, you'll need to use EquipDevice, rather than the shorthand ManipulateDevice.
@@ -3291,6 +3293,9 @@ function stripweapons(actor a, bool unequiponly = true)
 endfunction
 
 Event StartBoundEffects(Actor akTarget)
+	if !akTarget.WornHasKeyword(zad_DeviousHeavyBondage) && !akTarget.WornHasKeyword(zad_DeviousHobbleSkirt) && !akTarget.WornHasKeyword(zad_DeviousPonyGear)
+		return
+	EndIf
 	while hasAnyWeaponEquipped(akTarget)
 		stripweapons(akTarget)
 	EndWhile
@@ -3299,7 +3304,7 @@ Event StartBoundEffects(Actor akTarget)
 		BoundCombat.Apply_NPC_ABC(akTarget)
 		return
 	EndIf
-	Log("OnEffectStart(): Wrist Bondage")		
+	Log("OnEffectStart(): Bound Effects")		
 	; if aktarget == PlayerRef
 		; Terminate = False		
 	; EndIf
@@ -3311,7 +3316,7 @@ Event StartBoundEffects(Actor akTarget)
 EndEvent
 
 Event StopBoundEffects(Actor akTarget)
-	Log("OnEffectFinish(): Wrist Bondage")	
+	Log("OnEffectFinish(): Bound Effects")	
 	Debug.SendAnimationEvent(akTarget, "IdleForceDefaultState")
 	if aktarget == PlayerRef
 		UnregisterForUpdate()
@@ -3321,29 +3326,6 @@ Event StopBoundEffects(Actor akTarget)
 	EndIf
 	BoundCombat.EvaluateAA(akTarget)
 EndEvent
-
-; Function DoRegister()
-	; if !Terminate
-		; RegisterForSingleUpdate(8.0)
-	; EndIf
-; EndFunction
-
-; Function DoUnregister()
-	; if !Terminate
-		; UnregisterForUpdate()
-	; EndIf
-; EndFunction
-
-; Function DoReLoad()
-	; if PlayerRef.WornHasKeyword(zad_DeviousHeavyBondage) && !Terminate
-		; PlayBoundIdle()
-		; DoRegister()
-	; EndIf
-; EndFunction
-
-; Function DoUnLoad()
-	; DoUnregister()	
-; EndFunction
 
 Event OnUpdate()
 	If Config.debugSigTerm
@@ -3367,22 +3349,6 @@ Function PlayBoundIdle()
 		ApplyBoundAnim(PlayerRef)
 	EndIf
 EndFunction
-
-; Event OnCellLoad()
-	; DoReLoad()
-; EndEvent
-
-; Event OnCellAttach()
-	; DoReLoad()
-; EndEvent
-
-; Event OnLoad()
-	; DoReLoad()
-; EndEvent
-
-; Event OnCellDetach()
-	; DoUnLoad()
-; EndEvent
 
 ;===============================================================================
 ; GameSettings Manipulation

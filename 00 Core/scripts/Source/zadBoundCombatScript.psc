@@ -52,6 +52,26 @@ int Property HBC_mt Auto
 int Property HBC_mtturn Auto
 int Property HBC_mtidle Auto
 
+;PonyAA
+int Property PON_ModID Auto
+int Property PON_CRC Auto
+
+int Property PON_h2heqp Auto
+int Property PON_h2hidle Auto
+int Property PON_h2hatkpow Auto
+int Property PON_h2hatk Auto
+int Property PON_h2hstag Auto
+int Property PON_jump Auto
+int Property PON_sneakmt Auto
+int Property PON_sneakidle Auto
+int Property PON_sprint Auto
+
+int Property PON_shout Auto
+int Property PON_mtx Auto
+int Property PON_mt Auto
+int Property PON_mtturn Auto
+int Property PON_mtidle Auto
+
 
 Function UpdateValues() 
 	ABC_ModID = FNIS_aa.GetAAModID("abc", "DeviousDevices", Config.LogMessages) 
@@ -85,6 +105,22 @@ Function UpdateValues()
 	HBC_mt = FNIS_aa.GetGroupBaseValue(HBC_ModID, FNIS_aa._mt(), "DeviousDevices",Config.LogMessages)
 	HBC_mtturn = FNIS_aa.GetGroupBaseValue(HBC_ModID, FNIS_aa._mtturn(), "DeviousDevices",Config.LogMessages)
 	HBC_mtidle = FNIS_aa.GetGroupBaseValue(HBC_ModID, FNIS_aa._mtidle(), "DeviousDevices",Config.LogMessages)
+	
+	PON_ModID = FNIS_aa.GetAAModID("pon", "DeviousDevices", Config.LogMessages) 
+	PON_h2heqp = FNIS_aa.GetGroupBaseValue(PON_ModID, FNIS_aa._h2heqp(), "DeviousDevices",Config.LogMessages)
+	PON_h2hidle = FNIS_aa.GetGroupBaseValue(PON_ModID, FNIS_aa._h2hidle(), "DeviousDevices",Config.LogMessages)
+	PON_h2hatkpow = FNIS_aa.GetGroupBaseValue(PON_ModID, FNIS_aa._h2hatkpow(), "DeviousDevices",Config.LogMessages)
+	PON_h2hatk = FNIS_aa.GetGroupBaseValue(PON_ModID, FNIS_aa._h2hatk(), "DeviousDevices",Config.LogMessages)
+	PON_h2hstag = FNIS_aa.GetGroupBaseValue(PON_ModID, FNIS_aa._h2hstag(), "DeviousDevices",Config.LogMessages)
+	PON_jump = FNIS_aa.GetGroupBaseValue(PON_ModID, FNIS_aa._jump(), "DeviousDevices",Config.LogMessages)
+	PON_sneakmt = FNIS_aa.GetGroupBaseValue(PON_ModID, FNIS_aa._sneakmt(), "DeviousDevices",Config.LogMessages)
+	PON_sneakidle = FNIS_aa.GetGroupBaseValue(PON_ModID, FNIS_aa._sneakidle(), "DeviousDevices",Config.LogMessages)
+	PON_sprint = FNIS_aa.GetGroupBaseValue(PON_ModID, FNIS_aa._sprint(), "DeviousDevices",Config.LogMessages)
+	PON_shout = FNIS_aa.GetGroupBaseValue(PON_ModID, FNIS_aa._shout(), "DeviousDevices",Config.LogMessages)
+	PON_mtx = FNIS_aa.GetGroupBaseValue(PON_ModID, FNIS_aa._mtx(), "DeviousDevices",Config.LogMessages)
+	PON_mt = FNIS_aa.GetGroupBaseValue(PON_ModID, FNIS_aa._mt(), "DeviousDevices",Config.LogMessages)
+	PON_mtturn = FNIS_aa.GetGroupBaseValue(PON_ModID, FNIS_aa._mtturn(), "DeviousDevices",Config.LogMessages)
+	PON_mtidle = FNIS_aa.GetGroupBaseValue(PON_ModID, FNIS_aa._mtidle(), "DeviousDevices",Config.LogMessages)
 EndFunction
 
 
@@ -113,7 +149,7 @@ EndFunction
 
 
 bool Function HasCompatibleDevice(actor akActor)
-	return (akActor.WornHasKeyword(libs.zad_DeviousHeavyBondage) || (akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirt) && !akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirtRelaxed)))
+	return (akActor.WornHasKeyword(libs.zad_DeviousHeavyBondage) || akActor.WornHasKeyword(libs.zad_DeviousPonyGear) || (akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirt) && !akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirtRelaxed)))
 EndFunction
 
 
@@ -139,6 +175,8 @@ EndFunction
 Int Function GetSecondaryAAState(actor akActor)
 	If akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirt) && !akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirtRelaxed)
 		return 1	; Wearing hobble skirt
+	ElseIf akActor.WornHasKeyword(libs.zad_DeviousPonyGear)
+		return 2	; Pony device
 	Else
 		return 0	; No secondary AA modifiers
 	Endif
@@ -150,6 +188,23 @@ Int Function SelectAnimationSet(actor akActor)
 	int AAStateA = GetPrimaryAAState(akActor)
 	int AAStateB = GetSecondaryAAState(akActor)
 	If AAStateB == 1 ; Hobble subset
+		if AAStateA == 1
+			animSet = 1 ; Armbinder animation
+		elseIf AAStateA == 2
+			animSet = 2 ; Yoke animations
+		elseIf AAStateA == 3
+			animSet = 3 ; Elbowbinder animations
+		elseIf AAStateA == 4
+			animSet = 4 ; BBYoke animations
+		elseIf AAStateA == 5
+			animSet = 5 ; FrontCuffs animations
+		elseIf AAStateA == 0
+			animSet = 0 ; Only hobble restraints
+		else
+			animSet = 1 ; Unsupported device type.
+			libs.Warn("Equipped binding is incompatible with bound combat. Could not determine appropriate animation set. Defaulting to Armbinder Animations.")
+		endIf
+	ElseIf AAStateB == 2 ; Pony gear
 		if AAStateA == 1
 			animSet = 1 ; Armbinder animation
 		elseIf AAStateA == 2
@@ -226,6 +281,23 @@ Function EvaluateAA(actor akActor)
 			FNIS_aa.SetAnimGroup(akActor, "_mtturn", HBC_mtturn, animSet, "DeviousDevices", Config.LogMessages)
 			FNIS_aa.SetAnimGroup(akActor, "_mtidle", HBC_mtidle, animSet, "DeviousDevices", Config.LogMessages)
 			;akActor.SetAnimationVariableInt("FNIS_hbc_h2h_LocomotionPose", animSet + 1)
+		elseif animState == 2
+			FNIS_aa.SetAnimGroup(akActor, "_h2heqp", PON_h2heqp, animSet, "DeviousDevices", Config.LogMessages)
+			FNIS_aa.SetAnimGroup(akActor, "_h2hidle", PON_h2hidle, animSet, "DeviousDevices", Config.LogMessages)
+			FNIS_aa.SetAnimGroup(akActor, "_h2hatkpow", PON_h2hatkpow, animSet, "DeviousDevices", Config.LogMessages)
+			FNIS_aa.SetAnimGroup(akActor, "_h2hatk", PON_h2hatk, animSet, "DeviousDevices", Config.LogMessages)
+			FNIS_aa.SetAnimGroup(akActor, "_h2hstag", PON_h2hstag, animSet, "DeviousDevices", Config.LogMessages)
+			FNIS_aa.SetAnimGroup(akActor, "_jump", PON_jump, animSet, "DeviousDevices", Config.LogMessages)
+			FNIS_aa.SetAnimGroup(akActor, "_sneakmt", PON_sneakmt, animSet, "DeviousDevices", Config.LogMessages)
+			FNIS_aa.SetAnimGroup(akActor, "_sneakidle", PON_sneakidle, animSet, "DeviousDevices", Config.LogMessages)
+			FNIS_aa.SetAnimGroup(akActor, "_sprint", PON_sprint, animSet, "DeviousDevices", Config.LogMessages)
+
+			FNIS_aa.SetAnimGroup(akActor, "_shout", PON_shout, animSet, "DeviousDevices", Config.LogMessages)
+			FNIS_aa.SetAnimGroup(akActor, "_mtx", PON_mtx, animSet, "DeviousDevices", Config.LogMessages)
+			FNIS_aa.SetAnimGroup(akActor, "_mt", PON_mt, animSet, "DeviousDevices", Config.LogMessages)
+			FNIS_aa.SetAnimGroup(akActor, "_mtturn", PON_mtturn, animSet, "DeviousDevices", Config.LogMessages)
+			FNIS_aa.SetAnimGroup(akActor, "_mtidle", PON_mtidle, animSet, "DeviousDevices", Config.LogMessages)
+			;akActor.SetAnimationVariableInt("FNIS_PON_h2h_LocomotionPose", animSet + 1)
 		else
 			FNIS_aa.SetAnimGroup(akActor, "_h2heqp", ABC_h2heqp, animSet, "DeviousDevices", Config.LogMessages)
 			FNIS_aa.SetAnimGroup(akActor, "_h2hidle", ABC_h2hidle, animSet, "DeviousDevices", Config.LogMessages)
