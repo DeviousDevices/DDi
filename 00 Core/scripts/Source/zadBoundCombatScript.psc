@@ -154,7 +154,9 @@ EndFunction
 
 
 Int Function GetPrimaryAAState(actor akActor)
-	If akActor.WornHasKeyword(libs.zad_DeviousCuffsFront)
+	If akActor.WornHasKeyword(libs.zad_DeviousPetSuit)
+		return 6	; Wearing pet suit
+	ElseIf akActor.WornHasKeyword(libs.zad_DeviousCuffsFront)
 		return 5	; Wearing frontcuffs
 	ElseIf akActor.WornHasKeyword(libs.zad_DeviousYokeBB)
 		return 4	; Wearing BByoke
@@ -187,6 +189,10 @@ Int Function SelectAnimationSet(actor akActor)
 	int animSet;
 	int AAStateA = GetPrimaryAAState(akActor)
 	int AAStateB = GetSecondaryAAState(akActor)
+	If AAStateA == 6
+		; The pet suit is special, and needs to override pony gear. Hobble skirts are incompatible with the pet suit anyway.
+		AAStateB = 0
+	EndIf
 	If AAStateB == 1 ; Hobble subset
 		if AAStateA == 1
 			animSet = 1 ; Armbinder animation
@@ -232,6 +238,8 @@ Int Function SelectAnimationSet(actor akActor)
 			animSet = 3 ; BBYoke animations
 		elseIf AAStateA == 5
 			animSet = 4 ; FrontCuffs animations
+		elseIf AAStateA == 6
+			animSet = 5 ; pet suit animations
 		elseIf AAStateA == 0
 			animSet = -1 ; No bound animations
 		else
@@ -314,7 +322,9 @@ Function EvaluateAA(actor akActor)
 			FNIS_aa.SetAnimGroup(akActor, "_mt", ABC_mt, animSet, "DeviousDevices", Config.LogMessages)
 			FNIS_aa.SetAnimGroup(akActor, "_mtturn", ABC_mtturn, animSet, "DeviousDevices", Config.LogMessages)
 			FNIS_aa.SetAnimGroup(akActor, "_mtidle", ABC_mtidle, animSet, "DeviousDevices", Config.LogMessages)
-			akActor.SetAnimationVariableInt("FNIS_abc_h2h_LocomotionPose", animSet + 1)
+			if animSet != 5 ; We don't set locomotion for pet suit
+				akActor.SetAnimationVariableInt("FNIS_abc_h2h_LocomotionPose", animSet + 1)
+			EndIf
 		endif
 	EndIf
 EndFunction

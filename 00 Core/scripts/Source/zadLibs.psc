@@ -48,7 +48,7 @@ Keyword Property zad_DeviousHobbleSkirtRelaxed Auto
 Keyword Property zad_DeviousAnkleShackles Auto
 Keyword Property zad_DeviousStraitJacket Auto
 Keyword Property zad_DeviousCuffsFront Auto
-
+Keyword Property zad_DeviousPetSuit Auto
 Keyword Property zad_DeviousYoke Auto
 Keyword Property zad_DeviousYokeBB Auto
 Keyword Property zad_DeviousCorset Auto
@@ -1342,11 +1342,11 @@ EndFunction
 
 
 float Function GetVersion()
-	return 8 ; build number increment to determine the newest version - does NOT correspond with the offical version name. Returns a float not to mess with existing implementations of this function.
+	return 9 ; build number increment to determine the newest version - does NOT correspond with the offical version name. Returns a float not to mess with existing implementations of this function.
 EndFunction
 
 String Function GetVersionString()
-	return "4.0" ; string to be displayed in MCM etc.
+	return "4.1" ; string to be displayed in MCM etc.
 EndFunction
 
 
@@ -1642,6 +1642,16 @@ Function SendDeviceJamLockEventVerbose(armor inventoryDevice, keyword deviceKeyw
 		ModEvent.PushForm(Handle, inventoryDevice)
 		ModEvent.PushForm(Handle, deviceKeyword)
 		ModEvent.PushForm(Handle, akActor)		
+		ModEvent.Send(Handle)
+	Endif	
+EndFunction
+
+Function SendDeviceEscapeEvent(armor inventoryDevice, keyword deviceKeyword, bool successful)	
+	Int Handle = ModEvent.Create("DDI_DeviceEscapeAttempt")
+	If (Handle)		
+		ModEvent.PushForm(Handle, inventoryDevice)
+		ModEvent.PushForm(Handle, deviceKeyword)
+		ModEvent.PushBool(Handle, successful)		
 		ModEvent.Send(Handle)
 	Endif	
 EndFunction
@@ -2331,6 +2341,9 @@ Function UpdateControls()
 		Else
 			fighting = config.UseBoundCombat			
 		Endif	
+	EndIf
+	if playerRef.WornHasKeyword(zad_DeviousPetSuit)
+		sneaking = false
 	EndIf	
 	Game.DisablePlayerControls(abMovement = !movement, abFighting = !fighting, abSneaking = !sneaking, abMenu = !menu, abActivate = !activate)	
 	Game.EnablePlayerControls(abMovement = movement, abFighting = fighting, abSneaking = sneaking, abMenu = menu, abActivate = activate)	

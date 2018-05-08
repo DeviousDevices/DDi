@@ -1127,9 +1127,11 @@ Int Function Escape(Float Chance)
 		; increase success counter
 		libs.zadDeviceEscapeSuccessCount.SetValueInt(libs.zadDeviceEscapeSuccessCount.GetValueInt() + 1)		
 		RemoveDevice(libs.PlayerRef)
+		libs.SendDeviceEscapeEvent(DeviceInventory, zad_DeviousDevice, true)
 		return 1
 	Else
 		libs.log("Player has failed to escape " + DeviceName)
+		libs.SendDeviceEscapeEvent(DeviceInventory, zad_DeviousDevice, false)
 	EndIf
 	return 0
 EndFunction
