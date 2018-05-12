@@ -87,8 +87,8 @@ int Property BaseHornyChance = 5 Auto
 int baseHornyChanceDefault = 5
 int Property BaseBumpPumpChance = 17 Auto
 int baseBumpPumpChanceDefault = 17
-int Property numNpcs = 5 Auto Conditional
-int numNpcsDefault = 5
+int Property numNpcs = 15 Auto Conditional
+int numNpcsDefault = 15
 
 ; Sounds
 float Property VolumeOrgasm = 1.0 Auto
@@ -695,7 +695,7 @@ Event OnOptionSliderOpen(int option)
 	elseIf option == numNpcsOID
 		SetSliderDialogStartValue(numNpcs)
 		SetSliderDialogDefaultValue(numNpcsDefault)
-		SetSliderDialogRange(0, 20)
+		SetSliderDialogRange(5, 20)
 		SetSliderDialogInterval(1)	
 	elseIf option == ArmbinderStruggleBaseChanceOID
 		SetSliderDialogStartValue(ArmbinderStruggleBaseChance)
@@ -1040,7 +1040,7 @@ Event OnOptionHighlight(int option)
 	elseIf (option == mittensDropToggleOID)
 		SetInfoText("If this option is enabled, it is hard to pick up items when wearing bondage mittens.\nYou will instead drop the items to the ground (you can try to pick them up again.)\nDefault:"+mittensDropToggleDefault)
 	elseIf (option == numNpcsOID)
-		SetInfoText("Configure the number of nearby belted NPCs (Per Area) that will be processed by event polling. Set to 0 to disable altogether. Higher values will increase script load.\nDefault:"+numNpcsDefault)
+		SetInfoText("Configure the number of NPCs (per area) that will be processed by DD's bondage features (e.g. using bound animations). Use lower settings for weaker PCs.\nDefault:"+numNpcsDefault)
 	elseIf (option == ifpOID)
 		SetInfoText("Configures support for Immersive First Person.\nDefault:"+ifpDefault)
 	elseIf (option == breastNodeManagementOID)
