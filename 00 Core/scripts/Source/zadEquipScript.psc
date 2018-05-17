@@ -1379,7 +1379,7 @@ Function StruggleScene(actor akActor)
 	EndIf
 	String[] struggleArray = SelectStruggleArray(akActor)
 	int len = struggleArray.length - 1
-	If len < 1 
+	If len < 0
 		return
 	EndIf
 	bool[] cameraState = libs.StartThirdPersonAnimation(akActor, struggleArray[Utility.RandomInt(0, len)], true)
