@@ -170,13 +170,7 @@ Function Maintenance()
 	libs.repopulateMutex = false
 	libs.lastRepopulateTime = 0.0
 	libs.zadNPCQuest.Maintenance()
-	libs.RepopulateNpcs()
-	if !HasArmbinder(libs.PlayerRef)
-		abq.EnableStruggling()
-	EndIf
-	if !HasYoke(libs.PlayerRef)
-		ybq.EnableStruggling()
-	EndIf
+	libs.RepopulateNpcs()	
 	VersionChecks()
 	; Start up periodic events system
 	libs.EventSlots.Initialize()
@@ -193,9 +187,9 @@ Function Maintenance()
 	EndIf
 	; Bound Combat Maintenance and Cleanup 
 	libs.BoundCombat.Maintenance_ABC()
-	libs.BoundCombat.CleanupNPCs()
+	;libs.BoundCombat.CleanupNPCs()
 	if libs.BoundCombat.HasCompatibleDevice(libs.playerRef)
-		libs.BoundCombat.Apply_ABC(libs.PlayerRef)
+		libs.BoundCombat.EvaluateAA(libs.PlayerRef)
 	EndIf
 	; Generic Devices
 	If regDevices

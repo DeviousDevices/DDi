@@ -6,7 +6,7 @@ Scriptname zad_BoundNPCSandboxScript Extends Package Hidden
 Function Fragment_0(Actor akActor)
 ;BEGIN CODE
 	BoundCombat.EvaluateAA(akActor)
-	BoundCombat.Apply_NPC_ABC(akActor)
+	;BoundCombat.Apply_NPC_ABC(akActor)
 ;END CODE
 EndFunction
 ;END FRAGMENT

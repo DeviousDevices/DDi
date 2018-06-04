@@ -223,7 +223,7 @@ Event OnEquipped(Actor akActor)
 EndEvent
 
 
-Event OnUnequipped(Actor akActor)
+Event OnUnequipped(Actor akActor)	
 	unequipMutex = true
 	libs.Log("OnUnequipped("+akActor.GetLeveledActorBase().GetName()+": "+deviceInventory.GetName()+")")
 	If DeviceRendered.HasKeyword(Libs.Zad_QuestItem) || DeviceInventory.HasKeyword(Libs.Zad_QuestItem)
@@ -258,7 +258,7 @@ Event OnUnequipped(Actor akActor)
 			libs.Log("Detected removal token. Done.")
 			akActor.RemoveItem(deviceRendered, 1, true) ; This should not be necessary, but ensure that SD+ bug does not reoccur.
 			UnsetStoredDevice(akActor)
-			OnRemoveDevice(akActor)
+			OnRemoveDevice(akActor)			
 			If deviceRendered.HasKeyword(libs.zad_DeviousHeavyBondage) || deviceRendered.HasKeyword(libs.zad_DeviousPonyGear) || deviceRendered.HasKeyword(libs.zad_DeviousHobbleSkirt) 
 				libs.StopBoundEffects(akActor)
 			EndIf

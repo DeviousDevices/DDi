@@ -608,6 +608,14 @@ Function RemoveDevice(actor akActor, armor deviceInventory, armor deviceRendered
 		StorageUtil.SetIntValue(akActor, "zad_RemovalToken" + deviceInventory, 1)
 		akActor.UnequipItemEx(deviceInventory, 0, false)
 		akActor.RemoveItem(deviceRendered, 1, true) 
+		If akActor != playerRef
+			If zad_DeviousDevice == zad_DeviousHeavyBondage || zad_DeviousDevice == zad_DeviousPonyGear || zad_DeviousDevice == zad_DeviousHobbleSkirt
+				BoundCombat.EvaluateAA(akActor)
+			EndIf		
+			If zad_DeviousDevice == zad_DeviousGag
+				RemoveGagEffect(akActor)
+			EndIf
+		EndIf
 	Endif
 	CleanupDevices(akActor, zad_DeviousDevice)
     if destroyDevice
@@ -1743,9 +1751,13 @@ function Masturbate(actor a, bool feedback = false)
 	elseIf a.WornHasKeyword(zad_DeviousYoke)
 		Manims = New sslBaseAnimation[1]
 		Manims[0] = SexLab.GetAnimationObject("DDYokeSolo")			
-	Elseif a.WornHasKeyword(zad_DeviousBelt) || a.WornHasKeyword(zad_DeviousHarness)
+	Elseif a.WornHasKeyword(zad_DeviousBelt) || a.WornHasKeyword(zad_DeviousHarness) && !a.WornHasKeyword(zad_DeviousHeavyBondage)
 		Manims = New sslBaseAnimation[1]
 		Manims[0] = SexLab.GetAnimationObject("DDBeltedSolo")		
+	Elseif a.WornHasKeyword(zad_DeviousHeavyBondage)
+		; play bound animation for other restraints
+		PlayHornyAnimation(playerref)	
+		return
 	Else
 		If a.GetLeveledActorBase().GetSex() == 1
 			Manims = SexLab.GetAnimationsByTag(1, "Solo", "F", requireAll=true)
@@ -3314,13 +3326,10 @@ Event StartBoundEffects(Actor akTarget)
 	EndWhile
 	if akTarget != PlayerRef
 		BoundCombat.EvaluateAA(akTarget)
-		BoundCombat.Apply_NPC_ABC(akTarget)
+		;BoundCombat.Apply_NPC_ABC(akTarget)
 		return
 	EndIf
-	Log("OnEffectStart(): Bound Effects")		
-	; if aktarget == PlayerRef
-		; Terminate = False		
-	; EndIf
+	Log("OnEffectStart(): Bound Effects")			
 	PlayBoundIdle()
 	RegisterForSingleUpdate(8.0)
 	if aktarget == PlayerRef
@@ -3333,9 +3342,7 @@ Event StopBoundEffects(Actor akTarget)
 	Debug.SendAnimationEvent(akTarget, "IdleForceDefaultState")
 	if aktarget == PlayerRef
 		UnregisterForUpdate()
-		UpdateControls()		
-	else
-		BoundCombat.Remove_NPC_ABC(akTarget)
+		UpdateControls()			
 	EndIf
 	BoundCombat.EvaluateAA(akTarget)
 EndEvent

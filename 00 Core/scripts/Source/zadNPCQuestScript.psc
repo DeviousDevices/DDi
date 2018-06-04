@@ -86,7 +86,7 @@ Event OnUpdate()
 			akActor = MonitoredNpcs[i].GetActorReference()
 			if akActor && libs.IsValidActor(akActor)
 				ProcessGagEffect(akActor)
-				ProcessArmbinderEffect(akActor)
+				;ProcessArmbinderEffect(akActor)
 			EndIf
 		EndIf
 		i += 1

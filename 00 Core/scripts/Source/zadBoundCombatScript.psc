@@ -261,7 +261,7 @@ Function EvaluateAA(actor akActor)
 	libs.UpdateControls()
 
 	If !HasCompatibleDevice(akActor)
-		libs.log("EvaluateAA: Reverting to unbound AA")
+		libs.log("EvaluateAA: Reverting to unbound AA")		
 		ClearAA(akActor)
 		ResetExternalAA(akActor)
 	Else
@@ -331,7 +331,7 @@ Function ClearAA(actor akActor)
 ;This function forcibly reverts animations to the vanilla state
 ;On its own it is used in transitions between different animation sets
 ;In order to revert to animations from compatible AA mods, remember to use ResetExteralAA() afterwards
-
+	
 	FNIS_aa.SetAnimGroup(akActor, "_h2heqp", 0, 0, "DeviousDevices", Config.LogMessages)
 	FNIS_aa.SetAnimGroup(akActor, "_h2hidle", 0, 0, "DeviousDevices", Config.LogMessages)
 	FNIS_aa.SetAnimGroup(akActor, "_h2hatkpow", 0, 0, "DeviousDevices", Config.LogMessages)
@@ -348,6 +348,10 @@ Function ClearAA(actor akActor)
 	FNIS_aa.SetAnimGroup(akActor, "_mtturn", 0, 0, "DeviousDevices", Config.LogMessages)
 	FNIS_aa.SetAnimGroup(akActor, "_mtidle", 0, 0, "DeviousDevices", Config.LogMessages)
 	akActor.SetAnimationVariableInt("FNIS_abc_h2h_LocomotionPose", 0)
+	if akActor != libs.PlayerRef
+		akActor.EvaluatePackage()
+		Debug.SendAnimationEvent(akActor, "IdleForceDefaultState")
+	EndIf
 EndFunction
 
 
@@ -385,11 +389,12 @@ EndFunction
 
 ;NPC MANAGEMENT
 ;These are all the hacky measures we use to pretend that NPCs can use our devices... if they feel like it
-
+; depreciated as of 4.1 - NPC feel like wearing our devices well enough, as soon as you code it right...
 
 Function Apply_NPC_ABC(actor akActor)
+	return
 	libs.Log("Apply_NPC_ABC( " + akActor.GetLeveledActorBase().GetName() + ", UnarmedDamage: " + akActor.GetActorValue("UnarmedDamage") + " )")
-	; ActorUtil.AddPackageOverride(akActor, NPCBoundCombatPackageSandbox, 100)
+	ActorUtil.AddPackageOverride(akActor, NPCBoundCombatPackageSandbox, 100)
 	StorageUtil.FormListAdd(libs.zadNPCQuest, "BoundCombatActors", akActor, true)
 	ActorUtil.AddPackageOverride(akActor, NPCBoundCombatPackage, 100)
 	akActor.AddSpell(ArmbinderDebuff)
@@ -397,6 +402,7 @@ EndFunction
 
 
 Function Remove_NPC_ABC(actor akActor)
+	return
 	libs.Log("Removing NPC Bound Combat Package")
 	akActor.RemoveSpell(ArmbinderDebuff)
 	ActorUtil.RemovePackageOverride(akActor, NPCBoundCombatPackage)
@@ -405,6 +411,7 @@ EndFunction
 
 
 Function CleanupNPCs()
+	return
 	int i = StorageUtil.FormListCount(libs.zadNPCQuest, "BoundCombatActors")
 	while (i > 0)
 		i = i - 1
