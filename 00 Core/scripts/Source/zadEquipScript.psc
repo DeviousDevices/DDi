@@ -391,6 +391,11 @@ Event OnContainerChanged(ObjectReference akNewContainer, ObjectReference akOldCo
 						If !IsUnEquipDeviceConflict(npc)
 							libs.Notify("You use the key to unlock the "+deviceName+" from " + npc.GetLeveledActorBase().GetName() + ".")
 							RemoveDevice(npc, skipMutex=true)
+							If DestroyKey
+								libs.PlayerRef.RemoveItem(DeviceKey, NumberOfKeysNeeded, False)
+							elseif libs.Config.GlobalDestroyKey && DeviceKey.HasKeyword(libs.zad_NonUniqueKey)
+								libs.PlayerRef.RemoveItem(DeviceKey, NumberOfKeysNeeded, False)	
+							EndIf	
 						EndIf
 					; Does not have correct key
 					else
@@ -457,11 +462,6 @@ Function RemoveDevice(actor akActor, bool destroyDevice=false, bool skipMutex=fa
 	If akActor != Libs.PlayerRef
 		return
 	EndIf
-	If DestroyKey
-		libs.PlayerRef.RemoveItem(DeviceKey, NumberOfKeysNeeded, False)
-	elseif libs.Config.GlobalDestroyKey && DeviceKey.HasKeyword(libs.zad_NonUniqueKey)
-		libs.PlayerRef.RemoveItem(DeviceKey, NumberOfKeysNeeded, False)	
-	EndIf	
 EndFunction
 
 bool Function RemoveDeviceWithKey(actor akActor = none, bool destroyDevice=false)
@@ -534,8 +534,13 @@ bool Function RemoveDeviceWithKey(actor akActor = none, bool destroyDevice=false
 			EndIf
 			Return False
 		EndIf
+		If DestroyKey
+			libs.PlayerRef.RemoveItem(DeviceKey, NumberOfKeysNeeded, False)
+		elseif libs.Config.GlobalDestroyKey && DeviceKey.HasKeyword(libs.zad_NonUniqueKey)
+			libs.PlayerRef.RemoveItem(DeviceKey, NumberOfKeysNeeded, False)	
+		EndIf	
 	EndIf	
-	RemoveDevice(akActor)	
+	RemoveDevice(akActor)		
 	return True
 EndFunction
 
