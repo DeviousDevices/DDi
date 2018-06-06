@@ -489,8 +489,7 @@ bool Function RemoveDeviceWithKey(actor akActor = none, bool destroyDevice=false
 	; Check if she is able to unlock herself. We do this check here to allow it to apply even to keyless restraints that shouldn't be just removed.
 	If !CheckLockAccess()
 		Return False
-	EndIf
-	StruggleScene(libs.PlayerRef)
+	EndIf	
 	If DeviceKey
 		If libs.PlayerReF.GetItemCount(DeviceKey) <= 0
 			If zad_DD_OnNoKeyMSG
@@ -507,6 +506,8 @@ bool Function RemoveDeviceWithKey(actor akActor = none, bool destroyDevice=false
 			EndIf
 			Return False
 		EndIf		
+		; We show the struggle scene now.
+		StruggleScene(libs.PlayerRef)
 		; The key break chance defaults to zero, so we don't need to check for quest items etc. If modders set this chance higher, it's their responsibility!
 		Float ModValue = (KeyBreakChance * CalculateKeyModifier(False))
 		If (KeyBreakChance < 100.0) && (ModValue >= 100.0)
@@ -1121,6 +1122,7 @@ EndFunction
 
 ; returns 0 when the escape attempt fails, 1 at success and -1 when no attempt was made due to cooldown
 Int Function Escape(Float Chance)
+	StruggleScene(libs.PlayerRef)
 	Bool Success = False
 	If Chance == 0.0
 		; no need to process, but returning here will prevent catastrophic failures when there is zero chance of success. We're not THAT mean!
@@ -1393,7 +1395,9 @@ Function StruggleScene(actor akActor)
 	If zad_DeviousDevice == libs.zad_DeviousHeavyBondage
 		Utility.Wait(10)
 		libs.Pant(libs.PlayerRef)
-		Utility.Wait(10)
+		If Utility.RandomInt() < 50
+			Utility.Wait(10)
+		EndIf
 	EndIf
 	libs.EndThirdPersonAnimation(akActor, cameraState, true)
 	libs.SexlabMoan(libs.PlayerRef)
@@ -1407,8 +1411,7 @@ Function EscapeAttemptStruggle()
 		zad_DD_EscapeStruggleMSG.Show()
 	Else
 		libs.zad_DD_EscapeStruggleMSG.Show()
-	EndIf
-	StruggleScene(libs.PlayerRef)
+	EndIf	
 	Int i = Escape(CalclulateStruggleSuccess())
 	If i == 1
 		; device got removed in Escape(), so just need to show the success message.
