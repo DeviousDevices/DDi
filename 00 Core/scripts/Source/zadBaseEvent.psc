@@ -66,16 +66,21 @@ Event OnPlayerLoadGame()
 	if Probability < 0
 		Probability = DefaultProbability
 	EndIf
-	libs.EventSlots.Register(name, self) ; attempts auto-registration if possible
+	RegisterDeviceEffect() ; attempts auto-registration if possible
 	libs.Log("["+name+"] Loaded: "+Probability+"%")
 EndEvent
 
 
 Event OnRegisterEvents(string eventName, string strArg, float numArg, Form sender)
+	RegisterDeviceEffect()
+EndEvent
+
+Function RegisterDeviceEffect()
 	int id = libs.EventSlots.Register(name, self)
 	if id == -1
 		libs.Warn("Registration of event "+name+" failed.")
 	Else
 		libs.Log("["+name+"] Registered. Event #"+id)
 	EndIf
-EndEvent
+EndFunction
+

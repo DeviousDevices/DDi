@@ -52,6 +52,26 @@ int Property HBC_mt Auto
 int Property HBC_mtturn Auto
 int Property HBC_mtidle Auto
 
+;PonyAA
+int Property PON_ModID Auto
+int Property PON_CRC Auto
+
+int Property PON_h2heqp Auto
+int Property PON_h2hidle Auto
+int Property PON_h2hatkpow Auto
+int Property PON_h2hatk Auto
+int Property PON_h2hstag Auto
+int Property PON_jump Auto
+int Property PON_sneakmt Auto
+int Property PON_sneakidle Auto
+int Property PON_sprint Auto
+
+int Property PON_shout Auto
+int Property PON_mtx Auto
+int Property PON_mt Auto
+int Property PON_mtturn Auto
+int Property PON_mtidle Auto
+
 
 Function UpdateValues() 
 	ABC_ModID = FNIS_aa.GetAAModID("abc", "DeviousDevices", Config.LogMessages) 
@@ -85,6 +105,22 @@ Function UpdateValues()
 	HBC_mt = FNIS_aa.GetGroupBaseValue(HBC_ModID, FNIS_aa._mt(), "DeviousDevices",Config.LogMessages)
 	HBC_mtturn = FNIS_aa.GetGroupBaseValue(HBC_ModID, FNIS_aa._mtturn(), "DeviousDevices",Config.LogMessages)
 	HBC_mtidle = FNIS_aa.GetGroupBaseValue(HBC_ModID, FNIS_aa._mtidle(), "DeviousDevices",Config.LogMessages)
+	
+	PON_ModID = FNIS_aa.GetAAModID("pon", "DeviousDevices", Config.LogMessages) 
+	PON_h2heqp = FNIS_aa.GetGroupBaseValue(PON_ModID, FNIS_aa._h2heqp(), "DeviousDevices",Config.LogMessages)
+	PON_h2hidle = FNIS_aa.GetGroupBaseValue(PON_ModID, FNIS_aa._h2hidle(), "DeviousDevices",Config.LogMessages)
+	PON_h2hatkpow = FNIS_aa.GetGroupBaseValue(PON_ModID, FNIS_aa._h2hatkpow(), "DeviousDevices",Config.LogMessages)
+	PON_h2hatk = FNIS_aa.GetGroupBaseValue(PON_ModID, FNIS_aa._h2hatk(), "DeviousDevices",Config.LogMessages)
+	PON_h2hstag = FNIS_aa.GetGroupBaseValue(PON_ModID, FNIS_aa._h2hstag(), "DeviousDevices",Config.LogMessages)
+	PON_jump = FNIS_aa.GetGroupBaseValue(PON_ModID, FNIS_aa._jump(), "DeviousDevices",Config.LogMessages)
+	PON_sneakmt = FNIS_aa.GetGroupBaseValue(PON_ModID, FNIS_aa._sneakmt(), "DeviousDevices",Config.LogMessages)
+	PON_sneakidle = FNIS_aa.GetGroupBaseValue(PON_ModID, FNIS_aa._sneakidle(), "DeviousDevices",Config.LogMessages)
+	PON_sprint = FNIS_aa.GetGroupBaseValue(PON_ModID, FNIS_aa._sprint(), "DeviousDevices",Config.LogMessages)
+	PON_shout = FNIS_aa.GetGroupBaseValue(PON_ModID, FNIS_aa._shout(), "DeviousDevices",Config.LogMessages)
+	PON_mtx = FNIS_aa.GetGroupBaseValue(PON_ModID, FNIS_aa._mtx(), "DeviousDevices",Config.LogMessages)
+	PON_mt = FNIS_aa.GetGroupBaseValue(PON_ModID, FNIS_aa._mt(), "DeviousDevices",Config.LogMessages)
+	PON_mtturn = FNIS_aa.GetGroupBaseValue(PON_ModID, FNIS_aa._mtturn(), "DeviousDevices",Config.LogMessages)
+	PON_mtidle = FNIS_aa.GetGroupBaseValue(PON_ModID, FNIS_aa._mtidle(), "DeviousDevices",Config.LogMessages)
 EndFunction
 
 
@@ -113,12 +149,14 @@ EndFunction
 
 
 bool Function HasCompatibleDevice(actor akActor)
-	return (akActor.WornHasKeyword(libs.zad_DeviousHeavyBondage) || (akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirt) && !akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirtRelaxed)))
+	return (akActor.WornHasKeyword(libs.zad_DeviousHeavyBondage) || akActor.WornHasKeyword(libs.zad_DeviousPonyGear) || (akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirt) && !akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirtRelaxed)))
 EndFunction
 
 
 Int Function GetPrimaryAAState(actor akActor)
-	If akActor.WornHasKeyword(libs.zad_DeviousCuffsFront)
+	If akActor.WornHasKeyword(libs.zad_DeviousPetSuit)
+		return 6	; Wearing pet suit
+	ElseIf akActor.WornHasKeyword(libs.zad_DeviousCuffsFront)
 		return 5	; Wearing frontcuffs
 	ElseIf akActor.WornHasKeyword(libs.zad_DeviousYokeBB)
 		return 4	; Wearing BByoke
@@ -139,6 +177,8 @@ EndFunction
 Int Function GetSecondaryAAState(actor akActor)
 	If akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirt) && !akActor.WornHasKeyword(libs.zad_DeviousHobbleSkirtRelaxed)
 		return 1	; Wearing hobble skirt
+	ElseIf akActor.WornHasKeyword(libs.zad_DeviousPonyGear)
+		return 2	; Pony device
 	Else
 		return 0	; No secondary AA modifiers
 	Endif
@@ -149,6 +189,10 @@ Int Function SelectAnimationSet(actor akActor)
 	int animSet;
 	int AAStateA = GetPrimaryAAState(akActor)
 	int AAStateB = GetSecondaryAAState(akActor)
+	If AAStateA == 6
+		; The pet suit is special, and needs to override pony gear. Hobble skirts are incompatible with the pet suit anyway.
+		AAStateB = 0
+	EndIf
 	If AAStateB == 1 ; Hobble subset
 		if AAStateA == 1
 			animSet = 1 ; Armbinder animation
@@ -166,6 +210,20 @@ Int Function SelectAnimationSet(actor akActor)
 			animSet = 1 ; Unsupported device type.
 			libs.Warn("Equipped binding is incompatible with bound combat. Could not determine appropriate animation set. Defaulting to Armbinder Animations.")
 		endIf
+	ElseIf AAStateB == 2 ; Pony gear
+		if AAStateA == 1
+			animSet = 1 ; Armbinder animation
+		elseIf AAStateA == 2
+			animSet = 2 ; Yoke animations
+		elseIf AAStateA == 3
+			animSet = 3 ; Elbowbinder animations
+		elseIf AAStateA == 4
+			animSet = 4 ; BBYoke animations
+		elseIf AAStateA == 5
+			animSet = 5 ; FrontCuffs animations
+		elseIf AAStateA == 0
+			animSet = 0 ; Only pony anims
+		endIf
 	Else
 		if AAStateA == 1
 			animSet = 0 ; Armbinder animation
@@ -177,6 +235,8 @@ Int Function SelectAnimationSet(actor akActor)
 			animSet = 3 ; BBYoke animations
 		elseIf AAStateA == 5
 			animSet = 4 ; FrontCuffs animations
+		elseIf AAStateA == 6
+			animSet = 5 ; pet suit animations
 		elseIf AAStateA == 0
 			animSet = -1 ; No bound animations
 		else
@@ -201,7 +261,7 @@ Function EvaluateAA(actor akActor)
 	libs.UpdateControls()
 
 	If !HasCompatibleDevice(akActor)
-		libs.log("EvaluateAA: Reverting to unbound AA")
+		libs.log("EvaluateAA: Reverting to unbound AA")		
 		ClearAA(akActor)
 		ResetExternalAA(akActor)
 	Else
@@ -226,6 +286,25 @@ Function EvaluateAA(actor akActor)
 			FNIS_aa.SetAnimGroup(akActor, "_mtturn", HBC_mtturn, animSet, "DeviousDevices", Config.LogMessages)
 			FNIS_aa.SetAnimGroup(akActor, "_mtidle", HBC_mtidle, animSet, "DeviousDevices", Config.LogMessages)
 			;akActor.SetAnimationVariableInt("FNIS_hbc_h2h_LocomotionPose", animSet + 1)
+		elseif animState == 2
+			If animSet > 0
+				; ABC offsets are -1 compared to the pony gear...
+				FNIS_aa.SetAnimGroup(akActor, "_h2heqp", ABC_h2heqp, animSet - 1, "DeviousDevices", Config.LogMessages)
+				FNIS_aa.SetAnimGroup(akActor, "_h2hidle", ABC_h2hidle, animSet - 1, "DeviousDevices", Config.LogMessages)
+				FNIS_aa.SetAnimGroup(akActor, "_h2hatkpow", ABC_h2hatkpow, animSet - 1, "DeviousDevices", Config.LogMessages)
+				FNIS_aa.SetAnimGroup(akActor, "_h2hatk", ABC_h2hatk, animSet - 1, "DeviousDevices", Config.LogMessages)
+				FNIS_aa.SetAnimGroup(akActor, "_h2hstag", ABC_h2hstag, animSet - 1, "DeviousDevices", Config.LogMessages)
+				FNIS_aa.SetAnimGroup(akActor, "_jump", ABC_jump, animSet - 1, "DeviousDevices", Config.LogMessages)
+				FNIS_aa.SetAnimGroup(akActor, "_sneakmt", ABC_sneakmt, animSet - 1, "DeviousDevices", Config.LogMessages)
+				FNIS_aa.SetAnimGroup(akActor, "_sneakidle", ABC_sneakidle, animSet - 1, "DeviousDevices", Config.LogMessages)
+				FNIS_aa.SetAnimGroup(akActor, "_sprint", ABC_sprint, animSet - 1, "DeviousDevices", Config.LogMessages)
+				FNIS_aa.SetAnimGroup(akActor, "_mtturn", ABC_mtturn, animSet - 1, "DeviousDevices", Config.LogMessages)
+				FNIS_aa.SetAnimGroup(akActor, "_shout", ABC_shout, animSet - 1, "DeviousDevices", Config.LogMessages)
+			EndIf
+			FNIS_aa.SetAnimGroup(akActor, "_mtx", PON_mtx, animSet, "DeviousDevices", Config.LogMessages)
+			FNIS_aa.SetAnimGroup(akActor, "_mt", PON_mt, animSet, "DeviousDevices", Config.LogMessages)
+			FNIS_aa.SetAnimGroup(akActor, "_mtidle", PON_mtidle, animSet, "DeviousDevices", Config.LogMessages)
+			;akActor.SetAnimationVariableInt("FNIS_PON_h2h_LocomotionPose", animSet + 1)
 		else
 			FNIS_aa.SetAnimGroup(akActor, "_h2heqp", ABC_h2heqp, animSet, "DeviousDevices", Config.LogMessages)
 			FNIS_aa.SetAnimGroup(akActor, "_h2hidle", ABC_h2hidle, animSet, "DeviousDevices", Config.LogMessages)
@@ -242,7 +321,9 @@ Function EvaluateAA(actor akActor)
 			FNIS_aa.SetAnimGroup(akActor, "_mt", ABC_mt, animSet, "DeviousDevices", Config.LogMessages)
 			FNIS_aa.SetAnimGroup(akActor, "_mtturn", ABC_mtturn, animSet, "DeviousDevices", Config.LogMessages)
 			FNIS_aa.SetAnimGroup(akActor, "_mtidle", ABC_mtidle, animSet, "DeviousDevices", Config.LogMessages)
-			akActor.SetAnimationVariableInt("FNIS_abc_h2h_LocomotionPose", animSet + 1)
+			if animSet != 5 ; We don't set locomotion for pet suit
+				akActor.SetAnimationVariableInt("FNIS_abc_h2h_LocomotionPose", animSet + 1)
+			EndIf
 		endif
 	EndIf
 EndFunction
@@ -251,7 +332,7 @@ Function ClearAA(actor akActor)
 ;This function forcibly reverts animations to the vanilla state
 ;On its own it is used in transitions between different animation sets
 ;In order to revert to animations from compatible AA mods, remember to use ResetExteralAA() afterwards
-
+	
 	FNIS_aa.SetAnimGroup(akActor, "_h2heqp", 0, 0, "DeviousDevices", Config.LogMessages)
 	FNIS_aa.SetAnimGroup(akActor, "_h2hidle", 0, 0, "DeviousDevices", Config.LogMessages)
 	FNIS_aa.SetAnimGroup(akActor, "_h2hatkpow", 0, 0, "DeviousDevices", Config.LogMessages)
@@ -268,6 +349,10 @@ Function ClearAA(actor akActor)
 	FNIS_aa.SetAnimGroup(akActor, "_mtturn", 0, 0, "DeviousDevices", Config.LogMessages)
 	FNIS_aa.SetAnimGroup(akActor, "_mtidle", 0, 0, "DeviousDevices", Config.LogMessages)
 	akActor.SetAnimationVariableInt("FNIS_abc_h2h_LocomotionPose", 0)
+	if akActor != libs.PlayerRef
+		akActor.EvaluatePackage()
+		Debug.SendAnimationEvent(akActor, "IdleForceDefaultState")
+	EndIf
 EndFunction
 
 
@@ -284,13 +369,20 @@ Function ResetExternalAA(actor akActor)
 			If libs.playerref.GetLeveledActorBase().GetSex() != 1
 				return
 			Endif
-			FNISSMConfigMenu FNISSM = Game.GetFormFromFile(0x000012C7, "FNISSexyMove.esp") As FNISSMConfigMenu			
-			int SM = FNISSM.FNISSMquest.iSMplayer 						
+			FNISSMConfigMenu FNISSM = Game.GetFormFromFile(0x000012C7, "FNISSexyMove.esp") As FNISSMConfigMenu
+			int SM = FNISSM.FNISSMquest.iSMplayer
 			if SM == 0
 				FNIS_aa.SetAnimGroup(Game.GetPlayer(), "_mt", 0, 0, "FNIS Sexy Move", true)
+				FNIS_aa.SetAnimGroup(Game.GetPlayer(), "_mtx", 0, 0, "FNIS Sexy Move", true)
 			else
-				FNIS_aa.SetAnimGroup(Game.GetPlayer(), "_mt", FNISSM.FNISSMQuest.FNISsmMtBase, SM - 1, "FNIS Sexy Move", true)
-			endif					
+				if FNISSM.FNISSMquest.FNISs3ModID >= 0 && FNISSM.FNISSMquest.SM360 ; 360 pack installed and activated
+					FNIS_aa.SetAnimGroup(Game.GetPlayer(), "_mt", FNISSM.FNISSMquest.FNISs3MtBase, SM - 1, "FNIS Sexy Move(360)", true)
+					FNIS_aa.SetAnimGroup(Game.GetPlayer(), "_mtx", FNISSM.FNISSMquest.FNISs3MtxBase, SM - 1, "FNIS Sexy Move(360)", true)
+				else
+					FNIS_aa.SetAnimGroup(Game.GetPlayer(), "_mt", FNISSM.FNISSMquest.FNISsmMtBase, SM - 1, "FNIS Sexy Move", true)
+					FNIS_aa.SetAnimGroup(Game.GetPlayer(), "_mtx", FNISSM.FNISSMquest.FNISsmMtxBase, SM - 1, "FNIS Sexy Move", true)
+				endif
+			endif
 		Endif
 	EndIf
 EndFunction
@@ -298,11 +390,12 @@ EndFunction
 
 ;NPC MANAGEMENT
 ;These are all the hacky measures we use to pretend that NPCs can use our devices... if they feel like it
-
+; depreciated as of 4.1 - NPC feel like wearing our devices well enough, as soon as you code it right...
 
 Function Apply_NPC_ABC(actor akActor)
+	return
 	libs.Log("Apply_NPC_ABC( " + akActor.GetLeveledActorBase().GetName() + ", UnarmedDamage: " + akActor.GetActorValue("UnarmedDamage") + " )")
-	; ActorUtil.AddPackageOverride(akActor, NPCBoundCombatPackageSandbox, 100)
+	ActorUtil.AddPackageOverride(akActor, NPCBoundCombatPackageSandbox, 100)
 	StorageUtil.FormListAdd(libs.zadNPCQuest, "BoundCombatActors", akActor, true)
 	ActorUtil.AddPackageOverride(akActor, NPCBoundCombatPackage, 100)
 	akActor.AddSpell(ArmbinderDebuff)
@@ -310,6 +403,7 @@ EndFunction
 
 
 Function Remove_NPC_ABC(actor akActor)
+	return
 	libs.Log("Removing NPC Bound Combat Package")
 	akActor.RemoveSpell(ArmbinderDebuff)
 	ActorUtil.RemovePackageOverride(akActor, NPCBoundCombatPackage)
@@ -318,13 +412,14 @@ EndFunction
 
 
 Function CleanupNPCs()
+	return
 	int i = StorageUtil.FormListCount(libs.zadNPCQuest, "BoundCombatActors")
 	while (i > 0)
 		i = i - 1
 		Actor akActor = StorageUtil.FormListGet(libs.zadNPCQuest, "BoundCombatActors", i) as Actor
 		if !akActor
 			StorageUtil.FormListRemoveAt(libs.zadNPCQuest, "BoundCombatActors", i)
-		ElseIf libs.IsValidActor(akActor) && !akActor.WornHasKeyword(libs.zad_DeviousArmbinder)
+		ElseIf libs.IsValidActor(akActor) && !akActor.WornHasKeyword(libs.zad_DeviousHeavyBondage)
 			Remove_NPC_ABC(akActor)
 		EndIf
 	EndWhile

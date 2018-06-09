@@ -8,23 +8,23 @@ Version V4.0.0
 ' <type>:
 '			b	 	basic: simple idle animation with one animation file
 '			o		AnimObject: basic animation with one or more AnimObjects
-'			s		sequenced animation (SA): first of at least 2 animation played as sequence 
-'			so		sequenced optimized: SA with AnimObjects and optimized Equip/UnEquip 
+'			s		sequenced animation (SA): first of at least 2 animation played as sequence
+'			so		sequenced optimized: SA with AnimObjects and optimized Equip/UnEquip
 '			fu		furniture animation: first of at least 3 animations played on a furniture object
 '			fuo		furniture animation optimized: fu with AnimObjects and optimized Equip/UnEquip
-'			+		second to last animation of a s/so/fu/fuo definition 
-'			ofa		offset arm animation: animations modifying arm position while other animations play  
+'			+		second to last animation of a s/so/fu/fuo definition
+'			ofa		offset arm animation: animations modifying arm position while other animations play
 '			pa		paired animation
 ' 			km		killmove
 '
-' <option>: 
+' <option>:
 '			a		acyclic animation: 1-time only (default: cyclic)
 '			o		one or more AnimObjects
 '			Tn		transition next: character keeps position after -a animation (no IdleForceDefaultState)
 '			h		headtracking ON (default OFF)
 '			Bn.m	blendtime n.m sec
 '			k		"known" animation file (part of vanilla or different mod) -> excl. from consistance check
-'			bsa		animation file part of bsa file -> excluded from consistence check 
+'			bsa		animation file part of bsa file -> excluded from consistence check
 '			st		sticky AO -> AO will not be unequipped at the end of animation (last animation only)
 '			D<time>	animation duration (pa and km only)
 '			T<AnimEvent>/<time>	triggered AnimEvents during pa/km animations
@@ -36,17 +36,17 @@ Version V4.0.0
 ' <VersionNumber>	e.g. V5.0
 '
 ' For details please refer to "FNIS for Modders Documentation"
-' 
+'
 'Examples:
 '	b -a,h,Tn,B1.2 MyAnimEvent1 MyAnimFile1.hkx
 '	o -h MyAnimEvent2 AnimationWithAO.hkx MyAnimObject01 MyAnimObject02
-'	s -a SA1entry SAanim1.hkx  
+'	s -a SA1entry SAanim1.hkx
 '	+ -h,o,k SA1loop ..\OtherMod\OtherModAnim.hkx MYAnimObject03
 '	+ -a SA1exit SAanim3.hkx
-'	fu -a FURNITURE1_Enter FURNITURE1_Enter.hkx 
+'	fu -a FURNITURE1_Enter FURNITURE1_Enter.hkx
 '	+ FURNITURE1_Loop FURNITURE1_Loop.hkx
 '	+ -a FURNITURE1_Exit FURNITURE1_Exit.hkx
-'	pa -D3.466667 HugB paired_hugb.hkx 
+'	pa -D3.466667 HugB paired_hugb.hkx
 '	km -o,D4.000000,Tnpcsoundplay.npckillchop/2.555,T2_killactor/3.333 FNISKillmove FNIS_Killmove.hkx AnimObjectSword/1
 '
 ' AnimEvents and Animation File names have to be unique through all mods (even for files in different folders)
@@ -67,6 +67,68 @@ b DDZazArmbHorny03 ZapArmbHorny03.hkx
 b DDZazYokeHorny01 ZapYokeHorny01.hkx
 b DDZazYokeHorny02 ZapYokeHorny02.hkx
 b DDZazYokeHorny03 ZapYokeHorny03.hkx
+
+b ft_edged_armbinder_1 ft_edged_armbinder_1.hkx
+b ft_edged_bbyoke_1 ft_edged_bbyoke_1.hkx
+b ft_edged_elbowbinder_1 ft_edged_elbowbinder_1.hkx
+b ft_edged_frontcuffs_1 ft_edged_frontcuffs_1.hkx
+b ft_edged_yoke_1 ft_edged_yoke_1.hkx
+b ft_edged_hobbled_armbinder_1 ft_edged_hobbled_armbinder_1.hkx
+b ft_edged_hobbled_bbyoke_1 ft_edged_hobbled_bbyoke_1.hkx
+b ft_edged_hobbled_elbowbinder_1 ft_edged_hobbled_elbowbinder_1.hkx
+b ft_edged_hobbled_frontcuffs_1 ft_edged_hobbled_frontcuffs_1.hkx
+b ft_edged_hobbled_yoke_1 ft_edged_hobbled_yoke_1.hkx
+
+b ft_horny_armbinder_1 ft_horny_armbinder_1.hkx
+b ft_horny_armbinder_2 ft_horny_armbinder_2.hkx
+b ft_horny_armbinder_3 ft_horny_armbinder_3.hkx
+b ft_horny_armbinder_4 ft_horny_armbinder_4.hkx
+b ft_horny_armbinder_5 ft_horny_armbinder_5.hkx
+b ft_horny_armbinder_6 ft_horny_armbinder_6.hkx
+b ft_horny_armbinder_7 ft_horny_armbinder_7.hkx
+
+b ft_horny_bbyoke_1 ft_horny_bbyoke_1.hkx
+b ft_horny_bbyoke_2 ft_horny_bbyoke_2.hkx
+b ft_horny_bbyoke_3 ft_horny_bbyoke_3.hkx
+b ft_horny_bbyoke_4 ft_horny_bbyoke_4.hkx
+b ft_horny_bbyoke_5 ft_horny_bbyoke_5.hkx
+b ft_horny_bbyoke_6 ft_horny_bbyoke_6.hkx
+b ft_horny_bbyoke_7 ft_horny_bbyoke_7.hkx
+
+b ft_horny_elbowbinder_1 ft_horny_elbowbinder_1.hkx
+b ft_horny_elbowbinder_2 ft_horny_elbowbinder_2.hkx
+b ft_horny_elbowbinder_3 ft_horny_elbowbinder_3.hkx
+b ft_horny_elbowbinder_4 ft_horny_elbowbinder_4.hkx
+b ft_horny_elbowbinder_5 ft_horny_elbowbinder_5.hkx
+b ft_horny_elbowbinder_6 ft_horny_elbowbinder_6.hkx
+b ft_horny_elbowbinder_7 ft_horny_elbowbinder_7.hkx
+
+b ft_horny_frontcuffs_1 ft_horny_frontcuffs_1.hkx
+b ft_horny_frontcuffs_2 ft_horny_frontcuffs_2.hkx
+b ft_horny_frontcuffs_3 ft_horny_frontcuffs_3.hkx
+b ft_horny_frontcuffs_4 ft_horny_frontcuffs_4.hkx
+b ft_horny_frontcuffs_5 ft_horny_frontcuffs_5.hkx
+b ft_horny_frontcuffs_6 ft_horny_frontcuffs_6.hkx
+b ft_horny_frontcuffs_7 ft_horny_frontcuffs_7.hkx
+
+b ft_horny_yoke_1 ft_horny_yoke_1.hkx
+b ft_horny_yoke_2 ft_horny_yoke_2.hkx
+b ft_horny_yoke_3 ft_horny_yoke_3.hkx
+b ft_horny_yoke_4 ft_horny_yoke_4.hkx
+b ft_horny_yoke_5 ft_horny_yoke_5.hkx
+b ft_horny_yoke_6 ft_horny_yoke_6.hkx
+b ft_horny_yoke_7 ft_horny_yoke_7.hkx
+
+b ft_orgasm_armbinder_1 ft_orgasm_armbinder_1.hkx
+b ft_orgasm_bbyoke_1 ft_orgasm_bbyoke_1.hkx
+b ft_orgasm_elbowbinder_1 ft_orgasm_elbowbinder_1.hkx
+b ft_orgasm_frontcuffs_1 ft_orgasm_frontcuffs_1.hkx
+b ft_orgasm_yoke_1 ft_orgasm_yoke_1.hkx
+b ft_orgasm_hobbled_armbinder_1 ft_orgasm_hobbled_armbinder_1.hkx
+b ft_orgasm_hobbled_bbyoke_1 ft_orgasm_hobbled_bbyoke_1.hkx
+b ft_orgasm_hobbled_elbowbinder_1 ft_orgasm_hobbled_elbowbinder_1.hkx
+b ft_orgasm_hobbled_frontcuffs_1 ft_orgasm_hobbled_frontcuffs_1.hkx
+b ft_orgasm_hobbled_yoke_1 ft_orgasm_hobbled_yoke_1.hkx
 
 b -md DDArmbBleedoutIdle ZapArmbBleedoutIdle.hkx
 b -md DDYokeBleedoutIdle ZapYokeBleedoutIdle.hkx
@@ -109,22 +171,70 @@ b DDRegCuffsFrontStruggle03 DDRegCuffsFrontStruggle03.hkx
 b DDChastityBeltStruggle01 FT_DD_Chastity_Struggle_1.hkx
 b DDChastityBeltStruggle02 FT_DD_Chastity_Struggle_2.hkx
 
+b -a ft_fall_over_armbinder_1 ft_fall_over_armbinder_1.hkx
+b -a ft_fall_over_bbyoke_1 ft_fall_over_bbyoke_1.hkx
+b -a ft_fall_over_elbowbinder_1 ft_fall_over_elbowbinder_1.hkx
+b -a ft_fall_over_frontcuffs_1 ft_fall_over_frontcuffs_1.hkx
+b -a ft_fall_over_yoke_1 ft_fall_over_yoke_1.hkx
+b -a ft_fall_over_reg_1 ft_fall_over_reg_1.hkx
+b ft_out_of_breath_armbinder ft_out_of_breath_armbinder.hkx
+b ft_out_of_breath_bbyoke ft_out_of_breath_bbyoke.hkx
+b ft_out_of_breath_elbowbinder ft_out_of_breath_elbowbinder.hkx
+b ft_out_of_breath_frontcuffs ft_out_of_breath_frontcuffs.hkx
+b ft_out_of_breath_reg ft_out_of_breath_reg.hkx
+b ft_out_of_breath_yoke ft_out_of_breath_yoke.hkx
+
+b ft_struggle_blindfold_1 ft_struggle_blindfold_1.hkx
+b ft_struggle_boots_1 ft_struggle_boots_1.hkx
+b ft_struggle_gag_1 ft_struggle_gag_1.hkx
+b ft_struggle_gloves_1 ft_struggle_gloves_1.hkx
+b ft_struggle_head_1 ft_struggle_head_1.hkx
+
+b ft_bdsm_idle_collarme ft_bdsm_idle_collarme.hkx
+b ft_bdsm_idle_egyptian ft_bdsm_idle_egyptian.hkx
+b ft_bdsm_idle_inspection ft_bdsm_idle_inspection.hkx
+b ft_surrender ft_surrender.hkx
+b ft_surrender_hobbled ft_surrender_hobbled.hkx
+
+s -a ft_unconcious_falling ft_unconcious_falling.hkx
++ ft_unconcious_idle ft_unconcious_idle.hkx
+
+s -a ft_bleedout_transin_armbinder ft_bleedout_transin_armbinder.hkx
++ ft_bleedout_idle_armbinder ft_bleedout_idle_armbinder.hkx
++ -a ft_bleedout_transout_armbinder ft_bleedout_transout_armbinder.hkx
+
+s -a ft_bleedout_transin_bbyoke ft_bleedout_transin_bbyoke.hkx
++ ft_bleedout_idle_bbyoke ft_bleedout_idle_bbyoke.hkx
++ -a ft_bleedout_transout_bbyoke ft_bleedout_transout_bbyoke.hkx
+
+s -a ft_bleedout_transin_elbowbinder ft_bleedout_transin_elbowbinder.hkx
++ ft_bleedout_idle_elbowbinder ft_bleedout_idle_elbowbinder.hkx
++ -a ft_bleedout_transout_elbowbinder ft_bleedout_transout_elbowbinder.hkx
+
+s -a ft_bleedout_transin_frontcuffs ft_bleedout_transin_frontcuffs.hkx
++ ft_bleedout_idle_frontcuffs ft_bleedout_idle_frontcuffs.hkx
++ -a ft_bleedout_transout_frontcuffs ft_bleedout_transout_frontcuffs.hkx
+
+s -a ft_bleedout_transin_yoke ft_bleedout_transin_yoke.hkx
++ ft_bleedout_idle_yoke ft_bleedout_idle_yoke.hkx
++ -a ft_bleedout_transout_yoke ft_bleedout_transout_yoke.hkx
+
 ' Note to self:
 ' the index of the h2h_locomotionpose animation always has to be 1 higher than the index of its corresponding AA set
 
 AAprefix abc
 
-AAset _h2heqp 5
-AAset _h2hidle 5
-AAset _h2hatkpow 5
-AAset _h2hstag 5
-AAset _h2hatk 5
-AAset _jump 5
-AAset _sprint 5
-AAset _sneakmt 5
-AAset _sneakidle 5
-AAset _shout 5
-AAset _mtx 5
-AAset _mt 5
-AAset _mtturn 5
-AAset _mtidle 5
+AAset _h2heqp 6
+AAset _h2hidle 6
+AAset _h2hatkpow 6
+AAset _h2hstag 6
+AAset _h2hatk 6
+AAset _jump 6
+AAset _sprint 6
+AAset _sneakmt 6
+AAset _sneakidle 6
+AAset _shout 6
+AAset _mtx 6
+AAset _mt 6
+AAset _mtturn 6
+AAset _mtidle 6

@@ -11,7 +11,10 @@ Perk Property zad_keyCraftingEasy Auto ; Obsolete, will remove later
 Perk Property zad_keyCraftingHard Auto ; Obsolete, will remove later.
 
 ; Config Variables
-Int Property EscapeDifficulty = 5 Auto
+Int Property EscapeDifficulty = 4 Auto
+Int Property CooldownDifficulty = 4 Auto
+Int Property KeyDifficulty = 4 Auto
+Bool Property GlobalDestroyKey = True Auto
 
 int Property UnlockThreshold Auto
 int thresholdDefault = 185
@@ -84,8 +87,8 @@ int Property BaseHornyChance = 5 Auto
 int baseHornyChanceDefault = 5
 int Property BaseBumpPumpChance = 17 Auto
 int baseBumpPumpChanceDefault = 17
-int Property numNpcs = 5 Auto Conditional
-int numNpcsDefault = 5
+int Property numNpcs = 15 Auto Conditional
+int numNpcsDefault = 15
 
 ; Sounds
 float Property VolumeOrgasm = 1.0 Auto
@@ -195,6 +198,10 @@ Int ArmbinderMinStruggleOID
 Int ArmbinderStruggleBaseChanceOID
 Int YokeRemovalCostPerLevelOID
 Int EscapeDifficultyOID
+Int CooldownDifficultyOID
+Int KeyDifficultyOID
+Int GlobalDestroyKeyOID
+
 
 string[] Property EsccapeDifficultyList Auto
 string[] difficultyList
@@ -334,6 +341,9 @@ Event OnPageReset(string page)
 		SetCursorFillMode(TOP_TO_BOTTOM)		
 		AddHeaderOption("Device Difficulty")
 		EscapeDifficultyOID = AddMenuOption("Difficulty Modifier", EsccapeDifficultyList[EscapeDifficulty])
+		CooldownDifficultyOID = AddMenuOption("Cooldown Modifier", EsccapeDifficultyList[CooldownDifficulty])
+		KeyDifficultyOID = AddMenuOption("Keybreak Modifier", EsccapeDifficultyList[KeyDifficulty])
+		GlobalDestroyKeyOID = AddToggleOption("Consume Keys", GlobalDestroyKey)
 		AddHeaderOption("Belt Arousal Options")
 		beltRateOID = AddSliderOption("Arousal rate belt multiplier", beltRateMult, "{1}")
 		plugRateOID = AddSliderOption("Arousal rate plugged multiplier", plugRateMult, "{1}")
@@ -388,11 +398,11 @@ Event OnPageReset(string page)
 		VolumeOrgasmOID = AddSliderOption("Orgasm Volume", VolumeOrgasm, "{3}")
 		VolumeEdgedOID = AddSliderOption("Edged Volume", VolumeEdged, "{3}")
 		VolumeVibratorOID = AddSliderOption("Vibrator Volume ", VolumeVibrator, "{3}")
-	ElseIf page == "Quests"
-		SetCursorFillMode(TOP_TO_BOTTOM)
-		AddHeaderOption("Quest Toggles for QuestMonitor")
-		ForbiddenTomeOID = AddToggleOption("Forbidden Tome", ForbiddenTome)
-		SergiusExperimentOID = AddToggleOption("Sergius's Experiment", SergiusExperiment)
+	; ElseIf page == "Quests"
+		; SetCursorFillMode(TOP_TO_BOTTOM)
+		; AddHeaderOption("Quest Toggles for QuestMonitor")
+		; ForbiddenTomeOID = AddToggleOption("Forbidden Tome", ForbiddenTome)
+		; SergiusExperimentOID = AddToggleOption("Sergius's Experiment", SergiusExperiment)
 		; SurreptitiousStreetsOID = AddToggleOption("Surreptitious Streets", SurreptitiousStreets)
 		; RadiantMasterOID = AddToggleOption("Radiant Master", RadiantMaster)
 		; AddHeaderOption("Surreptitious Streets Configuration")
@@ -465,7 +475,15 @@ Event OnOptionMenuOpen(int option)
 	ElseIf option == EscapeDifficultyOID
 		SetMenuDialogOptions(EsccapeDifficultyList)
 		SetMenuDialogStartIndex(EscapeDifficulty)
-		SetMenuDialogDefaultIndex(3)
+		SetMenuDialogDefaultIndex(5)
+	ElseIf option == CooldownDifficultyOID
+		SetMenuDialogOptions(EsccapeDifficultyList)
+		SetMenuDialogStartIndex(CooldownDifficulty)
+		SetMenuDialogDefaultIndex(5)
+	ElseIf option == KeyDifficultyOID
+		SetMenuDialogOptions(EsccapeDifficultyList)
+		SetMenuDialogStartIndex(KeyDifficulty)
+		SetMenuDialogDefaultIndex(5)	
 	ElseIf option == DevicesUnderneathSlotOID
 		SetMenuDialogOptions(SlotMasks)
 		SetMenuDialogStartIndex(DevicesUnderneathSlot)
@@ -509,6 +527,12 @@ Event OnOptionMenuAccept(int option, int index)
 	ElseIf option == EscapeDifficultyOID
 		EscapeDifficulty = index
 		SetMenuOptionValue(EscapeDifficultyOID, EsccapeDifficultyList[EscapeDifficulty])	
+	ElseIf option == CooldownDifficultyOID
+		CooldownDifficulty = index
+		SetMenuOptionValue(CooldownDifficultyOID, EsccapeDifficultyList[CooldownDifficulty])
+	ElseIf option == KeyDifficultyOID
+		KeyDifficulty = index
+		SetMenuOptionValue(KeyDifficultyOID, EsccapeDifficultyList[KeyDifficulty])	
 	ElseIf option == blindfoldModeOID
 		If BlindfoldMode == 3 && index != 3 ; Old mode was Dark Fog, remove it
 			if Weather.GetSkyMode() == 0
@@ -671,7 +695,7 @@ Event OnOptionSliderOpen(int option)
 	elseIf option == numNpcsOID
 		SetSliderDialogStartValue(numNpcs)
 		SetSliderDialogDefaultValue(numNpcsDefault)
-		SetSliderDialogRange(0, 20)
+		SetSliderDialogRange(5, 20)
 		SetSliderDialogInterval(1)	
 	elseIf option == ArmbinderStruggleBaseChanceOID
 		SetSliderDialogStartValue(ArmbinderStruggleBaseChance)
@@ -754,7 +778,10 @@ Event OnOptionSelect(int option)
 		SetToggleOptionValue(bellyNodeManagementOID, bellyNodeManagement)
 	elseif option == UseBoundCombatOID
 		UseBoundCombat = !UseBoundCombat
-		SetToggleOptionValue(UseBoundCombatOID, UseBoundCombat)	   
+		SetToggleOptionValue(UseBoundCombatOID, UseBoundCombat)
+	elseif option == GlobalDestroyKeyOID
+		GlobalDestroyKey = !GlobalDestroyKey
+		SetToggleOptionValue(GlobalDestroyKeyOID, GlobalDestroyKey)	
 	elseif option == debugSigTermOID
 		If ShowMessage("WARNING:\nThis function will try to remove all DD items. Wiping quest items may result in broken quest states! This feature is intended to be used for debug purposes and as a last resort only! Using it to escape DD devices is strongly discouraged.\n\nAre you sure?")
 			debugSigTerm = true
@@ -1013,7 +1040,7 @@ Event OnOptionHighlight(int option)
 	elseIf (option == mittensDropToggleOID)
 		SetInfoText("If this option is enabled, it is hard to pick up items when wearing bondage mittens.\nYou will instead drop the items to the ground (you can try to pick them up again.)\nDefault:"+mittensDropToggleDefault)
 	elseIf (option == numNpcsOID)
-		SetInfoText("Configure the number of nearby belted NPCs (Per Area) that will be processed by event polling. Set to 0 to disable altogether. Higher values will increase script load.\nDefault:"+numNpcsDefault)
+		SetInfoText("Configure the number of NPCs (per area) that will be processed by DD's bondage features (e.g. using bound animations). Use lower settings for weaker PCs.\nDefault:"+numNpcsDefault)
 	elseIf (option == ifpOID)
 		SetInfoText("Configures support for Immersive First Person.\nDefault:"+ifpDefault)
 	elseIf (option == breastNodeManagementOID)
@@ -1029,9 +1056,15 @@ Event OnOptionHighlight(int option)
 	elseIf (option == YokeRemovalCostPerLevelOID)
 		SetInfoText("Merchants will charge you this much gold per level for helping you out of a yoke.\nDefault: "+YokeRemovalCostPerLevelDefault)    
 	elseIf (option == EscapeDifficultyOID)
-		SetInfoText("This modifier will be applied to device difficulties and make it easier or harder to escape from them.\nIt applies to standard/generic devices and will not affect quest devices unless their creator enabled it.\nThe default modifier is zero.")
+		SetInfoText("This modifier will be applied to escape chance difficulties (e.g. struggle and lockpick success chances) and make it easier or harder to escape from them.\nIt applies to standard/generic devices and will not affect quest devices unless their creator enabled it.\nThe default modifier is zero.")
+	elseIf (option == CooldownDifficultyOID)
+		SetInfoText("This modifier will be applied to device cooldowns (e.g. unlock, escape, repair cooldown).\nIt applies to standard/generic devices and will not affect quest devices unless their creator enabled it.\nThe default modifier is zero.")
+	elseIf (option == KeyDifficultyOID)
+		SetInfoText("This modifier will be applied to key break and jam lock chances.\nIt applies to standard/generic devices and will not affect quest devices unless their creator enabled it.\nThe default modifier is zero.")
 	elseIf (option == HobbleSkirtSpeedDebuffOID)
         SetInfoText("Sets the strength of the speed debuff caused by wearing a hobble skirt.\nThe higher the number, the slower characters wearing a hobble skirt can walk.\nNote: The animations are meant for the default value and will look off at lower values, but some people might find this speed too slow.\nDefault: " + HobbleSkirtSpeedDebuffDefault)
+	elseIf (option == GlobalDestroyKeyOID)
+		SetInfoText("When enabled, most keys can be used to unlock only one device, and will be consumed on use.\nThis feature will not affect custom keys unless set by the creator.")
 	endIf
 EndEvent
 
