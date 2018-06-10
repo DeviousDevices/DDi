@@ -1756,7 +1756,7 @@ function Masturbate(actor a, bool feedback = false)
 		Manims[0] = SexLab.GetAnimationObject("DDBeltedSolo")		
 	Elseif a.WornHasKeyword(zad_DeviousHeavyBondage)
 		; play bound animation for other restraints
-		PlayHornyAnimation(playerref)	
+		PlayHornyAnimation(a)	
 		return
 	Else
 		If a.GetLeveledActorBase().GetSex() == 1
@@ -2355,6 +2355,9 @@ Function UpdateControls()
 		Endif	
 	EndIf
 	if playerRef.WornHasKeyword(zad_DeviousPetSuit)
+		sneaking = false
+	EndIf	
+	if playerRef.WornHasKeyword(zad_DeviousPonyGear)
 		sneaking = false
 	EndIf	
 	Game.DisablePlayerControls(abMovement = !movement, abFighting = !fighting, abSneaking = !sneaking, abMenu = !menu, abActivate = !activate)	

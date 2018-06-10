@@ -222,7 +222,7 @@ Int Function SelectAnimationSet(actor akActor)
 		elseIf AAStateA == 5
 			animSet = 5 ; FrontCuffs animations
 		elseIf AAStateA == 0
-			animSet = 0 ; Only hobble restraints		
+			animSet = 0 ; Only pony anims
 		endIf
 	Else
 		if AAStateA == 1
@@ -288,17 +288,18 @@ Function EvaluateAA(actor akActor)
 			;akActor.SetAnimationVariableInt("FNIS_hbc_h2h_LocomotionPose", animSet + 1)
 		elseif animState == 2
 			If animSet > 0
-				FNIS_aa.SetAnimGroup(akActor, "_h2heqp", ABC_h2heqp, animSet, "DeviousDevices", Config.LogMessages)
-				FNIS_aa.SetAnimGroup(akActor, "_h2hidle", ABC_h2hidle, animSet, "DeviousDevices", Config.LogMessages)
-				FNIS_aa.SetAnimGroup(akActor, "_h2hatkpow", ABC_h2hatkpow, animSet, "DeviousDevices", Config.LogMessages)
-				FNIS_aa.SetAnimGroup(akActor, "_h2hatk", ABC_h2hatk, animSet, "DeviousDevices", Config.LogMessages)
-				FNIS_aa.SetAnimGroup(akActor, "_h2hstag", ABC_h2hstag, animSet, "DeviousDevices", Config.LogMessages)
-				FNIS_aa.SetAnimGroup(akActor, "_jump", ABC_jump, animSet, "DeviousDevices", Config.LogMessages)
-				FNIS_aa.SetAnimGroup(akActor, "_sneakmt", ABC_sneakmt, animSet, "DeviousDevices", Config.LogMessages)
-				FNIS_aa.SetAnimGroup(akActor, "_sneakidle", ABC_sneakidle, animSet, "DeviousDevices", Config.LogMessages)
-				FNIS_aa.SetAnimGroup(akActor, "_sprint", ABC_sprint, animSet, "DeviousDevices", Config.LogMessages)
-				FNIS_aa.SetAnimGroup(akActor, "_mtturn", ABC_mtturn, animSet, "DeviousDevices", Config.LogMessages)
-				FNIS_aa.SetAnimGroup(akActor, "_shout", ABC_shout, animSet, "DeviousDevices", Config.LogMessages)
+				; ABC offsets are -1 compared to the pony gear...
+				FNIS_aa.SetAnimGroup(akActor, "_h2heqp", ABC_h2heqp, animSet - 1, "DeviousDevices", Config.LogMessages)
+				FNIS_aa.SetAnimGroup(akActor, "_h2hidle", ABC_h2hidle, animSet - 1, "DeviousDevices", Config.LogMessages)
+				FNIS_aa.SetAnimGroup(akActor, "_h2hatkpow", ABC_h2hatkpow, animSet - 1, "DeviousDevices", Config.LogMessages)
+				FNIS_aa.SetAnimGroup(akActor, "_h2hatk", ABC_h2hatk, animSet - 1, "DeviousDevices", Config.LogMessages)
+				FNIS_aa.SetAnimGroup(akActor, "_h2hstag", ABC_h2hstag, animSet - 1, "DeviousDevices", Config.LogMessages)
+				FNIS_aa.SetAnimGroup(akActor, "_jump", ABC_jump, animSet - 1, "DeviousDevices", Config.LogMessages)
+				FNIS_aa.SetAnimGroup(akActor, "_sneakmt", ABC_sneakmt, animSet - 1, "DeviousDevices", Config.LogMessages)
+				FNIS_aa.SetAnimGroup(akActor, "_sneakidle", ABC_sneakidle, animSet - 1, "DeviousDevices", Config.LogMessages)
+				FNIS_aa.SetAnimGroup(akActor, "_sprint", ABC_sprint, animSet - 1, "DeviousDevices", Config.LogMessages)
+				FNIS_aa.SetAnimGroup(akActor, "_mtturn", ABC_mtturn, animSet - 1, "DeviousDevices", Config.LogMessages)
+				FNIS_aa.SetAnimGroup(akActor, "_shout", ABC_shout, animSet - 1, "DeviousDevices", Config.LogMessages)
 			EndIf
 			FNIS_aa.SetAnimGroup(akActor, "_mtx", PON_mtx, animSet, "DeviousDevices", Config.LogMessages)
 			FNIS_aa.SetAnimGroup(akActor, "_mt", PON_mt, animSet, "DeviousDevices", Config.LogMessages)
