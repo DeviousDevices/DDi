@@ -36,6 +36,9 @@ Float Property KeyBreakChance = 0.0 Auto				; Chance that the key breaks when tr
 Float Property LockJamChance = 0.0 Auto					; Chance that the key gets stuck in the lock when it breaks. The lock has to be repaired before further unlock attempts.
 Float Property LockShieldTimerMin = 0.0 Auto			; If this number is greater than zero, the player has to wait for a minimum of this many hours before she can unlock the device with a key.
 Float Property LockShieldTimerMax = 0.0 Auto			; If this number is greater than zero, the player has to wait for a maximum of this many hours before she can unlock the device with a key.
+Bool Property TimedUnlock = False Auto 					; If set to true, the device can be removed without the key when the lock timer is expired. Uses parameters below. When the timed lock is engaged, the device can STILL be unlocked with a key. This way, restraints can use either or both methods simultaneously.
+Float Property LockTimerMin = 0.0 Auto					; Minimum hours before the lock timer expires
+Float Property LockTimerMax = 0.0 Auto					; Maximum hours before the lock timer expires
 
 ; Escape system
 Float Property BaseEscapeChance = 0.0 Auto				; Base chance to escape a restraint via struggling. Magic bonus applies. 0 disables this feature.
@@ -76,6 +79,7 @@ Message Property zad_DD_EscapeCutMSG Auto 					; Message to be displayed when th
 Message Property zad_DD_EscapeCutFailureMSG Auto 			; Message to be displayed when the player fails to cut a restraint
 Message Property zad_DD_EscapeCutSuccessMSG Auto 			; Message to be displayed when the player succeeds to cut open a restraint
 Message Property zad_DD_OnPutOnDevice Auto					; Message to be displayed when the player locks on an item, so she can manipulate the locks if she choses. You can customize it if you want, but make sure not to change the order and functionality of the buttons.
+Message Property zad_DD_OnTimedUnlockMSG Auto 				; Message to be displayed when the player removes an item after the timed lock has expired.
 
 ; Device dependencies
 Keyword[] Property EquipConflictingDevices Auto 		; These item keywords, if present on the character, will prevent the item from getting equipped, unless a script does it.
@@ -104,6 +108,7 @@ Int RepairAttemptsMade = 0								; Tracker of how often the player tried to esc
 Float LastRepairAttemptAt = 0.0							; When did the player last attempt to escape.
 Float RepairDifficultyModifier = 0.0					; Global modifier for escape attempts. Can be used to make escape harder or easier.
 Float LockShieldTimer = 0.0								; The actual uptime of the lockshield. Randomly determined when the item is equipped using the min and max values.
+Float LockTimer = 0.0									; The actual uptime of the timed lock. Randomly determined when the item is equipped using the min and max values.
 Bool QuestItemRemovalTokenInternal = False
 
 Function MultipleItemFailMessage(string offendingItem)
@@ -209,6 +214,9 @@ Event OnEquipped(Actor akActor)
 	EndIf	
 	OnEquippedPost(akActor)
 	SetLockShield()
+	If TimedUnlock
+		SetLockTimer()
+	EndIf
 	;If deviceRendered.HasKeyword(libs.zad_DeviousHeavyBondage)		
 		libs.StartBoundEffects(akActor)
 	;EndIf	
@@ -483,13 +491,24 @@ bool Function RemoveDeviceWithKey(actor akActor = none, bool destroyDevice=false
 		EndIf
 		return false
 	EndIf	
-	If !CheckLockShield() ; is the timer expired?
+	If TimedUnlock
+		; we check for the lock timer first.
+		If CheckLockTimer()
+			If zad_DD_OnTimedUnlockMSG
+				zad_DD_OnTimedUnlockMSG.Show()
+			EndIf		
+			RemoveDevice(akActor)		
+			return true
+		EndIf
+		; if the timed lock is still engaged we continue and see if we can unlock the device with a key, so we do not return false here
+	EndIf	
+	If !CheckLockShield() ; is the shield timer expired?
 		Return False
 	EndIf
 	; Check if she is able to unlock herself. We do this check here to allow it to apply even to keyless restraints that shouldn't be just removed.
 	If !CheckLockAccess()
 		Return False
-	EndIf	
+	EndIf		
 	If DeviceKey
 		If libs.PlayerReF.GetItemCount(DeviceKey) <= 0
 			If zad_DD_OnNoKeyMSG
@@ -569,6 +588,29 @@ Bool Function CheckLockShield()
 	Else
 		Int HoursToWait = Math.Ceiling(HoursNeeded - HoursPassed)
 		libs.notify("This lock is protected with a timed lock shield preventing you from inserting a key as long as it is active! You can try to unlock this device in about " + HoursToWait + " hours.", messageBox = true)
+		return False
+	EndIf
+EndFunction
+
+Function SetLockTimer()
+	If (LockTimerMin > 0.0) && (LockTimerMin <= LockTimerMax)
+		LockTimer = ((Utility.RandomFloat(LockTimerMin, LockTimerMax)) * CalculateCooldownModifier(False))
+	Else
+		LockTimer = 0.0
+	EndIf
+EndFunction
+
+Bool Function CheckLockTimer()
+	If LockTimer == 0.0
+		return True
+	EndIf
+	Float HoursNeeded = LockTimer
+	Float HoursPassed = (Utility.GetCurrentGameTime() - DeviceEquippedAt) * 24.0
+	if HoursPassed > HoursNeeded
+		return True
+	Else
+		Int HoursToWait = Math.Ceiling(HoursNeeded - HoursPassed)
+		libs.notify("This lock is fitted with a timer that will automatically unlock your restraint in about " + HoursToWait + " hours.", messageBox = true)
 		return False
 	EndIf
 EndFunction
