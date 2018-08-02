@@ -732,7 +732,10 @@ Bool Function CanMakeUnlockAttempt()
 	Float HoursNeeded = (UnlockCooldown * CalculateCooldownModifier(False))
 	Float HoursPassed = (Utility.GetCurrentGameTime() - LastUnlockAttemptAt) * 24.0
 	if HoursPassed > HoursNeeded
-		LastUnlockAttemptAt = Utility.GetCurrentGameTime()
+		If !DeviceKey || (DeviceKey && libs.PlayerRef.GetItemCount(DeviceKey) >= NumberOfKeysNeeded)
+			; don't reset the timer if the player doesn't even have keys, that's mean!
+			LastUnlockAttemptAt = Utility.GetCurrentGameTime()
+		EndIf
 		return True
 	Else
 		Int HoursToWait = Math.Ceiling(HoursNeeded - HoursPassed)
