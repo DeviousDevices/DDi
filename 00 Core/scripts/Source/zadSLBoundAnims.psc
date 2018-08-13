@@ -40,6 +40,20 @@ function LoadAnimations()
 
 	SexLab.GetSetAnimationObject("DDZapMixLesbian01ArmbYoke", "CreateDDZapMixLesbian01ArmbYoke", filterQuest)
 	SexLab.GetSetAnimationObject("DDZapMixLesbian01YokeArmb", "CreateDDZapMixLesbian01YokeArmb", filterQuest)
+	
+	SexLab.GetSetAnimationObject("DD_SH_armbBJ1", "CreateDD_SH_armbBJ1", filterQuest)
+	SexLab.GetSetAnimationObject("DD_SH_bbyokeBJ1", "CreateDD_SH_bbyokeBJ1", filterQuest)
+	SexLab.GetSetAnimationObject("DD_SH_cuffsFrontBJ1", "CreateDD_SH_cuffsFrontBJ1", filterQuest)
+	SexLab.GetSetAnimationObject("DD_SH_elbBJ1", "CreateDD_SH_elbBJ1", filterQuest)
+	SexLab.GetSetAnimationObject("DD_SH_yokeBJ1", "CreateDD_SH_yokeBJ1", filterQuest)	
+	SexLab.GetSetAnimationObject("DD_SH_armbMiss1", "CreateDD_SH_armbMiss1", filterQuest)
+	SexLab.GetSetAnimationObject("DD_SH_bbyokeMiss1", "CreateDD_SH_bbyokeMiss1", filterQuest)
+	SexLab.GetSetAnimationObject("DD_SH_cuffsFrontMiss1", "CreateDD_SH_cuffsFrontMiss1", filterQuest)
+	SexLab.GetSetAnimationObject("DD_SH_elbMiss1", "CreateDD_SH_elbMiss1", filterQuest)
+	SexLab.GetSetAnimationObject("DD_SH_yokeMiss1", "CreateDD_SH_yokeMiss1", filterQuest)	
+	SexLab.GetSetAnimationObject("DD_SH_armbCowg1", "CreateDD_SH_armbCowg1", filterQuest)
+	SexLab.GetSetAnimationObject("DD_SH_elbCowg1", "CreateDD_SH_elbCowg1", filterQuest)
+	
 EndFunction
 
 ;Defining animations:
@@ -1072,6 +1086,529 @@ Function CreateDDZapMixLesbian01YokeArmb(int id)
 		Anim.AddTag("SubSub")
 		Anim.AddTag("Yoke")
 		Anim.AddTag("Armbinder")
+		Anim.AddTag("DeviousDevice")
+		Anim.AddTag("NoSwap")
+
+		Anim.Save(-1)
+	EndIf
+endFunction
+
+; Spacehamster
+
+Function CreateDD_SH_armbBJ1(int id)	
+	; Define animation prefixes for each actor (must correspond to names in FNIS), add more if necessary
+	String asAnim1 = "DD_SH_armbBJ1"
+	String asAnim2 = "DD_SH_armbBJ1"
+
+	libs.Log("Creating DD_SH_armbBJ1")
+	sslBaseAnimation Anim = SexLab.GetAnimationObject("DD_SH_armbBJ1")
+	if Anim != none && Anim.Name != "DD_SH_armbBJ1"
+		Anim.Name = "DD_SH_armbBJ1"
+		Anim.SetContent(Sexual)
+		Anim.SoundFX = Sucking
+
+		Int a1 = Anim.AddPosition(Female, addCum = Oral)
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S1", 0.0, silent = True)
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S2", 0.0, silent = True, openMouth = True)
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S3", 0.0, silent = True, openMouth = True)
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S4", 0.0, silent = True, openMouth = True)
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S5", 0.0, silent = True, openMouth = True)
+
+		Int a2 = Anim.AddPosition(Male)
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S1", silent = True, openMouth = False)
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S2")
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S3", sos = 1)
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S4", sos = 0)
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S5")
+
+		Anim.SetStageSoundFX(1, None)
+
+		Anim.AddTag("Spacehamster")
+		Anim.AddTag("Blowjob")
+		Anim.AddTag("Oral")		
+
+		Anim.AddTag("Sex")
+		Anim.AddTag("FM")
+
+		Anim.AddTag("DomSub")
+		Anim.AddTag("Armbinder")
+		Anim.AddTag("DeviousDevice")
+		Anim.AddTag("NoSwap")
+
+		Anim.Save(-1)
+	EndIf
+endFunction
+
+Function CreateDD_SH_bbyokeBJ1(int id)	
+	; Define animation prefixes for each actor (must correspond to names in FNIS), add more if necessary
+	String asAnim1 = "DD_SH_bbyokeBJ1"
+	String asAnim2 = "DD_SH_bbyokeBJ1"
+
+	libs.Log("Creating DD_SH_bbyokeBJ1")
+	sslBaseAnimation Anim = SexLab.GetAnimationObject("DD_SH_bbyokeBJ1")
+	if Anim != none && Anim.Name != "DD_SH_bbyokeBJ1"
+		Anim.Name = "DD_SH_bbyokeBJ1"
+		Anim.SetContent(Sexual)
+		Anim.SoundFX = Sucking
+
+		Int a1 = Anim.AddPosition(Female, addCum = Oral)
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S1", 0.0, silent = True)
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S2", 0.0, silent = True, openMouth = True)
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S3", 0.0, silent = True, openMouth = True)
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S4", 0.0, silent = True, openMouth = True)
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S5", 0.0, silent = True, openMouth = True)
+
+		Int a2 = Anim.AddPosition(Male)
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S1", silent = True, openMouth = False)
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S2")
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S3", sos = 1)
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S4", sos = 0)
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S5")
+
+		Anim.SetStageSoundFX(1, None)
+
+		Anim.AddTag("Spacehamster")
+		Anim.AddTag("Blowjob")
+		Anim.AddTag("Oral")		
+
+		Anim.AddTag("Sex")
+		Anim.AddTag("FM")
+
+		Anim.AddTag("DomSub")
+		Anim.AddTag("BBYoke")
+		Anim.AddTag("DeviousDevice")
+		Anim.AddTag("NoSwap")
+
+		Anim.Save(-1)
+	EndIf
+endFunction
+
+Function CreateDD_SH_cuffsFrontBJ1(int id)	
+	; Define animation prefixes for each actor (must correspond to names in FNIS), add more if necessary
+	String asAnim1 = "DD_SH_cuffsFrontBJ1"
+	String asAnim2 = "DD_SH_cuffsFrontBJ1"
+
+	libs.Log("Creating DD_SH_cuffsFrontBJ1")
+	sslBaseAnimation Anim = SexLab.GetAnimationObject("DD_SH_cuffsFrontBJ1")
+	if Anim != none && Anim.Name != "DD_SH_cuffsFrontBJ1"
+		Anim.Name = "DD_SH_cuffsFrontBJ1"
+		Anim.SetContent(Sexual)
+		Anim.SoundFX = Sucking
+
+		Int a1 = Anim.AddPosition(Female, addCum = Oral)
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S1", 0.0, silent = True)
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S2", 0.0, silent = True, openMouth = True)
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S3", 0.0, silent = True, openMouth = True)
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S4", 0.0, silent = True, openMouth = True)
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S5", 0.0, silent = True, openMouth = True)
+
+		Int a2 = Anim.AddPosition(Male)
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S1", silent = True, openMouth = False)
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S2")
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S3", sos = 1)
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S4", sos = 0)
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S5")
+
+		Anim.SetStageSoundFX(1, None)
+
+		Anim.AddTag("Spacehamster")
+		Anim.AddTag("Blowjob")
+		Anim.AddTag("Oral")		
+
+		Anim.AddTag("Sex")
+		Anim.AddTag("FM")
+
+		Anim.AddTag("DomSub")
+		Anim.AddTag("FontCuffs")
+		Anim.AddTag("DeviousDevice")
+		Anim.AddTag("NoSwap")
+
+		Anim.Save(-1)
+	EndIf
+endFunction
+
+Function CreateDD_SH_elbBJ1(int id)	
+	; Define animation prefixes for each actor (must correspond to names in FNIS), add more if necessary
+	String asAnim1 = "DD_SH_elbBJ1"
+	String asAnim2 = "DD_SH_elbBJ1"
+
+	libs.Log("Creating DD_SH_elbBJ1")
+	sslBaseAnimation Anim = SexLab.GetAnimationObject("DD_SH_elbBJ1")
+	if Anim != none && Anim.Name != "DD_SH_elbBJ1"
+		Anim.Name = "DD_SH_elbBJ1"
+		Anim.SetContent(Sexual)
+		Anim.SoundFX = Sucking
+
+		Int a1 = Anim.AddPosition(Female, addCum = Oral)
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S1", 0.0, silent = True)
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S2", 0.0, silent = True, openMouth = True)
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S3", 0.0, silent = True, openMouth = True)
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S4", 0.0, silent = True, openMouth = True)
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S5", 0.0, silent = True, openMouth = True)
+
+		Int a2 = Anim.AddPosition(Male)
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S1", silent = True, openMouth = False)
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S2")
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S3", sos = 1)
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S4", sos = 0)
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S5")
+
+		Anim.SetStageSoundFX(1, None)
+
+		Anim.AddTag("Spacehamster")
+		Anim.AddTag("Blowjob")
+		Anim.AddTag("Oral")		
+
+		Anim.AddTag("Sex")
+		Anim.AddTag("FM")
+
+		Anim.AddTag("DomSub")
+		Anim.AddTag("Elbowbinder")
+		Anim.AddTag("DeviousDevice")
+		Anim.AddTag("NoSwap")
+
+		Anim.Save(-1)
+	EndIf
+endFunction
+
+Function CreateDD_SH_yokeBJ1(int id)	
+	; Define animation prefixes for each actor (must correspond to names in FNIS), add more if necessary
+	String asAnim1 = "DD_SH_yokeBJ1"
+	String asAnim2 = "DD_SH_yokeBJ1"
+
+	libs.Log("Creating DD_SH_yokeBJ1")
+	sslBaseAnimation Anim = SexLab.GetAnimationObject("DD_SH_yokeBJ1")
+	if Anim != none && Anim.Name != "DD_SH_yokeBJ1"
+		Anim.Name = "DD_SH_yokeBJ1"
+		Anim.SetContent(Sexual)
+		Anim.SoundFX = Sucking
+
+		Int a1 = Anim.AddPosition(Female, addCum = Oral)
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S1", 0.0, silent = True)
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S2", 0.0, silent = True, openMouth = True)
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S3", 0.0, silent = True, openMouth = True)
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S4", 0.0, silent = True, openMouth = True)
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S5", 0.0, silent = True, openMouth = True)
+
+		Int a2 = Anim.AddPosition(Male)
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S1", silent = True, openMouth = False)
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S2")
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S3", sos = 1)
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S4", sos = 0)
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S5")
+
+		Anim.SetStageSoundFX(1, None)
+
+		Anim.AddTag("Spacehamster")
+		Anim.AddTag("Blowjob")
+		Anim.AddTag("Oral")		
+
+		Anim.AddTag("Sex")
+		Anim.AddTag("FM")
+
+		Anim.AddTag("DomSub")
+		Anim.AddTag("Yoke")
+		Anim.AddTag("DeviousDevice")
+		Anim.AddTag("NoSwap")
+
+		Anim.Save(-1)
+	EndIf
+endFunction
+
+Function CreateDD_SH_armbMiss1(int id)	
+	; Define animation prefixes for each actor (must correspond to names in FNIS), add more if necessary
+	String asAnim1 = "DD_SH_armbMiss1"
+	String asAnim2 = "DD_SH_armbMiss1"
+
+	libs.Log("Creating DD_SH_armbMiss1")
+	sslBaseAnimation Anim = SexLab.GetAnimationObject("DD_SH_armbMiss1")
+	if Anim != none && Anim.Name != "DD_SH_armbMiss1"
+		Anim.Name = "DD_SH_armbMiss1"
+		Anim.SetContent(Sexual)
+		Anim.SoundFX = Squishing
+
+		Int a1 = Anim.AddPosition(Female, addCum = Vaginal)
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S1")
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S2")
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S3")
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S4")
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S4")
+
+		Int a2 = Anim.AddPosition(Male)
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S1")
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S2")
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S3")
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S4")
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S4")
+
+		Anim.AddTag("Missionary")
+		Anim.AddTag("Lying")
+		Anim.AddTag("Vaginal")
+		Anim.AddTag("Aggressive")
+
+		Anim.AddTag("Sex")
+		Anim.AddTag("FM")
+
+		Anim.AddTag("DomSub")
+		Anim.AddTag("Armbinder")
+		Anim.AddTag("DeviousDevice")
+		Anim.AddTag("NoSwap")
+
+		Anim.Save(-1)
+	EndIf
+endFunction
+
+Function CreateDD_SH_bbyokeMiss1(int id)	
+	; Define animation prefixes for each actor (must correspond to names in FNIS), add more if necessary
+	String asAnim1 = "DD_SH_bbyokeMiss1"
+	String asAnim2 = "DD_SH_bbyokeMiss1"
+
+	libs.Log("Creating DD_SH_bbyokeMiss1")
+	sslBaseAnimation Anim = SexLab.GetAnimationObject("DD_SH_bbyokeMiss1")
+	if Anim != none && Anim.Name != "DD_SH_bbyokeMiss1"
+		Anim.Name = "DD_SH_bbyokeMiss1"
+		Anim.SetContent(Sexual)
+		Anim.SoundFX = Squishing
+
+		Int a1 = Anim.AddPosition(Female, addCum = Vaginal)
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S1")
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S2")
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S3")
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S4")
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S4")
+
+		Int a2 = Anim.AddPosition(Male)
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S1")
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S2")
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S3")
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S4")
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S4")
+
+		Anim.AddTag("Missionary")
+		Anim.AddTag("Lying")
+		Anim.AddTag("Vaginal")
+		Anim.AddTag("Aggressive")
+
+		Anim.AddTag("Sex")
+		Anim.AddTag("FM")
+
+		Anim.AddTag("DomSub")
+		Anim.AddTag("BBYoke")
+		Anim.AddTag("DeviousDevice")
+		Anim.AddTag("NoSwap")
+
+		Anim.Save(-1)
+	EndIf
+endFunction
+
+Function CreateDD_SH_cuffsFrontMiss1(int id)	
+	; Define animation prefixes for each actor (must correspond to names in FNIS), add more if necessary
+	String asAnim1 = "DD_SH_cuffsFrontMiss1"
+	String asAnim2 = "DD_SH_cuffsFrontMiss1"
+
+	libs.Log("Creating DD_SH_cuffsFrontMiss1")
+	sslBaseAnimation Anim = SexLab.GetAnimationObject("DD_SH_cuffsFrontMiss1")
+	if Anim != none && Anim.Name != "DD_SH_cuffsFrontMiss1"
+		Anim.Name = "DD_SH_cuffsFrontMiss1"
+		Anim.SetContent(Sexual)
+		Anim.SoundFX = Squishing
+
+		Int a1 = Anim.AddPosition(Female, addCum = Vaginal)
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S1")
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S2")
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S3")
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S4")
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S4")
+
+		Int a2 = Anim.AddPosition(Male)
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S1")
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S2")
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S3")
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S4")
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S4")
+
+		Anim.AddTag("Missionary")
+		Anim.AddTag("Lying")
+		Anim.AddTag("Vaginal")
+		Anim.AddTag("Aggressive")
+
+		Anim.AddTag("Sex")
+		Anim.AddTag("FM")
+
+		Anim.AddTag("DomSub")
+		Anim.AddTag("FrontCuffs")
+		Anim.AddTag("DeviousDevice")
+		Anim.AddTag("NoSwap")
+
+		Anim.Save(-1)
+	EndIf
+endFunction
+
+Function CreateDD_SH_elbMiss1(int id)	
+	; Define animation prefixes for each actor (must correspond to names in FNIS), add more if necessary
+	String asAnim1 = "DD_SH_elbMiss1"
+	String asAnim2 = "DD_SH_elbMiss1"
+
+	libs.Log("Creating DD_SH_elbMiss1")
+	sslBaseAnimation Anim = SexLab.GetAnimationObject("DD_SH_elbMiss1")
+	if Anim != none && Anim.Name != "DD_SH_elbMiss1"
+		Anim.Name = "DD_SH_elbMiss1"
+		Anim.SetContent(Sexual)
+		Anim.SoundFX = Squishing
+
+		Int a1 = Anim.AddPosition(Female, addCum = Vaginal)
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S1")
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S2")
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S3")
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S4")
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S4")
+
+		Int a2 = Anim.AddPosition(Male)
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S1")
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S2")
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S3")
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S4")
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S4")
+
+		Anim.AddTag("Missionary")
+		Anim.AddTag("Lying")
+		Anim.AddTag("Vaginal")
+		Anim.AddTag("Aggressive")
+
+		Anim.AddTag("Sex")
+		Anim.AddTag("FM")
+
+		Anim.AddTag("DomSub")
+		Anim.AddTag("Elbowbinder")
+		Anim.AddTag("DeviousDevice")
+		Anim.AddTag("NoSwap")
+
+		Anim.Save(-1)
+	EndIf
+endFunction
+
+Function CreateDD_SH_yokeMiss1(int id)	
+	; Define animation prefixes for each actor (must correspond to names in FNIS), add more if necessary
+	String asAnim1 = "DD_SH_yokeMiss1"
+	String asAnim2 = "DD_SH_yokeMiss1"
+
+	libs.Log("Creating DD_SH_yokeMiss1")
+	sslBaseAnimation Anim = SexLab.GetAnimationObject("DD_SH_yokeMiss1")
+	if Anim != none && Anim.Name != "DD_SH_yokeMiss1"
+		Anim.Name = "DD_SH_yokeMiss1"
+		Anim.SetContent(Sexual)
+		Anim.SoundFX = Squishing
+
+		Int a1 = Anim.AddPosition(Female, addCum = Vaginal)
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S1")
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S2")
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S3")
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S4")
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S4")
+
+		Int a2 = Anim.AddPosition(Male)
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S1")
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S2")
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S3")
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S4")
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S4")
+
+		Anim.AddTag("Missionary")
+		Anim.AddTag("Lying")
+		Anim.AddTag("Vaginal")
+		Anim.AddTag("Aggressive")
+
+		Anim.AddTag("Sex")
+		Anim.AddTag("FM")
+
+		Anim.AddTag("DomSub")
+		Anim.AddTag("Yoke")
+		Anim.AddTag("DeviousDevice")
+		Anim.AddTag("NoSwap")
+
+		Anim.Save(-1)
+	EndIf
+endFunction
+
+Function CreateDD_SH_armbCowg1(int id)	
+	; Define animation prefixes for each actor (must correspond to names in FNIS), add more if necessary
+	String asAnim1 = "DD_SH_armbCowg1"
+	String asAnim2 = "DD_SH_armbCowg1"
+
+	libs.Log("Creating DD_SH_armbCowg1")
+	sslBaseAnimation Anim = SexLab.GetAnimationObject("DD_SH_armbCowg1")
+	if Anim != none && Anim.Name != "DD_SH_armbCowg1"
+		Anim.Name = "DD_SH_armbCowg1"
+		Anim.SetContent(Sexual)
+		Anim.SoundFX = Squishing
+
+		Int a1 = Anim.AddPosition(Female, addCum = Vaginal)
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S1")
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S2")
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S3")
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S4")
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S4")
+
+		Int a2 = Anim.AddPosition(Male)
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S1")
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S2")
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S3")
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S4")
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S4")
+
+		Anim.AddTag("Cowgirl")
+		Anim.AddTag("Lying")
+		Anim.AddTag("Vaginal")
+		Anim.AddTag("Aggressive")
+
+		Anim.AddTag("Sex")
+		Anim.AddTag("FM")
+
+		Anim.AddTag("DomSub")
+		Anim.AddTag("Armbinder")
+		Anim.AddTag("DeviousDevice")
+		Anim.AddTag("NoSwap")
+
+		Anim.Save(-1)
+	EndIf
+endFunction
+
+Function CreateDD_SH_elbCowg1(int id)	
+	; Define animation prefixes for each actor (must correspond to names in FNIS), add more if necessary
+	String asAnim1 = "DD_SH_elbCowg1"
+	String asAnim2 = "DD_SH_elbCowg1"
+
+	libs.Log("Creating DD_SH_elbCowg1")
+	sslBaseAnimation Anim = SexLab.GetAnimationObject("DD_SH_elbCowg1")
+	if Anim != none && Anim.Name != "DD_SH_elbCowg1"
+		Anim.Name = "DD_SH_elbCowg1"
+		Anim.SetContent(Sexual)
+		Anim.SoundFX = Squishing
+
+		Int a1 = Anim.AddPosition(Female, addCum = Vaginal)
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S1")
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S2")
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S3")
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S4")
+		Anim.AddPositionStage(a1, asAnim1 + "_A1_S4")
+
+		Int a2 = Anim.AddPosition(Male)
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S1")
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S2")
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S3")
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S4")
+		Anim.AddPositionStage(a2, asAnim2 + "_A2_S4")
+
+		Anim.AddTag("Cowgirl")
+		Anim.AddTag("Lying")
+		Anim.AddTag("Vaginal")
+		Anim.AddTag("Aggressive")
+
+		Anim.AddTag("Sex")
+		Anim.AddTag("FM")
+
+		Anim.AddTag("DomSub")
+		Anim.AddTag("Elbowbinder")
 		Anim.AddTag("DeviousDevice")
 		Anim.AddTag("NoSwap")
 

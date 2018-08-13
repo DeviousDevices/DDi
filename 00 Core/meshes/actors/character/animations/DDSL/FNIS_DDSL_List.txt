@@ -253,3 +253,151 @@ b DD_ZapDoggy01_A2_S1 DD_ZapDoggy01_A2_S1.hkx
 b DD_ZapDoggy01_A2_S2 DD_ZapDoggy01_A2_S2.hkx
 b DD_ZapDoggy01_A2_S3 DD_ZapDoggy01_A2_S3.hkx
 b DD_ZapDoggy01_A2_S4 DD_ZapDoggy01_A2_S4.hkx
+
+
+' SpaceHamster's animations:
+
+' DD_SH_armbBJ1
+s -AVbHumanoidFootIKDisable DD_SH_armbBJ1_A1_S1 DD_SH_armbBJ1_a1_s1.hkx
++ DD_SH_armbBJ1_A1_S2 DD_SH_armbBJ1_a1_s2.hkx
++ DD_SH_armbBJ1_A1_S3 DD_SH_armbBJ1_a1_s3.hkx
++ DD_SH_armbBJ1_A1_S4 DD_SH_armbBJ1_a1_s4.hkx
++ DD_SH_armbBJ1_A1_S5 DD_SH_armbBJ1_a1_s5.hkx
+s -AVbHumanoidFootIKDisable DD_SH_armbBJ1_A2_S1 DD_SH_armbBJ1_a2_s1.hkx
++ DD_SH_armbBJ1_A2_S2 DD_SH_armbBJ1_a2_s2.hkx
++ DD_SH_armbBJ1_A2_S3 DD_SH_armbBJ1_a2_s3.hkx
++ DD_SH_armbBJ1_A2_S4 DD_SH_armbBJ1_a2_s4.hkx
++ DD_SH_armbBJ1_A2_S5 DD_SH_armbBJ1_a2_s5.hkx
+
+' DD_SH_armbCowg1
+s DD_SH_armbCowg1_A1_S1 DD_SH_armbCowg1_a1_s1.hkx
++ DD_SH_armbCowg1_A1_S2 DD_SH_armbCowg1_a1_s2.hkx
++ DD_SH_armbCowg1_A1_S3 DD_SH_armbCowg1_a1_s3.hkx
++ DD_SH_armbCowg1_A1_S4 DD_SH_armbCowg1_a1_s4.hkx
++ DD_SH_armbCowg1_A1_S5 DD_SH_armbCowg1_a1_s5.hkx
+s DD_SH_armbCowg1_A2_S1 DD_SH_armbCowg1_a2_s1.hkx
++ DD_SH_armbCowg1_A2_S2 DD_SH_armbCowg1_a2_s2.hkx
++ DD_SH_armbCowg1_A2_S3 DD_SH_armbCowg1_a2_s3.hkx
++ DD_SH_armbCowg1_A2_S4 DD_SH_armbCowg1_a2_s4.hkx
++ DD_SH_armbCowg1_A2_S5 DD_SH_armbCowg1_a2_s5.hkx
+
+' DD_SH_armbMiss1
+s DD_SH_armbMiss1_A1_S1 DD_SH_armbMiss1_a1_s1.hkx
++ DD_SH_armbMiss1_A1_S2 DD_SH_armbMiss1_a1_s2.hkx
++ DD_SH_armbMiss1_A1_S3 DD_SH_armbMiss1_a1_s3.hkx
++ DD_SH_armbMiss1_A1_S4 DD_SH_armbMiss1_a1_s4.hkx
++ DD_SH_armbMiss1_A1_S5 DD_SH_armbMiss1_a1_s5.hkx
+s DD_SH_armbMiss1_A2_S1 DD_SH_armbMiss1_a2_s1.hkx
++ DD_SH_armbMiss1_A2_S2 DD_SH_armbMiss1_a2_s2.hkx
++ DD_SH_armbMiss1_A2_S3 DD_SH_armbMiss1_a2_s3.hkx
++ DD_SH_armbMiss1_A2_S4 DD_SH_armbMiss1_a2_s4.hkx
++ DD_SH_armbMiss1_A2_S5 DD_SH_armbMiss1_a2_s5.hkx
+
+' DD_SH_bbyokeBJ1
+s -AVbHumanoidFootIKDisable DD_SH_bbyokeBJ1_A1_S1 DD_SH_bbyokeBJ1_a1_s1.hkx
++ DD_SH_bbyokeBJ1_A1_S2 DD_SH_bbyokeBJ1_a1_s2.hkx
++ DD_SH_bbyokeBJ1_A1_S3 DD_SH_bbyokeBJ1_a1_s3.hkx
++ DD_SH_bbyokeBJ1_A1_S4 DD_SH_bbyokeBJ1_a1_s4.hkx
++ DD_SH_bbyokeBJ1_A1_S5 DD_SH_bbyokeBJ1_a1_s5.hkx
+s -AVbHumanoidFootIKDisable DD_SH_bbyokeBJ1_A2_S1 DD_SH_bbyokeBJ1_a2_s1.hkx
++ DD_SH_bbyokeBJ1_A2_S2 DD_SH_bbyokeBJ1_a2_s2.hkx
++ DD_SH_bbyokeBJ1_A2_S3 DD_SH_bbyokeBJ1_a2_s3.hkx
++ DD_SH_bbyokeBJ1_A2_S4 DD_SH_bbyokeBJ1_a2_s4.hkx
++ DD_SH_bbyokeBJ1_A2_S5 DD_SH_bbyokeBJ1_a2_s5.hkx
+
+' DD_SH_bbyokeMiss1
+s DD_SH_bbyokeMiss1_A1_S1 DD_SH_bbyokeMiss1_a1_s1.hkx
++ DD_SH_bbyokeMiss1_A1_S2 DD_SH_bbyokeMiss1_a1_s2.hkx
++ DD_SH_bbyokeMiss1_A1_S3 DD_SH_bbyokeMiss1_a1_s3.hkx
++ DD_SH_bbyokeMiss1_A1_S4 DD_SH_bbyokeMiss1_a1_s4.hkx
++ DD_SH_bbyokeMiss1_A1_S5 DD_SH_bbyokeMiss1_a1_s5.hkx
+s DD_SH_bbyokeMiss1_A2_S1 DD_SH_bbyokeMiss1_a2_s1.hkx
++ DD_SH_bbyokeMiss1_A2_S2 DD_SH_bbyokeMiss1_a2_s2.hkx
++ DD_SH_bbyokeMiss1_A2_S3 DD_SH_bbyokeMiss1_a2_s3.hkx
++ DD_SH_bbyokeMiss1_A2_S4 DD_SH_bbyokeMiss1_a2_s4.hkx
++ DD_SH_bbyokeMiss1_A2_S5 DD_SH_bbyokeMiss1_a2_s5.hkx
+
+' DD_SH_cuffsFrontBJ1
+s -AVbHumanoidFootIKDisable DD_SH_cuffsFrontBJ1_A1_S1 DD_SH_cuffsFrontBJ1_a1_s1.hkx
++ DD_SH_cuffsFrontBJ1_A1_S2 DD_SH_cuffsFrontBJ1_a1_s2.hkx
++ DD_SH_cuffsFrontBJ1_A1_S3 DD_SH_cuffsFrontBJ1_a1_s3.hkx
++ DD_SH_cuffsFrontBJ1_A1_S4 DD_SH_cuffsFrontBJ1_a1_s4.hkx
++ DD_SH_cuffsFrontBJ1_A1_S5 DD_SH_cuffsFrontBJ1_a1_s5.hkx
+s -AVbHumanoidFootIKDisable DD_SH_cuffsFrontBJ1_A2_S1 DD_SH_cuffsFrontBJ1_a2_s1.hkx
++ DD_SH_cuffsFrontBJ1_A2_S2 DD_SH_cuffsFrontBJ1_a2_s2.hkx
++ DD_SH_cuffsFrontBJ1_A2_S3 DD_SH_cuffsFrontBJ1_a2_s3.hkx
++ DD_SH_cuffsFrontBJ1_A2_S4 DD_SH_cuffsFrontBJ1_a2_s4.hkx
++ DD_SH_cuffsFrontBJ1_A2_S5 DD_SH_cuffsFrontBJ1_a2_s5.hkx
+
+' DD_SH_cuffsFrontMiss1
+s DD_SH_cuffsFrontMiss1_A1_S1 DD_SH_cuffsFrontMiss1_a1_s1.hkx
++ DD_SH_cuffsFrontMiss1_A1_S2 DD_SH_cuffsFrontMiss1_a1_s2.hkx
++ DD_SH_cuffsFrontMiss1_A1_S3 DD_SH_cuffsFrontMiss1_a1_s3.hkx
++ DD_SH_cuffsFrontMiss1_A1_S4 DD_SH_cuffsFrontMiss1_a1_s4.hkx
++ DD_SH_cuffsFrontMiss1_A1_S5 DD_SH_cuffsFrontMiss1_a1_s5.hkx
+s DD_SH_cuffsFrontMiss1_A2_S1 DD_SH_cuffsFrontMiss1_a2_s1.hkx
++ DD_SH_cuffsFrontMiss1_A2_S2 DD_SH_cuffsFrontMiss1_a2_s2.hkx
++ DD_SH_cuffsFrontMiss1_A2_S3 DD_SH_cuffsFrontMiss1_a2_s3.hkx
++ DD_SH_cuffsFrontMiss1_A2_S4 DD_SH_cuffsFrontMiss1_a2_s4.hkx
++ DD_SH_cuffsFrontMiss1_A2_S5 DD_SH_cuffsFrontMiss1_a2_s5.hkx
+
+' DD_SH_elbBJ1
+s -AVbHumanoidFootIKDisable DD_SH_elbBJ1_A1_S1 DD_SH_elbBJ1_a1_s1.hkx
++ DD_SH_elbBJ1_A1_S2 DD_SH_elbBJ1_a1_s2.hkx
++ DD_SH_elbBJ1_A1_S3 DD_SH_elbBJ1_a1_s3.hkx
++ DD_SH_elbBJ1_A1_S4 DD_SH_elbBJ1_a1_s4.hkx
++ DD_SH_elbBJ1_A1_S5 DD_SH_elbBJ1_a1_s5.hkx
+s -AVbHumanoidFootIKDisable DD_SH_elbBJ1_A2_S1 DD_SH_elbBJ1_a2_s1.hkx
++ DD_SH_elbBJ1_A2_S2 DD_SH_elbBJ1_a2_s2.hkx
++ DD_SH_elbBJ1_A2_S3 DD_SH_elbBJ1_a2_s3.hkx
++ DD_SH_elbBJ1_A2_S4 DD_SH_elbBJ1_a2_s4.hkx
++ DD_SH_elbBJ1_A2_S5 DD_SH_elbBJ1_a2_s5.hkx
+
+' DD_SH_elbCowg1
+s DD_SH_elbCowg1_A1_S1 DD_SH_elbCowg1_a1_s1.hkx
++ DD_SH_elbCowg1_A1_S2 DD_SH_elbCowg1_a1_s2.hkx
++ DD_SH_elbCowg1_A1_S3 DD_SH_elbCowg1_a1_s3.hkx
++ DD_SH_elbCowg1_A1_S4 DD_SH_elbCowg1_a1_s4.hkx
++ DD_SH_elbCowg1_A1_S5 DD_SH_elbCowg1_a1_s5.hkx
+s DD_SH_elbCowg1_A2_S1 DD_SH_elbCowg1_a2_s1.hkx
++ DD_SH_elbCowg1_A2_S2 DD_SH_elbCowg1_a2_s2.hkx
++ DD_SH_elbCowg1_A2_S3 DD_SH_elbCowg1_a2_s3.hkx
++ DD_SH_elbCowg1_A2_S4 DD_SH_elbCowg1_a2_s4.hkx
++ DD_SH_elbCowg1_A2_S5 DD_SH_elbCowg1_a2_s5.hkx
+
+' DD_SH_elbMiss1
+s DD_SH_elbMiss1_A1_S1 DD_SH_elbMiss1_a1_s1.hkx
++ DD_SH_elbMiss1_A1_S2 DD_SH_elbMiss1_a1_s2.hkx
++ DD_SH_elbMiss1_A1_S3 DD_SH_elbMiss1_a1_s3.hkx
++ DD_SH_elbMiss1_A1_S4 DD_SH_elbMiss1_a1_s4.hkx
++ DD_SH_elbMiss1_A1_S5 DD_SH_elbMiss1_a1_s5.hkx
+s DD_SH_elbMiss1_A2_S1 DD_SH_elbMiss1_a2_s1.hkx
++ DD_SH_elbMiss1_A2_S2 DD_SH_elbMiss1_a2_s2.hkx
++ DD_SH_elbMiss1_A2_S3 DD_SH_elbMiss1_a2_s3.hkx
++ DD_SH_elbMiss1_A2_S4 DD_SH_elbMiss1_a2_s4.hkx
++ DD_SH_elbMiss1_A2_S5 DD_SH_elbMiss1_a2_s5.hkx
+
+' DD_SH_yokeBJ1
+s -AVbHumanoidFootIKDisable DD_SH_yokeBJ1_A1_S1 DD_SH_yokeBJ1_a1_s1.hkx
++ DD_SH_yokeBJ1_A1_S2 DD_SH_yokeBJ1_a1_s2.hkx
++ DD_SH_yokeBJ1_A1_S3 DD_SH_yokeBJ1_a1_s3.hkx
++ DD_SH_yokeBJ1_A1_S4 DD_SH_yokeBJ1_a1_s4.hkx
++ DD_SH_yokeBJ1_A1_S5 DD_SH_yokeBJ1_a1_s5.hkx
+s -AVbHumanoidFootIKDisable DD_SH_yokeBJ1_A2_S1 DD_SH_yokeBJ1_a2_s1.hkx
++ DD_SH_yokeBJ1_A2_S2 DD_SH_yokeBJ1_a2_s2.hkx
++ DD_SH_yokeBJ1_A2_S3 DD_SH_yokeBJ1_a2_s3.hkx
++ DD_SH_yokeBJ1_A2_S4 DD_SH_yokeBJ1_a2_s4.hkx
++ DD_SH_yokeBJ1_A2_S5 DD_SH_yokeBJ1_a2_s5.hkx
+
+' DD_SH_yokeMiss1
+s DD_SH_yokeMiss1_A1_S1 DD_SH_yokeMiss1_a1_s1.hkx
++ DD_SH_yokeMiss1_A1_S2 DD_SH_yokeMiss1_a1_s2.hkx
++ DD_SH_yokeMiss1_A1_S3 DD_SH_yokeMiss1_a1_s3.hkx
++ DD_SH_yokeMiss1_A1_S4 DD_SH_yokeMiss1_a1_s4.hkx
++ DD_SH_yokeMiss1_A1_S5 DD_SH_yokeMiss1_a1_s5.hkx
+s DD_SH_yokeMiss1_A2_S1 DD_SH_yokeMiss1_a2_s1.hkx
++ DD_SH_yokeMiss1_A2_S2 DD_SH_yokeMiss1_a2_s2.hkx
++ DD_SH_yokeMiss1_A2_S3 DD_SH_yokeMiss1_a2_s3.hkx
++ DD_SH_yokeMiss1_A2_S4 DD_SH_yokeMiss1_a2_s4.hkx
++ DD_SH_yokeMiss1_A2_S5 DD_SH_yokeMiss1_a2_s5.hkx
+

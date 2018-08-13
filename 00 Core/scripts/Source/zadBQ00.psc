@@ -299,9 +299,9 @@ sslBaseAnimation function GetBoundAnim(actor a, actor b)
 	; the bad thing about not publishing bound animations is that we have to call them explicitly. You can't add animations to form lists and there are no dynamic arrays either, so no elegant code here!
 	; let's check for armbinders first
 	Int i = 0
-	If HasArmbinder(a)
+	If HasArmbinderNonStrict(a)
 		; check if both are bound
-		If HasArmbinder(b)
+		If HasArmbinderNonStrict(b)
 			; other partner is bound with armbinder, too
 			; male
 			If b.GetLeveledActorBase().GetSex() == 0
@@ -327,7 +327,7 @@ sslBaseAnimation function GetBoundAnim(actor a, actor b)
 			; free partner
 			;check if partner is a male
 			If b.GetLeveledActorBase().GetSex() == 0
-				i = Utility.RandomInt(0,4)
+				i = Utility.RandomInt(0,7)
 				If i == 0
 					return SexLab.GetAnimationObject("DDZapArmbDoggy01")	
 				ElseIf i == 1
@@ -337,7 +337,13 @@ sslBaseAnimation function GetBoundAnim(actor a, actor b)
 				ElseIf i == 3
 					return SexLab.GetAnimationObject("DDZapArmbBoobjob01")	
 				ElseIf i == 4
-					return SexLab.GetAnimationObject("DDZapArmbKissing01")	
+					return SexLab.GetAnimationObject("DDZapArmbKissing01")						
+				ElseIf i == 5
+					return SexLab.GetAnimationObject("DD_SH_armbBJ1")	
+				ElseIf i == 6
+					return SexLab.GetAnimationObject("DD_SH_armbMiss1")	
+				ElseIf i == 7
+					return SexLab.GetAnimationObject("DD_SH_armbCowg1")	
 				EndIf
 			Else
 				i = Utility.RandomInt(0,0)
@@ -349,7 +355,7 @@ sslBaseAnimation function GetBoundAnim(actor a, actor b)
 	EndIf
 	If HasYoke(a)
 		; check if both are bound
-		If HasArmbinder(b)
+		If HasArmbinderNonStrict(b)
 			; other partner is bound with armbinder.			
 			If b.GetLeveledActorBase().GetSex() == 1
 				i = Utility.RandomInt(0,0)
@@ -368,7 +374,7 @@ sslBaseAnimation function GetBoundAnim(actor a, actor b)
 		Elseif !b.WornHasKeyword(libs.zad_DeviousHeavyBondage)
 			;check if partner is a male
 			If b.GetLeveledActorBase().GetSex() == 0
-				i = Utility.RandomInt(0,9)
+				i = Utility.RandomInt(0,11)
 				If i == 0
 					return SexLab.GetAnimationObject("DDZapYokeMissionary01")	
 				ElseIf i == 1
@@ -388,13 +394,58 @@ sslBaseAnimation function GetBoundAnim(actor a, actor b)
 				ElseIf i == 8
 					return SexLab.GetAnimationObject("DDFBYokeDoggy")			
 				ElseIf i == 9
-					return SexLab.GetAnimationObject("DDFBMolagStandingYoke")			
+					return SexLab.GetAnimationObject("DDFBMolagStandingYoke")								
+				ElseIf i == 10
+					return SexLab.GetAnimationObject("DD_SH_yokeBJ1")			
+				ElseIf i == 11
+					return SexLab.GetAnimationObject("DD_SH_yokeMiss1")							
 				EndIf
 			Else
 				i = Utility.RandomInt(0,0)
 				If i == 0
 					return SexLab.GetAnimationObject("DDZapYokeLesbian01")					
 				EndIf
+			EndIf			
+		EndIf
+	EndIf
+	If HasFrontCuffs(a)
+		if !b.WornHasKeyword(libs.zad_DeviousHeavyBondage)
+			;check if partner is a male
+			If b.GetLeveledActorBase().GetSex() == 0
+				i = Utility.RandomInt(0,1)
+				If i == 0
+					return SexLab.GetAnimationObject("DD_SH_cuffsFrontBJ1")					
+				ElseIf i == 1
+					return SexLab.GetAnimationObject("DD_SH_cuffsFrontMiss1")					
+				EndIf			
+			EndIf			
+		EndIf
+	EndIf
+	If HasBBYoke(a)
+		if !b.WornHasKeyword(libs.zad_DeviousHeavyBondage)
+			;check if partner is a male
+			If b.GetLeveledActorBase().GetSex() == 0
+				i = Utility.RandomInt(0,1)
+				If i == 0
+					return SexLab.GetAnimationObject("DD_SH_bbyokeBJ1")					
+				ElseIf i == 1
+					return SexLab.GetAnimationObject("DD_SH_bbyokeMiss1")					
+				EndIf			
+			EndIf			
+		EndIf
+	EndIf
+	If HasElbowbinder(a)
+		if !b.WornHasKeyword(libs.zad_DeviousHeavyBondage)
+			;check if partner is a male
+			If b.GetLeveledActorBase().GetSex() == 0
+				i = Utility.RandomInt(0,2)
+				If i == 0
+					return SexLab.GetAnimationObject("DD_SH_elbBJ1")					
+				ElseIf i == 1
+					return SexLab.GetAnimationObject("DD_SH_elbMiss1")					
+				ElseIf i == 2
+					return SexLab.GetAnimationObject("DD_SH_elbCowg1")					
+				EndIf			
 			EndIf			
 		EndIf
 	EndIf
@@ -972,6 +1023,21 @@ Bool Function HasYoke(Actor akActor)
 	Return (akActor != None) && (akActor.WornHasKeyword(libs.zad_DeviousYoke))
 EndFunction
 
+Bool Function HasBBYoke(Actor akActor)
+	Return (akActor != None) && (akActor.WornHasKeyword(libs.zad_DeviousYokeBB))
+EndFunction
+
+Bool Function HasFrontCuffs(Actor akActor)
+	Return (akActor != None) && (akActor.WornHasKeyword(libs.zad_DeviousCuffsFront))
+EndFunction
+
+Bool Function HasElbowbinder(Actor akActor)
+	Return (akActor != None) && (akActor.WornHasKeyword(libs.zad_DeviousArmbinderElbow))
+EndFunction
+
+Bool Function HasArmbinderNonStrict(Actor akActor)
+	Return (akActor != None) && (akActor.WornHasKeyword(libs.zad_DeviousArmbinder))
+EndFunction
 
 sslBaseAnimation[] Function GetSoloAnimations(Actor akActor)
 	sslBaseAnimation[] soloAnims
