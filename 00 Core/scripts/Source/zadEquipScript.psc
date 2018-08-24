@@ -536,7 +536,7 @@ bool Function RemoveDeviceWithKey(actor akActor = none, bool destroyDevice=false
 		If Utility.RandomFloat(0.0, 99.9) < ModValue
 			Libs.PlayerRef.RemoveItem(DeviceKey, Utility.RandomInt(1, NumberOfKeysNeeded))
 			libs.SendDeviceKeyBreakEventVerbose(deviceInventory, zad_DeviousDevice, akActor)
-			If Utility.RandomFloat(0.0, 99.9) < (LockJamChance * CalculateKeyModifier(False))
+			If Utility.RandomFloat(0.0, 99.9) < (LockJamChance * CalculateKeyModifier(False)) && !libs.Config.DisableLockJam
 				; broken key becomes stuck in the lock
 				libs.SendDeviceJamLockEventVerbose(deviceInventory, zad_DeviousDevice, akActor)
 				StorageUtil.SetIntValue(akActor, "zad_Equipped" + libs.LookupDeviceType(zad_DeviousDevice) + "_LockJammedStatus", 1)
