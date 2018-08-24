@@ -798,6 +798,20 @@ Armor Function GetWornDevice(Actor akActor, Keyword kw)
 	return retval
 EndFunction
 
+; Returns the name of a given inventory device
+String Function GetDeviceName(armor device)
+	String retval = ""
+    ObjectReference tmpORef = PlayerRef.placeAtMe(device, abInitiallyDisabled = true)
+    zadEquipScript tmpZRef = tmpORef as zadEquipScript
+    if tmpZRef != none
+        retval = tmpZRef.deviceName
+    Else
+        Warn("GetDeviceName received non DD argument.")
+    Endif
+    tmpORef.delete()
+    return retval
+EndFunction
+
 ; Finds device based on rendered device keywords (e.g. keyword zad_DeviousBelt also returns a harness)
 ; Useful for situation where you just want to get the device occupying a specific slot without further differentiation
 Armor Function GetWornDeviceFuzzyMatch(Actor akActor, Keyword kw)
