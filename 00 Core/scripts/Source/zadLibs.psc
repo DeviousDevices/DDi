@@ -1299,11 +1299,7 @@ bool[] Function StartThirdPersonAnimation(actor akActor, string animation, bool 
 			ret[0] = true
 			game.ForceThirdPerson()
 		EndIf
-		Log("Debug-5")
-		if config.ifp
-			SendModEvent("FP_SetView", "0") ; turn off immersive view
-		EndIf
-		Log("Debug-6")
+		Log("Debug-5")		
 		; Not sure how to detect auto-walk: Tap 'forward' to disable it if it's active.
 		Input.TapKey(Input.GetMappedKey("Forward"))
 		; Freeze player controls
@@ -1349,9 +1345,7 @@ Function EndThirdPersonAnimation(actor akActor, bool[] cameraState, bool permitR
 	if akActor == PlayerRef
 		UpdateControls()
 		if cameraState[0]
-			game.ForceFirstPerson()
-		ElseIf config.ifp
-			SendModEvent("FP_SetView", "1") ; turn on immersive view
+			game.ForceFirstPerson()		
 		EndIf
 		if cameraState[1]
 			;akActor.SheatheWeapon()

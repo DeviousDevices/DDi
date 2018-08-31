@@ -41,8 +41,6 @@ Int YokeRemovalCostPerLevelDefault = 200
 
 bool Property LogMessages = True Auto
 bool logMessagesDefault = true
-bool Property ifp = false Auto
-bool ifpDefault = false
 bool Property preserveAggro = True Auto
 bool preserveAggroDefault = True
 bool Property breastNodeManagement = false Auto
@@ -174,7 +172,6 @@ int rmHeartbeatIntervalOID
 int rmSummonHeartbeatIntervalOID
 int ssWarningMessagesOID
 int numNpcsOID
-int ifpOID
 int preserveAggroOID
 int blindfoldModeOID
 int blindfoldStrengthOID
@@ -453,9 +450,7 @@ Event OnPageReset(string page)
 			i += 1
 		EndWhile	
 	ElseIf page == "Debug"
-		SetCursorFillMode(TOP_TO_BOTTOM)						
-		AddHeaderOption("Camera Configuration")
-		ifpOID = AddToggleOption("Immersive First Person", ifp)
+		SetCursorFillMode(TOP_TO_BOTTOM)								
 		SetCursorPosition(1) ; Move cursor to top right position		
 		AddHeaderOption("Message Visibility Settings")
 		npcMessagesOID = AddToggleOption("Show NPC Messages", NpcMessages)
@@ -769,10 +764,7 @@ Event OnOptionSelect(int option)
 		SetToggleOptionValue(bootsSlowdownToggleOID, bootsSlowdownToggle)
 	elseif option == mittensDropToggleOID
 		 mittensDropToggle = !mittensDropToggle
-		SetToggleOptionValue(mittensDropToggleOID, mittensDropToggle)
-	elseif option == ifpOID
-		ifp = !ifp
-		SetToggleOptionValue(ifpOID, ifp)
+		SetToggleOptionValue(mittensDropToggleOID, mittensDropToggle)	
 	elseif option == breastNodeManagementOID
 		breastNodeManagement = !breastNodeManagement
 		SetToggleOptionValue(breastNodeManagementOID, breastNodeManagement)
@@ -927,10 +919,7 @@ Event OnOptionDefault(int option)
 		SetToggleOptionValue(mittensDropToggleOID, mittensDropToggleDefault)
 	elseIf (option == numNpcsOID)
 		numNpcs = numNpcsDefault
-		SetSliderOptionValue(numNpcsOID, numNpcs, "{1}")
-	elseIf (option == ifpOID)
-		ifp = ifpDefault
-		SetToggleOptionValue(ifpOID, ifp)
+		SetSliderOptionValue(numNpcsOID, numNpcs, "{1}")	
 	elseIf (option == breastNodeManagementOID)
 		breastNodeManagement = breastNodeManagementDefault
 		SetToggleOptionValue(breastNodeManagementOID, breastNodeManagement)
@@ -1046,9 +1035,7 @@ Event OnOptionHighlight(int option)
 	elseIf (option == mittensDropToggleOID)
 		SetInfoText("If this option is enabled, it is hard to pick up items when wearing bondage mittens.\nYou will instead drop the items to the ground (you can try to pick them up again.)\nDefault:"+mittensDropToggleDefault)
 	elseIf (option == numNpcsOID)
-		SetInfoText("Configure the number of NPCs (per area) that will be processed by DD's bondage features (e.g. using bound animations). Use lower settings for weaker PCs.\nDefault:"+numNpcsDefault)
-	elseIf (option == ifpOID)
-		SetInfoText("Configures support for Immersive First Person.\nDefault:"+ifpDefault)
+		SetInfoText("Configure the number of NPCs (per area) that will be processed by DD's bondage features (e.g. using bound animations). Use lower settings for weaker PCs.\nDefault:"+numNpcsDefault)	
 	elseIf (option == breastNodeManagementOID)
 		SetInfoText("If enabled, breasts will be resized while the chastity bra is worn, to minimized HDT clipping.\nDefault: "+breastNodeManagementDefault)
 	elseIf (option == bellyNodeManagementOID)
