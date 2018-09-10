@@ -2445,11 +2445,13 @@ Function ApplyGagEffect(actor akActor)
 			SetPhonemeModifier(akActor, 1, 6, 100)
 			SetPhonemeModifier(akActor, 1, 7, 100)
 		EndIf
+		SendGagEffectEvent(akActor, false)
 		Return
 	EndIf
 	if (GetPhonemeModifier(akActor, 0, 1) != 100 || GetPhonemeModifier(akActor, 0, 11) != 70) && GetPhonemeModifier(akActor, 0, 0) != 70 ; Last check is for vibration mouth expressions. HoC
 		SetPhonemeModifier(akActor, 0, 1, 100)
 		SetPhonemeModifier(akActor, 0, 11, 70)
+		SendGagEffectEvent(akActor, false)
 	EndIf
 EndFunction
 
@@ -2468,6 +2470,16 @@ Function RemoveGagEffect(actor akActor)
 		SetPhonemeModifier(akActor, 0, 1, 0)
 		SetPhonemeModifier(akActor, 0, 11, 0)
 	Endif
+	SendGagEffectEvent(akActor, true)
+EndFunction
+
+Function SendGagEffectEvent(actor akActor, bool isRemove)
+    Int Handle = ModEvent.Create("DDI_GagExpressionStateChange")
+    If (Handle)    
+        ModEvent.PushForm(Handle, akActor)
+        ModEvent.PushBool(Handle, isRemove)
+        ModEvent.Send(Handle)
+    Endif  
 EndFunction
 
 string Function MakeSingularIfPlural(string theString)
