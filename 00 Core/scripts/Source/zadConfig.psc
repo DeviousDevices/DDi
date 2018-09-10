@@ -598,7 +598,7 @@ Event OnOptionSliderOpen(int option)
 	elseif option == blindfoldStrengthOID
 		SetSliderDialogStartValue(blindfoldStrength)
 		SetSliderDialogDefaultValue(blindfoldStrengthDefault)
-		SetSliderDialogRange(0.2,1.0)
+		SetSliderDialogRange(0.0,1.0)
 		SetSliderDialogInterval(0.01)
 	elseif option == darkfogStrengthOID
 		SetSliderDialogStartValue(darkfogStrength)
