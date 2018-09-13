@@ -401,3 +401,102 @@ s DD_SH_yokeMiss1_A2_S1 DD_SH_yokeMiss1_a2_s1.hkx
 + DD_SH_yokeMiss1_A2_S4 DD_SH_yokeMiss1_a2_s4.hkx
 + DD_SH_yokeMiss1_A2_S5 DD_SH_yokeMiss1_a2_s5.hkx
 
+
+' Billyy's animations
+
+' DD_Billyy_YokeCowgirl
+s DD_Billyy_YokeCowgirl_A1_S1 DD_Billyy_YokeCowgirl_A1_S1.hkx  
++ DD_Billyy_YokeCowgirl_A1_S2 DD_Billyy_YokeCowgirl_A1_S2.hkx  
++ DD_Billyy_YokeCowgirl_A1_S3 DD_Billyy_YokeCowgirl_A1_S3.hkx  
++ DD_Billyy_YokeCowgirl_A1_S4 DD_Billyy_YokeCowgirl_A1_S4.hkx  
++ DD_Billyy_YokeCowgirl_A1_S5 DD_Billyy_YokeCowgirl_A1_S5.hkx  
+s DD_Billyy_YokeCowgirl_A2_S1 DD_Billyy_YokeCowgirl_A2_S1.hkx
++ DD_Billyy_YokeCowgirl_A2_S2 DD_Billyy_YokeCowgirl_A2_S2.hkx
++ DD_Billyy_YokeCowgirl_A2_S3 DD_Billyy_YokeCowgirl_A2_S3.hkx
++ DD_Billyy_YokeCowgirl_A2_S4 DD_Billyy_YokeCowgirl_A2_S4.hkx
++ DD_Billyy_YokeCowgirl_A2_S5 DD_Billyy_YokeCowgirl_A2_S5.hkx
+
+' DD_Billyy_YokeDoggy
+s DD_Billyy_YokeDoggy_A1_S1 DD_Billyy_YokeDoggy_A1_S1.hkx  
++ DD_Billyy_YokeDoggy_A1_S2 DD_Billyy_YokeDoggy_A1_S2.hkx  
++ DD_Billyy_YokeDoggy_A1_S3 DD_Billyy_YokeDoggy_A1_S3.hkx  
++ DD_Billyy_YokeDoggy_A1_S4 DD_Billyy_YokeDoggy_A1_S4.hkx  
++ DD_Billyy_YokeDoggy_A1_S5 DD_Billyy_YokeDoggy_A1_S5.hkx  
+s DD_Billyy_YokeDoggy_A2_S1 DD_Billyy_YokeDoggy_A2_S1.hkx
++ DD_Billyy_YokeDoggy_A2_S2 DD_Billyy_YokeDoggy_A2_S2.hkx
++ DD_Billyy_YokeDoggy_A2_S3 DD_Billyy_YokeDoggy_A2_S3.hkx
++ DD_Billyy_YokeDoggy_A2_S4 DD_Billyy_YokeDoggy_A2_S4.hkx
++ DD_Billyy_YokeDoggy_A2_S5 DD_Billyy_YokeDoggy_A2_S5.hkx
+
+' DD_Billyy_YokeMissionary
+s DD_Billyy_YokeMissionary_A1_S1 DD_Billyy_YokeMissionary_A1_S1.hkx  
++ DD_Billyy_YokeMissionary_A1_S2 DD_Billyy_YokeMissionary_A1_S2.hkx  
++ DD_Billyy_YokeMissionary_A1_S3 DD_Billyy_YokeMissionary_A1_S3.hkx  
++ DD_Billyy_YokeMissionary_A1_S4 DD_Billyy_YokeMissionary_A1_S4.hkx  
++ DD_Billyy_YokeMissionary_A1_S5 DD_Billyy_YokeMissionary_A1_S5.hkx  
+s DD_Billyy_YokeMissionary_A2_S1 DD_Billyy_YokeMissionary_A2_S1.hkx
++ DD_Billyy_YokeMissionary_A2_S2 DD_Billyy_YokeMissionary_A2_S2.hkx
++ DD_Billyy_YokeMissionary_A2_S3 DD_Billyy_YokeMissionary_A2_S3.hkx
++ DD_Billyy_YokeMissionary_A2_S4 DD_Billyy_YokeMissionary_A2_S4.hkx
++ DD_Billyy_YokeMissionary_A2_S5 DD_Billyy_YokeMissionary_A2_S5.hkx
+
+' DD_Billyy_YokeStanding
+s DD_Billyy_YokeStanding_A1_S1 DD_Billyy_YokeStanding_A1_S1.hkx  
++ DD_Billyy_YokeStanding_A1_S2 DD_Billyy_YokeStanding_A1_S2.hkx  
++ DD_Billyy_YokeStanding_A1_S3 DD_Billyy_YokeStanding_A1_S3.hkx  
++ DD_Billyy_YokeStanding_A1_S4 DD_Billyy_YokeStanding_A1_S4.hkx  
++ DD_Billyy_YokeStanding_A1_S5 DD_Billyy_YokeStanding_A1_S5.hkx  
+s DD_Billyy_YokeStanding_A2_S1 DD_Billyy_YokeStanding_A2_S1.hkx
++ DD_Billyy_YokeStanding_A2_S2 DD_Billyy_YokeStanding_A2_S2.hkx
++ DD_Billyy_YokeStanding_A2_S3 DD_Billyy_YokeStanding_A2_S3.hkx
++ DD_Billyy_YokeStanding_A2_S4 DD_Billyy_YokeStanding_A2_S4.hkx
++ DD_Billyy_YokeStanding_A2_S5 DD_Billyy_YokeStanding_A2_S5.hkx
+
+' DD_Billyy_YokeFaceFuck
+s DD_Billyy_YokeFaceFuck_A1_S1 DD_Billyy_YokeFaceFuck_A1_S1.hkx  
++ DD_Billyy_YokeFaceFuck_A1_S2 DD_Billyy_YokeFaceFuck_A1_S2.hkx  
++ DD_Billyy_YokeFaceFuck_A1_S3 DD_Billyy_YokeFaceFuck_A1_S3.hkx  
++ DD_Billyy_YokeFaceFuck_A1_S4 DD_Billyy_YokeFaceFuck_A1_S4.hkx  
++ DD_Billyy_YokeFaceFuck_A1_S5 DD_Billyy_YokeFaceFuck_A1_S5.hkx  
+s DD_Billyy_YokeFaceFuck_A2_S1 DD_Billyy_YokeFaceFuck_A2_S1.hkx
++ DD_Billyy_YokeFaceFuck_A2_S2 DD_Billyy_YokeFaceFuck_A2_S2.hkx
++ DD_Billyy_YokeFaceFuck_A2_S3 DD_Billyy_YokeFaceFuck_A2_S3.hkx
++ DD_Billyy_YokeFaceFuck_A2_S4 DD_Billyy_YokeFaceFuck_A2_S4.hkx
++ DD_Billyy_YokeFaceFuck_A2_S5 DD_Billyy_YokeFaceFuck_A2_S5.hkx
+
+' DD_Billyy_Yoke69
+s DD_Billyy_Yoke69_A1_S1 DD_Billyy_Yoke69_A1_S1.hkx  
++ DD_Billyy_Yoke69_A1_S2 DD_Billyy_Yoke69_A1_S2.hkx  
++ DD_Billyy_Yoke69_A1_S3 DD_Billyy_Yoke69_A1_S3.hkx  
++ DD_Billyy_Yoke69_A1_S4 DD_Billyy_Yoke69_A1_S4.hkx  
++ DD_Billyy_Yoke69_A1_S5 DD_Billyy_Yoke69_A1_S5.hkx  
+s DD_Billyy_Yoke69_A2_S1 DD_Billyy_Yoke69_A2_S1.hkx
++ DD_Billyy_Yoke69_A2_S2 DD_Billyy_Yoke69_A2_S2.hkx
++ DD_Billyy_Yoke69_A2_S3 DD_Billyy_Yoke69_A2_S3.hkx
++ DD_Billyy_Yoke69_A2_S4 DD_Billyy_Yoke69_A2_S4.hkx
++ DD_Billyy_Yoke69_A2_S5 DD_Billyy_Yoke69_A2_S5.hkx
+
+' DD_Billyy_YokeRevCowgirlAnal
+s DD_Billyy_YokeRevCowgirlAnal_A1_S1 DD_Billyy_YokeRevCowgirlAnal_A1_S1.hkx  
++ DD_Billyy_YokeRevCowgirlAnal_A1_S2 DD_Billyy_YokeRevCowgirlAnal_A1_S2.hkx  
++ DD_Billyy_YokeRevCowgirlAnal_A1_S3 DD_Billyy_YokeRevCowgirlAnal_A1_S3.hkx  
++ DD_Billyy_YokeRevCowgirlAnal_A1_S4 DD_Billyy_YokeRevCowgirlAnal_A1_S4.hkx  
++ DD_Billyy_YokeRevCowgirlAnal_A1_S5 DD_Billyy_YokeRevCowgirlAnal_A1_S5.hkx  
+s DD_Billyy_YokeRevCowgirlAnal_A2_S1 DD_Billyy_YokeRevCowgirlAnal_A2_S1.hkx
++ DD_Billyy_YokeRevCowgirlAnal_A2_S2 DD_Billyy_YokeRevCowgirlAnal_A2_S2.hkx
++ DD_Billyy_YokeRevCowgirlAnal_A2_S3 DD_Billyy_YokeRevCowgirlAnal_A2_S3.hkx
++ DD_Billyy_YokeRevCowgirlAnal_A2_S4 DD_Billyy_YokeRevCowgirlAnal_A2_S4.hkx
++ DD_Billyy_YokeRevCowgirlAnal_A2_S5 DD_Billyy_YokeRevCowgirlAnal_A2_S5.hkx
+
+' DD_Billyy_YokeLayingAnal
+s DD_Billyy_YokeLayingAnal_A1_S1 DD_Billyy_YokeLayingAnal_A1_S1.hkx  
++ DD_Billyy_YokeLayingAnal_A1_S2 DD_Billyy_YokeLayingAnal_A1_S2.hkx  
++ DD_Billyy_YokeLayingAnal_A1_S3 DD_Billyy_YokeLayingAnal_A1_S3.hkx  
++ DD_Billyy_YokeLayingAnal_A1_S4 DD_Billyy_YokeLayingAnal_A1_S4.hkx  
++ DD_Billyy_YokeLayingAnal_A1_S5 DD_Billyy_YokeLayingAnal_A1_S5.hkx  
+s DD_Billyy_YokeLayingAnal_A2_S1 DD_Billyy_YokeLayingAnal_A2_S1.hkx
++ DD_Billyy_YokeLayingAnal_A2_S2 DD_Billyy_YokeLayingAnal_A2_S2.hkx
++ DD_Billyy_YokeLayingAnal_A2_S3 DD_Billyy_YokeLayingAnal_A2_S3.hkx
++ DD_Billyy_YokeLayingAnal_A2_S4 DD_Billyy_YokeLayingAnal_A2_S4.hkx
++ DD_Billyy_YokeLayingAnal_A2_S5 DD_Billyy_YokeLayingAnal_A2_S5.hkx
+

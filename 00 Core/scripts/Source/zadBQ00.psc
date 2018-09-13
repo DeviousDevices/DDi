@@ -346,9 +346,13 @@ sslBaseAnimation function GetBoundAnim(actor a, actor b)
 					return SexLab.GetAnimationObject("DD_SH_armbCowg1")	
 				EndIf
 			Else
-				i = Utility.RandomInt(0,0)
+				i = Utility.RandomInt(0,2)
 				If i == 0
-					return SexLab.GetAnimationObject("DDZapArmbLesbian01")					
+					return SexLab.GetAnimationObject("DDZapArmbLesbian01")
+				ElseIf i == 1
+					return SexLab.GetAnimationObject("DD_SH_armbMiss1")	
+				ElseIf i == 2
+					return SexLab.GetAnimationObject("DD_SH_armbCowg1")	
 				EndIf
 			EndIf											
 		EndIf		
@@ -374,7 +378,7 @@ sslBaseAnimation function GetBoundAnim(actor a, actor b)
 		Elseif !b.WornHasKeyword(libs.zad_DeviousHeavyBondage)
 			;check if partner is a male
 			If b.GetLeveledActorBase().GetSex() == 0
-				i = Utility.RandomInt(0,11)
+				i = Utility.RandomInt(0,19)
 				If i == 0
 					return SexLab.GetAnimationObject("DDZapYokeMissionary01")	
 				ElseIf i == 1
@@ -398,12 +402,37 @@ sslBaseAnimation function GetBoundAnim(actor a, actor b)
 				ElseIf i == 10
 					return SexLab.GetAnimationObject("DD_SH_yokeBJ1")			
 				ElseIf i == 11
-					return SexLab.GetAnimationObject("DD_SH_yokeMiss1")							
+					return SexLab.GetAnimationObject("DD_SH_yokeMiss1")												
+				ElseIf i == 12
+					return SexLab.GetAnimationObject("DD_Billyy_YokeCowgirl")
+				ElseIf i == 13
+					return SexLab.GetAnimationObject("DD_Billyy_YokeDoggy")
+				ElseIf i == 14
+					return SexLab.GetAnimationObject("DD_Billyy_YokeMissionary")
+				ElseIf i == 15
+					return SexLab.GetAnimationObject("DD_Billyy_YokeStanding")
+				ElseIf i == 16
+					return SexLab.GetAnimationObject("DD_Billyy_YokeFaceFuck")
+				ElseIf i == 17
+					return SexLab.GetAnimationObject("DD_Billyy_Yoke69")
+				ElseIf i == 18
+					return SexLab.GetAnimationObject("DD_Billyy_YokeRevCowgirlAnal")
+				ElseIf i == 19
+					return SexLab.GetAnimationObject("DD_Billyy_YokeLayingAnal")
 				EndIf
 			Else
-				i = Utility.RandomInt(0,0)
+				i = Utility.RandomInt(0,4)
 				If i == 0
 					return SexLab.GetAnimationObject("DDZapYokeLesbian01")					
+				; lets allow a few FM anims with strapons, too:
+				ElseIf i == 1
+					return SexLab.GetAnimationObject("DD_SH_yokeMiss1")												
+				ElseIf i == 2
+					return SexLab.GetAnimationObject("DD_Billyy_YokeCowgirl")
+				ElseIf i == 3
+					return SexLab.GetAnimationObject("DD_Billyy_YokeDoggy")
+				ElseIf i == 4
+					return SexLab.GetAnimationObject("DD_Billyy_YokeMissionary")
 				EndIf
 			EndIf			
 		EndIf
