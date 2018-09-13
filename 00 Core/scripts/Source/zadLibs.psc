@@ -80,6 +80,7 @@ Keyword Property zad_QuestItem Auto ; Quest item tag. This item can not be remov
 
 Keyword Property zad_BraNoBlockPiercings Auto
 Keyword Property zad_GagNoOpenMouth Auto
+Keyword Property zad_GagCustomExpression Auto
 
 Keyword Property zad_BoundCombatDisableKick Auto
 
@@ -2430,6 +2431,10 @@ EndFunction
 
 Function ApplyGagEffect(actor akActor)	
 	; apply this affect to actual gags only, not hoods that also share this keyword.
+	If akActor.WornHasKeyword(zad_GagCustomExpression)
+		SendGagEffectEvent(akActor, false)
+		Return
+	EndIf
 	If akActor.WornHasKeyword(zad_GagNoOpenMouth)
 		return
 	EndIf
@@ -2444,18 +2449,20 @@ Function ApplyGagEffect(actor akActor)
 			SetPhonemeModifier(akActor, 1, 5, 100)
 			SetPhonemeModifier(akActor, 1, 6, 100)
 			SetPhonemeModifier(akActor, 1, 7, 100)
-		EndIf
-		SendGagEffectEvent(akActor, false)
+		EndIf		
 		Return
 	EndIf
 	if (GetPhonemeModifier(akActor, 0, 1) != 100 || GetPhonemeModifier(akActor, 0, 11) != 70) && GetPhonemeModifier(akActor, 0, 0) != 70 ; Last check is for vibration mouth expressions. HoC
 		SetPhonemeModifier(akActor, 0, 1, 100)
-		SetPhonemeModifier(akActor, 0, 11, 70)
-		SendGagEffectEvent(akActor, false)
+		SetPhonemeModifier(akActor, 0, 11, 70)		
 	EndIf
 EndFunction
 
 Function RemoveGagEffect(actor akActor)
+	If akActor.WornHasKeyword(zad_GagCustomExpression)
+		SendGagEffectEvent(akActor, false)
+		Return
+	EndIf
 	If akActor.WornHasKeyword(zad_DeviousGagLarge)
 		SetPhonemeModifier(akActor, 0, 0, 0)
 		SetPhonemeModifier(akActor, 0, 1, 0)
@@ -2470,7 +2477,6 @@ Function RemoveGagEffect(actor akActor)
 		SetPhonemeModifier(akActor, 0, 1, 0)
 		SetPhonemeModifier(akActor, 0, 11, 0)
 	Endif
-	SendGagEffectEvent(akActor, true)
 EndFunction
 
 Function SendGagEffectEvent(actor akActor, bool isRemove)
