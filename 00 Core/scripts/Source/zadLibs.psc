@@ -1359,11 +1359,11 @@ EndFunction
 
 
 float Function GetVersion()
-	return 9 ; build number increment to determine the newest version - does NOT correspond with the offical version name. Returns a float not to mess with existing implementations of this function.
+	return 10 ; build number increment to determine the newest version - does NOT correspond with the offical version name. Returns a float not to mess with existing implementations of this function.
 EndFunction
 
 String Function GetVersionString()
-	return "4.1" ; string to be displayed in MCM etc.
+	return "4.2" ; string to be displayed in MCM etc.
 EndFunction
 
 
@@ -3302,6 +3302,8 @@ string Function LookupDeviceType(keyword kwd)
 		return "Mittens"
 	ElseIf kwd == zad_DeviousHobbleSkirt
 		return "HobbleSkirt"	
+	ElseIf kwd == zad_DeviousHobbleSkirtRelaxed
+		return "HobbleSkirt"
 	EndIf
 	Error("LookupDeviceType received invalid keyword " + kwd)
 EndFunction
