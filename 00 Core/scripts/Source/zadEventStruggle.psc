@@ -1,12 +1,18 @@
 scriptName zadEventStruggle extends zadBaseEvent
 
+Float EventCooldown = 0.0
+
 bool Function HasKeywords(actor akActor)
 	; don't play the animation in combat
 	if akActor.IsInCombat() 
 		return false
 	Endif
-	; no wrist restraints for now. I will add them later! Make sure to give them priority!
-	return (akActor.WornHasKeyword(libs.zad_Lockable) && !akActor.WornHasKeyword(libs.zad_DeviousHeavyBondage))
+	if Utility.GetCurrentRealTime() < Eventcooldown || akActor.IsWeaponDrawn()
+		Return False
+	Else	 
+		; no wrist restraints for now. I will add them later! Make sure to give them priority!
+		return (akActor.WornHasKeyword(libs.zad_Lockable) && !akActor.WornHasKeyword(libs.zad_DeviousHeavyBondage))
+	EndIf
 EndFunction
 
 Function Execute(actor akActor)
@@ -46,6 +52,7 @@ Function Execute(actor akActor)
 	If len == 0
 		return
 	EndIf
+	Eventcooldown = Utility.GetCurrentRealTime() + 300 ; add a 5 min real time cooldown
 	bool[] cameraState = libs.StartThirdPersonAnimation(akActor, struggleStrings[Utility.RandomInt(0, (len - 1) )], true)
 	Utility.Wait(5)
 	libs.Pant(libs.PlayerRef)

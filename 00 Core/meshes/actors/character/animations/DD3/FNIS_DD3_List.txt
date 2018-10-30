@@ -57,17 +57,6 @@ Version V4.1.0
 
 AAprefix pon
 
-AAset _h2heqp 6
-AAset _h2hidle 6
-AAset _h2hatkpow 6
-AAset _h2hstag 6
-AAset _h2hatk 6
-AAset _jump 6
-AAset _sprint 6
-AAset _sneakmt 6
-AAset _sneakidle 6
-AAset _shout 6
 AAset _mtx 6
 AAset _mt 6
-AAset _mtturn 6
 AAset _mtidle 6

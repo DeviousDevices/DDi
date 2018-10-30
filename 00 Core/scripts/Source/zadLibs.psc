@@ -80,6 +80,7 @@ Keyword Property zad_QuestItem Auto ; Quest item tag. This item can not be remov
 
 Keyword Property zad_BraNoBlockPiercings Auto
 Keyword Property zad_GagNoOpenMouth Auto
+Keyword Property zad_GagCustomExpression Auto
 
 Keyword Property zad_BoundCombatDisableKick Auto
 
@@ -798,6 +799,20 @@ Armor Function GetWornDevice(Actor akActor, Keyword kw)
 	return retval
 EndFunction
 
+; Returns the name of a given inventory device
+String Function GetDeviceName(armor device)
+	String retval = ""
+    ObjectReference tmpORef = PlayerRef.placeAtMe(device, abInitiallyDisabled = true)
+    zadEquipScript tmpZRef = tmpORef as zadEquipScript
+    if tmpZRef != none
+        retval = tmpZRef.deviceName
+    Else
+        Warn("GetDeviceName received non DD argument.")
+    Endif
+    tmpORef.delete()
+    return retval
+EndFunction
+
 ; Finds device based on rendered device keywords (e.g. keyword zad_DeviousBelt also returns a harness)
 ; Useful for situation where you just want to get the device occupying a specific slot without further differentiation
 Armor Function GetWornDeviceFuzzyMatch(Actor akActor, Keyword kw)
@@ -1285,11 +1300,7 @@ bool[] Function StartThirdPersonAnimation(actor akActor, string animation, bool 
 			ret[0] = true
 			game.ForceThirdPerson()
 		EndIf
-		Log("Debug-5")
-		if config.ifp
-			SendModEvent("FP_SetView", "0") ; turn off immersive view
-		EndIf
-		Log("Debug-6")
+		Log("Debug-5")		
 		; Not sure how to detect auto-walk: Tap 'forward' to disable it if it's active.
 		Input.TapKey(Input.GetMappedKey("Forward"))
 		; Freeze player controls
@@ -1335,9 +1346,7 @@ Function EndThirdPersonAnimation(actor akActor, bool[] cameraState, bool permitR
 	if akActor == PlayerRef
 		UpdateControls()
 		if cameraState[0]
-			game.ForceFirstPerson()
-		ElseIf config.ifp
-			SendModEvent("FP_SetView", "1") ; turn on immersive view
+			game.ForceFirstPerson()		
 		EndIf
 		if cameraState[1]
 			;akActor.SheatheWeapon()
@@ -1350,11 +1359,11 @@ EndFunction
 
 
 float Function GetVersion()
-	return 9 ; build number increment to determine the newest version - does NOT correspond with the offical version name. Returns a float not to mess with existing implementations of this function.
+	return 10 ; build number increment to determine the newest version - does NOT correspond with the offical version name. Returns a float not to mess with existing implementations of this function.
 EndFunction
 
 String Function GetVersionString()
-	return "4.1" ; string to be displayed in MCM etc.
+	return "4.2" ; string to be displayed in MCM etc.
 EndFunction
 
 
@@ -2422,6 +2431,10 @@ EndFunction
 
 Function ApplyGagEffect(actor akActor)	
 	; apply this affect to actual gags only, not hoods that also share this keyword.
+	If akActor.WornHasKeyword(zad_GagCustomExpression)
+		SendGagEffectEvent(akActor, false)
+		Return
+	EndIf
 	If akActor.WornHasKeyword(zad_GagNoOpenMouth)
 		return
 	EndIf
@@ -2436,16 +2449,20 @@ Function ApplyGagEffect(actor akActor)
 			SetPhonemeModifier(akActor, 1, 5, 100)
 			SetPhonemeModifier(akActor, 1, 6, 100)
 			SetPhonemeModifier(akActor, 1, 7, 100)
-		EndIf
+		EndIf		
 		Return
 	EndIf
 	if (GetPhonemeModifier(akActor, 0, 1) != 100 || GetPhonemeModifier(akActor, 0, 11) != 70) && GetPhonemeModifier(akActor, 0, 0) != 70 ; Last check is for vibration mouth expressions. HoC
 		SetPhonemeModifier(akActor, 0, 1, 100)
-		SetPhonemeModifier(akActor, 0, 11, 70)
+		SetPhonemeModifier(akActor, 0, 11, 70)		
 	EndIf
 EndFunction
 
 Function RemoveGagEffect(actor akActor)
+	If akActor.WornHasKeyword(zad_GagCustomExpression)
+		SendGagEffectEvent(akActor, false)
+		Return
+	EndIf
 	If akActor.WornHasKeyword(zad_DeviousGagLarge)
 		SetPhonemeModifier(akActor, 0, 0, 0)
 		SetPhonemeModifier(akActor, 0, 1, 0)
@@ -2460,6 +2477,15 @@ Function RemoveGagEffect(actor akActor)
 		SetPhonemeModifier(akActor, 0, 1, 0)
 		SetPhonemeModifier(akActor, 0, 11, 0)
 	Endif
+EndFunction
+
+Function SendGagEffectEvent(actor akActor, bool isRemove)
+    Int Handle = ModEvent.Create("DDI_GagExpressionStateChange")
+    If (Handle)    
+        ModEvent.PushForm(Handle, akActor)
+        ModEvent.PushBool(Handle, isRemove)
+        ModEvent.Send(Handle)
+    Endif  
 EndFunction
 
 string Function MakeSingularIfPlural(string theString)
@@ -3276,6 +3302,8 @@ string Function LookupDeviceType(keyword kwd)
 		return "Mittens"
 	ElseIf kwd == zad_DeviousHobbleSkirt
 		return "HobbleSkirt"	
+	ElseIf kwd == zad_DeviousHobbleSkirtRelaxed
+		return "HobbleSkirt"
 	EndIf
 	Error("LookupDeviceType received invalid keyword " + kwd)
 EndFunction

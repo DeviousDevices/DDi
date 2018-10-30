@@ -15,6 +15,7 @@ Int Property EscapeDifficulty = 4 Auto
 Int Property CooldownDifficulty = 4 Auto
 Int Property KeyDifficulty = 4 Auto
 Bool Property GlobalDestroyKey = True Auto
+Bool Property DisableLockJam = False Auto
 
 int Property UnlockThreshold Auto
 int thresholdDefault = 185
@@ -40,8 +41,6 @@ Int YokeRemovalCostPerLevelDefault = 200
 
 bool Property LogMessages = True Auto
 bool logMessagesDefault = true
-bool Property ifp = false Auto
-bool ifpDefault = false
 bool Property preserveAggro = True Auto
 bool preserveAggroDefault = True
 bool Property breastNodeManagement = false Auto
@@ -173,7 +172,6 @@ int rmHeartbeatIntervalOID
 int rmSummonHeartbeatIntervalOID
 int ssWarningMessagesOID
 int numNpcsOID
-int ifpOID
 int preserveAggroOID
 int blindfoldModeOID
 int blindfoldStrengthOID
@@ -201,6 +199,7 @@ Int EscapeDifficultyOID
 Int CooldownDifficultyOID
 Int KeyDifficultyOID
 Int GlobalDestroyKeyOID
+Int DisableLockJamOID
 
 
 string[] Property EsccapeDifficultyList Auto
@@ -306,7 +305,7 @@ Event OnConfigInit()
 EndEvent
 
 int Function GetVersion()
-	return 20 ; mcm menu version
+	return 21 ; mcm menu version
 EndFunction
 
 Event OnVersionUpdate(int newVersion)
@@ -344,6 +343,7 @@ Event OnPageReset(string page)
 		CooldownDifficultyOID = AddMenuOption("Cooldown Modifier", EsccapeDifficultyList[CooldownDifficulty])
 		KeyDifficultyOID = AddMenuOption("Keybreak Modifier", EsccapeDifficultyList[KeyDifficulty])
 		GlobalDestroyKeyOID = AddToggleOption("Consume Keys", GlobalDestroyKey)
+		DisableLockJamOID = AddToggleOption("Disable Lock Jam", DisableLockJam)
 		AddHeaderOption("Belt Arousal Options")
 		beltRateOID = AddSliderOption("Arousal rate belt multiplier", beltRateMult, "{1}")
 		plugRateOID = AddSliderOption("Arousal rate plugged multiplier", plugRateMult, "{1}")
@@ -450,9 +450,7 @@ Event OnPageReset(string page)
 			i += 1
 		EndWhile	
 	ElseIf page == "Debug"
-		SetCursorFillMode(TOP_TO_BOTTOM)						
-		AddHeaderOption("Camera Configuration")
-		ifpOID = AddToggleOption("Immersive First Person", ifp)
+		SetCursorFillMode(TOP_TO_BOTTOM)								
 		SetCursorPosition(1) ; Move cursor to top right position		
 		AddHeaderOption("Message Visibility Settings")
 		npcMessagesOID = AddToggleOption("Show NPC Messages", NpcMessages)
@@ -600,7 +598,7 @@ Event OnOptionSliderOpen(int option)
 	elseif option == blindfoldStrengthOID
 		SetSliderDialogStartValue(blindfoldStrength)
 		SetSliderDialogDefaultValue(blindfoldStrengthDefault)
-		SetSliderDialogRange(0.2,1.0)
+		SetSliderDialogRange(0.0,1.0)
 		SetSliderDialogInterval(0.01)
 	elseif option == darkfogStrengthOID
 		SetSliderDialogStartValue(darkfogStrength)
@@ -766,10 +764,7 @@ Event OnOptionSelect(int option)
 		SetToggleOptionValue(bootsSlowdownToggleOID, bootsSlowdownToggle)
 	elseif option == mittensDropToggleOID
 		 mittensDropToggle = !mittensDropToggle
-		SetToggleOptionValue(mittensDropToggleOID, mittensDropToggle)
-	elseif option == ifpOID
-		ifp = !ifp
-		SetToggleOptionValue(ifpOID, ifp)
+		SetToggleOptionValue(mittensDropToggleOID, mittensDropToggle)	
 	elseif option == breastNodeManagementOID
 		breastNodeManagement = !breastNodeManagement
 		SetToggleOptionValue(breastNodeManagementOID, breastNodeManagement)
@@ -782,6 +777,9 @@ Event OnOptionSelect(int option)
 	elseif option == GlobalDestroyKeyOID
 		GlobalDestroyKey = !GlobalDestroyKey
 		SetToggleOptionValue(GlobalDestroyKeyOID, GlobalDestroyKey)	
+	elseif option == DisableLockJamOID
+		DisableLockJam = !DisableLockJam
+		SetToggleOptionValue(DisableLockJamOID, DisableLockJam)	
 	elseif option == debugSigTermOID
 		If ShowMessage("WARNING:\nThis function will try to remove all DD items. Wiping quest items may result in broken quest states! This feature is intended to be used for debug purposes and as a last resort only! Using it to escape DD devices is strongly discouraged.\n\nAre you sure?")
 			debugSigTerm = true
@@ -921,10 +919,7 @@ Event OnOptionDefault(int option)
 		SetToggleOptionValue(mittensDropToggleOID, mittensDropToggleDefault)
 	elseIf (option == numNpcsOID)
 		numNpcs = numNpcsDefault
-		SetSliderOptionValue(numNpcsOID, numNpcs, "{1}")
-	elseIf (option == ifpOID)
-		ifp = ifpDefault
-		SetToggleOptionValue(ifpOID, ifp)
+		SetSliderOptionValue(numNpcsOID, numNpcs, "{1}")	
 	elseIf (option == breastNodeManagementOID)
 		breastNodeManagement = breastNodeManagementDefault
 		SetToggleOptionValue(breastNodeManagementOID, breastNodeManagement)
@@ -1040,9 +1035,7 @@ Event OnOptionHighlight(int option)
 	elseIf (option == mittensDropToggleOID)
 		SetInfoText("If this option is enabled, it is hard to pick up items when wearing bondage mittens.\nYou will instead drop the items to the ground (you can try to pick them up again.)\nDefault:"+mittensDropToggleDefault)
 	elseIf (option == numNpcsOID)
-		SetInfoText("Configure the number of NPCs (per area) that will be processed by DD's bondage features (e.g. using bound animations). Use lower settings for weaker PCs.\nDefault:"+numNpcsDefault)
-	elseIf (option == ifpOID)
-		SetInfoText("Configures support for Immersive First Person.\nDefault:"+ifpDefault)
+		SetInfoText("Configure the number of NPCs (per area) that will be processed by DD's bondage features (e.g. using bound animations). Use lower settings for weaker PCs.\nDefault:"+numNpcsDefault)	
 	elseIf (option == breastNodeManagementOID)
 		SetInfoText("If enabled, breasts will be resized while the chastity bra is worn, to minimized HDT clipping.\nDefault: "+breastNodeManagementDefault)
 	elseIf (option == bellyNodeManagementOID)
@@ -1065,6 +1058,8 @@ Event OnOptionHighlight(int option)
         SetInfoText("Sets the strength of the speed debuff caused by wearing a hobble skirt.\nThe higher the number, the slower characters wearing a hobble skirt can walk.\nNote: The animations are meant for the default value and will look off at lower values, but some people might find this speed too slow.\nDefault: " + HobbleSkirtSpeedDebuffDefault)
 	elseIf (option == GlobalDestroyKeyOID)
 		SetInfoText("When enabled, most keys can be used to unlock only one device, and will be consumed on use.\nThis feature will not affect custom keys unless set by the creator.")
+	elseIf (option == DisableLockJamOID)
+		SetInfoText("When set to true, locks can not jam when a key breaks.")
 	endIf
 EndEvent
 

@@ -1,25 +1,13 @@
-Devious Devices Integration V4.0
+Devious Devices
 
 By The DD Team:
 
 - Kimy (Lead Maintainer)
 - Min (Founder)
-- Princessity
-- Pincopallino
-- Heretical
 - Feuertin
+- El Duderino
 
-Past Contributors: Zadil, Coopervane, Koffii, Aelie, zenetx, Srende, Lordescobar666, xaz, Cedec0, MaikCG
-
-BACKGROUND
-
-Forbidden knowledge is usually forbidden for a reason...but that wouldn't stop a brave, and might I add, beautiful, adventurer like yourself, would it? What is it that you seek, then? Daedra summoning rituals, maybe? Dark magic to siphon the very souls from your enemies? Lost Dwemer artifacts, one of those gargantuan machines of theirs, perhaps? The most secret of histories from Tamriel's past? Sheogorath's favorite sweet roll recipe?
-
-No? None of that, you say? You want something even more...devious than all of that, do you? Aren't we the adventurous sort? Your sheer bravery must match your most lovely countenance, then. Well, my girl, allow me to share with you a rumor that I heard about a week ago down in Riften at the tavern. There was a young mage apprentice there, looking for some moldy old tome or another, as mages are so fond of doing, who happened to enjoy her wine a bit too much. Thank you for the drink by the way; you're looking better by the minute, my dear.
-
-She was quite the trollop as I was told, going from one patron to the next, man, woman, even lizard if you can believe that. Well, she wasn't shy with her body, nor was she shy with her secrets. She let slip a juicy bit of information about her college back in Winterhold, about the library there. See, there's a bookshelf there that nobody is allowed to open, a shelf filled with the most devious of knowledge one could imagine. The old Orc librarian nearly threw her out of the school for trying to peek inside, she said! Why, what devious knowledge could be found inside there, I wonder? It must be something if they threatened expulsion for just trying to look inside.
-
-Oh, no my dear, no more drink for me, I'm afraid. I must be off, lots of old, filthy dwemer ruins to delve and all that. Hmm? No, no, I'm not going alone, of course not, that would just be silly. My traveling partner is tied up around here somewhere. You would make quite the lovely specimen, though, er, companion, yes, companion! Why don't you be a good girl and head on up to the College in Winterhold, then, and take a look at that forbidden bookshelf for yourself, hmm? I'm sure you'll find what you're looking for there...and just forget all about me while you enjoy that last drink. I'm sure we'll meet again, my sweet, and then perhaps you'll be...better equipped for what I have in mind.
+Past Contributors: Zadil, Coopervane, Koffii, Aelie, zenetx, Srende, Lordescobar666, xaz, Cedec0, MaikCG, Princessity, Pincopallino, Heretical
 
 FEATURES
 
@@ -59,7 +47,7 @@ XP32 Maximum Skeleton Extended: http://www.loverslab...leton-extended/
 
 UPGRADE INSTRUCTIONS
 
-Version 4.0: New game required if there is an older version of DD already installed.
+Version 4.2: No new game required when updating from any 4.x version.
 
 INSTALLATION
 
@@ -126,7 +114,7 @@ Anyone that wishes to use this mod as a dependency for their own work is quite w
 
 - You can NOT bundle/re-distribute any parts of this mod with your own (e.g. include patched versions of DD's files in your mod) as future updates to DD might break your and other mods if you do
 - You can NOT post this mod or any of its parts (including any derived works) outsides of LL without explicit permission.
-- You can NOT incorporate any parts of this mod in any for-profit project (Donations/Patreons are fine as long as they are strictly voluntary and don't offer the donor any tangible advantage over non-donors)
+- You can NOT incorporate any parts of this mod in any for-profit project (Donations/Patreons are fine as long as they are strictly voluntary)
 - You can NOT incorporate any parts of this mod in a project that's going to be uploaded to Bethesda.Net and/or made available for consoles in any other way.
 - You can NOT use any parts of this mod in a closed source project. No exceptions, ever. No need to ask for permission either. It won't be given.
 - You can NOT publish a fork of this mod (as in using it as a base for a project offering similar functionality) without permission. That includes porting it to other platforms/games.
@@ -137,21 +125,26 @@ For all third party assets used by this mod, all conditions set by their origina
 FOR MODDERS
 API Documentation can be found in zadlibs.psc (code comments within that file). Feel free to ask team members if you need assistance creating a mod using the resources provided by this mod.
 Devious Devices utilizes Github for source control: You can view the Integration, Assets, and Expansion repositories at https://github.com/DeviousDevices/.
-Furthermore, a wiki documenting the project can be found at https://github.com/D...ices/Docs/wiki/.
+
+CONTRIBUTION LICENCE
+Contributions to DD are welcome! If you are considering contributing to DD, here are our guidelines for your consideration:
+By contributing assets or code to DD, you grant the DD team represented by its lead maintainer a non-exclusive, non-revokable, and non-transferable licence to use your assets without limitation in Devious Devices or projects for other games, provided that proper credits are given. You still retain full rights to your work. Everything you create is still yours. Instead of this licence, you may also opt to place your work under an alternative licence compatible with the above, such as Creative Commons or MIT (it cannot be more restrictive, though!) In the later case, we will mark your work as subject to the licence you chose.
 
 CREDITS
-Zadil for his excellent Assets upon which this mod is based, and writing the dialogue used by The Forbidden Tome.
+Min and Kimy for the code.
+Zadil and Koffii for the devices in Devious Devices Assets.
 Coopervane for his enormous contributions to Devious Devices - Expansion.
-Srende for code contributions, and testing.
+Princessity and Srende for code contributions and testing.
 Zenetx for his Gags Overhaul, which has been officially adopted.
 Xaz for code contributions, as well as his development of numerous animations used by this mod.
 ZaZ Chris for some of the custom animations and assets used by this mod. Some assets from the excellent ZaZ Animation Pack have been rebundled with DD as per ZAP's general use permissions.
+SpaceHamster and Billyy for the awesome bound animations.
 Lordescobar666 for code contributions.
-Veladarius and UrbanSniper for their continued help with quest-design and dialogue.
+Veladarius and UrbanSniper for the quest-design and dialogue.
 Cedec0 for the bound combat that is now a part of this mod.
-MaikCG and Feuertin for the revised bound combat animations.
+MaikCG for the alternative bound combat animations.
 Heretical for contributing Heretic Resource Pack models
-Pincopallino for all the awesome items.
+Pincopallino, Feuertin and El Duderino for all the awesome items.
 Aelie for the code contributions.
 Jbezorg, UrbanSniper, Ms Leeches, Aelie, Coopervane, Veladarius, Stobor, Pinute, Srende, KomradePavlov, Slorm, Skeuomorph, Aareyn, Zacko, KestrelSky, Naaitsab, MixedupJim, Mord Sif for participating in the Beta, and beta-testing new releases.
 LoversLab Forum Members for some great suggestions and putting this mod to good use.
