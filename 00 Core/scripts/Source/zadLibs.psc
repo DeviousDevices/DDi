@@ -273,6 +273,7 @@ Spell Property zad_splMagickaPenalty Auto
 bool Property BoundAnimsAvailable = True Auto ; Obsolete. Bound anims are now always available, post zap 6
 FormList Property zadStandardKeywords Auto
 Keyword Property questItemRemovalAuthorizationToken = None Auto
+FormList Property zadDeviceTypes Auto	; List of all main device type keywords. Useful for iterating functions.
 
 ; Rechargeable Soulgem Stuff
 Soulgem Property SoulgemEmpty Auto
@@ -879,6 +880,11 @@ Armor Function GetRenderedDevice(armor device)
     return retval
 EndFunction
 
+; for the sake of cleaner coding
+Bool Function isWearingDeviceType(Actor akActor, Keyword kw)
+	return akActor.WornHasKeyword(kw)
+EndFunction
+
 ; Register a device to be used by GetGenericDeviceByKeyword()
 Function RegisterGenericDevice(Armor inventoryDevice, String tags)
 	if inventoryDevice == none || inventoryDevice.HasKeyword(zad_BlockGeneric) || inventoryDevice.HasKeyword(zad_QuestItem) || !inventoryDevice.hasKeyword(zad_InventoryDevice)
@@ -1168,6 +1174,7 @@ EndFunction
 ; End Generic Functions
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+
 ; Function to test an NPC using certain criteria,
 bool Function ValidForInteraction(actor currenttest, int genderreq = -1, bool creatureok = false, bool animalok = false, bool beastreaceok = false, bool elderok = false, bool guardok = true)
 	log("Checking actor validity for interaction")
@@ -1202,15 +1209,14 @@ bool Function ValidForInteraction(actor currenttest, int genderreq = -1, bool cr
 		return false			
 	endif		
 	; if it's a creature, make sure they are allowed
-	if currenttest.HasKeyword(ActorTypeCreature) 
-		; if it's an animal, make sure it's allowed
-		if currenttest.HasKeyword(ActorTypeAnimal) && !animalok
-			log("Rejected: " + currenttest.GetLeveledActorBase().GetName() + ". Reason: Actor is animal.")			
-			return false
-		elseif !currenttest.HasKeyword(ActorTypeAnimal) && !creatureok			
-			log("Rejected: " + currenttest.GetLeveledActorBase().GetName() + ". Reason: Actor is humanoid creature.")			
-			Return false
-		EndIf		
+	if currenttest.HasKeyword(ActorTypeCreature) && !creatureok					
+		log("Rejected: " + currenttest.GetLeveledActorBase().GetName() + ". Reason: Actor is humanoid creature.")			
+		Return false		
+	endif	
+	; if it's a animal, make sure they are allowed
+	if currenttest.HasKeyword(ActorTypeAnimal) && !animalok
+		log("Rejected: " + currenttest.GetLeveledActorBase().GetName() + ". Reason: Actor is animal.")	
+		Return false		
 	endif	
 	if currenttest.GetWorldSpace() != playerRef.GetWorldSpace()		
 		log("Rejected: " + currenttest.GetLeveledActorBase().GetName() + ". Reason: Actor is in different world space than player.")		

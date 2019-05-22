@@ -500,3 +500,50 @@ s DD_Billyy_YokeLayingAnal_A2_S1 DD_Billyy_YokeLayingAnal_A2_S1.hkx
 + DD_Billyy_YokeLayingAnal_A2_S4 DD_Billyy_YokeLayingAnal_A2_S4.hkx
 + DD_Billyy_YokeLayingAnal_A2_S5 DD_Billyy_YokeLayingAnal_A2_S5.hkx
 
+' DD_B_PS_Doggy
+s DD_B_PS_Doggy_A1_S1 DD_B_PS_Doggy_A1_S1.hkx  
++ DD_B_PS_Doggy_A1_S2 DD_B_PS_Doggy_A1_S2.hkx  
++ DD_B_PS_Doggy_A1_S3 DD_B_PS_Doggy_A1_S3.hkx  
++ DD_B_PS_Doggy_A1_S4 DD_B_PS_Doggy_A1_S4.hkx  
++ DD_B_PS_Doggy_A1_S5 DD_B_PS_Doggy_A1_S5.hkx  
+s DD_B_PS_Doggy_A2_S1 DD_B_PS_Doggy_A2_S1.hkx
++ DD_B_PS_Doggy_A2_S2 DD_B_PS_Doggy_A2_S2.hkx
++ DD_B_PS_Doggy_A2_S3 DD_B_PS_Doggy_A2_S3.hkx
++ DD_B_PS_Doggy_A2_S4 DD_B_PS_Doggy_A2_S4.hkx
++ DD_B_PS_Doggy_A2_S5 DD_B_PS_Doggy_A2_S5.hkx
+
+' DD_B_PS_DoggyA
+s DD_B_PS_DoggyA_A1_S1 DD_B_PS_DoggyA_A1_S1.hkx  
++ DD_B_PS_DoggyA_A1_S2 DD_B_PS_DoggyA_A1_S2.hkx  
++ DD_B_PS_DoggyA_A1_S3 DD_B_PS_DoggyA_A1_S3.hkx  
++ DD_B_PS_DoggyA_A1_S4 DD_B_PS_DoggyA_A1_S4.hkx  
++ DD_B_PS_DoggyA_A1_S5 DD_B_PS_DoggyA_A1_S5.hkx  
+s DD_B_PS_DoggyA_A2_S1 DD_B_PS_DoggyA_A2_S1.hkx
++ DD_B_PS_DoggyA_A2_S2 DD_B_PS_DoggyA_A2_S2.hkx
++ DD_B_PS_DoggyA_A2_S3 DD_B_PS_DoggyA_A2_S3.hkx
++ DD_B_PS_DoggyA_A2_S4 DD_B_PS_DoggyA_A2_S4.hkx
++ DD_B_PS_DoggyA_A2_S5 DD_B_PS_DoggyA_A2_S5.hkx
+
+' DD_B_PS_DT_A
+s DD_B_PS_DT_A1_S1 DD_B_PS_DT_A1_S1.hkx  
++ DD_B_PS_DT_A1_S2 DD_B_PS_DT_A1_S2.hkx  
++ DD_B_PS_DT_A1_S3 DD_B_PS_DT_A1_S3.hkx  
++ DD_B_PS_DT_A1_S4 DD_B_PS_DT_A1_S4.hkx  
++ DD_B_PS_DT_A1_S5 DD_B_PS_DT_A1_S5.hkx  
+s DD_B_PS_DT_A2_S1 DD_B_PS_DT_A2_S1.hkx
++ DD_B_PS_DT_A2_S2 DD_B_PS_DT_A2_S2.hkx
++ DD_B_PS_DT_A2_S3 DD_B_PS_DT_A2_S3.hkx
++ DD_B_PS_DT_A2_S4 DD_B_PS_DT_A2_S4.hkx
++ DD_B_PS_DT_A2_S5 DD_B_PS_DT_A2_S5.hkx
+
+' DD_B_PS_Miss_A1_S1
+s DD_B_PS_Miss_A1_S1 DD_B_PS_Miss_A1_S1.hkx  
++ DD_B_PS_Miss_A1_S2 DD_B_PS_Miss_A1_S2.hkx  
++ DD_B_PS_Miss_A1_S3 DD_B_PS_Miss_A1_S3.hkx  
++ DD_B_PS_Miss_A1_S4 DD_B_PS_Miss_A1_S4.hkx  
++ DD_B_PS_Miss_A1_S5 DD_B_PS_Miss_A1_S5.hkx  
+s DD_B_PS_Miss_A2_S1 DD_B_PS_Miss_A2_S1.hkx
++ DD_B_PS_Miss_A2_S2 DD_B_PS_Miss_A2_S2.hkx
++ DD_B_PS_Miss_A2_S3 DD_B_PS_Miss_A2_S3.hkx
++ DD_B_PS_Miss_A2_S4 DD_B_PS_Miss_A2_S4.hkx
++ DD_B_PS_Miss_A2_S5 DD_B_PS_Miss_A2_S5.hkx

@@ -14,7 +14,10 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	libs.Log("OnEffectFinish(ShoutStaggerEffect)")
 EndEvent
 
-Event OnActorAction(int actionType, Actor akActor, Form source, int slot)
+Event OnActorAction(int actionType, Actor akActor, Form source, int slot)	
+    if akActor != libs.PlayerRef
+        return
+    endif    
 	if slot == 2
 		;libs.Notify("Player just got staggered!")
 		libs.PlayThirdPersonAnimation(akActor, libs.AnimSwitchKeyword(akActor, "OutOfBreath"), 3, permitRestrictive=True)		

@@ -12,6 +12,8 @@ Package Property NPCBoundCombatPackage Auto
 Package Property NPCBoundCombatPackageSandbox Auto
 Spell Property ArmbinderDebuff Auto
 
+FormList Property zad_List_BCPerks Auto
+
 ;Arm AA
 int Property ABC_ModID Auto
 int Property ABC_CRC Auto
@@ -264,9 +266,11 @@ Function EvaluateAA(actor akActor)
 		libs.log("EvaluateAA: Reverting to unbound AA")		
 		ClearAA(akActor)
 		ResetExternalAA(akActor)
+		RemoveBCPerks(akActor)
 	Else
 		libs.log("EvaluateAA: Applying animSet = " + animSet + ", animState = " + animState)
 		ClearAA(akActor)
+		ApplyBCPerks(akActor)
 		int animState = GetSecondaryAAState(akActor)
 		int animSet = SelectAnimationSet(akActor)
 		if animState == 1
@@ -387,6 +391,21 @@ Function ResetExternalAA(actor akActor)
 	EndIf
 EndFunction
 
+Function ApplyBCPerks(Actor akActor)
+	Int i = zad_List_BCPerks.GetSize()
+	While i > 0
+		i -= 1
+		akActor.AddPerk(zad_List_BCPerks.GetAt(i) As Perk)
+	EndWhile
+EndFunction
+
+Function RemoveBCPerks(Actor akActor)
+	Int i = zad_List_BCPerks.GetSize()
+	While i > 0
+		i -= 1
+		akActor.RemovePerk(zad_List_BCPerks.GetAt(i) As Perk)
+	EndWhile
+EndFunction
 
 ;NPC MANAGEMENT
 ;These are all the hacky measures we use to pretend that NPCs can use our devices... if they feel like it
