@@ -50,6 +50,8 @@ bool bellyNodeManagementDefault = false
 
 bool Property UseBoundCombat = True Auto
 bool UseBoundCombatDefault = true
+bool Property UseBoundCombatPerks = True Auto
+bool UseBoundCombatPerksDefault = true
 
 bool Property useBoundAnims =  true Auto
 bool useBoundAnimsDefault = true
@@ -188,6 +190,7 @@ int bootsSlowdownToggleOID
 int HobbleSkirtSpeedDebuffOID
 int mittensDropToggleOID
 int UseBoundCombatOID 
+int UseBoundCombatPerksOID 
 Int UseDeviceDifficultyEscapeOID
 Int DeviceDifficultyCooldownOID
 Int DeviceDifficultyModiferOID
@@ -305,7 +308,7 @@ Event OnConfigInit()
 EndEvent
 
 int Function GetVersion()
-	return 21 ; mcm menu version
+	return 22 ; mcm menu version
 EndFunction
 
 Event OnVersionUpdate(int newVersion)
@@ -374,6 +377,7 @@ Event OnPageReset(string page)
 		EndIf
 		AddHeaderOption("Armbinder Options")
 		UseBoundCombatOID = AddToggleOption("Enable Bound Combat", UseBoundCombat)
+		UseBoundCombatPerksOID = AddToggleOption("Enable Bound Combat Perks", UseBoundCombatPerks)
 	ElseIf page == "Sex Animation Filter"
 		SetCursorFillMode(TOP_TO_BOTTOM)
 		SetCursorPosition(0) ; Can be removed because it starts at 0 anyway
@@ -774,6 +778,9 @@ Event OnOptionSelect(int option)
 	elseif option == UseBoundCombatOID
 		UseBoundCombat = !UseBoundCombat
 		SetToggleOptionValue(UseBoundCombatOID, UseBoundCombat)
+	elseif option == UseBoundCombatPerksOID
+		UseBoundCombatPerks = !UseBoundCombatPerks
+		SetToggleOptionValue(UseBoundCombatPerksOID, UseBoundCombatPerks)	
 	elseif option == GlobalDestroyKeyOID
 		GlobalDestroyKey = !GlobalDestroyKey
 		SetToggleOptionValue(GlobalDestroyKeyOID, GlobalDestroyKey)	
@@ -929,6 +936,9 @@ Event OnOptionDefault(int option)
 	elseIf (option == UseBoundCombatOID)
 		UseBoundCombat = UseBoundCombatDefault
 		SetToggleOptionValue(UseBoundCombatOID, UseBoundCombat)	
+	elseIf (option == UseBoundCombatPerksOID)
+		UseBoundCombatPerks = UseBoundCombatDefault
+		SetToggleOptionValue(UseBoundCombatPerksOID, UseBoundCombatPerks)	
 	elseIf (option == ArmbinderStruggleBaseChanceOID)
 		ArmbinderStruggleBaseChance = ArmbinderStruggleBaseChanceDefault
 		SetSliderOptionValue(ArmbinderStruggleBaseChanceOID, ArmbinderStruggleBaseChance)	
@@ -1041,7 +1051,9 @@ Event OnOptionHighlight(int option)
 	elseIf (option == bellyNodeManagementOID)
 		SetInfoText("If enabled, belly will be resized while the corset is worn, to minimized HDT clipping.\nDefault: "+bellyNodeManagementDefault)
 	elseIf (option == UseBoundCombatOID)
-		SetInfoText("If enabled, unarmed combat (Kicking) will be enabled for the player while bound. Currently only works in third person, and only for the armbinder.\nDefault: "+UseBoundCombatDefault)	
+		SetInfoText("If enabled, unarmed combat (Kicking) will be enabled for the player while wrist-bound. Works in 3rd person only.\nWhen disabled, the player will not be able to defend herself with bound wrists, and likely die to any attacker.\nDefault: "+UseBoundCombatDefault)	
+	elseIf (option == UseBoundCombatPerksOID)
+		SetInfoText("If enabled, strength of bound combat will be influenced by which devices you are wearing, and for how long.\nUf disabled, it will make bound combat substantially weaker.\nDefault: "+UseBoundCombatPerksDefault)	
 	elseIf (option == ArmbinderMinStruggleOID)
 		SetInfoText("Minimum amount of times you have to struggle against your armbinder to have a chance to escape it.\nDefault: "+ArmbinderMinStruggleDefault)
 	elseIf (option == ArmbinderStruggleBaseChanceOID)

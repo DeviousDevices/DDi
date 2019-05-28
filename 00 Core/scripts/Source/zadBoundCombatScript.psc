@@ -392,6 +392,9 @@ Function ResetExternalAA(actor akActor)
 EndFunction
 
 Function ApplyBCPerks(Actor akActor)
+	If Libs.Config.UseBoundCombatPerks == False
+		return
+	EndIf
 	Int i = zad_List_BCPerks.GetSize()
 	While i > 0
 		i -= 1

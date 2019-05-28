@@ -60,6 +60,9 @@ EndEvent
 	
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	libs.Log("OnEffectStart(): Heavy Bondage: " + akTarget.GetLeveledActorBase().GetName())
+	If Libs.Config.UseBoundCombatPerks == False
+		return
+	EndIf
 	Me = akTarget	
 	MsgCounter = 0	
 	DeviceEquippedAt = Utility.GetCurrentGameTime()

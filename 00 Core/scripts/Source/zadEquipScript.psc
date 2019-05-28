@@ -217,6 +217,9 @@ Event OnEquipped(Actor akActor)
 	If TimedUnlock
 		SetLockTimer()
 	EndIf
+	if akActor != libs.PlayerRef && (akActor.WornHasKeyword(libs.zad_DeviousSuit) || akActor.WornHasKeyword(libs.zad_DeviousHeavyBondage))
+		akActor.SetOutfit(None, false)
+	endIf
 	;If deviceRendered.HasKeyword(libs.zad_DeviousHeavyBondage)		
 		libs.StartBoundEffects(akActor)
 	;EndIf	
@@ -270,6 +273,10 @@ Event OnUnequipped(Actor akActor)
 			If deviceRendered.HasKeyword(libs.zad_DeviousHeavyBondage) || deviceRendered.HasKeyword(libs.zad_DeviousPonyGear) || deviceRendered.HasKeyword(libs.zad_DeviousHobbleSkirt) 
 				libs.StopBoundEffects(akActor)
 			EndIf
+			; Note: This code has a side-effect when it resets the outfit to the ActorBase. This could override prior changes to the -Actor- outfit. Not sure if it's a big problem, so let's see how that goes.
+			if akActor != libs.PlayerRef && !akActor.WornHasKeyword(libs.zad_DeviousSuit) && !akActor.WornHasKeyword(libs.zad_DeviousHeavyBondage)
+				akActor.SetOutfit(akActor.GetLeveledActorBase().GetOutfit(), false)
+			endIf
 			StorageUtil.UnsetIntValue(akActor, "zad_RemovalToken"+deviceInventory)
 			unequipMutex = false
 			libs.DeviceMutex = false			
@@ -1693,12 +1700,11 @@ EndFunction
 Function StoreEquippedDevice(actor akActor)
 	StorageUtil.SetFormValue(akActor, "zad_Equipped" + libs.LookupDeviceType(zad_DeviousDevice) + "_Inventory", DeviceInventory)
 	StorageUtil.SetFormValue(akActor, "zad_Equipped" + libs.LookupDeviceType(zad_DeviousDevice) + "_Rendered", DeviceRendered)
-	StorageUtil.SetFormValue(akActor, "zad_Equipped" + libs.LookupDeviceType(zad_DeviousDevice) + "_Key", DeviceKey)
+	StorageUtil.SetFormValue(akActor, "zad_Equipped" + libs.LookupDeviceType(zad_DeviousDevice) + "_Key", DeviceKey)	
 EndFunction
 
 Function UnsetStoredDevice(actor akActor)
 	StorageUtil.UnsetFormValue(akActor, "zad_Equipped" + libs.LookupDeviceType(zad_DeviousDevice) + "_Inventory")
 	StorageUtil.UnsetFormValue(akActor, "zad_Equipped" + libs.LookupDeviceType(zad_DeviousDevice) + "_Rendered")
-	StorageUtil.UnsetFormValue(akActor, "zad_Equipped" + libs.LookupDeviceType(zad_DeviousDevice) + "_Key")
-
+	StorageUtil.UnsetFormValue(akActor, "zad_Equipped" + libs.LookupDeviceType(zad_DeviousDevice) + "_Key")	
 EndFunction
